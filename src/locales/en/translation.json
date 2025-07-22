@@ -1,0 +1,426 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred. Please try again later.",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "noResults": "No results found",
+    "km": "km",
+    "order": "Order",
+    "orders": "Orders",
+    "selected": "Selected",
+    "distance": "Distance",
+    "value": "Value",
+    "eta": "ETA",
+    "driver": "Driver",
+    "status": "Status",
+    "assign": "Assign",
+    "from": "From",
+    "to": "To",
+    "assignDriver": "Assign Driver",
+    "orderDetails": "Order Details",
+    "type": "Type",
+    "priority": "Priority",
+    "scheduledTime": "Scheduled Time",
+    "estimatedDuration": "Estimated Duration"
+  },
+  "loginPage": {
+    "hello_world": "Hello, World!",
+    "title": "Smart Delivery Management",
+    "subtitle": "Streamline your delivery operations with our comprehensive management platform. Track shipments, manage routes, and optimize your delivery fleet all in one place.",
+    "welcome": "Welcome to DeliveryFlow",
+    "signIn": "Sign in to your delivery management portal",
+    "security": "Protected by industry-leading security protocols",
+    "altText": "Delivery management",
+    "quickLogin": "Quick Demo Login",
+    "demoNote": "For demo purposes - click the button below for instant access"
+  },
+  "login": {
+    "email": "User name",
+    "emailPlaceholder": "user name",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "domain": "Company Domain",
+    "domainPlaceholder": "company.domain",
+    "signIn": "Sign in to your account"
+  },
+  "landPage": {
+    "hero": {
+      "title": "Smart Freight & Logistics Management",
+      "subtitle": "Streamline your global shipping operations with our comprehensive freight management platform. Handle sea, air, and land transport with ease.",
+      "cta": "Get Started",
+      "demo": "Watch Demo"
+    },
+    "features": {
+      "title": "Everything You Need for Modern Logistics",
+      "subtitle": "Comprehensive tools to manage your entire freight operation",
+      "items": [
+        {
+          "icon": "Ship",
+          "title": "Multi-Modal Freight",
+          "description": "Handle sea, air, and land freight with unified tracking and documentation"
+        },
+        {
+          "icon": "Package",
+          "title": "Container Management",
+          "description": "Track containers, manage inventory, and optimize warehouse operations"
+        },
+        {
+          "icon": "BarChart3",
+          "title": "Real-time Analytics",
+          "description": "Get insights into your operations with comprehensive reporting and analytics"
+        },
+        {
+          "icon": "Users",
+          "title": "Customer Portal",
+          "description": "Provide customers with real-time tracking and shipment updates"
+        },
+        {
+          "icon": "Shield",
+          "title": "Compliance Ready",
+          "description": "Built-in compliance tools for customs, regulations, and documentation"
+        },
+        {
+          "icon": "Globe",
+          "title": "Global Network",
+          "description": "Connect with partners worldwide through our integrated network"
+        }
+      ]
+    },
+    "stats": {
+      "title": "Trusted by Industry Leaders",
+      "items": [
+        { "number": "10,000+", "label": "Shipments Processed" },
+        { "number": "500+", "label": "Active Customers" },
+        { "number": "99.9%", "label": "Uptime Guarantee" },
+        { "number": "24/7", "label": "Support Available" }
+      ]
+    },
+    "testimonials": {
+      "title": "What Our Customers Say",
+      "items": [
+        {
+          "quote": "FreightFlow has transformed our logistics operations. The visibility and control we now have is incredible.",
+          "author": "Sarah Johnson",
+          "role": "Logistics Director",
+          "company": "Global Trade Corp"
+        },
+        {
+          "quote": "The multi-modal tracking and automated documentation has saved us countless hours every week.",
+          "author": "Michael Chen",
+          "role": "Operations Manager",
+          "company": "Pacific Shipping"
+        },
+        {
+          "quote": "Customer service is outstanding. They understand the freight industry and provide real solutions.",
+          "author": "Ahmed Al-Rashid",
+          "role": "CEO",
+          "company": "Middle East Logistics"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to Transform Your Logistics?",
+      "subtitle": "Join thousands of companies already using FreightFlow to streamline their operations",
+      "button": "Start Free Trial"
+    }
+  },
+  "layout": {
+    "navBar": {
+      "logo": "Deleivery",
+      "searchPlaceholder": "Search orders, bills, customers...",
+      "name": "John Doe",
+      "role": "Administrator"
+    },
+    "sideBar": {
+      "dashboard": "Dashboard",
+      "stores": "Stores",
+      "orders": "Orders",
+      "customers": "Store Customers",
+      "users": "Users",
+      "accounting": "Store Accounting",
+      "driversAccounting": "Drivers Accounting",
+      "settings": "Settings",
+      "logout": "Logout",
+      "bulkAssign": "Bulk Assign"
+    }
+  },
+  "dashboard": {
+    "header": "Dashboard",
+    "statsGrid": {
+      "revenue": {
+        "header": "Today's Revenue",
+        "value": "$2,584"
+      },
+      "orders": "Today's Orders",
+      "drivers": "Active Drivers",
+      "pendingOrders": "Pending Orders"
+    },
+    "mockMap": {
+      "header": "Location Overview",
+      "type": {
+        "warehouse": "Warehouse",
+        "stores": "Stores",
+        "availableDriver": "Available Drivers",
+        "busyDriver": "Busy Drivers"
+      },
+      "mockLocations": {
+        "first": {
+          "name": "Warehouse A",
+          "type": "warehouse"
+        },
+        "second": {
+          "name": "Warehouse B",
+          "type": "warehouse"
+        },
+        "third": {
+          "name": "Electronics Store",
+          "type": "store"
+        },
+        "fourth": {
+          "name": "Fashion Boutique",
+          "type": "store"
+        },
+        "fifth": {
+          "name": "John Doe",
+          "type": "driver"
+        },
+        "sixth": {
+          "name": "Ahmed Hassan",
+          "type": "driver"
+        },
+        "seventh": {
+          "name": "Maria Garcia",
+          "type": "driver"
+        },
+        "eighth": {
+          "name": "David Kim",
+          "type": "driver"
+        }
+      }
+    },
+    "ordersList": {
+      "header": "Recent Orders",
+      "seeAll": "See All",
+      "mockOrders": {
+        "first": {
+          "id": "ORD001",
+          "storeName": "Electronics Store Downtown",
+          "location": "123 Main St, Downtown",
+          "storeAddress": "123 Main St, Downtown District, City Center",
+          "warehouseAddress": "Warehouse Complex A, Industrial Zone, Sector 7",
+          "status": "pending",
+          "time": "10:30 AM",
+          "orderType": "store_to_warehouse",
+          "priority": "high",
+          "estimatedDeliveryTime": "2 hours",
+          "distance": "12.5 km"
+        },
+        "second": {
+          "id": "ORD002",
+          "storeName": "Central Warehouse",
+          "location": "Warehouse Complex A",
+          "clientName": "Ahmed Al-Rashid",
+          "clientAddress": "456 Oak Ave, Residential Area, North District",
+          "warehouseAddress": "Warehouse Complex A, Industrial Zone, Sector 7",
+          "status": "assigned",
+          "time": "11:15 AM",
+          "driver": "John Doe",
+          "orderType": "warehouse_to_client",
+          "priority": "medium",
+          "estimatedDeliveryTime": "1.5 hours",
+          "distance": "8.2 km"
+        },
+        "third": {
+          "id": "ORD003",
+          "storeName": "Fashion Boutique",
+          "location": "789 Fashion Ave",
+          "storeAddress": "789 Fashion Ave, Shopping District, West Side",
+          "warehouseAddress": "Warehouse Complex B, Industrial Zone, Sector 12",
+          "status": "pending",
+          "time": "12:00 PM",
+          "orderType": "store_to_warehouse",
+          "priority": "low",
+          "estimatedDeliveryTime": "3 hours",
+          "distance": "15.7 km"
+        },
+        "fourth": {
+          "id": "ORD004",
+          "storeName": "Central Warehouse",
+          "location": "Warehouse Complex B",
+          "clientName": "Sarah Johnson",
+          "clientAddress": "321 Pine St, Business District, East Side",
+          "warehouseAddress": "Warehouse Complex B, Industrial Zone, Sector 12",
+          "status": "pending",
+          "time": "1:30 PM",
+          "orderType": "warehouse_to_client",
+          "priority": "high",
+          "estimatedDeliveryTime": "1 hour",
+          "distance": "6.3 km"
+        }
+      },
+      "mockDrivers": {
+        "first": {
+          "id": "DRV001",
+          "name": "John Doe",
+          "status": "available",
+          "currentLocation": "Downtown Area",
+          "vehicleType": "Van",
+          "rating": 4.8,
+          "completedOrders": 245
+        },
+        "second": {
+          "id": "DRV002",
+          "name": "Ahmed Hassan",
+          "status": "available",
+          "currentLocation": "Industrial Zone",
+          "vehicleType": "Truck",
+          "rating": 4.9,
+          "completedOrders": 189
+        },
+        "third": {
+          "id": "DRV003",
+          "name": "Maria Garcia",
+          "status": "busy",
+          "currentLocation": "North District",
+          "vehicleType": "Motorcycle",
+          "rating": 4.7,
+          "completedOrders": 156
+        },
+        "fourth": {
+          "id": "DRV004",
+          "name": "David Kim",
+          "status": "available",
+          "currentLocation": "West Side",
+          "vehicleType": "Van",
+          "rating": 4.6,
+          "completedOrders": 203
+        },
+        "fifth": {
+          "id": "DRV005",
+          "name": "Fatima Al-Zahra",
+          "status": "offline",
+          "currentLocation": "East Side",
+          "vehicleType": "Car",
+          "rating": 4.9,
+          "completedOrders": 178
+        },
+        "sixth": {
+          "id": "DRV006",
+          "name": "Michael Brown",
+          "status": "available",
+          "currentLocation": "South District",
+          "vehicleType": "Truck",
+          "rating": 4.5,
+          "completedOrders": 167
+        },
+        "seventh": {
+          "id": "DRV007",
+          "name": "Lisa Wang",
+          "status": "available",
+          "currentLocation": "Central Area",
+          "vehicleType": "Van",
+          "rating": 4.8,
+          "completedOrders": 234
+        }
+      }
+    },
+    "bulkAssign": {
+      "header": "Smart Assignment Hub",
+      "discription": "Efficiently manage and assign drivers to multiple orders with AI-powered recommendations",
+      "statsCards": {
+        "totalOrders": "Total Orders",
+        "pending": "Pending",
+        "availableDrivers": "Available Drivers",
+        "selected": "Selected"
+      },
+      "selectionSummary": {
+        "orderSelected": "Order Selected",
+        "description": "Ready for bulk assignment",
+        "totalValue": "Total Value",
+        "avgDistance": "Average Distance",
+        "buttons": {
+          "clearSelection": "Clear Selection",
+          "smartAssign": "Smartly Assign"
+        }
+      },
+      "filters": {
+        "header": "Filter & Search",
+        "searchOrders": {
+          "header": "Search Orders",
+          "placeholder": "Order ID, store, client..."
+        },
+        "status": {
+          "header": "Status",
+          "options": {
+            "allStatus": "All Status",
+            "pending": "Pending",
+            "assigned": "Assigned",
+            "delivered": "Delevered"
+          }
+        },
+        "orderType": {
+          "header": "Order Type",
+          "options": {
+            "allTypes": "All Types",
+            "store_to_warehouse": "Store → Warehouse",
+            "warehouse_to_client": "Warehouse → Client"
+          }
+        },
+        "priority": {
+          "header": "Priority",
+          "options": {
+            "allPriorities": "All Priorities",
+            "high": "High",
+            "medium": "Medium",
+            "low": "Low"
+          }
+        },
+        "selectAllPending": "Select All Pending"
+      },
+      "bulkAssignmentModal": {
+        "header": "Smart Bulk Assignment",
+        "discription": "orders • AI-powered driver matching"
+      },
+      "assignmentSummary": {
+        "header": "Assignment Summary",
+        "orderSelected": "Orders Selected",
+        "totalValue": "Total Value",
+        "avgDistance": "Avg Distance"
+      },
+      "driverSelection": "Select Optimal Driver",
+      "driverFilters": {
+        "header": "Filter Drivers",
+        "searchbyName": "Search by name",
+        "placeholder": "Driver name...",
+        "vehicleType": "Vehicle Type",
+        "allVehicles": "All Vehicles",
+        "location": "Location",
+        "allLocations": "All Locations",
+        "allStatus": "All Status",
+        "available": "Available",
+        "busy": "Busy",
+        "offline": "Offline",
+        "selectDriver": "Select Driver",
+        "chooseADriver": "Choose a driver...",
+        "noDrivers": "No drivers match your filters",
+        "aiRecommendation": "AI Recommendation"
+      },
+      "locationDetails": {
+        "header": "Location Details",
+        "pickupLocation": "Pickup Location",
+        "store": "Store",
+        "deliveryLocation": "Delivery Location",
+        "warehouse": "Warehouse",
+        "client": "Client"
+      }
+    }
+  }
+}

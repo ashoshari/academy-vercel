@@ -1,0 +1,405 @@
+{
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "error": "حدث خطأ. يرجى المحاولة مرة أخرى لاحقاً.",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "search": "بحث",
+    "noResults": "لم يتم العثور على نتائج",
+    "km": "كم",
+    "order": "الطلب",
+    "selected": "المحدد",
+    "distance": "المسافة",
+    "value": "القيمة",
+    "eta": "وقت الوصول المتوقع",
+    "driver": "السائق",
+    "status": "الحالة",
+    "assign": "تعيين"
+  },
+  "loginPage": {
+    "title": "إدارة التوصيل الذكية",
+    "subtitle": "قم بتبسيط عمليات التوصيل الخاصة بك من خلال منصتنا الشاملة للإدارة. تتبع الشحنات وإدارة المسارات وتحسين أسطول التوصيل الخاص بك في مكان واحد.",
+    "welcome": "مرحباً بك في DeliveryFlow",
+    "signIn": "تسجيل الدخول إلى بوابة إدارة التوصيل",
+    "security": "محمي ببروتوكولات أمان رائدة في الصناعة",
+    "altText": "إدارة التوصيل",
+    "quickLogin": "تسجيل دخول سريع للعرض التوضيحي",
+    "demoNote": "لأغراض العرض التوضيحي - انقر على الزر أدناه للوصول الفوري"
+  },
+
+  "login": {
+    "email": "اسم المستخدم",
+    "emailPlaceholder": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "••••••••",
+    "domain": "نطاق الشركة",
+    "domainPlaceholder": "company.domain",
+    "signIn": "تسجيل الدخول إلى حسابك"
+  },
+  "landPage": {
+    "hero": {
+      "title": "إدارة الشحن واللوجستيات الذكية",
+      "subtitle": "قم بتبسيط عمليات الشحن العالمية الخاصة بك من خلال منصتنا الشاملة لإدارة الشحن. تعامل مع النقل البحري والجوي والبري بسهولة.",
+      "cta": "ابدأ الآن",
+      "demo": "شاهد العرض التوضيحي"
+    },
+    "features": {
+      "title": "كل ما تحتاجه للوجستيات الحديثة",
+      "subtitle": "أدوات شاملة لإدارة عمليات الشحن بالكامل",
+      "items": [
+        {
+          "icon": "Ship",
+          "title": "الشحن متعدد الوسائط",
+          "description": "تعامل مع الشحن البحري والجوي والبري مع التتبع والتوثيق الموحد"
+        },
+        {
+          "icon": "Package",
+          "title": "إدارة الحاويات",
+          "description": "تتبع الحاويات وإدارة المخزون وتحسين عمليات المستودعات"
+        },
+        {
+          "icon": "BarChart3",
+          "title": "التحليلات في الوقت الفعلي",
+          "description": "احصل على رؤى حول عملياتك مع التقارير والتحليلات الشاملة"
+        },
+        {
+          "icon": "Users",
+          "title": "بوابة العملاء",
+          "description": "قدم للعملاء التتبع في الوقت الفعلي وتحديثات الشحن"
+        },
+        {
+          "icon": "Shield",
+          "title": "جاهز للامتثال",
+          "description": "أدوات امتثال مدمجة للجمارك واللوائح والتوثيق"
+        },
+        {
+          "icon": "Globe",
+          "title": "شبكة عالمية",
+          "description": "تواصل مع الشركاء في جميع أنحاء العالم من خلال شبكتنا المتكاملة"
+        }
+      ]
+    },
+    "stats": {
+      "title": "موثوق به من قبل قادة الصناعة",
+      "items": [
+        { "number": "10,000+", "label": "شحنة تمت معالجتها" },
+        { "number": "500+", "label": "عميل نشط" },
+        { "number": "99.9%", "label": "ضمان وقت التشغيل" },
+        { "number": "24/7", "label": "الدعم متاح" }
+      ]
+    },
+    "testimonials": {
+      "title": "ما يقوله عملاؤنا",
+      "items": [
+        {
+          "quote": "لقد غيّر FreightFlow عمليات اللوجستيات لدينا. الرؤية والتحكم الذي نملكه الآن أمر لا يصدق.",
+          "author": "سارة جونسون",
+          "role": "مدير اللوجستيات",
+          "company": "شركة التجارة العالمية"
+        },
+        {
+          "quote": "التتبع متعدد الوسائط والتوثيق الآلي وفر علينا ساعات لا تحصى كل أسبوع.",
+          "author": "مايكل تشين",
+          "role": "مدير العمليات",
+          "company": "الشحن الهادئ"
+        },
+        {
+          "quote": "خدمة العملاء متميزة. يفهمون صناعة الشحن ويقدمون حلولاً حقيقية.",
+          "author": "أحمد الراشد",
+          "role": "الرئيس التنفيذي",
+          "company": "لوجستيات الشرق الأوسط"
+        }
+      ]
+    },
+    "cta": {
+      "title": "هل أنت مستعد لتحويل اللوجستيات الخاصة بك؟",
+      "subtitle": "انضم إلى آلاف الشركات التي تستخدم بالفعل FreightFlow لتبسيط عملياتها",
+      "button": "ابدأ النسخة التجريبية المجانية"
+    }
+  },
+  "layout": {
+    "navBar": {
+      "logo": "Deleivery",
+      "searchPlaceholder": "ابحث عن الطلبات، الفواتير، العملاء...",
+      "name": "جون دو",
+      "role": "مسؤول"
+    },
+    "sideBar": {
+      "dashboard": "لوحة التحكم",
+      "stores": "المتاجر",
+      "orders": "الطلبات",
+      "customers": "عملاء المتجر",
+      "users": "المستخدمون",
+      "accounting": "حسابات المتجر",
+      "driversAccounting": "حسابات السائقين",
+      "settings": "الإعدادات",
+      "logout": "تسجيل الخروج",
+      "bulkAssign": "إسناد جماعي"
+    }
+  },
+  "dashboard": {
+    "header": "لوحة التحكم",
+    "statsGrid": {
+      "revenue": {
+        "header": "إيرادات اليوم",
+        "value": "$2,584"
+      },
+      "orders": "طلبات اليوم",
+      "drivers": "السائقون النشطون",
+      "pendingOrders": "الطلبات المعلقة"
+    },
+    "mockMap": {
+      "header": "نظرة عامة على الموقع",
+      "type": {
+        "warehouse": "مخزن",
+        "stores": "متاجر",
+        "availableDriver": "السائقون المتاحون",
+        "busyDriver": "السائقون المشغولون"
+      },
+      "mockLocations": {
+        "first": {
+          "name": "المخزن A",
+          "type": "مخزن"
+        },
+        "second": {
+          "name": "المخزن B",
+          "type": "مخزن"
+        },
+        "third": {
+          "name": "متجر الإلكترونيات",
+          "type": "متجر"
+        },
+        "fourth": {
+          "name": "بوتيك الأزياء",
+          "type": "متجر"
+        },
+        "fifth": {
+          "name": "جون دو",
+          "type": "سائق"
+        },
+        "sixth": {
+          "name": "أحمد حسن",
+          "type": "سائق"
+        },
+        "seventh": {
+          "name": "ماريا غارسيا",
+          "type": "سائق"
+        },
+        "eighth": {
+          "name": "ديفيد كيم",
+          "type": "سائق"
+        }
+      }
+    },
+    "ordersList": {
+      "header": "الطلبات الأخيرة",
+      "seeAll": "عرض الكل",
+      "mockOrders": {
+        "first": {
+          "id": "ORD001",
+          "storeName": "متجر الإلكترونيات - وسط المدينة",
+          "location": "123 شارع الرئيسي، وسط المدينة",
+          "storeAddress": "123 شارع الرئيسي، منطقة وسط المدينة، مركز المدينة",
+          "warehouseAddress": "مجمع المخازن A، المنطقة الصناعية، القطاع 7",
+          "status": "قيد الانتظار",
+          "time": "10:30 ص",
+          "orderType": "من المتجر ← المخزن",
+          "priority": "عالية",
+          "estimatedDeliveryTime": "ساعتان"
+        },
+        "second": {
+          "id": "ORD002",
+          "storeName": "المخزن المركزي",
+          "location": "مجمع المخازن A",
+          "clientName": "أحمد الراشد",
+          "clientAddress": "456 شارع البلوط، المنطقة السكنية، الحي الشمالي",
+          "warehouseAddress": "مجمع المخازن A، المنطقة الصناعية، القطاع 7",
+          "status": "تم التعيين",
+          "time": "11:15 ص",
+          "driver": "جون دو",
+          "orderType": "من المخزن ← العميل",
+          "priority": "متوسطة",
+          "estimatedDeliveryTime": "ساعة ونصف"
+        },
+        "third": {
+          "id": "ORD003",
+          "storeName": "بوتيك الأزياء",
+          "location": "789 شارع الأزياء",
+          "storeAddress": "789 شارع الأزياء، منطقة التسوق، الجانب الغربي",
+          "warehouseAddress": "مجمع المخازن B، المنطقة الصناعية، القطاع 12",
+          "status": "قيد الانتظار",
+          "time": "12:00 م",
+          "orderType": "من المتجر ← المخزن",
+          "priority": "منخفضة",
+          "estimatedDeliveryTime": "3 ساعات"
+        },
+        "fourth": {
+          "id": "ORD004",
+          "storeName": "المخزن المركزي",
+          "location": "مجمع المخازن B",
+          "clientName": "سارة جونسون",
+          "clientAddress": "321 شارع باين، منطقة الأعمال، الجانب الشرقي",
+          "warehouseAddress": "مجمع المخازن B، المنطقة الصناعية، القطاع 12",
+          "status": "قيد الانتظار",
+          "time": "1:30 م",
+          "orderType": "من المخزن ← العميل",
+          "priority": "عالية",
+          "estimatedDeliveryTime": "ساعة واحدة"
+        }
+      },
+      "mockDrivers": {
+        "first": {
+          "id": "DRV001",
+          "name": "جون دو",
+          "status": "متاح",
+          "currentLocation": "منطقة وسط المدينة",
+          "vehicleType": "فان",
+          "rating": 4.8,
+          "completedOrders": 245
+        },
+        "second": {
+          "id": "DRV002",
+          "name": "أحمد حسن",
+          "status": "متاح",
+          "currentLocation": "المنطقة الصناعية",
+          "vehicleType": "شاحنة",
+          "rating": 4.9,
+          "completedOrders": 189
+        },
+        "third": {
+          "id": "DRV003",
+          "name": "ماريا غارسيا",
+          "status": "مشغول",
+          "currentLocation": "الحي الشمالي",
+          "vehicleType": "دراجة نارية",
+          "rating": 4.7,
+          "completedOrders": 156
+        },
+        "fourth": {
+          "id": "DRV004",
+          "name": "ديفيد كيم",
+          "status": "متاح",
+          "currentLocation": "الجانب الغربي",
+          "vehicleType": "فان",
+          "rating": 4.6,
+          "completedOrders": 203
+        },
+        "fifth": {
+          "id": "DRV005",
+          "name": "فاطمة الزهراء",
+          "status": "غير متصل",
+          "currentLocation": "الجانب الشرقي",
+          "vehicleType": "سيارة",
+          "rating": 4.9,
+          "completedOrders": 178
+        },
+        "sixth": {
+          "id": "DRV006",
+          "name": "مايكل براون",
+          "status": "متاح",
+          "currentLocation": "الحي الجنوبي",
+          "vehicleType": "شاحنة",
+          "rating": 4.5,
+          "completedOrders": 167
+        },
+        "seventh": {
+          "id": "DRV007",
+          "name": "ليزا وانغ",
+          "status": "متاح",
+          "currentLocation": "المنطقة المركزية",
+          "vehicleType": "فان",
+          "rating": 4.8,
+          "completedOrders": 234
+        }
+      }
+    },
+    "bulkAssign": {
+      "header": "مركز التعيين الذكي",
+      "discription": "إدارة وتعيين السائقين للطلبات المتعددة بكفاءة مع توصيات مدعومة بالذكاء الاصطناعي",
+      "statsCards": {
+        "totalOrders": "إجمالي الطلبات",
+        "pending": "قيد الانتظار",
+        "availableDrivers": "السائقون المتاحون",
+        "selected": "المحددون"
+      },
+      "selectionSummary": {
+        "orderSelected": "طلب محدد",
+        "description": "جاهز للتعيين الجماعي",
+        "totalValue": "القيمة الإجمالية",
+        "avgDistance": "متوسط المسافة",
+        "buttons": {
+          "clearSelection": "مسح التحديد",
+          "smartAssign": "تعيين ذكي"
+        }
+      },
+      "filters": {
+        "header": "تصفية وبحث",
+        "searchOrders": {
+          "header": "البحث عن الطلبات",
+          "placeholder": "معرّف الطلب، المتجر، العميل..."
+        },
+        "status": {
+          "header": "الحالة",
+          "options": {
+            "allStatus": "جميع الحالات",
+            "pending": "قيد الانتظار",
+            "assigned": "مُعيّن",
+            "delivered": "تم التوصيل"
+          }
+        },
+        "orderType": {
+          "header": "نوع الطلب",
+          "options": {
+            "allTypes": "جميع الأنواع",
+            "store_to_warehouse": "من المتجر ← المخزن",
+            "warehouse_to_client": "من المخزن ← العميل"
+          }
+        },
+        "priority": {
+          "header": "الأولوية",
+          "options": {
+            "allPriorities": "جميع الأولويات",
+            "high": "عالية",
+            "medium": "متوسطة",
+            "low": "منخفضة"
+          }
+        },
+        "selectAllPending": "تحديد جميع الطلبات المعلقة"
+      },
+      "bulkAssignmentModal": {
+        "header": "التعيين الذكي الجماعي",
+        "discription": "الطلبات • مطابقة السائقين مدعومة بالذكاء الاصطناعي"
+      },
+      "assignmentSummary": {
+        "header": "ملخص التعيين",
+        "orderSelected": "الطلبات المحددة",
+        "totalValue": "القيمة الإجمالية",
+        "avgDistance": "متوسط المسافة"
+      },
+      "driverSelection": "اختيار السائق الأمثل",
+      "driverFilter": {
+        "header": "تصفية السائقين",
+        "searchbyName": "البحث بالاسم",
+        "placeholder": "اسم السائق...",
+        "vehicleType": "نوع المركبة",
+        "allVehicles": "كل المركبات",
+        "location": "الموقع",
+        "allLocations": "كل المواقع",
+        "allStatus": "كل الحالات",
+        "available": "متاح",
+        "busy": "مشغول",
+        "offline": "غير متصل",
+        "selectDriver": "اختيار السائق",
+        "chooseADriver": "اختر سائقًا...",
+        "noDrivers": "لا يوجد سائقون يطابقون الفلاتر",
+        "aiRecommendation": "توصية الذكاء الاصطناعي"
+      }
+    }
+  }
+}
