@@ -22,10 +22,8 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route>
-          <Route path="/" element={<Home />} />
-          <Route path="contact" element={<ContactPage />} />
-        </Route>
+        <Route path="/" element={<Home />} />
+        <Route path="contact" element={<ContactPage />} />
 
         {isAuthenticated && (
           <Route path="dashboard" element={<Layout />}>

@@ -10,16 +10,16 @@ import {
   LogOut,
   Home,
   Settings,
-  Image,
-  Layers,
-  FolderTree,
+  // Image,
+  // Layers,
+  // FolderTree,
   Users,
-  CreditCard,
-  Hash,
+  // CreditCard,
+  // Hash,
   GraduationCap,
   BookOpen,
-  Upload,
-  BarChart3,
+  // Upload,
+  // BarChart3,
 } from "lucide-react";
 import AnimatedBackground from "@/components/login/AnimatedBackground";
 
@@ -62,18 +62,18 @@ const Layout = () => {
   // const [students, setStudents] = useState<any[]>([]);
 
   const menuItems = [
-    { id: "/dashboard/", label: "الرئيسية", icon: Home },
+    { id: "", label: "الرئيسية", icon: Home },
     { id: "students", label: "الطلاب", icon: GraduationCap },
     { id: "teachers", label: "المعلمين", icon: Users },
     { id: "courses", label: "الدورات", icon: BookOpen },
-    { id: "exams", label: "الامتحانات", icon: BookOpen },
-    { id: "files", label: "الملفات", icon: Upload },
-    { id: "slider", label: "السلايدر", icon: Image },
-    { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
-    { id: "subsections", label: "الأقسام الفرعية", icon: FolderTree },
-    { id: "pricing", label: "أسعار البطاقات", icon: CreditCard },
-    { id: "codes", label: "كودات البطاقات", icon: Hash },
-    { id: "reports", label: "التقارير", icon: BarChart3 },
+    // { id: "exams", label: "الامتحانات", icon: BookOpen },
+    // { id: "files", label: "الملفات", icon: Upload },
+    // { id: "slider", label: "السلايدر", icon: Image },
+    // { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
+    // { id: "subsections", label: "الأقسام الفرعية", icon: FolderTree },
+    // { id: "pricing", label: "أسعار البطاقات", icon: CreditCard },
+    // { id: "codes", label: "كودات البطاقات", icon: Hash },
+    // { id: "reports", label: "التقارير", icon: BarChart3 },
   ];
 
   return (
@@ -112,7 +112,7 @@ const Layout = () => {
           <nav className="space-y-1">
             {menuItems.map((item) => (
               <NavLink
-                to={`/dashboard/${item.id}`}
+                to={item.id ? `/dashboard/${item.id}` : "/dashboard"}
                 key={item.id}
                 end
                 className={({ isActive }) =>
