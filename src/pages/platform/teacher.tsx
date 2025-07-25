@@ -411,14 +411,14 @@ const TeacherProfile: React.FC = () => {
       alert("تم تفعيل الدورة بنجاح! 🎉");
     }
   };
-
-  //   const handleCourseClick = (course: Course) => {
-  //     if (course.isActive) {
-  //       onCourseClick();
-  //     } else {
-  //       handleCourseActivation(course);
-  //     }
-  //   };
+    const handleCourseClick = (course: Course) => {
+      if (course.isActive) {
+        navigate(`/coursePage/${course.id}`);
+        // onCourseClick();
+      } else {
+        handleCourseActivation(course);
+      }
+    };
 
   const getFileIcon = (type: string) => {
     switch (type) {
@@ -490,8 +490,8 @@ const TeacherProfile: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="mb-4">
+      <div className="flex flex-col p-6">
+        <div className="flex flex-col space-between mb-4 h-[100px]">
           <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
             {course.title}
           </h3>
@@ -522,14 +522,10 @@ const TeacherProfile: React.FC = () => {
             <Users className="w-4 h-4 text-gray-500" />
             <span className="text-gray-600">{course.students} طالب</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <Star className="w-4 h-4 text-yellow-500" />
-            <span className="text-gray-600">{course.rating}</span>
-          </div>
         </div>
 
         <button
-          onClick={() => navigate(`/coursePage/${course.id}`)}
+          onClick={() => handleCourseClick(course)}
           className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
             course.isActive
               ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
@@ -747,10 +743,6 @@ const TeacherProfile: React.FC = () => {
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <div className="text-sm text-gray-600">
-          <span className="font-medium">{session.registered}</span> من{" "}
-          <span className="font-medium">{session.maxStudents}</span> مسجل
-        </div>
         <div className="w-24 bg-gray-200 rounded-full h-2">
           <div
             className="bg-green-500 h-2 rounded-full transition-all duration-300"
@@ -758,6 +750,10 @@ const TeacherProfile: React.FC = () => {
               width: `${(session.registered / session.maxStudents) * 100}%`,
             }}
           ></div>
+        </div>
+        <div className="text-sm text-gray-600">
+          <span className="font-medium">{session.registered}</span> من{" "}
+          <span className="font-medium">{session.maxStudents}</span> مسجل
         </div>
       </div>
 
@@ -789,9 +785,6 @@ const TeacherProfile: React.FC = () => {
                 alt={teacher.name}
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
               />
-              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
-                <div className="w-3 h-3 bg-white rounded-full"></div>
-              </div>
             </div>
 
             <div className="flex-1 text-center md:text-right text-white">
@@ -802,29 +795,13 @@ const TeacherProfile: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 text-center text-white">
-              <div>
-                <div className="flex items-center justify-center space-x-1 mb-2">
-                  <Star className="w-6 h-6 text-yellow-400" />
-                  <span className="text-3xl font-bold">{teacher.rating}</span>
-                </div>
-                <p className="text-blue-100">التقييم</p>
-              </div>
+            <div className="flex gap-6 text-center text-white">
               <div>
                 <div className="flex items-center justify-center space-x-1 mb-2">
                   <Users className="w-6 h-6 text-blue-300" />
                   <span className="text-3xl font-bold">{teacher.students}</span>
                 </div>
                 <p className="text-blue-100">طالب</p>
-              </div>
-              <div>
-                <div className="flex items-center justify-center space-x-1 mb-2">
-                  <Award className="w-6 h-6 text-green-400" />
-                  <span className="text-3xl font-bold">
-                    {teacher.experience}
-                  </span>
-                </div>
-                <p className="text-blue-100">سنة خبرة</p>
               </div>
             </div>
           </div>

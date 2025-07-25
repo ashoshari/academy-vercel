@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Menu, X, User, Bell, Search, GraduationCap } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
-import  useUserAuthStore  from "@/store/platform/userAuth";
-
+import useUserAuthStore from "@/store/platform/userAuth";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -77,6 +76,12 @@ const Navbar: React.FC = () => {
                   </button>
                   <button className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200 cursor-pointer">
                     <User className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setIsLoggedIn(false)}
+                    className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 cursor-pointer"
+                  >
+                    تسجيل الخروج
                   </button>
                 </>
               ) : (

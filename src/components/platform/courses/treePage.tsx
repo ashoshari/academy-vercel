@@ -119,9 +119,6 @@ const TreePage: React.FC<TreePageProps> = ({ sectionTitle }) => {
             alt={teacher.name}
             className="w-16 h-16 rounded-full object-cover border-4 border-gradient-to-r from-yellow-400 to-orange-500"
           />
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-            <div className="w-2 h-2 bg-white rounded-full"></div>
-          </div>
         </div>
         <div className="flex-1 text-right">
           <h4 className="text-lg font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-200">
@@ -131,27 +128,13 @@ const TreePage: React.FC<TreePageProps> = ({ sectionTitle }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="text-center">
-          <div className="flex items-center justify-center space-x-1 mb-1">
-            <Star className="w-4 h-4 text-yellow-500" />
-            <span className="text-lg font-bold text-gray-900">{teacher.rating}</span>
-          </div>
-          <p className="text-xs text-gray-500">التقييم</p>
-        </div>
+      <div className="flex justify-center gap-4 mb-4">
         <div className="text-center">
           <div className="flex items-center justify-center space-x-1 mb-1">
             <Users className="w-4 h-4 text-blue-500" />
             <span className="text-lg font-bold text-gray-900">{teacher.students}</span>
           </div>
           <p className="text-xs text-gray-500">طالب</p>
-        </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center space-x-1 mb-1">
-            <Award className="w-4 h-4 text-green-500" />
-            <span className="text-lg font-bold text-gray-900">{teacher.experience}</span>
-          </div>
-          <p className="text-xs text-gray-500">سنة خبرة</p>
         </div>
       </div>
 

@@ -1196,7 +1196,7 @@ const CoursePage: React.FC = () => {
             disabled={currentQuestionIndex === 0}
             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronRight className="w-5 h-5" />
             <span>السابق</span>
           </button>
 
@@ -1220,7 +1220,7 @@ const CoursePage: React.FC = () => {
               className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
             >
               <span>التالي</span>
-              <ChevronRight className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5" />
             </button>
           )}
         </div>
@@ -1691,10 +1691,6 @@ const CoursePage: React.FC = () => {
                     <Users className="w-4 h-4" />
                     <span>{courseData.students} طالب</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 text-yellow-500" />
-                    <span>{courseData.rating}</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1753,7 +1749,7 @@ const CoursePage: React.FC = () => {
                   disabled={currentLessonIndex === 0}
                   className="flex items-center space-x-2 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronRight className="w-5 h-5" />
                   <span>الدرس السابق</span>
                 </button>
 
@@ -1775,7 +1771,7 @@ const CoursePage: React.FC = () => {
                   className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span>الدرس التالي</span>
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
               </div>
             </div>

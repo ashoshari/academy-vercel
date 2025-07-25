@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import  useNav  from '@/store/platform/useNav';
 import useUserAuthStore from '@/store/platform/userAuth';
-import { useNavigate } from 'react-router';
+import { ScrollRestoration, useNavigate } from 'react-router';
 import { useState } from 'react';
 import AuthModal from '@/layout/platform/navbar/authModal';
 interface SectionsProps {
@@ -127,10 +127,6 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
             منصة شاملة تضم كل ما تحتاجه للتفوق في التوجيهي - من الدورات التفاعلية إلى الامتحانات الالكترونية
           </p>
           <div className="flex items-center justify-center mt-8 space-x-8">
-            <div className="flex items-center space-x-2">
-              <Star className="w-5 h-5 text-yellow-500" />
-              <span className="text-gray-600 font-medium">تقييم 4.9/5</span>
-            </div>
             <div className="flex items-center space-x-2">
               <Users className="w-5 h-5 text-blue-500" />
               <span className="text-gray-600 font-medium">+15,000 طالب</span>

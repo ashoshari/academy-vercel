@@ -1,6 +1,7 @@
 import { useCustomQuery } from "@/hooks/useQuery";
 import Hero from "@/components/platform/home/hero";
 import AllCourses from "@/components/platform/courses/allCourses";
+import EnrolledCourses from "@/components/platform/courses/enrolledCourses";
 
 import Discover from "@/components/platform/home/discover";
 import useUserAuthStore from "@/store/platform/userAuth";
@@ -13,7 +14,7 @@ const Home = () => {
   return (
     <>
       <Hero />
-      {isLoggedIn && <AllCourses />}
+      {isLoggedIn && <EnrolledCourses />}
       <Discover onSectionClick={(sectionTitle) => console.log(sectionTitle)} />
     </>
   );

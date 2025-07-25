@@ -20,6 +20,7 @@ import Dashboard from "@/pages/dashboard/admin/Dashboard";
 import TeachersPage from "@/pages/dashboard/admin/TeachersPage";
 import StudentsPage from "@/pages/dashboard/admin/StudentsPage";
 import CoursesPage from "@/pages/dashboard/admin/CoursesPage";
+import AllCourses from "@/components/platform/courses/allCourses";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -30,6 +31,7 @@ export default function AppRoutes() {
         <Route path="/" element={<PlatformLayout />}>
           <Route index element={<Home />} />
           <Route path=":navHeaderId" element={<Courses />} />
+          <Route path="all-courses" element={<AllCourses />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
           <Route path="coursePage/:courseId" element={<CoursePage />} />
         </Route>

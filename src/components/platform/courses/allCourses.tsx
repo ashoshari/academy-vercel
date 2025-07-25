@@ -14,6 +14,7 @@ import {
   Target,
   ArrowRight
 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 interface EnrolledCourse {
   id: number;
@@ -45,7 +46,7 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filterSubject, setFilterSubject] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('progress');
   const [searchTerm, setSearchTerm] = useState<string>('');
-
+  const navigate = useNavigate();
   // Extended enrolled courses data
   const enrolledCourses: EnrolledCourse[] = [
     {
@@ -277,10 +278,6 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3 mb-4 text-xs">
           <div className="flex items-center space-x-1">
-            <Star className="w-3 h-3 text-yellow-500" />
-            <span className="text-gray-600">{course.rating}</span>
-          </div>
-          <div className="flex items-center space-x-1">
             <Users className="w-3 h-3 text-gray-500" />
             <span className="text-gray-600">{course.totalStudents}</span>
           </div>
@@ -296,7 +293,7 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
         {/* Action Buttons */}
         <div className="flex space-x-2">
-          <button className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm">
+          <button onClick={() => navigate(`/coursePage/${course.id}`)} className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm">
             <Play className="w-4 h-4" />
             <span>متابعة</span>
           </button>
@@ -362,10 +359,6 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
               {/* Stats */}
               <div className="text-right">
-                <div className="flex items-center space-x-1 mb-2">
-                  <Star className="w-4 h-4 text-yellow-500" />
-                  <span className="font-medium">{course.rating}</span>
-                </div>
                 <div className="text-sm text-gray-500">
                   {course.totalStudents} طالب
                 </div>
@@ -402,7 +395,7 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between mb-6">
             <button
-            //   onClick={onBack}
+              onClick={() => navigate(-1)}
               className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
             >
               <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />

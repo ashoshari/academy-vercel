@@ -24,7 +24,7 @@ const Hero: React.FC = () => {
       subtitle: "تعلم مع أفضل المدرسين",
       description: "دورات مصممة خصيصاً لطلاب التوجيهي مع شرح مبسط وأمثلة عملية لضمان الفهم الكامل",
       image: "https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      stats: { hours: "500+", teachers: "25+", rating: "4.9" }
+      stats: { hours: "500+", teachers: "25+", students: "10,000+" }
     },
     {
       id: 3,
