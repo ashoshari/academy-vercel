@@ -113,17 +113,19 @@ const Layout = () => {
             {menuItems.map((item) => (
               <NavLink
                 to={item.id ? `/dashboard/${item.id}` : "/dashboard"}
-                key={item.id}
-                end
+                key={item.id || "dashboard-root"}
+                end={!item.id}
                 className={({ isActive }) =>
-                  `w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-300 text-sm ${
+                  `w-full flex items-center gap-3 ${
+                    sidebarOpen ? "p-3" : "p-1.5 my-2"
+                  } rounded-lg transition-all duration-300 text-sm ${
                     isActive
                       ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md"
                       : "text-gray-600 hover:bg-orange-50 hover:text-orange-600"
                   }`
                 }
               >
-                <item.icon size={16} />
+                <item.icon size={20} className="min-w-[20px]" />
                 {sidebarOpen && (
                   <span className="font-medium">{item.label}</span>
                 )}
@@ -138,9 +140,11 @@ const Layout = () => {
                 console.log("removeTokens");
                 removeTokens(navigate, setIsAuthenticated);
               }}
-              className="w-full flex items-center gap-3 p-3 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-300 text-sm"
+              className={`w-full flex items-center gap-3 cursor-pointer ${
+                sidebarOpen ? "p-3" : "p-1.5 my-2"
+              } rounded-lg text-red-600 hover:bg-red-50 transition-all duration-300 text-sm`}
             >
-              <LogOut size={16} />
+              <LogOut size={20} />
               {sidebarOpen && <span className="font-medium">تسجيل الخروج</span>}
             </button>
           </div>

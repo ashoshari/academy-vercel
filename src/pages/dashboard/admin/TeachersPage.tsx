@@ -40,6 +40,7 @@ import {
   //   Key,
   RefreshCw,
 } from "lucide-react";
+import { useCustomQuery } from "@/hooks/useQuery";
 
 export interface Teacher {
   id: number;
@@ -388,6 +389,11 @@ const TeachersPage = () => {
     link.download = `teachers-${new Date().toISOString().split("T")[0]}.csv`;
     link.click();
   };
+
+  const teachersStatistics = useCustomQuery(
+    "account/admin/teachers-statistics/",
+    ["teachers-statistics"]
+  );
 
   const TeacherCard = ({ teacher }: { teacher: Teacher }) => (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">

@@ -5,6 +5,7 @@ import AnimatedBackground from "@/components/login/AnimatedBackground";
 import { useCustomPost } from "@/hooks/useMutation";
 import { storeTokens } from "@/services/auth";
 import useAuth from "@/store/useAuth";
+import handleErrorAlerts from "@/utils/showErrorMessages";
 
 const LoginPage = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -40,7 +41,7 @@ const LoginPage = () => {
         }
       })
       .catch((error) => {
-        setError(error?.response?.data?.error);
+        handleErrorAlerts(error?.response?.data?.error);
       })
       .finally(() => {
         setIsLoading(false);

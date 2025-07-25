@@ -36,5 +36,5 @@ export async function removeTokens(
 }
 
 export function isAuthenticated(): boolean {
-  return true;
+  return !!getStoredTokens();
 }
