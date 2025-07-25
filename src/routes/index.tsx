@@ -10,13 +10,16 @@ import "react-calendar/dist/Calendar.css";
 // import { HomeScreen } from "@/pages/HomeScreen";
 
 import ContactPage from "@/pages/Contact";
+
+import { PlatformLayout } from "@/layout/platform/layout";
 import Home from "@/pages/platform/Home";
-import Courses from '@/pages/platform/courses'
+import Courses from "@/pages/platform/courses";
+import TeacherProfile from "@/pages/platform/teacher";
+import CoursePage from "@/components/platform/courses/coursePage";
 import Dashboard from "@/pages/dashboard/admin/Dashboard";
 import TeachersPage from "@/pages/dashboard/admin/TeachersPage";
 import StudentsPage from "@/pages/dashboard/admin/StudentsPage";
 import CoursesPage from "@/pages/dashboard/admin/CoursesPage";
-import { PlatformLayout } from "@/layout/platform/layout";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -24,9 +27,11 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<PlatformLayout />} >
+        <Route path="/" element={<PlatformLayout />}>
           <Route index element={<Home />} />
           <Route path="courses" element={<Courses />} />
+          <Route path="teacher/:id" element={<TeacherProfile />} />
+          <Route path="coursePage/:courseId" element={<CoursePage />} />
         </Route>
         <Route path="contact" element={<ContactPage />} />
 

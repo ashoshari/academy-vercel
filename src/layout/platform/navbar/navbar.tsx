@@ -36,25 +36,25 @@ const Navbar: React.FC = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               <a
-                href="#"
+                href="/"
                 className="text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
               >
                 الرئيسية
               </a>
               <a
-                href="#"
+                href="courses"
                 className="text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
               >
                 الدورات
               </a>
               <a
-                href="#"
+                href="exams"
                 className="text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
               >
                 الامتحانات
               </a>
               <a
-                href="#"
+                href="about-us"
                 className="text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
               >
                 من نحن

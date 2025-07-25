@@ -1,7 +1,9 @@
-
+import TreePage from "@/components/platform/courses/treePage";
 const Courses = () => {
   return (
-    <div>courses</div>
-  )
-}
-export default Courses
+    <>
+      <TreePage sectionTitle={"الدورات"} />{" "}
+    </>
+  );
+};
+export default Courses;

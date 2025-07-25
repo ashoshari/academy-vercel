@@ -1,14 +1,19 @@
 import { useCustomQuery } from "@/hooks/useQuery";
 import Hero from "@/components/platform/home/hero";
+import AllCourses from "@/components/platform/courses/allCourses";
+
 import Discover from "@/components/platform/home/discover";
+import useUserAuthStore from "@/store/platform/userAuth";
 
 const Home = () => {
+  const isLoggedIn = useUserAuthStore((state) => state.isLoggedIn);
   const levelsData = useCustomQuery("core/levels/", ["levels"]);
-  if (levelsData.isLoading) return <div>Loading...</div>;
-  console.log("Levels Data:", levelsData.data);
+  // if (levelsData.isLoading) return <div>Loading...</div>;
+  // console.log("Levels Data:", levelsData.data);
   return (
     <>
       <Hero />
+      {isLoggedIn && <AllCourses />}
       <Discover onSectionClick={(sectionTitle) => console.log(sectionTitle)} />
     </>
   );

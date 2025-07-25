@@ -7,17 +7,11 @@ import {
   BookOpen, 
   Award,
   Calendar,
-  CheckCircle,
-  BarChart3,
-  Filter,
   Search,
   Grid,
   List,
-  TrendingUp,
   Users,
   Download,
-  FileText,
-  Video,
   Target
 } from 'lucide-react';
 
@@ -46,7 +40,7 @@ interface EnrolledCourse {
 //   onCourseClick: (courseId: number) => void;
 // }
 
-const Home = ()=> {
+const AllCourses = () => {
 const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filterSubject, setFilterSubject] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('progress');
@@ -539,4 +533,4 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     </div>
   );
 };
-export default Home;
+export default AllCourses;
