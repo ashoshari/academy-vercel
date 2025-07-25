@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { 
-  ArrowLeft, 
   Play, 
   Clock, 
   Star, 
@@ -12,7 +11,8 @@ import {
   List,
   Users,
   Download,
-  Target
+  Target,
+  ArrowRight
 } from 'lucide-react';
 
 interface EnrolledCourse {
@@ -405,7 +405,7 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
             //   onClick={onBack}
               className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
             >
-              <ArrowLeft className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
+              <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
             </button>
           </div>
 

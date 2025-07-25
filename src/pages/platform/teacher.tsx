@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  ArrowLeft,
   Star,
   Users,
   Award,
@@ -22,6 +21,7 @@ import {
   Target,
   TrendingUp,
   Zap,
+  ArrowRight,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router";
 
@@ -778,7 +778,7 @@ const TeacherProfile: React.FC = () => {
               onClick={() => window.history.back()}
               className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
             >
-              <ArrowLeft className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
+              <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
             </button>
           </div>
 

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Menu, X, User, Bell, Search, GraduationCap } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
+import  useUserAuthStore  from "@/store/platform/userAuth";
 
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = useUserAuthStore((state) => state.isLoggedIn);
+  const setIsLoggedIn = useUserAuthStore((state) => state.setIsLoggedIn);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleLogin = () => {
@@ -42,19 +44,19 @@ const Navbar: React.FC = () => {
                 الرئيسية
               </a>
               <a
-                href="courses"
+                href="/courses"
                 className="text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
               >
                 الدورات
               </a>
               <a
-                href="exams"
+                href="/exams"
                 className="text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
               >
                 الامتحانات
               </a>
               <a
-                href="about-us"
+                href="/about-us"
                 className="text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
               >
                 من نحن

@@ -26,11 +26,11 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-yellow-400">روابط سريعة</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">الدورات</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">الدوسيات</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">الامتحانات الالكترونية</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">الاسئلة الوزارية</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">دورات التأسيس</a></li>
+              <li><a href="courses" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">الدورات</a></li>
+              <li><a href="booklets" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">الدوسيات</a></li>
+              <li><a href="exams" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">الامتحانات الالكترونية</a></li>
+              <li><a href="files" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">الاسئلة الوزارية</a></li>
+              <li><a href="foundation-courses" className="text-gray-300 hover:text-yellow-400 transition-colors duration-200">دورات التأسيس</a></li>
             </ul>
           </div>
 

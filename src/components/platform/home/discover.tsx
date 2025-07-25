@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   BookOpen, 
   FileText, 
@@ -9,20 +8,30 @@ import {
   ArrowRight,
   Star,
   Users,
-  Clock,
   Award,
-  Target,
-  Zap
 } from 'lucide-react';
-
+import  useNav  from '@/store/platform/useNav';
+import useUserAuthStore from '@/store/platform/userAuth';
+import { useNavigate } from 'react-router';
+import { useState } from 'react';
+import AuthModal from '@/layout/platform/navbar/authModal';
 interface SectionsProps {
   onSectionClick: (sectionTitle: string) => void;
 }
 
 const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
-  const sections = [
+    const setIsLoggedIn = useUserAuthStore((state) => state.setIsLoggedIn);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    setShowAuthModal(false);
+  };
+  const handleLoginClick = () => {
+    setShowAuthModal(true);
+  };  const sections = [
     {
       id: 1,
+      navHeader: "courses",
       title: "الدورات",
       description: "دورات شاملة لجميع مواد التوجيهي مع أفضل المدرسين",
       icon: BookOpen,
@@ -33,6 +42,7 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
     },
     {
       id: 2,
+      navHeader: "booklets",
       title: "الدوسيات",
       description: "ملخصات ومراجعات شاملة لجميع المواد الدراسية",
       icon: FileText,
@@ -43,6 +53,7 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
     },
     {
       id: 3,
+      navHeader: "exams",
       title: "الامتحانات الالكترونية",
       description: "اختبارات تفاعلية تحاكي الامتحان الحقيقي",
       icon: Monitor,
@@ -53,6 +64,7 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
     },
     {
       id: 4,
+      navHeader: "files",
       title: "الملفات",
       description: "مكتبة شاملة من الملفات والمراجع التعليمية",
       icon: FolderOpen,
@@ -63,6 +75,7 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
     },
     {
       id: 5,
+      navHeader: "foundation-courses",
       title: "دورات التأسيس",
       description: "دورات أساسية لبناء قاعدة قوية في المواد الأساسية",
       icon: GraduationCap,
@@ -73,6 +86,7 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
     },
     {
       id: 6,
+      navHeader: "ministerial-questions",
       title: "الاسئلة الوزارية",
       description: "بنك شامل من الأسئلة الوزارية للسنوات السابقة",
       icon: HelpCircle,
@@ -82,9 +96,23 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
       features: ["حلول مفصلة", "تصنيف حسب المادة", "محدثة باستمرار"]
     }
   ];
+  const setNavTitle = useNav(state => state.setNavTitle);
+  const setNavHeader = useNav(state => state.setNavHeader);
+  const navigate = useNavigate();
+  const discoverNavHandler = (title: string, navHeader: string) => {
+    setNavTitle(title);
+    setNavHeader(navHeader);
+    navigate(navHeader);
+  };
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+      {/* Auth Modal */}
+            <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onLogin={handleLogin}
+      />
       {/* Background Decorations */}
       <div className="absolute top-0 left-0 w-72 h-72 bg-gradient-to-br from-yellow-100/50 to-orange-100/50 rounded-full -translate-x-36 -translate-y-36 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-blue-100/50 to-purple-100/50 rounded-full translate-x-48 translate-y-48 animate-pulse delay-1000"></div>
@@ -179,7 +207,7 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
 
                   {/* CTA Button */}
                   <button 
-                    onClick={() => onSectionClick(section.title)}
+                    onClick={() => discoverNavHandler(section.title, section.navHeader)}
                     className={`w-full bg-gradient-to-r ${section.color} ${section.hoverColor} text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
                   >
                     <span>استكشف الآن</span>
@@ -207,7 +235,7 @@ const Discover: React.FC<SectionsProps> = ({ onSectionClick }) => {
               <p className="text-lg mb-6 opacity-90">
                 انضم لآلاف الطلاب الذين حققوا أحلامهم الجامعية معنا
               </p>
-              <button className="bg-white text-orange-600 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button onClick={handleLoginClick} className="bg-white text-orange-600 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg">
                 ابدأ مجاناً الآن
               </button>
             </div>

@@ -7,7 +7,7 @@ import useUserAuthStore from "@/store/platform/userAuth";
 
 const Home = () => {
   const isLoggedIn = useUserAuthStore((state) => state.isLoggedIn);
-  const levelsData = useCustomQuery("core/levels/", ["levels"]);
+  // const levelsData = useCustomQuery("core/levels/", ["levels"]);
   // if (levelsData.isLoading) return <div>Loading...</div>;
   // console.log("Levels Data:", levelsData.data);
   return (

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, BookOpen, GraduationCap, Users, Star, Award, ArrowLeft, Home } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
+import { ChevronDown, ChevronRight, BookOpen, GraduationCap, Users, Star, Award, Home, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import useNav from '@/store/platform/useNav';
 
 interface Teacher {
   id: number;
@@ -27,7 +28,8 @@ interface TreePageProps {
 
 const TreePage: React.FC<TreePageProps> = ({ sectionTitle }) => {
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
-  const { id } = useParams<{ id: string }>();
+  const title = useNav(state => state.navTitle);
+  // const { navHeaderId } = useParams<{ navHeaderId: string }>();
   const navigate = useNavigate();
   // Sample teachers data with Arabic names
   const tawjihiTeachers: Teacher[] = [
@@ -230,16 +232,16 @@ const TreePage: React.FC<TreePageProps> = ({ sectionTitle }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
-                onClick={window.history.back}
+                onClick={() => navigate(-1)}
                 className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
-                <ArrowLeft className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
+                <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
               </button>
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
               <div className="text-white">
-                <h1 className="text-3xl font-bold">{sectionTitle}</h1>
+                <h1 className="text-3xl font-bold">{title}</h1>
                 <p className="text-yellow-100 text-lg">اختر المستوى والأستاذ المناسب</p>
               </div>
             </div>
@@ -268,9 +270,9 @@ const TreePage: React.FC<TreePageProps> = ({ sectionTitle }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center space-x-2 text-gray-600">
           <Home className="w-4 h-4" />
-          <span>الرئيسية</span>
+          <a href="/" className="">الرئيسية</a>
           <span>/</span>
-          <span className="text-yellow-600 font-medium">{sectionTitle}</span>
+          <span className="text-yellow-600 font-medium">{title}</span>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { 
-  ArrowLeft, 
+  ArrowRight, 
   Play, 
   FileText, 
   Monitor, 
@@ -1669,7 +1669,7 @@ const CoursePage: React.FC = () => {
                   onClick={() => window.history.back()}
                   className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors duration-200"
                 >
-                  <ArrowLeft className="w-5 h-5 text-gray-600" />
+                  <ArrowRight className="w-5 h-5 text-gray-600" />
                 </button>
                 
                 <button
