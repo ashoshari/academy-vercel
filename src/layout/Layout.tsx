@@ -81,7 +81,7 @@ const Layout = () => {
       {/* Sidebar */}
       <div
         className={`${
-          sidebarOpen ? "w-64" : "w-16"
+          sidebarOpen ? "min-w-64" : "min-w-16"
         } transition-all duration-300 bg-white/95 backdrop-blur-xl shadow-lg border-l border-orange-100/50`}
       >
         <div className="p-4">

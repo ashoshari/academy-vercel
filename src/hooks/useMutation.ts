@@ -14,7 +14,7 @@ export const useCustomPost = (endpoint: string, queryKey?: string[]) => {
   });
 };
 
-export const useCustomUpdate = (endpoint: string, queryKey: string[]) => {
+export const useCustomUpdate = (endpoint: string, queryKey?: string[]) => {
   const queryClient = useQueryClient();
 
   return useMutation({

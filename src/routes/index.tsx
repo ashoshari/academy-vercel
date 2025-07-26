@@ -12,9 +12,12 @@ import "react-calendar/dist/Calendar.css";
 import ContactPage from "@/pages/Contact";
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/dashboard/admin/Dashboard";
-import TeachersPage from "@/pages/dashboard/admin/TeachersPage";
+import TeachersPage from "@/pages/dashboard/admin/teachers/TeachersPage";
 import StudentsPage from "@/pages/dashboard/admin/StudentsPage";
 import CoursesPage from "@/pages/dashboard/admin/CoursesPage";
+import AddTeacherPage from "@/pages/dashboard/admin/teachers/AddTeacherPage";
+import EditTeacherPage from "@/pages/dashboard/admin/teachers/EditTeacherPage";
+import TeacherDetailsPage from "@/pages/dashboard/admin/teachers/TeacherDetailsPage";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -28,7 +31,12 @@ export default function AppRoutes() {
         {isAuthenticated && (
           <Route path="dashboard" element={<Layout />}>
             <Route index element={<Dashboard />} />
+            {/* teachers */}
             <Route path="teachers" element={<TeachersPage />} />
+            <Route path="teachers/add" element={<AddTeacherPage />} />
+            <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
+            <Route path="teachers/:id" element={<TeacherDetailsPage />} />
+
             <Route path="students" element={<StudentsPage />} />
             <Route path="courses" element={<CoursesPage />} />
           </Route>
