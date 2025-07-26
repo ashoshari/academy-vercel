@@ -1,17 +1,22 @@
 import { useState } from "react";
-import { Menu, X, User, Bell, Search, GraduationCap } from "lucide-react";
+import { Menu, X, GraduationCap } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
-import useUserAuthStore from "@/store/platform/userAuth";
+import useTokenStore from "@/store/platform/useToken";
+import useToken from "@/store/platform/useToken";
 
 const Navbar: React.FC = () => {
+  const clearTokens = useToken((state) => state.clearTokens);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isLoggedIn = useUserAuthStore((state) => state.isLoggedIn);
-  const setIsLoggedIn = useUserAuthStore((state) => state.setIsLoggedIn);
+  const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
+  // const setIsLoggedIn = useUserAuthStore((state) => state.setIsLoggedIn);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleLogin = () => {
-    setIsLoggedIn(true);
     setShowAuthModal(false);
+  };
+  const handleLogout = () => {
+    setShowAuthModal(false);
+    clearTokens();
   };
   const handleLoginClick = () => {
     setShowAuthModal(true);
@@ -22,20 +27,22 @@ const Navbar: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <div className="flex items-center space-x-3 cursor-default">
-              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
-                <GraduationCap className="w-6 h-6 text-white" />
+            <a href="/" className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
+                  <GraduationCap className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-right">
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                    منصة التوجيهي
+                  </h1>
+                  <p className="text-xs text-gray-500">نحو التفوق</p>
+                </div>
               </div>
-              <div className="text-right">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                  منصة التوجيهي
-                </h1>
-                <p className="text-xs text-gray-500">نحو التفوق</p>
-              </div>
-            </div>
+            </a>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            {/* <div className="hidden md:flex items-center space-x-8">
               <a
                 href="/"
                 className="text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
@@ -60,30 +67,17 @@ const Navbar: React.FC = () => {
               >
                 من نحن
               </a>
-            </div>
+            </div> */}
 
             {/* Search and User Actions */}
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200 cursor-pointer">
-                <Search className="w-5 h-5" />
-              </button>
-
               {isLoggedIn ? (
-                <>
-                  <button className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200 relative cursor-pointer">
-                    <Bell className="w-5 h-5" />
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-                  </button>
-                  <button className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200 cursor-pointer">
-                    <User className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => setIsLoggedIn(false)}
-                    className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 cursor-pointer"
-                  >
-                    تسجيل الخروج
-                  </button>
-                </>
+                <button
+                  onClick={handleLogout}
+                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 cursor-pointer"
+                >
+                  تسجيل الخروج
+                </button>
               ) : (
                 <button
                   onClick={handleLoginClick}
@@ -108,7 +102,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Mobile Navigation */}
-          {isMenuOpen && (
+          {/* {isMenuOpen && (
             <div className="md:hidden py-4 border-t border-gray-100">
               <div className="flex flex-col space-y-3">
                 <a
@@ -137,7 +131,7 @@ const Navbar: React.FC = () => {
                 </a>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </nav>
       <AuthModal

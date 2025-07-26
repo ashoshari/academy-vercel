@@ -7,7 +7,7 @@ import {
   Award,
   Calendar,
 } from 'lucide-react';
-import useUserAuthStore from "@/store/platform/userAuth";
+import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from 'react-router';
 
 interface EnrolledCourse {
@@ -29,7 +29,7 @@ interface EnrolledCourse {
 
 
 const EnrolledCourses: React.FC = () => {
-  const isLoggedIn = useUserAuthStore((state) => state.isLoggedIn);
+  const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const navigate = useNavigate();
   // Sample enrolled courses data
   const enrolledCourses: EnrolledCourse[] = [

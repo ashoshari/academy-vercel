@@ -4,10 +4,10 @@ import AllCourses from "@/components/platform/courses/allCourses";
 import EnrolledCourses from "@/components/platform/courses/enrolledCourses";
 
 import Discover from "@/components/platform/home/discover";
-import useUserAuthStore from "@/store/platform/userAuth";
+import useTokenStore from "@/store/platform/useToken";
 
 const Home = () => {
-  const isLoggedIn = useUserAuthStore((state) => state.isLoggedIn);
+  const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   // const levelsData = useCustomQuery("core/levels/", ["levels"]);
   // if (levelsData.isLoading) return <div>Loading...</div>;
   // console.log("Levels Data:", levelsData.data);
@@ -15,7 +15,7 @@ const Home = () => {
     <>
       <Hero />
       {isLoggedIn && <EnrolledCourses />}
-      <Discover onSectionClick={(sectionTitle) => console.log(sectionTitle)} />
+      <Discover/>
     </>
   );
 };

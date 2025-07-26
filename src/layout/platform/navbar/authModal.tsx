@@ -1,5 +1,17 @@
-import { useState } from 'react';
-import { X, Check, Loader2, Sparkles, GraduationCap, ArrowRight } from 'lucide-react';
+import { useState } from "react";
+import {
+  X,
+  Check,
+  Loader2,
+  Sparkles,
+  GraduationCap,
+  ArrowRight,
+} from "lucide-react";
+// import useToken from "@/store/platform/useToken";
+import useTokenStore from "@/store/platform/useToken";
+import { useCustomPost } from "@/hooks/useMutation";
+// import { storeTokens } from "@/services/platform/userAuth";
+import { toast } from "react-hot-toast";
 
 interface FormData {
   fullName: string;
@@ -19,39 +31,159 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [showOTP, setShowOTP] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    mobile: '',
-    password: '',
-    otp: ''
+    fullName: "",
+    mobile: "",
+    password: "",
+    otp: "",
   });
+  // const { setTokens } = useToken();
+  const { mutateAsync: loginMutateAsync } = useCustomPost("/account/login/", [
+    "login",
+  ]);
+  const { mutateAsync: RegisterMutateAsync } = useCustomPost(
+    "/account/register/",
+    ["register"]
+  );
+  const setTokens = useTokenStore((state) => state.setTokens);
+  // eng: mahmoud code of auth
+  //   const handleSubmit = async (e: React.FormEvent) => {
+  //     e.preventDefault();
+  //     setIsLoading(true);
 
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  //     const formdata = new FormData();
+  //     formdata.append("mobile_number", formData.mobile);
+  //     formdata.append("password", formData.password);
 
+  //     mutateAsync(formdata)
+  //       .then(async (res) => {
+  //         if (res.status) {
+  //           await storeTokens(
+  //             res.data.tokens.access,
+  //             onNavigate,
+  //             setIsAuthenticated
+  //           );
+
+  //           localStorage.setItem("user", JSON.stringify(res?.data?.user));
+  //         } else {
+  //           setError(res.error);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         handleErrorAlerts(error?.response?.data?.error);
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   };
+
+  //       mutateAsync(loginData, );
+  // // setTokens(response.tokens.access, response.tokens.refresh);
+  // };
+
+  //   const handleSubmit = async (e: React.FormEvent) => {
+  //     e.preventDefault();
+  //     setIsLoading(true);
+
+  //     const formdata = new FormData();
+  //     formdata.append("mobile_number", formData.mobile);
+  //     formdata.append("password", formData.password);
+  //     // Simulate API call
+  //     setTimeout(() => {
+  //       if (!isLogin && !showOTP) {
+  //         setShowOTP(true);
+  //       } else {
+  //         // Handle login or OTP verification
+  //         onLogin();
+  //         onClose();
+  //       }
+  //       setIsLoading(false);
+  //     }, 1500);
+  //     mutateAsync(formdata)
+  //       .then(async (res) => {
+  //         if (res.status) {
+  //           await setTokens(
+  //             res.data.tokens.access,
+  //             res.data.tokens.refresh
+  //           );
+
+  //           // localStorage.setItem("user", JSON.stringify(res?.data?.user));
+  //         }
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      if (!isLogin && !showOTP) {
-        setShowOTP(true);
-      } else {
-        // Handle login or OTP verification
+
+    const formdata = new FormData();
+    formdata.append("mobile_number", formData.mobile);
+    formdata.append("password", formData.password);
+
+    if (!isLogin) {
+      formdata.append("name", formData.fullName);
+    }
+
+    console.log("Submitting form data:", formdata);
+    try {
+      const res = isLogin
+        ? await loginMutateAsync(formdata)
+        : await RegisterMutateAsync(formdata);
+      if (res.status) {
+        setTokens(res.data.tokens.access, res.data.tokens.refresh);
+        setFormData({ mobile: "", password: "", fullName: "", otp: "" });
+        toast.success(
+          isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
+        );
+
         onLogin();
         onClose();
+        // if (!isLogin && !showOTP) {
+        //   setShowOTP(true);
+        // } else {
+        // }
+      } else {
+        // Handle API returning success: false
+        toast.error(
+          res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
+        );
       }
+    } catch (error: any) {
+      // Handle network or other errors
+      toast.error(isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
+
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+
+  //   // Simulate API call
+  //   setTimeout(() => {
+  //     if (!isLogin && !showOTP) {
+  //       setShowOTP(true);
+  //     } else {
+  //       // Handle login or OTP verification
+  //       onLogin();
+  //       onClose();
+  //     }
+  //     setIsLoading(false);
+  //   }, 1500);
+  // };
 
   const resetForm = () => {
     setFormData({
-      fullName: '',
-      mobile: '',
-      password: '',
-      otp: ''
+      fullName: "",
+      mobile: "",
+      password: "",
+      otp: "",
     });
     setShowOTP(false);
   };
@@ -82,20 +214,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {showOTP 
-                ? '📱 تأكيد رقم الهاتف' 
-                : isLogin 
-                  ? '🔐 تسجيل الدخول' 
-                  : '🚀 إنشاء حساب جديد'
-              }
+              {showOTP
+                ? "📱 تأكيد رقم الهاتف"
+                : isLogin
+                ? "🔐 تسجيل الدخول"
+                : "🚀 إنشاء حساب جديد"}
             </h2>
             <p className="text-gray-600 text-sm">
-              {showOTP 
-                ? `تم إرسال رمز التحقق إلى ${formData.mobile} 📲` 
-                : isLogin 
-                  ? 'أدخل بياناتك للوصول إلى دوراتك المفضلة 📚' 
-                  : 'ابدأ رحلتك نحو التفوق في التوجيهي 🌟'
-              }
+              {showOTP
+                ? `تم إرسال رمز التحقق إلى ${formData.mobile} 📲`
+                : isLogin
+                ? "أدخل بياناتك للوصول إلى دوراتك المفضلة 📚"
+                : "ابدأ رحلتك نحو التفوق في التوجيهي 🌟"}
             </p>
           </div>
 
@@ -127,12 +257,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                       className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
                       onChange={(e) => {
                         const value = formData.otp;
-                        const newValue = value.substring(0, index) + e.target.value + value.substring(index + 1);
-                        handleInputChange('otp', newValue);
-                        
+                        const newValue =
+                          value.substring(0, index) +
+                          e.target.value +
+                          value.substring(index + 1);
+                        handleInputChange("otp", newValue);
+
                         // Auto-focus next input
                         if (e.target.value && index < 3) {
-                          const nextInput = e.target.parentElement?.children[index + 1] as HTMLInputElement;
+                          const nextInput = e.target.parentElement?.children[
+                            index + 1
+                          ] as HTMLInputElement;
                           nextInput?.focus();
                         }
                       }}
@@ -154,7 +289,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                     <input
                       type="text"
                       value={formData.fullName}
-                      onChange={(e) => handleInputChange('fullName', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("fullName", e.target.value)
+                      }
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
                       placeholder="أدخل اسمك الكامل"
                       required
@@ -171,7 +308,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                     <input
                       type="tel"
                       value={formData.mobile}
-                      onChange={(e) => handleInputChange('mobile', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("mobile", e.target.value)
+                      }
                       className="w-full px-4 py-3 pl-16 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
                       placeholder="07XXXXXXXX"
                       required
@@ -190,7 +329,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   <input
                     type="password"
                     value={formData.password}
-                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("password", e.target.value)
+                    }
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
                     placeholder="أدخل كلمة المرور"
                     required
@@ -216,7 +357,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   <span>✅ تأكيد الرمز</span>
                 </div>
               ) : (
-                <span>{isLogin ? '🚀 تسجيل الدخول' : '✨ إنشاء الحساب'}</span>
+                <span>{isLogin ? "🚀 تسجيل الدخول" : "✨ إنشاء الحساب"}</span>
               )}
             </button>
           </form>
@@ -228,7 +369,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                 onClick={switchMode}
                 className="text-yellow-600 hover:text-yellow-700 text-sm font-semibold transition-all duration-300"
               >
-                {isLogin ? '🆕 لا تملك حساب؟ إنشاء حساب جديد' : '👋 لديك حساب؟ تسجيل الدخول'}
+                {isLogin
+                  ? "🆕 لا تملك حساب؟ إنشاء حساب جديد"
+                  : "👋 لديك حساب؟ تسجيل الدخول"}
               </button>
             </div>
           )}

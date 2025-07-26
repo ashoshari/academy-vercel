@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { 
   Play, 
   Clock, 
-  Star, 
   BookOpen, 
   Award,
   Calendar,
@@ -358,7 +357,7 @@ const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
               </div>
 
               {/* Stats */}
-              <div className="text-right">
+              <div className="text-right"> 
                 <div className="text-sm text-gray-500">
                   {course.totalStudents} طالب
                 </div>
