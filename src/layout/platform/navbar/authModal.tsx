@@ -130,29 +130,42 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
       const res = isLogin
         ? await loginMutateAsync(formdata)
         : await RegisterMutateAsync(formdata);
-        if (res.status) {
-          setTokens(res.data.tokens.access, res.data.tokens.refresh);
-          setFormData({ mobile: "", password: "", fullName: "", otp: "" });
-          toast.success(
-            isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
-          );
-          
-          onLogin();
-          onClose();
-          // if (!isLogin && !showOTP) {
-            //   setShowOTP(true);
-            // } else {
-              // }
-            } else {
-              // Handle API returning success: false
-              console.log("API response:", res.error);
-          toast.error(
-            res.error || (isLogin ? "1فشل تسجيل الدخول" : "فشل إنشاء الحساب")
-          );
-        }
-      } catch (error: any) {
+      if (res.status) {
+        setTokens(res.data.tokens.access, res.data.tokens.refresh);
+        setFormData({ mobile: "", password: "", fullName: "", otp: "" });
+        toast.success(
+          isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
+        );
+
+        onLogin();
+        onClose();
+        // if (!isLogin && !showOTP) {
+        //   setShowOTP(true);
+        // } else {
+        // }
+      } else {
+        // Handle API returning success: false
+        console.log("API response:", res.error);
+        toast.error(
+          res.error || (isLogin ? "1فشل تسجيل الدخول" : "فشل إنشاء الحساب")
+        );
+      }
+    } catch (error: any) {
+      console.log(error.response.data.error);
+      const errorData = error.response?.data?.error;
+
+      if (errorData?.mobile_number?.[0]) {
+        toast.error(errorData.mobile_number[0]);
+      } else if (errorData?.full_name?.[0]) {
+        toast.error(errorData.full_name[0]);
+      } else if (errorData?.password?.[0]) {
+        toast.error(errorData.password[0]);
+      } else if (typeof errorData === "string") {
+        toast.error(errorData);
+      } else {
+        toast.error(isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب");
+      }
       // Handle network or other errors
-      toast.error(isLogin ? "2فشل تسجيل الدخول" : "فشل إنشاء الحساب");
     } finally {
       setIsLoading(false);
     }
@@ -312,13 +325,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                       onChange={(e) =>
                         handleInputChange("mobile", e.target.value)
                       }
-                      className="w-full px-4 py-3 pl-16 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
                       placeholder="07XXXXXXXX"
                       required
                     />
-                    <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-semibold bg-gray-100 px-2 py-1 rounded-lg text-sm">
-                      +962
-                    </span>
                   </div>
                 </div>
 

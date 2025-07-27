@@ -14,6 +14,8 @@ import ContactPage from "@/pages/Contact";
 import { PlatformLayout } from "@/layout/platform/layout";
 import Home from "@/pages/platform/Home";
 import Courses from "@/pages/platform/courses";
+import TermsAndConditions from "@/pages/platform/termsAndConditions";
+import PrivacyPolicy from "@/pages/platform/privacyPolicy";
 import TeacherProfile from "@/pages/platform/teacher";
 import CoursePage from "@/components/platform/courses/coursePage";
 import Dashboard from "@/pages/dashboard/admin/Dashboard";
@@ -39,6 +41,8 @@ export default function AppRoutes() {
           <Route path="all-courses" element={<AllCourses />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
           <Route path="coursePage/:courseId" element={<CoursePage />} />
+          <Route path="terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
         </Route>
         <Route path="contact" element={<ContactPage />} />
 

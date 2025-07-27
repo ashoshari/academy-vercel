@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Home, ArrowRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Home, ArrowRight,Users } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useParams } from "react-router";
@@ -49,65 +49,74 @@ const TreePage: React.FC<TreePageProps> = () => {
     } else {
       newExpanded.add(nodeId);
     }
-    console.log("Expanded Nodes:", newExpanded);
     setExpandedNodes(newExpanded);
   };
 
-  // const renderTeacher = (teacher: Teacher) => (
-  //   <div
-  //     key={teacher.id}
-  //     className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-100 cursor-pointer group"
-  //     onClick={() => navigate(`/teacher/${teacher.id}`)}
-  //   >
-  //     <div className="flex items-center space-x-4 mb-4">
-  //       <div className="relative">
-  //         <img
-  //           src={teacher.image}
-  //           alt={teacher.name}
-  //           className="w-16 h-16 rounded-full object-cover border-4 border-gradient-to-r from-yellow-400 to-orange-500"
-  //         />
-  //       </div>
-  //       <div className="flex-1 text-right">
-  //         <h4 className="text-lg font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-200">
-  //           {teacher.name}
-  //         </h4>
-  //         <p className="text-gray-600 font-medium">{teacher.subject}</p>
-  //       </div>
-  //     </div>
+  const renderTeacher = (teacher: any) => (
+    <div
+      key={teacher.id}
+      className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-100 cursor-pointer group"
+      onClick={() => navigate(`/teacher/${teacher.id}`)}
+    >
+      <div className="flex items-center space-x-4 mb-4">
+        <div className="relative">
+          <img
+            src={teacher.image || "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"}
+            alt={teacher.name}
+            className="w-16 h-16 rounded-full object-cover border-4 border-gradient-to-r from-yellow-400 to-orange-500"
+          />
+        </div>
+        <div className="flex-1 text-right">
+          <h4 className="text-lg font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-200">
+            {teacher.name}
+          </h4>
+          <p className="text-gray-600 font-medium">{teacher.materials?.[0].name}</p>
+        </div>
+      </div>
 
-  //     <div className="flex justify-center gap-4 mb-4">
-  //       <div className="text-center">
-  //         <div className="flex items-center justify-center space-x-1 mb-1">
-  //           <Users className="w-4 h-4 text-blue-500" />
-  //           <span className="text-lg font-bold text-gray-900">
-  //             {teacher.students}
-  //           </span>
-  //         </div>
-  //         <p className="text-xs text-gray-500">طالب</p>
-  //       </div>
-  //     </div>
+      <div className="flex justify-center gap-4 mb-4">
+        <div className="text-center">
+          <div className="flex items-center justify-center space-x-1 mb-1">
+            <Users className="w-4 h-4 text-blue-500" />
+            <span className="text-lg font-bold text-gray-900">
+              {teacher.total_enrolled_students}
+            </span>
+          </div>
+          <p className="text-xs text-gray-500">طالب</p>
+        </div>
+      </div>
 
-  //     <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105">
-  //       عرض الملف الشخصي
-  //     </button>
-  //   </div>
-  // );
+      <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105">
+        عرض الملف الشخصي
+      </button>
+    </div>
+  );
 
   const renderNode = (node: any, level: number = 0) => {
     const isExpanded = expandedNodes.has(node.id);
-    // console.log(node);
     const hasChildren = node.subsubsections && node.subsubsections.length > 0;
-    console.log(node);
-    // const hasTeachers = node.teachers && node.teachers.length > 0;
-    // const IconComponent = node.icon;
-    // console.log(
-    //   treeData.data
-    //     .find((n: any) => n.title === title)
-    //     .subsections
-    // );
+    const hasTeachers =
+      level === 0
+        ? node.subsubsections &&
+          node.subsubsections.some(
+            (sub: any) => sub.teachers && sub.teachers.length > 0
+          )
+        : node.teachers && node.teachers.length > 0;
+
+    // console.log(`Level ${level} - ${node.title}:`, {
+    //   hasChildren,
+    //   hasTeachers,
+    //   teachersCount:
+    //     level === 0
+    //       ? node.subsubsections?.reduce(
+    //           (total: number, sub: any) => total + (sub.teachers?.length || 0),
+    //           0
+    //         )
+    //       : node.teachers?.length || 0,
+    // });
 
     return (
-      <section>
+      <section key={node.id}>
         {treeLoading ? (
           <div className="flex items-center justify-center h-full text-white">
             Loading...
@@ -123,8 +132,7 @@ const TreePage: React.FC<TreePageProps> = () => {
               style={{ marginRight: `${level * 20}px` }}
               onClick={() => toggleNode(node.id)}
             >
-              {hasChildren && (
-                //  || hasTeachers
+              {(hasChildren || hasTeachers) && (
                 <div className="flex-shrink-0">
                   {isExpanded ? (
                     <ChevronDown className="w-5 h-5 text-gray-600" />
@@ -134,26 +142,28 @@ const TreePage: React.FC<TreePageProps> = () => {
                 </div>
               )}
 
-              {treeData.data.find((n: any) => n.id === navHeaderId).icon.icon && (
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-xl ${
-                    level === 0
-                      ? "bg-gradient-to-r from-yellow-500 to-orange-500"
-                      : "bg-gray-200"
-                  }`}
-                >
-                  <img
-                    src={
-                      "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                      // || treeData.data.find((n: any) => n.title === title).icon.icon
-                    }
-                    alt={node.title}
-                    className={`w-5 h-5 ${
-                      level === 0 ? "text-white" : "text-gray-600"
+              {treeData.data.find((n: any) => n.id === navHeaderId).icon.icon &&
+                level == 0 && (
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-xl ${
+                      level === 0
+                        ? "bg-gradient-to-r from-yellow-500 to-orange-500"
+                        : "bg-gray-200"
                     }`}
-                  />
-                </div>
-              )}
+                  >
+                    <img
+                      src={
+                        treeData.data.find((n: any) => n.id === navHeaderId)
+                          .icon.icon ||
+                        "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                      }
+                      alt={node.title}
+                      className={`w-5 h-5 ${
+                        level === 0 ? "text-white" : "text-gray-600"
+                      }`}
+                    />
+                  </div>
+                )}
 
               <span
                 className={`font-semibold ${
@@ -163,18 +173,14 @@ const TreePage: React.FC<TreePageProps> = () => {
                 {node.title}
               </span>
 
-              {
-                // hasTeachers &&
-                isExpanded && (
-                  <div className="mr-auto">
-                    {/* <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
-                    {node.teachers!.length} أستاذ
-                  </span> */}
-                  </div>
-                )
-              }
+              {level === 1 && hasTeachers && isExpanded && (
+                <div className="mr-auto">
+                  <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                    {node.teachers?.length || 0} أستاذ
+                  </span>
+                </div>
+              )}
             </div>
-
             {isExpanded && (
               <div className="mt-4 space-y-4">
                 {hasChildren &&
@@ -182,13 +188,11 @@ const TreePage: React.FC<TreePageProps> = () => {
                     renderNode(child, level + 1)
                   )}
 
-                {/* {
-                // hasTeachers && 
-                (
+                {level === 1 && hasTeachers && (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
-                    {node.teachers!.map(renderTeacher)}
+                    {node.teachers?.map(renderTeacher)}
                   </div>
-                )} */}
+                )}
               </div>
             )}
           </div>
@@ -214,7 +218,7 @@ const TreePage: React.FC<TreePageProps> = () => {
                 <BookOpen className="w-6 h-6 text-white" />
               </div> */}
               <div className="text-white">
-                <h1 className="text-3xl font-bold">{data.title}</h1>
+                <h1 className="text-3xl font-bold">{data?.title}</h1>
                 <p className="text-yellow-100 text-lg">
                   اختر المستوى والأستاذ المناسب
                 </p>
@@ -223,12 +227,16 @@ const TreePage: React.FC<TreePageProps> = () => {
 
             <div className="hidden md:flex items-center space-x-4 text-white">
               <div className="text-center">
-                <div className="text-2xl font-bold">15+</div>
+                <div className="text-2xl font-bold">
+                  {data?.statistics?.number_of_teachers}
+                </div>
                 <div className="text-sm text-yellow-100">أستاذ</div>
               </div>
               <div className="w-px h-12 bg-white/20"></div>
               <div className="text-center">
-                <div className="text-2xl font-bold">5000+</div>
+                <div className="text-2xl font-bold">
+                  {data?.statistics?.number_of_students}
+                </div>
                 <div className="text-sm text-yellow-100">طالب</div>
               </div>
             </div>
@@ -244,7 +252,7 @@ const TreePage: React.FC<TreePageProps> = () => {
             الرئيسية
           </a>
           <span>/</span>
-          <span className="text-yellow-600 font-medium">{data.title}</span>
+          <span className="text-yellow-600 font-medium">{data?.title}</span>
         </div>
       </div>
 

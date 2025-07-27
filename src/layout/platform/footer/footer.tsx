@@ -82,10 +82,10 @@ const Footer: React.FC = () => {
             © 2025 منصة التوجيهي. جميع الحقوق محفوظة.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-gray-400 hover:text-yellow-400 text-sm transition-colors duration-200">
+            <a href="/privacy-policy" className="text-gray-400 hover:text-yellow-400 text-sm transition-colors duration-200">
               سياسة الخصوصية
             </a>
-            <a href="#" className="text-gray-400 hover:text-yellow-400 text-sm transition-colors duration-200">
+            <a href="/terms-and-conditions" className="text-gray-400 hover:text-yellow-400 text-sm transition-colors duration-200">
               الشروط والأحكام
             </a>
           </div>

@@ -1,8 +1,4 @@
-import {
-  ArrowRight,
-  Users,
-  Award,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
@@ -22,86 +18,18 @@ const Discover: React.FC = () => {
   const handleLoginClick = () => {
     setShowAuthModal(true);
   };
-  // const sections = [
-  //   {
-  //     id: 1,
-  //     navHeader: "courses",
-  //     title: "الدورات",
-  //     description: "دورات شاملة لجميع مواد التوجيهي مع أفضل المدرسين",
-  //     icon: BookOpen,
-  //     color: "from-blue-500 to-blue-600",
-  //     hoverColor: "hover:from-blue-600 hover:to-blue-700",
-  //     stats: { count: "50+", students: "5000+", rating: "4.9" },
-  //     features: ["شرح مفصل", "أمثلة عملية", "متابعة مستمرة"],
-  //   },
-  //   {
-  //     id: 2,
-  //     navHeader: "booklets",
-  //     title: "الدوسيات",
-  //     description: "ملخصات ومراجعات شاملة لجميع المواد الدراسية",
-  //     icon: FileText,
-  //     color: "from-green-500 to-green-600",
-  //     hoverColor: "hover:from-green-600 hover:to-green-700",
-  //     stats: { count: "200+", downloads: "10K+", rating: "4.8" },
-  //     features: ["ملخصات مركزة", "سهلة الفهم", "قابلة للتحميل"],
-  //   },
-  //   {
-  //     id: 3,
-  //     navHeader: "exams",
-  //     title: "الامتحانات الالكترونية",
-  //     description: "اختبارات تفاعلية تحاكي الامتحان الحقيقي",
-  //     icon: Monitor,
-  //     color: "from-purple-500 to-purple-600",
-  //     hoverColor: "hover:from-purple-600 hover:to-purple-700",
-  //     stats: { count: "500+", attempts: "25K+", accuracy: "95%" },
-  //     features: ["تقييم فوري", "تحليل الأداء", "نصائح للتحسين"],
-  //   },
-  //   {
-  //     id: 4,
-  //     navHeader: "files",
-  //     title: "الملفات",
-  //     description: "مكتبة شاملة من الملفات والمراجع التعليمية",
-  //     icon: FolderOpen,
-  //     color: "from-orange-500 to-orange-600",
-  //     hoverColor: "hover:from-orange-600 hover:to-orange-700",
-  //     stats: { count: "1000+", size: "5GB+", types: "10+" },
-  //     features: ["متنوعة", "منظمة", "سهلة الوصول"],
-  //   },
-  //   {
-  //     id: 5,
-  //     navHeader: "foundation-courses",
-  //     title: "دورات التأسيس",
-  //     description: "دورات أساسية لبناء قاعدة قوية في المواد الأساسية",
-  //     icon: GraduationCap,
-  //     color: "from-red-500 to-red-600",
-  //     hoverColor: "hover:from-red-600 hover:to-red-700",
-  //     stats: { count: "30+", hours: "200+", completion: "90%" },
-  //     features: ["من الصفر", "تدرج منطقي", "تطبيق عملي"],
-  //   },
-  //   {
-  //     id: 6,
-  //     navHeader: "ministerial-questions",
-  //     title: "الاسئلة الوزارية",
-  //     description: "بنك شامل من الأسئلة الوزارية للسنوات السابقة",
-  //     icon: HelpCircle,
-  //     color: "from-indigo-500 to-indigo-600",
-  //     hoverColor: "hover:from-indigo-600 hover:to-indigo-700",
-  //     stats: { count: "2000+", years: "10+", subjects: "15+" },
-  //     features: ["حلول مفصلة", "تصنيف حسب المادة", "محدثة باستمرار"],
-  //   },
-  // ];
   const navigate = useNavigate();
   const discoverNavHandler = (id: string) => {
     navigate(`/sections/${id}`);
   };
-  useEffect(() => {
-    if (isLoading) {
-      console.log("loading");
-    } else if (sections) {
-      console.log("sections:", sections.data);
-      // You can also log specific values like: 
-    }
-  }, [isLoading, sections]);
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     console.log("loading");
+  //   } else if (sections) {
+  //     console.log("sections:", sections.data);
+  //     // You can also log specific values like:
+  //   }
+  // }, [isLoading, sections]);
   return (
     <section>
       {isLoading ? (
@@ -133,7 +61,7 @@ const Discover: React.FC = () => {
                 منصة شاملة تضم كل ما تحتاجه للتفوق في التوجيهي - من الدورات
                 التفاعلية إلى الامتحانات الالكترونية
               </p>
-              <div className="flex items-center justify-center mt-8 space-x-8">
+              {/* <div className="flex items-center justify-center mt-8 space-x-8">
                 <div className="flex items-center space-x-2">
                   <Users className="w-5 h-5 text-blue-500" />
                   <span className="text-gray-600 font-medium">
@@ -144,7 +72,7 @@ const Discover: React.FC = () => {
                   <Award className="w-5 h-5 text-green-500" />
                   <span className="text-gray-600 font-medium">95% نجاح</span>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Sections Grid */}
@@ -153,7 +81,7 @@ const Discover: React.FC = () => {
                 // const IconComponent = section.icon?.icon;
                 return (
                   <div
-                    key={sections.id}
+                    key={index}
                     className={`group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 transform hover:scale-105 hover:-translate-y-2`}
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
@@ -171,7 +99,7 @@ const Discover: React.FC = () => {
                         <img
                           className="w-8 h-8 text-white"
                           src={
-                            // section.icon.icon ||
+                            section.icon.icon ||
                             "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
                           }
                           alt={section.icon.name || "icon"}
@@ -230,9 +158,7 @@ const Discover: React.FC = () => {
                       {/* CTA Button */}
                       {/* temporary route until i got the proper routing */}
                       <button
-                        onClick={() =>
-                          discoverNavHandler(section.id)
-                        }
+                        onClick={() => discoverNavHandler(section.id)}
                         style={{ backgroundColor: section.color?.color }}
                         className={`w-full bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
                       >
