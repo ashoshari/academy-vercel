@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-import {
-  ChevronDown,
-  ChevronRight,
-  Home,
-  ArrowRight,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Home, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
-import useNav from "@/store/platform/useNav";
 import { useCustomQuery } from "@/hooks/useQuery";
+import { useParams } from "react-router";
 // interface Teacher {
 //   id: number;
 //   name: string;
@@ -26,7 +21,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 //   teachers?: Teacher[];
 //   icon?: React.ComponentType<any>;
 // }
-interface subSubSections{
+interface subSubSections {
   id: string;
   title: string;
   description: string;
@@ -38,185 +33,15 @@ interface TreePageProps {
 }
 
 const TreePage: React.FC<TreePageProps> = () => {
+  const { navHeaderId } = useParams();
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const { data: treeData, isLoading: treeLoading } = useCustomQuery(
     "/training/students/sections/",
     ["sections"]
   );
-  // const { data: teachersData, isLoading: teachersLoading } = useCustomQuery(
-  //   "/training/students/subsubsection/93b9ec25-0838-4b39-8036-2a9d9e767479/teachers/",
-  //   ["teachers"]
-  // );
-  const title = useNav((state) => state.navTitle);
-  // const { navHeaderId } = useParams<{ navHeaderId: string }>();
   const navigate = useNavigate();
-  // console.log(
-  //   treeData?.data.find((node: any) => node.title === title).subsections
-  // );
-  // Sample teachers data with Arabic names
-  // const tawjihiTeachers: Teacher[] = [
-  //   {
-  //     id: 1,
-  //     name: "أ. محمد الأحمد",
-  //     subject: "الرياضيات",
-  //     rating: 4.9,
-  //     students: 1200,
-  //     experience: 15,
-  //     image:
-  //       "https://images.pexels.com/photos/5212324/pexels-photo-5212324.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "أ. فاطمة السعد",
-  //     subject: "الفيزياء",
-  //     rating: 4.8,
-  //     students: 980,
-  //     experience: 12,
-  //     image:
-  //       "https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "أ. أحمد الخالد",
-  //     subject: "الكيمياء",
-  //     rating: 4.9,
-  //     students: 1100,
-  //     experience: 18,
-  //     image:
-  //       "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "أ. نور العلي",
-  //     subject: "الأحياء",
-  //     rating: 4.7,
-  //     students: 850,
-  //     experience: 10,
-  //     image:
-  //       "https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "أ. سامر الحسن",
-  //     subject: "اللغة العربية",
-  //     rating: 4.8,
-  //     students: 1300,
-  //     experience: 20,
-  //     image:
-  //       "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "أ. ليلى المحمود",
-  //     subject: "اللغة الإنجليزية",
-  //     rating: 4.9,
-  //     students: 1150,
-  //     experience: 14,
-  //     image:
-  //       "https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  // ];
 
-  // const basicTeachers: Teacher[] = [
-  //   {
-  //     id: 7,
-  //     name: "أ. خالد الزهراني",
-  //     subject: "الرياضيات",
-  //     rating: 4.8,
-  //     students: 800,
-  //     experience: 12,
-  //     image:
-  //       "https://images.pexels.com/photos/5212324/pexels-photo-5212324.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "أ. هدى الشامي",
-  //     subject: "العلوم",
-  //     rating: 4.7,
-  //     students: 650,
-  //     experience: 9,
-  //     image:
-  //       "https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 9,
-  //     name: "أ. عمر الطيب",
-  //     subject: "اللغة العربية",
-  //     rating: 4.9,
-  //     students: 900,
-  //     experience: 16,
-  //     image:
-  //       "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 10,
-  //     name: "أ. رنا القاسم",
-  //     subject: "اللغة الإنجليزية",
-  //     rating: 4.6,
-  //     students: 720,
-  //     experience: 8,
-  //     image:
-  //       "https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  //   {
-  //     id: 11,
-  //     name: "أ. يوسف الدين",
-  //     subject: "الاجتماعيات",
-  //     rating: 4.8,
-  //     students: 600,
-  //     experience: 13,
-  //     image:
-  //       "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //   },
-  // ];
-
-  // const treeData: TreeNode[] = [
-  //   {
-  //     id: 'tawjihi',
-  //     title: 'التوجيهي',
-  //     type: 'category',
-  //     icon: GraduationCap,
-  //     children: [
-  //       {
-  //         id: 'tawjihi-2007',
-  //         title: 'توجيهي 2007',
-  //         type: 'level',
-  //         teachers: tawjihiTeachers
-  //       },
-  //       {
-  //         id: 'tawjihi-2008',
-  //         title: 'توجيهي 2008',
-  //         type: 'level',
-  //         teachers: tawjihiTeachers
-  //       },
-  //       {
-  //         id: 'tawjihi-2009',
-  //         title: 'توجيهي 2009',
-  //         type: 'level',
-  //         teachers: tawjihiTeachers
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     id: 'basic',
-  //     title: 'الصفوف الأساسية',
-  //     type: 'category',
-  //     icon: BookOpen,
-  //     children: [
-  //       { id: 'grade-1', title: 'الصف الأول', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-2', title: 'الصف الثاني', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-3', title: 'الصف الثالث', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-4', title: 'الصف الرابع', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-5', title: 'الصف الخامس', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-6', title: 'الصف السادس', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-7', title: 'الصف السابع', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-8', title: 'الصف الثامن', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-9', title: 'الصف التاسع', type: 'level', teachers: basicTeachers },
-  //       { id: 'grade-10', title: 'الصف العاشر', type: 'level', teachers: basicTeachers }
-  //     ]
-  //   }
-  // ];
-
+  const data = treeData?.data.find((node: any) => node.id === navHeaderId);
   const toggleNode = (nodeId: string) => {
     const newExpanded = new Set(expandedNodes);
     if (newExpanded.has(nodeId)) {
@@ -268,7 +93,7 @@ const TreePage: React.FC<TreePageProps> = () => {
   //   </div>
   // );
 
-  const renderNode = (node:any, level: number = 0) => {
+  const renderNode = (node: any, level: number = 0) => {
     const isExpanded = expandedNodes.has(node.id);
     // console.log(node);
     const hasChildren = node.subsubsections && node.subsubsections.length > 0;
@@ -296,13 +121,10 @@ const TreePage: React.FC<TreePageProps> = () => {
                   : "bg-gray-50 hover:bg-gray-100"
               }`}
               style={{ marginRight: `${level * 20}px` }}
-              onClick={() =>
-                toggleNode(node.id)
-              }
+              onClick={() => toggleNode(node.id)}
             >
-              {(hasChildren
-              //  || hasTeachers
-              ) && (
+              {hasChildren && (
+                //  || hasTeachers
                 <div className="flex-shrink-0">
                   {isExpanded ? (
                     <ChevronDown className="w-5 h-5 text-gray-600" />
@@ -312,7 +134,7 @@ const TreePage: React.FC<TreePageProps> = () => {
                 </div>
               )}
 
-              {treeData.data.find((n: any) => n.title === title).icon.icon && (
+              {treeData.data.find((n: any) => n.id === navHeaderId).icon.icon && (
                 <div
                   className={`flex items-center justify-center w-10 h-10 rounded-xl ${
                     level === 0
@@ -342,20 +164,23 @@ const TreePage: React.FC<TreePageProps> = () => {
               </span>
 
               {
-              // hasTeachers && 
-              isExpanded && (
-                <div className="mr-auto">
-                  {/* <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                // hasTeachers &&
+                isExpanded && (
+                  <div className="mr-auto">
+                    {/* <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
                     {node.teachers!.length} أستاذ
                   </span> */}
-                </div>
-              )}
+                  </div>
+                )
+              }
             </div>
 
             {isExpanded && (
               <div className="mt-4 space-y-4">
                 {hasChildren &&
-                  node.subsubsections!.map((child:subSubSections) => renderNode(child, level + 1))}
+                  node.subsubsections!.map((child: subSubSections) =>
+                    renderNode(child, level + 1)
+                  )}
 
                 {/* {
                 // hasTeachers && 
@@ -389,7 +214,7 @@ const TreePage: React.FC<TreePageProps> = () => {
                 <BookOpen className="w-6 h-6 text-white" />
               </div> */}
               <div className="text-white">
-                <h1 className="text-3xl font-bold">{title}</h1>
+                <h1 className="text-3xl font-bold">{data.title}</h1>
                 <p className="text-yellow-100 text-lg">
                   اختر المستوى والأستاذ المناسب
                 </p>
@@ -419,7 +244,7 @@ const TreePage: React.FC<TreePageProps> = () => {
             الرئيسية
           </a>
           <span>/</span>
-          <span className="text-yellow-600 font-medium">{title}</span>
+          <span className="text-yellow-600 font-medium">{data.title}</span>
         </div>
       </div>
 
@@ -433,7 +258,7 @@ const TreePage: React.FC<TreePageProps> = () => {
           ) : (
             <div className="space-y-6">
               {treeData?.data
-                .find((node: any) => node.title === title)
+                .find((node: any) => node.id === navHeaderId)
                 .subsections.map((node: any) => renderNode(node))}
             </div>
           )}

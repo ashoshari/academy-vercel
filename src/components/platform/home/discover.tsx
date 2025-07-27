@@ -3,7 +3,6 @@ import {
   Users,
   Award,
 } from "lucide-react";
-import useNav from "@/store/platform/useNav";
 import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
@@ -91,21 +90,16 @@ const Discover: React.FC = () => {
   //     features: ["حلول مفصلة", "تصنيف حسب المادة", "محدثة باستمرار"],
   //   },
   // ];
-  const setNavTitle = useNav((state) => state.setNavTitle);
-  const setNavHeader = useNav((state) => state.setNavHeader);
   const navigate = useNavigate();
-  const discoverNavHandler = (title: string, navHeader: string) => {
-    setNavTitle(title);
-    setNavHeader(navHeader);
-    navigate(navHeader);
+  const discoverNavHandler = (id: string) => {
+    navigate(`/sections/${id}`);
   };
   useEffect(() => {
     if (isLoading) {
       console.log("loading");
     } else if (sections) {
-      console.log("sections:", sections);
-      // You can also log specific values like:
-      // console.log("sections.data:", sections.data);
+      console.log("sections:", sections.data);
+      // You can also log specific values like: 
     }
   }, [isLoading, sections]);
   return (
@@ -237,10 +231,7 @@ const Discover: React.FC = () => {
                       {/* temporary route until i got the proper routing */}
                       <button
                         onClick={() =>
-                          discoverNavHandler(
-                            section.title,
-                            section.title == "الدورات" ? "courses" : "exams"
-                          )
+                          discoverNavHandler(section.id)
                         }
                         style={{ backgroundColor: section.color?.color }}
                         className={`w-full bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}

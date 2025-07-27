@@ -35,7 +35,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/" element={<PlatformLayout />}>
           <Route index element={<Home />} />
-          <Route path=":navHeaderId" element={<Courses />} />
+          <Route path="sections/:navHeaderId" element={<Courses />} />
           <Route path="all-courses" element={<AllCourses />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
           <Route path="coursePage/:courseId" element={<CoursePage />} />

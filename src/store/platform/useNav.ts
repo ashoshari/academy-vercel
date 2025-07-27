@@ -2,15 +2,21 @@ import { create } from "zustand";
 
 interface UserAuthState {
   navHeader: string;
-  navTitle: string;
+  id: string;
   setNavHeader: (navHeader: string) => void;
-  setNavTitle: (navTitle: string) => void;
+  setId: (id: string) => void;
 }
 const useUserAuthStore = create<UserAuthState>((set) => ({
-  navHeader: "courses",
-  navTitle: "الدورات",
-  setNavHeader: (navHeader) => set({ navHeader: navHeader }),
-  setNavTitle: (navTitle) => set({ navTitle: navTitle }),
+  navHeader: window.localStorage.getItem("navHeader") || "الدورات",
+  id: window.localStorage.getItem("id") || "id",
+  setNavHeader: (navHeader) => {
+    window.localStorage.setItem("navHeader", navHeader);
+    set({ navHeader: navHeader });
+  },
+  setId: (id) => {
+    window.localStorage.setItem("id", id);
+    set({ id: id });
+  },
 }));
 
 export default useUserAuthStore;
