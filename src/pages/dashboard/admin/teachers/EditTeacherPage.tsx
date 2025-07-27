@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Save } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import toast from "react-hot-toast";
@@ -12,12 +12,12 @@ interface FormValues {
   email: string;
   mobile_number: string;
   material: string;
-  experience?: number;
   location?: string;
   is_active?: boolean;
 }
 
 export default function EditTeacherPage() {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const {
@@ -38,6 +38,7 @@ export default function EditTeacherPage() {
   const updateTeacher = useCustomUpdate(`account/admin/teachers/${id}/`, [
     "teachers",
     "teachers-statistics",
+    "teacher",
   ]);
 
   useEffect(() => {
@@ -48,17 +49,26 @@ export default function EditTeacherPage() {
       setValue("email", t.email);
       setValue("mobile_number", t.mobile_number);
       setValue("material", t.material);
-      setValue("experience", t.experience);
-      setValue("location", t.location);
       setValue("is_active", t.is_active);
     }
   }, [teacherData, setValue]);
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const res = await updateTeacher.mutateAsync(data);
+      const formData = new FormData();
+
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("mobile_number", data.mobile_number);
+      formData.append("materials", data.material);
+
+      formData.append("is_active", data.is_active ? "true" : "false");
+
+      const res = await updateTeacher.mutateAsync(formData);
+
       if (res?.status) {
         toast.success("تم تحديث المعلم بنجاح");
+        navigate("/dashboard/teachers");
       } else {
         toast.error("فشل في تحديث بيانات المعلم");
       }

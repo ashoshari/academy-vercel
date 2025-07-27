@@ -178,7 +178,7 @@ export default function AddTeacherPage() {
             className="text-sm font-medium text-gray-700"
             htmlFor="is_active"
           >
-            تم التحقق من الهوية
+            نشط؟
           </label>
         </div>
 

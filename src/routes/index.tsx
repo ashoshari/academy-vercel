@@ -18,6 +18,8 @@ import CoursesPage from "@/pages/dashboard/admin/CoursesPage";
 import AddTeacherPage from "@/pages/dashboard/admin/teachers/AddTeacherPage";
 import EditTeacherPage from "@/pages/dashboard/admin/teachers/EditTeacherPage";
 import TeacherDetailsPage from "@/pages/dashboard/admin/teachers/TeacherDetailsPage";
+import CardPricingPage from "@/pages/dashboard/admin/cards/CardPricingPage";
+import CardCodesPage from "@/pages/dashboard/admin/cards/CardCodesPage";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -36,6 +38,14 @@ export default function AppRoutes() {
             <Route path="teachers/add" element={<AddTeacherPage />} />
             <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
             <Route path="teachers/:id" element={<TeacherDetailsPage />} />
+            {/* teachers */}
+
+            {/* cards */}
+            <Route path="card-pricing" element={<CardPricingPage />} />
+            <Route path="card-codes" element={<CardCodesPage />} />
+            {/* cards */}
+
+            {/*  */}
 
             <Route path="students" element={<StudentsPage />} />
             <Route path="courses" element={<CoursesPage />} />

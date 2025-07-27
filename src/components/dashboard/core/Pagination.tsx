@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 interface PaginationProps {
   currentPage: number;
   count: number;
-  pageSize?: number;
   onPageChange: (page: number) => void;
 }
 
@@ -28,10 +27,9 @@ const getPageRange = (current: number, total: number): (number | "...")[] => {
 export default function Pagination({
   currentPage,
   count,
-  pageSize = 10,
   onPageChange,
 }: PaginationProps) {
-  const totalPages = Math.ceil(count / pageSize);
+  const totalPages = Math.ceil(count / 20);
 
   if (totalPages <= 1) return null;
 

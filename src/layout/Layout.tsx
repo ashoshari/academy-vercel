@@ -18,6 +18,8 @@ import {
   // Hash,
   GraduationCap,
   BookOpen,
+  CreditCard,
+  Hash,
   // Upload,
   // BarChart3,
 } from "lucide-react";
@@ -71,8 +73,8 @@ const Layout = () => {
     // { id: "slider", label: "السلايدر", icon: Image },
     // { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
     // { id: "subsections", label: "الأقسام الفرعية", icon: FolderTree },
-    // { id: "pricing", label: "أسعار البطاقات", icon: CreditCard },
-    // { id: "codes", label: "كودات البطاقات", icon: Hash },
+    { id: "card-pricing", label: "أسعار البطاقات", icon: CreditCard },
+    { id: "card-codes", label: "كودات البطاقات", icon: Hash },
     // { id: "reports", label: "التقارير", icon: BarChart3 },
   ];
 

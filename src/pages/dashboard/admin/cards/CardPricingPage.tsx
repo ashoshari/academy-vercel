@@ -1,0 +1,452 @@
+import { useState } from "react";
+import {
+  Plus,
+  Search,
+  Save,
+  X,
+  CreditCard,
+  DollarSign,
+  ToggleLeft,
+  ToggleRight,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
+import handleErrorAlerts from "@/utils/showErrorMessages";
+import toast from "react-hot-toast";
+
+export interface CardPricing {
+  id: number;
+  price: number;
+  is_active: boolean;
+  createdAt: string;
+}
+
+const CardPricingPage = () => {
+  const [showAddModal, setShowAddModal] = useState(false);
+  //   const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [newCard, setNewCard] = useState<Partial<CardPricing>>({
+    price: 0,
+    is_active: true,
+  });
+
+  const cardStatistics = useCustomQuery("/cards/statistics/", [
+    "card-statistics",
+  ]);
+  const cards = useCustomQuery("cards/", ["cards"]);
+  const addCard = useCustomPost("cards/", ["cards", "card-statistics"]);
+  const updateCard = useCustomUpdate(`cards/${selectedCard}/`, [
+    "cards",
+    "card-statistics",
+  ]);
+
+  const handleAddCard = () => {
+    if ((newCard.price ?? 0) <= 0) {
+      toast.error("يرجى تحديد سعر البطاقة");
+      return;
+    }
+
+    addCard
+      .mutateAsync({
+        price: newCard.price,
+        is_active: newCard.is_active,
+      })
+      .then(() => {
+        setNewCard({
+          price: 0,
+          is_active: true,
+        });
+        setShowAddModal(false);
+      })
+      .catch((err) => {
+        handleErrorAlerts(err?.response?.data?.message || "حدث خطاء");
+      });
+  };
+
+  //   const handleEditCard = () => {
+  //     if (selectedCard && selectedCard.price && selectedCard.price > 0) {
+  //       setCardPricing(
+  //         cardPricing.map((card) =>
+  //           card.id === selectedCard.id ? selectedCard : card
+  //         )
+  //       );
+  //       setShowEditModal(false);
+  //       setSelectedCard(null);
+  //     }
+  //   };
+
+  //   const handleDeleteCard = (id: number) => {
+  //     if (confirm("هل أنت متأكد من حذف هذا السعر؟")) {
+  //       setCardPricing(cardPricing.filter((card) => card.id !== id));
+  //     }
+  //   };
+
+  const toggleCardStatus = (id: number) => {
+    setSelectedCard(id);
+    console.log("id", id);
+    const is_active = cards?.data?.data.filter(
+      (card: any) => card.id === id
+    )[0];
+
+    updateCard
+      .mutateAsync({
+        is_active: !is_active.is_active,
+      })
+      .then((res) => {
+        if (res) {
+          toast.success("تم تحديث حالة البطاقة بنجاح");
+        } else {
+          toast.error("حدث خطأ أثناء تحديث حالة البطاقة");
+        }
+      })
+      .catch((err) => {
+        handleErrorAlerts(err?.response?.data?.message || "حدث خطأ");
+      });
+  };
+
+  //   const EditCardModal = () => (
+  //     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  //       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+  //         <div className="p-6 border-b border-gray-200">
+  //           <div className="flex items-center justify-between">
+  //             <h2 className="text-xl font-bold text-gray-800">تعديل السعر</h2>
+  //             <button
+  //               onClick={() => setShowEditModal(false)}
+  //               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+  //             >
+  //               <X size={20} />
+  //             </button>
+  //           </div>
+  //         </div>
+
+  //         {selectedCard && (
+  //           <div className="p-6 space-y-6">
+  //             {/* Price */}
+  //             <div>
+  //               <label className="block text-sm font-medium text-gray-700 mb-2">
+  //                 السعر (دينار أردني)
+  //               </label>
+  //               <div className="relative">
+  //                 <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+  //                 <input
+  //                   type="number"
+  //                   value={selectedCard.price}
+  //                   onChange={(e) =>
+  //                     setSelectedCard({
+  //                       ...selectedCard,
+  //                       price: parseFloat(e.target.value) || 0,
+  //                     })
+  //                   }
+  //                   className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+  //                   placeholder="أدخل السعر..."
+  //                   min="0"
+  //                   step="0.01"
+  //                 />
+  //               </div>
+  //             </div>
+
+  //             {/* Status Toggle */}
+  //             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+  //               <div>
+  //                 <p className="font-medium text-gray-800">مفعل</p>
+  //                 <p className="text-sm text-gray-500">متاح للاستخدام</p>
+  //               </div>
+  //               <button
+  //                 onClick={() =>
+  //                   setSelectedCard({
+  //                     ...selectedCard,
+  //                     isActive: !selectedCard.isActive,
+  //                   })
+  //                 }
+  //                 className={`p-1 rounded-full transition-colors ${
+  //                   selectedCard.isActive ? "text-green-600" : "text-gray-400"
+  //                 }`}
+  //               >
+  //                 {selectedCard.isActive ? (
+  //                   <ToggleRight size={24} />
+  //                 ) : (
+  //                   <ToggleLeft size={24} />
+  //                 )}
+  //               </button>
+  //             </div>
+  //           </div>
+  //         )}
+
+  //         <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
+  //           <button
+  //             onClick={() => setShowEditModal(false)}
+  //             className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+  //           >
+  //             إلغاء
+  //           </button>
+  //           <button
+  //             onClick={handleEditCard}
+  //             className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+  //           >
+  //             <Save size={16} />
+  //             حفظ التغييرات
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">أسعار البطاقات</h1>
+          <p className="text-gray-600 text-sm">إدارة أسعار البطاقات المتاحة</p>
+        </div>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+        >
+          <Plus size={16} />
+          إضافة سعر جديد
+        </button>
+      </div>
+
+      {/* Search and Stats */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <div className="lg:col-span-2">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+            <div className="relative">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="البحث بالسعر..."
+                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+          <p className="text-2xl font-bold text-orange-600">
+            {cardStatistics?.data?.data?.total_cards}
+          </p>
+          <p className="text-sm text-gray-600">إجمالي الأسعار</p>
+        </div>
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+          <p className="text-2xl font-bold text-green-600">
+            {cardStatistics?.data?.data?.active_cards}
+          </p>
+          <p className="text-sm text-gray-600"> الأسعار المفعلة</p>
+        </div>{" "}
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+          <p className="text-2xl font-bold text-green-600">
+            {cardStatistics?.data?.data?.inactive_cards}
+          </p>
+          <p className="text-sm text-gray-600"> الأسعار غير المفعلة</p>
+        </div>
+      </div>
+
+      {/* Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {cards?.data?.data.map((card: any) => (
+          <div
+            key={card.id}
+            className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
+          >
+            {/* Header */}
+            <div
+              className={`p-6 text-white relative overflow-hidden ${
+                card.is_active
+                  ? "bg-gradient-to-br from-orange-500 to-orange-600"
+                  : "bg-gradient-to-br from-gray-400 to-gray-500"
+              }`}
+            >
+              <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
+              <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8"></div>
+              <div className="relative z-10 text-center">
+                <CreditCard className="w-8 h-8 mx-auto mb-3" />
+                <div className="text-3xl font-bold mb-1">{card.price}</div>
+                <div className="text-sm opacity-90">دينار أردني</div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              {/* Status */}
+              <div className="flex items-center justify-center mb-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    card.is_active
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {card.is_active ? "مفعل" : "معطل"}
+                </span>
+              </div>
+
+              {/* Date */}
+              <div className="text-center text-xs text-gray-500 mb-4">
+                تم الإنشاء: {card.createdAt}
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-center gap-2">
+                {/* Toggle Status */}
+                <button
+                  onClick={() => toggleCardStatus(card.id)}
+                  className={`p-2 rounded-lg transition-colors flex gap-2 items-center cursor-pointer ${
+                    card.is_active
+                      ? "text-green-600 bg-green-50 hover:bg-green-100"
+                      : "text-gray-400 bg-gray-50 hover:bg-gray-100"
+                  }`}
+                  title={card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
+                >
+                  {card.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
+                  <span className="text-sm">
+                    {" "}
+                    {card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
+                  </span>
+                </button>
+
+                {/* Edit */}
+                {/* <button
+                  onClick={() => {
+                    setSelectedCard(card);
+                    setShowEditModal(true);
+                  }}
+                  className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                  title="تعديل السعر"
+                >
+                  <Edit size={16} />
+                </button> */}
+
+                {/* Delete */}
+                {/* <button
+                  onClick={() => handleDeleteCard(card.id)}
+                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  title="حذف السعر"
+                >
+                  <Trash2 size={16} />
+                </button> */}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {cards?.data?.data?.length === 0 && (
+          <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+            <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-800 mb-2">
+              {searchTerm ? "لا توجد نتائج" : "لا توجد أسعار"}
+            </h3>
+            <p className="text-gray-500 mb-6">
+              {searchTerm
+                ? "لم يتم العثور على أسعار تطابق البحث"
+                : "ابدأ بإضافة سعر جديد للبطاقات"}
+            </p>
+            {!searchTerm && (
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+              >
+                <Plus size={16} />
+                إضافة سعر جديد
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Modals */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-800">
+                  إضافة سعر جديد
+                </h2>
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Price */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  السعر (دينار أردني)
+                </label>
+                <div className="relative">
+                  <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="number"
+                    value={newCard.price || ""}
+                    onChange={(e) =>
+                      setNewCard({
+                        ...newCard,
+                        price: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="أدخل السعر..."
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+
+              {/* Status Toggle */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">مفعل</p>
+                  <p className="text-sm text-gray-500">متاح للاستخدام</p>
+                </div>
+                <button
+                  onClick={() =>
+                    setNewCard({ ...newCard, is_active: !newCard.is_active })
+                  }
+                  className={`p-1 rounded-full transition-colors ${
+                    newCard.is_active ? "text-green-600" : "text-gray-400"
+                  }`}
+                >
+                  {newCard.is_active ? (
+                    <ToggleRight size={24} />
+                  ) : (
+                    <ToggleLeft size={24} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                إلغاء
+              </button>
+              <button
+                onClick={handleAddCard}
+                className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+              >
+                <Save size={16} />
+                حفظ السعر
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* {showEditModal && <EditCardModal />} */}
+    </div>
+  );
+};
+
+export default CardPricingPage;

@@ -8,7 +8,6 @@ import {
   Users,
   Phone,
   Mail,
-  GraduationCap,
   Download,
   UserCheck,
   BarChart3,
@@ -156,7 +155,6 @@ const TeachersPage = () => {
         teacher.email,
         teacher.mobile_number,
         teacher?.materials?.map((el: any) => el).join(", "),
-        teacher.academic_qualification,
         teacher.is_active ? "نشط" : "غير نشط",
         teacher.number_of_students_enrolled,
         teacher.number_of_courses_has,
@@ -239,11 +237,6 @@ const TeachersPage = () => {
             <Mail size={14} />
             <span className="truncate">{teacher.email}</span>
           </div>
-
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <GraduationCap size={14} />
-            <span>{teacher?.academic_qualification || "-"}</span>
-          </div>
         </div>
 
         {/* Subjects */}
@@ -253,10 +246,10 @@ const TeachersPage = () => {
             {teacher?.tags?.length > 0 ? (
               teacher?.tags?.slice(0, 3)?.map((subject: any) => (
                 <span
-                  key={subject}
+                  key={subject.id}
                   className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
                 >
-                  {subject}
+                  {subject.name}
                 </span>
               ))
             ) : (
@@ -644,7 +637,6 @@ const TeachersPage = () => {
         currentPage={filters.page}
         onPageChange={(page: any) => setFilters((prev) => ({ ...prev, page }))}
         count={dataTeachers?.data?.pagination?.count}
-        pageSize={5}
       />
 
       {showPasswordModal && (
