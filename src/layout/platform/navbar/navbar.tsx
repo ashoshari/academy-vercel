@@ -23,9 +23,9 @@ const Navbar: React.FC = () => {
   };
   return (
     <>
-      <nav className="bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+      <nav className="h-[8vh] bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
+        <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-full">
             {/* Logo */}
             <a href="/" className="flex items-center space-x-2">
               <div className="flex items-center space-x-3">

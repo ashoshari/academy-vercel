@@ -52,13 +52,13 @@ const Hero: React.FC = () => {
     return () => clearInterval(timer);
   }, [nextSlide, slides.length]);
   return (
-    <section className="relative h-screen overflow-hidden bg-gray-900">
+    <section className="relative h-[92vh] overflow-hidden bg-gray-900">
       {isLoading ? (
         <div className="flex items-center justify-center h-full text-white">
           Loading...
         </div>
       ) : (
-        <section className="relative h-screen overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900">
+        <section className="relative h-full overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900">
           {/* Background Slider  /// */}
           <div className="absolute inset-0">
             {slides.map((slide: any, index: number) => (
