@@ -130,28 +130,29 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
       const res = isLogin
         ? await loginMutateAsync(formdata)
         : await RegisterMutateAsync(formdata);
-      if (res.status) {
-        setTokens(res.data.tokens.access, res.data.tokens.refresh);
-        setFormData({ mobile: "", password: "", fullName: "", otp: "" });
-        toast.success(
-          isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
-        );
-
-        onLogin();
-        onClose();
-        // if (!isLogin && !showOTP) {
-        //   setShowOTP(true);
-        // } else {
-        // }
-      } else {
-        // Handle API returning success: false
-        toast.error(
-          res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
-        );
-      }
-    } catch (error: any) {
+        if (res.status) {
+          setTokens(res.data.tokens.access, res.data.tokens.refresh);
+          setFormData({ mobile: "", password: "", fullName: "", otp: "" });
+          toast.success(
+            isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
+          );
+          
+          onLogin();
+          onClose();
+          // if (!isLogin && !showOTP) {
+            //   setShowOTP(true);
+            // } else {
+              // }
+            } else {
+              // Handle API returning success: false
+              console.log("API response:", res.error);
+          toast.error(
+            res.error || (isLogin ? "1فشل تسجيل الدخول" : "فشل إنشاء الحساب")
+          );
+        }
+      } catch (error: any) {
       // Handle network or other errors
-      toast.error(isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب");
+      toast.error(isLogin ? "2فشل تسجيل الدخول" : "فشل إنشاء الحساب");
     } finally {
       setIsLoading(false);
     }

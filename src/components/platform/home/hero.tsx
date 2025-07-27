@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Play, BookOpen } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 
@@ -61,12 +61,12 @@ const Hero: React.FC = () => {
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, []);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const handlePlay = () => {
-    if (videoRef.current) {
-      videoRef.current.play();
-    }
-  };
+  // const videoRef = useRef<HTMLVideoElement>(null);
+  // const handlePlay = () => {
+  //   if (videoRef.current) {
+  //     videoRef.current.play();
+  //   }
+  // };
   return (
     <section className="relative h-screen overflow-hidden bg-gray-900">
       {isLoading ? (

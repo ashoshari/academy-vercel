@@ -7,7 +7,6 @@ import {
   CheckCircle, 
   Lock, 
   Clock, 
-  Star,
   ChevronRight,
   ChevronDown,
   Download,

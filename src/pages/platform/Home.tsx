@@ -1,6 +1,4 @@
-import { useCustomQuery } from "@/hooks/useQuery";
 import Hero from "@/components/platform/home/hero";
-import AllCourses from "@/components/platform/courses/allCourses";
 import EnrolledCourses from "@/components/platform/courses/enrolledCourses";
 
 import Discover from "@/components/platform/home/discover";

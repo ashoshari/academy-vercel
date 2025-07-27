@@ -1,8 +1,6 @@
 import { useState } from "react";
 import {
-  Star,
   Users,
-  Award,
   BookOpen,
   Video,
   FileText,
@@ -23,7 +21,7 @@ import {
   Zap,
   ArrowRight,
 } from "lucide-react";
-import { useParams, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 interface Course {
   id: number;
@@ -89,7 +87,6 @@ interface FreeSession {
 }
 
 const TeacherProfile: React.FC = () => {
-  const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("courses");
   const [showActivationModal, setShowActivationModal] = useState(false);
