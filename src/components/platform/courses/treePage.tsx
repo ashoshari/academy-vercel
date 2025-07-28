@@ -1,8 +1,15 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Home, ArrowRight,Users } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Home,
+  ArrowRight,
+  Users,
+} from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useParams } from "react-router";
+import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 // interface Teacher {
 //   id: number;
 //   name: string;
@@ -51,7 +58,6 @@ const TreePage: React.FC<TreePageProps> = () => {
     }
     setExpandedNodes(newExpanded);
   };
-
   const renderTeacher = (teacher: any) => (
     <div
       key={teacher.id}
@@ -61,7 +67,10 @@ const TreePage: React.FC<TreePageProps> = () => {
       <div className="flex items-center space-x-4 mb-4">
         <div className="relative">
           <img
-            src={teacher.image || "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"}
+            src={
+              teacher.image ||
+              "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            }
             alt={teacher.name}
             className="w-16 h-16 rounded-full object-cover border-4 border-gradient-to-r from-yellow-400 to-orange-500"
           />
@@ -70,7 +79,9 @@ const TreePage: React.FC<TreePageProps> = () => {
           <h4 className="text-lg font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-200">
             {teacher.name}
           </h4>
-          <p className="text-gray-600 font-medium">{teacher.materials?.[0].name}</p>
+          <p className="text-gray-600 font-medium">
+            {teacher.materials?.[0].name}
+          </p>
         </div>
       </div>
 
@@ -142,28 +153,26 @@ const TreePage: React.FC<TreePageProps> = () => {
                 </div>
               )}
 
-              {treeData.data.find((n: any) => n.id === navHeaderId).icon.icon &&
-                level == 0 && (
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-xl ${
-                      level === 0
-                        ? "bg-gradient-to-r from-yellow-500 to-orange-500"
-                        : "bg-gray-200"
+              {data?.icon.icon && level == 0 && (
+                <div
+                  className={`flex items-center justify-center w-10 h-10 rounded-xl ${
+                    level === 0
+                      ? "bg-gradient-to-r from-yellow-500 to-orange-500"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  <img
+                    src={
+                      data?.icon.icon ||
+                      "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                    }
+                    alt={node.title}
+                    className={`w-5 h-5 ${
+                      level === 0 ? "text-white" : "text-gray-600"
                     }`}
-                  >
-                    <img
-                      src={
-                        treeData.data.find((n: any) => n.id === navHeaderId)
-                          .icon.icon ||
-                        "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                      }
-                      alt={node.title}
-                      className={`w-5 h-5 ${
-                        level === 0 ? "text-white" : "text-gray-600"
-                      }`}
-                    />
-                  </div>
-                )}
+                  />
+                </div>
+              )}
 
               <span
                 className={`font-semibold ${
@@ -265,9 +274,19 @@ const TreePage: React.FC<TreePageProps> = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              {treeData?.data
-                .find((node: any) => node.id === navHeaderId)
-                .subsections.map((node: any) => renderNode(node))}
+              {Array.isArray(data?.subsections) &&
+              data.subsections.length > 0 ? (
+                data?.subsections.map((node: any) => renderNode(node))
+              ) : (
+                <div className="relative flex flex-col items-center">
+                  <img
+                    className="absolute top-0 w-[700px] h-[650px] z-0"
+                    src={errorIllustation}
+                    alt="error"
+                  />
+                  <h1 className="pt-[50px] absolute text-[2rem] top-[500px] z-[1]">لا يوجد محتوى لعرضه</h1>
+                </div>
+              )}
             </div>
           )}
         </section>
