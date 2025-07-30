@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import { useCustomQuery } from "@/hooks/useQuery";
 
@@ -160,7 +160,7 @@ const Discover: React.FC = () => {
                       <button
                         onClick={() => discoverNavHandler(section.id)}
                         style={{ backgroundColor: section.color?.color }}
-                        className={`w-full bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
+                        className={`cursor-pointer w-full bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
                       >
                         <span>استكشف الآن</span>
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -192,7 +192,7 @@ const Discover: React.FC = () => {
                     </p>
                     <button
                       onClick={handleLoginClick}
-                      className="bg-white text-orange-600 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                      className="cursor-pointer bg-white text-orange-600 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
                     >
                       ابدأ مجاناً الآن
                     </button>

@@ -15,8 +15,8 @@ const Hero: React.FC = () => {
     setMounted(true);
   }, []);
   useEffect(() => {
-    if (data?.data.length) {
-      setSlides(data.data);
+    if (data?.data?.length) {
+      setSlides(data?.data);
     }
   }, [data?.data]);
 
@@ -39,20 +39,20 @@ const Hero: React.FC = () => {
 
   const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => {
-      const length = slides.length;
+      const length = slides?.length;
       if (length === 0) return prev;
       return (prev - 1 + length) % length;
     });
   }, [slides]);
 
   useEffect(() => {
-    if (slides.length === 0) return;
+    if (slides?.length === 0) return;
 
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, [nextSlide, slides.length]);
   return (
-    <section className="relative h-[92vh] overflow-hidden bg-gray-900">
+    <section className="relative h-[75vh] overflow-hidden bg-gray-900">
       {isLoading ? (
         <div className="flex items-center justify-center h-full text-white">
           Loading...
@@ -63,7 +63,7 @@ const Hero: React.FC = () => {
           <div className="absolute inset-0">
             {slides.map((slide: any, index: number) => (
               <div
-                key={slide.id}
+                key={slide?.id}
                 className={`absolute inset-0 transition-opacity duration-1000 ${
                   index === currentSlide ? "opacity-100" : "opacity-0"
                 }`}
@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
                 <div className="absolute inset-0 bg-black/50 z-10"></div>
                 <img
                   src={
-                    slide.image ||
+                    slide?.image ||
                     "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
                   }
                   alt={slide.title}
@@ -95,13 +95,13 @@ const Hero: React.FC = () => {
                 >
                   <div className="space-y-4">
                     <h2 className="text-lg font-semibold text-yellow-400 animate-pulse">
-                      {slides.length > 0 ? slides[currentSlide]?.subtitle : ""}
+                      {slides?.length > 0 ? slides[currentSlide]?.subtitle : ""}
                     </h2>
                     <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                      {slides.length > 0 ? slides[currentSlide]?.title : ""}
+                      {slides?.length > 0 ? slides[currentSlide]?.title : ""}
                     </h1>
                     <p className="text-xl text-gray-200 leading-relaxed max-w-2xl">
-                      {slides.length > 0
+                      {slides?.length > 0
                         ? slides[currentSlide]?.header
                         : "No description available."}
                     </p>
@@ -201,24 +201,24 @@ const Hero: React.FC = () => {
           {/* Navigation Arrows */}
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+            className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
           >
             <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+            className="cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
           >
-            <ChevronRight className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
+            <ChevronRight className="cursor-pointer w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
           </button>
 
           {/* Slide Indicators */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
-            {slides.map((_: any, index: number) => (
+            {slides?.map((_: any, index: number) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`cursor-pointer w-3 h-3 rounded-full transition-all duration-300 ${
                   index === currentSlide
                     ? "bg-yellow-400 w-8"
                     : "bg-white/50 hover:bg-white/70"

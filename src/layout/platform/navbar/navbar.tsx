@@ -3,8 +3,15 @@ import { Menu, X, GraduationCap } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import useTokenStore from "@/store/platform/useToken";
 import useToken from "@/store/platform/useToken";
+import { useNavigate } from "react-router";
+import { useCustomQuery } from "@/hooks/useQuery";
+import toast from "react-hot-toast";
 
 const Navbar: React.FC = () => {
+  const { data, isLoading } = useCustomQuery("/core/footer/", ["footer"]);
+
+  const headerData = data?.data;
+  const navigate = useNavigate();
   const clearTokens = useToken((state) => state.clearTokens);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
@@ -17,6 +24,8 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     setShowAuthModal(false);
     clearTokens();
+    navigate("/");
+    toast.success("تم تسجيل الخروج بنجاح");
   };
   const handleLoginClick = () => {
     setShowAuthModal(true);
@@ -30,13 +39,20 @@ const Navbar: React.FC = () => {
             <a href="/" className="flex items-center space-x-2">
               <div className="flex items-center space-x-3">
                 <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
-                  <GraduationCap className="w-6 h-6 text-white" />
+                  <img
+                  className="rounded-xl w-10 h-10 text-white"
+                    src={
+                      headerData?.logo ||
+                      null
+                    }
+                    alt="logo"
+                  />
                 </div>
                 <div className="text-right">
                   <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                    منصة التوجيهي
+                    {headerData?.platform_name}
                   </h1>
-                  <p className="text-xs text-gray-500">نحو التفوق</p>
+                  <p className="text-xs text-gray-500">{headerData?.slogan}</p>
                 </div>
               </div>
             </a>

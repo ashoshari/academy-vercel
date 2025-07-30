@@ -3,7 +3,7 @@ import { create } from "zustand";
 interface TokenState {
   accessToken: string | null;
   isLoggedIn: boolean;
-  setTokens: (access: string, refresh: string) => void;
+  setTokens: (access: string) => void;
   clearTokens: () => void;
 }
 
@@ -14,7 +14,7 @@ const useTokenStore = create<TokenState>((set) => ({
   accessToken: initialAccessToken,
   isLoggedIn: !!initialAccessToken,
 
-  setTokens: (access, _refresh) => {
+  setTokens: (access) => {
     localStorage.setItem("accessToken", access);
     set({
       accessToken: access,

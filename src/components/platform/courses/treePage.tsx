@@ -35,11 +35,8 @@ interface subSubSections {
   is_published: boolean;
   order: number;
 }
-interface TreePageProps {
-  sectionTitle: string;
-}
 
-const TreePage: React.FC<TreePageProps> = () => {
+const TreePage: React.FC = () => {
   const { navHeaderId } = useParams();
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const { data: treeData, isLoading: treeLoading } = useCustomQuery(
@@ -68,19 +65,19 @@ const TreePage: React.FC<TreePageProps> = () => {
         <div className="relative">
           <img
             src={
-              teacher.image ||
+              teacher?.image ||
               "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
             }
-            alt={teacher.name}
+            alt={teacher?.name}
             className="w-16 h-16 rounded-full object-cover border-4 border-gradient-to-r from-yellow-400 to-orange-500"
           />
         </div>
         <div className="flex-1 text-right">
           <h4 className="text-lg font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-200">
-            {teacher.name}
+            {teacher?.name}
           </h4>
           <p className="text-gray-600 font-medium">
-            {teacher.materials?.[0].name}
+            {teacher?.materials?.[0].name}
           </p>
         </div>
       </div>
@@ -90,7 +87,7 @@ const TreePage: React.FC<TreePageProps> = () => {
           <div className="flex items-center justify-center space-x-1 mb-1">
             <Users className="w-4 h-4 text-blue-500" />
             <span className="text-lg font-bold text-gray-900">
-              {teacher.total_enrolled_students}
+              {teacher?.total_enrolled_students ?? 0}
             </span>
           </div>
           <p className="text-xs text-gray-500">طالب</p>
@@ -102,38 +99,45 @@ const TreePage: React.FC<TreePageProps> = () => {
       </button>
     </div>
   );
-
+  // const hasSpecializations =
+  //   node?.subsubsections?.specializations &&
+  //   node?.subsubsections?.specializations?.length > 0;
+  // const hasSpecializationMaterial =
+  //   node?.subsubsections?.specializations?.specialization_material &&
+  //   node?.subsubsections?.specializations?.specialization_material?.length > 0;
   const renderNode = (node: any, level: number = 0) => {
-    const isExpanded = expandedNodes.has(node.id);
-    const hasChildren = node.subsubsections && node.subsubsections.length > 0;
-    const hasTeachers =
-      level === 0
-        ? node.subsubsections &&
-          node.subsubsections.some(
-            (sub: any) => sub.teachers && sub.teachers.length > 0
-          )
-        : node.teachers && node.teachers.length > 0;
+    console.log(node);
+    const isExpanded = expandedNodes.has(node?.id);
 
-    // console.log(`Level ${level} - ${node.title}:`, {
-    //   hasChildren,
-    //   hasTeachers,
-    //   teachersCount:
-    //     level === 0
-    //       ? node.subsubsections?.reduce(
-    //           (total: number, sub: any) => total + (sub.teachers?.length || 0),
-    //           0
-    //         )
-    //       : node.teachers?.length || 0,
-    // });
+    const childKey = Object.keys(node).find(
+      (key) =>
+        Array.isArray(node[key]) &&
+        node[key].length > 0 &&
+        node[key].every((item: any) => typeof item === "object" && "id" in item)
+    );
+
+    const hasChildren = !!childKey;
+    const hasTeachers =
+      node.teachers && Array.isArray(node.teachers) && node.teachers.length > 0;
+
+    // const hasSubsections =
+    //   node?.subsubsections && node?.subsubsections?.length > 0;
+    // const hasTeachers =
+    //   level === 0
+    //     ? node.subsubsections &&
+    //       node.subsubsections.some(
+    //         (sub: any) => sub.teachers && sub.teachers.length > 0
+    //       )
+    //     : node.teachers && node.teachers.length > 0;
 
     return (
-      <section key={node.id}>
+      <section key={node?.id}>
         {treeLoading ? (
           <div className="flex items-center justify-center h-full text-white">
             Loading...
           </div>
         ) : (
-          <div key={node.id} className="mb-4">
+          <div key={node?.id} className="mb-4">
             <div
               className={`flex items-center space-x-3 p-4 rounded-xl cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-orange-50 ${
                 level === 0
@@ -153,7 +157,7 @@ const TreePage: React.FC<TreePageProps> = () => {
                 </div>
               )}
 
-              {data?.icon.icon && level == 0 && (
+              {node?.icon?.icon && level == 0 && (
                 <div
                   className={`flex items-center justify-center w-10 h-10 rounded-xl ${
                     level === 0
@@ -163,10 +167,10 @@ const TreePage: React.FC<TreePageProps> = () => {
                 >
                   <img
                     src={
-                      data?.icon.icon ||
+                      node?.icon?.icon ||
                       "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
                     }
-                    alt={node.title}
+                    alt={node?.title}
                     className={`w-5 h-5 ${
                       level === 0 ? "text-white" : "text-gray-600"
                     }`}
@@ -179,27 +183,27 @@ const TreePage: React.FC<TreePageProps> = () => {
                   level === 0 ? "text-lg text-gray-900" : "text-gray-700"
                 }`}
               >
-                {node.title}
+                {node?.title || node?.name || node?.material?.name}
               </span>
 
-              {level === 1 && hasTeachers && isExpanded && (
+              {hasTeachers && isExpanded && (
                 <div className="mr-auto">
                   <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
-                    {node.teachers?.length || 0} أستاذ
+                    {node?.teachers?.length || 0} أستاذ
                   </span>
                 </div>
               )}
             </div>
             {isExpanded && (
               <div className="mt-4 space-y-4">
-                {hasChildren &&
-                  node.subsubsections!.map((child: subSubSections) =>
+                {hasChildren && !hasTeachers &&
+                  node[childKey!]?.map((child: any) =>
                     renderNode(child, level + 1)
                   )}
 
-                {level === 1 && hasTeachers && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
-                    {node.teachers?.map(renderTeacher)}
+                {hasTeachers && (
+                  <div className="ms-[50px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+                    {node.teachers.map(renderTeacher)}
                   </div>
                 )}
               </div>
@@ -284,7 +288,9 @@ const TreePage: React.FC<TreePageProps> = () => {
                     src={errorIllustation}
                     alt="error"
                   />
-                  <h1 className="pt-[50px] absolute text-[2rem] top-[500px] z-[1]">لا يوجد محتوى لعرضه</h1>
+                  <h1 className="pt-[50px] absolute text-[2rem] top-[500px] z-[1]">
+                    لا يوجد محتوى لعرضه
+                  </h1>
                 </div>
               )}
             </div>

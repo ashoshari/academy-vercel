@@ -7,7 +7,6 @@ import {
   GraduationCap,
   ArrowRight,
 } from "lucide-react";
-// import useToken from "@/store/platform/useToken";
 import useTokenStore from "@/store/platform/useToken";
 import { useCustomPost } from "@/hooks/useMutation";
 // import { storeTokens } from "@/services/platform/userAuth";
@@ -131,7 +130,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         ? await loginMutateAsync(formdata)
         : await RegisterMutateAsync(formdata);
       if (res.status) {
-        setTokens(res.data.tokens.access, res.data.tokens.refresh);
+        setTokens(res.data.tokens.access);
         setFormData({ mobile: "", password: "", fullName: "", otp: "" });
         toast.success(
           isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
@@ -147,7 +146,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         // Handle API returning success: false
         console.log("API response:", res.error);
         toast.error(
-          res.error || (isLogin ? "1فشل تسجيل الدخول" : "فشل إنشاء الحساب")
+          res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
         );
       }
     } catch (error: any) {
