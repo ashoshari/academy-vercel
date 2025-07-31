@@ -225,7 +225,7 @@ const TreePage: React.FC = () => {
                 onClick={() => navigate(-1)}
                 className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
-                <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
+                <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200 cursor-pointer" />
               </button>
               {/* <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-white" />

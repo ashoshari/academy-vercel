@@ -147,18 +147,19 @@ const CoursePageOld: React.FC = () => {
   const [chapters, setChapters] = useState<any[]>([]);
 
   useEffect(() => {
-  if (courseData?.semesters) {
-    const initialized = courseData.semesters.map((semester: any) => ({
-      ...semester,
-      isExpanded: false,
-      units: semester.units?.map((unit: any) => ({
-        ...unit,
+    if (courseData?.semesters) {
+      const initialized = courseData.semesters.map((semester: any) => ({
+        ...semester,
         isExpanded: false,
-      })) || [],
-    }));
-    setChapters(initialized);
-  }
-}, [courseData]);
+        units:
+          semester.units?.map((unit: any) => ({
+            ...unit,
+            isExpanded: false,
+          })) || [],
+      }));
+      setChapters(initialized);
+    }
+  }, [courseData]);
 
   const [allLessons, setAllLessons] = useState<any>([]);
   const [activeTab, setActiveTab] = useState("content");
@@ -906,9 +907,9 @@ const CoursePageOld: React.FC = () => {
             >
               {!sidebarCollapsed && (
                 <>
-              <span className="font-semibold text-gray-900 text-sm text-right flex-1">
-                {semester?.title}
-              </span>
+                  <span className="font-semibold text-gray-900 text-sm text-right flex-1">
+                    {semester?.title}
+                  </span>
                   {semester?.units?.length > 0 ? (
                     <ChevronDown className="w-4 h-4 text-gray-500" />
                   ) : (
@@ -925,8 +926,7 @@ const CoursePageOld: React.FC = () => {
               <div className="ml-4 mt-2 space-y-1">
                 {chapters.map((chapter) => (
                   <div key={chapter.id}>
-                    <button onClick={() => toggleChapter(chapter.id)}>
-                    </button>
+                    <button onClick={() => toggleChapter(chapter.id)}></button>
 
                     {chapter.isExpanded && (
                       <div className="units">
@@ -1845,7 +1845,11 @@ const CoursePageOld: React.FC = () => {
       {/* Mobile Sidebar Overlay */}
       {sidebarVisible && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className={`${
+            sidebarVisible
+              ? "fixed inset-0 bg-black/50 z-30 md:hidden"
+              : "hidden"
+          }`}
           onClick={() => setSidebarVisible(false)}
         />
       )}

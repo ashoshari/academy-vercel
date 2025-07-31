@@ -1,37 +1,14 @@
 import { useState, useEffect } from "react";
 import {
-  ArrowRight,
-  Play,
-  FileText,
-  Monitor,
-  CheckCircle,
-  Lock,
-  Clock,
   ChevronRight,
   ChevronDown,
-  Download,
-  MessageSquare,
-  BarChart3,
-  Menu,
   X,
-  ChevronLeft,
-  Award,
-  Target,
   BookOpen,
-  Users,
   PanelLeftClose,
   PanelLeftOpen,
-  Plus,
-  ThumbsUp,
-  CheckCircle2,
-  StickyNote,
-  FolderOpen,
-  Reply,
-  Trash2,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useParams } from "react-router";
-import { initial } from "lodash";
 
 const ExamPage = () => {
   const token = window.localStorage.getItem("accessToken");
@@ -49,7 +26,7 @@ const ExamPage = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [semesters, setSemesters] = useState([]);
-  //   console.log("courseData", courseData);
+    console.log("courseData", courseData.progress_bar);
   useEffect(() => {
     if (courseData?.semesters) {
       const initialized = courseData.semesters.map((semester: any) => ({

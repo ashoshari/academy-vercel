@@ -74,7 +74,6 @@ interface Course {
 // }
 
 const TeacherProfile: React.FC = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const [activeTab, setActiveTab] = useState("free_courses");

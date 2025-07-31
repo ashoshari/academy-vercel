@@ -6,27 +6,34 @@ import {
   BookOpen,
   PanelLeftClose,
   PanelLeftOpen,
+  Play,
+  Lock,
+  CheckCircle,
 } from "lucide-react";
-import { useCustomQuery } from "@/hooks/useQuery";
-import { useParams } from "react-router";
+import toast from "react-hot-toast";
+import { useExam } from "@/store/platform/useExam";
+import { useCustomPost } from "@/hooks/useMutation";
 
-const Sidebar = () => {
-  const token = window.localStorage.getItem("accessToken");
-  const { courseId } = useParams();
-  const { data } = useCustomQuery(
-    `/training/students/course/${courseId}/`,
-    ["courses"],
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  const courseData = data?.data;
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+const Sidebar = ({
+  setSidebarVisible,
+  sidebarVisible,
+  sidebarCollapsed,
+  sidebarCollapseHandler,
+  setCurrentLessonIndex,
+  courseData,
+}: {
+  setSidebarVisible: any;
+  sidebarVisible: any;
+  sidebarCollapsed: any;
+  sidebarCollapseHandler: any;
+  setCurrentLessonIndex: any;
+  courseData: any;
+}) => {
   const [semesters, setSemesters] = useState([]);
-  //   console.log("courseData", courseData);
+  const [active, setActive] = useState(0);
+  const setIsExamMode = useExam((state) => state.setIsExamMode);
+  const setStartExam = useExam((state) => state.setStartExam);
+  console.log(courseData);
   useEffect(() => {
     if (courseData?.semesters) {
       const initialized = courseData.semesters.map((semester: any) => ({
@@ -44,7 +51,6 @@ const Sidebar = () => {
           })) || [],
       }));
       setSemesters(initialized);
-      console.log("initialized", initialized);
     }
   }, [courseData]);
   const toggleSemester = (semsterId: any) => {
@@ -54,8 +60,6 @@ const Sidebar = () => {
       )
     );
   };
-
-  //   console.log("semesters", semesters);
   const toggleUnit = (semesterId: any, unitId: any) => {
     setSemesters((prev: any) =>
       prev.map((sm: any) =>
@@ -95,6 +99,24 @@ const Sidebar = () => {
       )
     );
   };
+  const handleLessonClick = (lesson: any, lessonIndex: number) => {
+    console.log("lesson", lesson);
+    console.log("lessonIndex", lessonIndex);
+    console.log("lessonType", lesson.type);
+    if (lesson.is_completed) {
+      setCurrentLessonIndex(lessonIndex);
+      setActive(lessonIndex);
+      if (lesson.type != "exam") {
+        setIsExamMode(false);
+        console.log("NotExam");
+      } else {
+        setStartExam(true);
+        console.log("Exam");
+      }
+    } else {
+      toast.error("يجب استكمال الدروس السابق");
+    }
+  };
   const renderSidebar = () => (
     <div
       className={`bg-white border-r border-gray-200 transition-all duration-300 ${
@@ -118,7 +140,7 @@ const Sidebar = () => {
           )}
           <div className="flex items-center space-x-2">
             <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              onClick={() => sidebarCollapseHandler(!sidebarCollapsed)}
               className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200"
             >
               {sidebarCollapsed ? (
@@ -217,15 +239,43 @@ const Sidebar = () => {
                               {topic.isExpanded &&
                                 topic.lessons?.length > 0 && (
                                   <div className="my-[10px] flex-col text-start w-full">
-                                    {topic.lessons.map((lesson: any) => (
-                                      <button
-                                        //   onClick={}
-                                        key={lesson.id}
-                                        className="my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] text-gray-700 bg-gradient-to-r from-blue-500 to-purple-500 py-1 hover:bg-gray-50 rounded"
-                                      >
-                                        {lesson.title}
-                                      </button>
-                                    ))}
+                                    {topic.lessons.map(
+                                      (lesson: any, index: number) => (
+                                        <button
+                                          onClick={() =>
+                                            handleLessonClick(lesson, index)
+                                          }
+                                          key={lesson.id}
+                                          className={`my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
+                                             ${
+                                               lesson.is_completed
+                                                 ? "bg-green-100 text-green-600 hover:bg-green-200 duration-[0.5s]"
+                                                 : "opacity-60"
+                                             } py-1 hover:bg-gray-50 rounded ${
+                                            active == index &&
+                                            "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                                          }`}
+                                        >
+                                          <div className="flex justify-between items-center p-[5px] w-full">
+                                            <div className="text-start">
+                                              <h6 className="">
+                                                {lesson.title}
+                                              </h6>
+                                              <p className="text-[0.7rem]">
+                                                {lesson.time_in_minutes} دقيقة
+                                              </p>
+                                            </div>
+                                            {active == index ? (
+                                              <Play className="w-4 h-4" />
+                                            ) : lesson.is_completed ? (
+                                              <CheckCircle className="w-4 h-4" />
+                                            ) : (
+                                              <Lock className="w-4 h-4" />
+                                            )}
+                                          </div>
+                                        </button>
+                                      )
+                                    )}
                                   </div>
                                 )}
                             </div>

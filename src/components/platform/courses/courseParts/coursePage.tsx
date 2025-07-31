@@ -1,11 +1,137 @@
-import Sidebar from "./sidebar."
+import { useState, useEffect } from "react";
+import Sidebar from "./sidebar.";
+import Header from "./header";
+import { useParams } from "react-router";
+import { useCustomQuery } from "@/hooks/useQuery";
+import CourseContent from "./courseContent";
 const CoursePage = () => {
-  return (
-    <div>
-        {/* <div></div> */}
-        <Sidebar />
-    </div>
-  )
-}
+  const [allLessons, setAllLessons] = useState([]);
+  const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [semesters, setSemesters] = useState([]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const token = window.localStorage.getItem("accessToken");
+  const { courseId } = useParams();
+  const { data } = useCustomQuery(
+    `/training/students/course/${courseId}/`,
+    ["courses"],
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  const courseData = data?.data;
+  console.log("courseData", courseData);
+  const sidebarCollapseHandler = (state: boolean) => {
+    setSidebarCollapsed(state);
+  };
+  useEffect(() => {
+    if (courseData?.semesters) {
+      const initialized = courseData.semesters.map((semester: any) => ({
+        ...semester,
+        isExpanded: false,
+        units:
+          semester.units?.map((unit: any) => ({
+            ...unit,
+            isExpanded: false,
+            topics:
+              unit.topics?.map((topic: any) => ({
+                ...topic,
+                isExpanded: false,
+              })) || [],
+          })) || [],
+      }));
+      setSemesters(initialized);
+    }
+  }, [courseData]);
+  const currentLesson = allLessons[currentLessonIndex];
 
-export default CoursePage
+  useEffect(() => {
+    const lessons: any = [];
+    courseData?.semesters?.forEach((semester: any) => {
+      semester.units.forEach((unit: any) => {
+        unit.topics.forEach((topic: any) => {
+          lessons.push(...topic.lessons); // 👈 Flattened
+        });
+      });
+    });
+    setAllLessons(lessons);
+  }, [courseData]);
+  // const markLessonComplete = () => {
+  //   const updatedLessons = [...allLessons];
+  //   updatedLessons[currentLessonIndex].isCompleted = true;
+
+  //   // Unlock next lesson
+  //   if (currentLessonIndex + 1 < updatedLessons.length) {
+  //     updatedLessons[currentLessonIndex + 1].isLocked = false;
+  //   }
+
+  //   setAllLessons(updatedLessons);
+
+  //   // Update chapters state
+  //   setSemesters((prev: any) =>
+  //     prev.map((semester: any) => ({
+  //       ...semester,
+  //       units: semester.units.map((unit: any) => ({
+  //         ...unit,
+  //         lessons: unit.lessons.map((lesson: any) => {
+  //           const updatedLesson = updatedLessons.find(
+  //             (l) => l.id === lesson.id
+  //           );
+  //           return updatedLesson || lesson;
+  //         }),
+  //       })),
+  //     }))
+  //   );
+  // };
+  if (!currentLesson) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">جاري تحميل الدورة...</p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div
+      className={`transition-all duration-300 ${
+        sidebarVisible ? (sidebarCollapsed ? "md:ml-16" : "md:ml-80") : "ml-0"
+      }`}
+    >
+      {/* Mobile Sidebar Overlay */}
+      {sidebarVisible && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setSidebarVisible(false)}
+        />
+      )}
+      <Header
+        setSidebarVisible={setSidebarVisible}
+        sidebarVisible={sidebarVisible}
+        courseData={courseData}
+      />
+      <Sidebar
+        setSidebarVisible={setSidebarVisible}
+        sidebarVisible={sidebarVisible}
+        sidebarCollapsed={sidebarCollapsed}
+        sidebarCollapseHandler={sidebarCollapseHandler}
+        setCurrentLessonIndex={setCurrentLessonIndex}
+        courseData={courseData}
+      />
+      <CourseContent
+        setCurrentLessonIndex={setCurrentLessonIndex}
+        currentLessonIndex={currentLessonIndex}
+        allLessons={allLessons}
+        courseData={courseData}
+        currentLesson={currentLesson}
+        setAllLessons={setAllLessons}
+        setSemesters={setSemesters}
+      />
+    </div>
+  );
+};
+
+export default CoursePage;
