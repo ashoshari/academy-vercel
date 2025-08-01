@@ -26,6 +26,7 @@ import TeacherDetailsPage from "@/pages/dashboard/admin/teachers/TeacherDetailsP
 import CardPricingPage from "@/pages/dashboard/admin/cards/CardPricingPage";
 import CardCodesPage from "@/pages/dashboard/admin/cards/CardCodesPage";
 import AllCourses from "@/components/platform/courses/allCourses";
+import SectionsPage from "@/pages/dashboard/admin/sections/SectionsPage";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -51,14 +52,13 @@ export default function AppRoutes() {
             <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
             <Route path="teachers/:id" element={<TeacherDetailsPage />} />
             {/* teachers */}
-
+            {/* sections */}
+            <Route path="sections" element={<SectionsPage />} />
+            {/* sections */}
             {/* cards */}
             <Route path="card-pricing" element={<CardPricingPage />} />
             <Route path="card-codes" element={<CardCodesPage />} />
-            {/* cards */}
-
-            {/*  */}
-
+            {/* cards */}س
             <Route path="students" element={<StudentsPage />} />
             <Route path="courses" element={<CoursesPage />} />
           </Route>

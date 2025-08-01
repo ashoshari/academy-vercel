@@ -20,6 +20,7 @@ import {
   BookOpen,
   CreditCard,
   Hash,
+  Layers,
   // Upload,
   // BarChart3,
 } from "lucide-react";
@@ -71,7 +72,7 @@ const Layout = () => {
     // { id: "exams", label: "الامتحانات", icon: BookOpen },
     // { id: "files", label: "الملفات", icon: Upload },
     // { id: "slider", label: "السلايدر", icon: Image },
-    // { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
+    { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
     // { id: "subsections", label: "الأقسام الفرعية", icon: FolderTree },
     { id: "card-pricing", label: "أسعار البطاقات", icon: CreditCard },
     { id: "card-codes", label: "كودات البطاقات", icon: Hash },
