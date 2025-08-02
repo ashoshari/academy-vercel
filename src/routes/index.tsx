@@ -32,6 +32,7 @@ import CardCodesPage from "@/pages/dashboard/admin/cards/CardCodesPage";
 import AllCourses from "@/components/platform/courses/allCourses";
 import SectionsPage from "@/pages/dashboard/admin/sections/SectionsPage";
 import PhoneUser from "@/pages/platform/phoneUser";
+import SubsectionsPage from "@/pages/dashboard/admin/sections/SubSubsections";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -63,6 +64,7 @@ export default function AppRoutes() {
             {/* teachers */}
             {/* sections */}
             <Route path="sections" element={<SectionsPage />} />
+            <Route path="sub-sections" element={<SubsectionsPage />} />
             {/* sections */}
             {/* cards */}
             <Route path="card-pricing" element={<CardPricingPage />} />
