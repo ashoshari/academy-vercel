@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Play, BookOpen } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
+import { useCallback } from "react";
 
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState<any[]>([]);
   const [mounted, setMounted] = useState(false);
   const { data, isLoading } = useCustomQuery("training/students/sliders/", [
     "sliders",
@@ -12,74 +14,56 @@ const Hero: React.FC = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+  useEffect(() => {
+    if (data?.data?.length) {
+      setSlides(data?.data);
+    }
+  }, [data?.data]);
 
-  // const slides = [
-  //   {
-  //     id: 1,
-  //     title: "ابدأ رحلتك نحو التفوق",
-  //     subtitle: "منصة التوجيهي الشاملة",
-  //     description:
-  //       "أفضل الدورات والمواد التعليمية لضمان نجاحك في التوجيهي وتحقيق أحلامك الجامعية",
-  //     image:
-  //       "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  //     stats: { students: "10,000+", courses: "50+", success: "95%" },
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "دورات تفاعلية عالية الجودة",
-  //     subtitle: "تعلم مع أفضل المدرسين",
-  //     description:
-  //       "دورات مصممة خصيصاً لطلاب التوجيهي مع شرح مبسط وأمثلة عملية لضمان الفهم الكامل",
-  //     image:
-  //       "https://images.pexels.com/photos/5212700/pexels-photo-5212700.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  //     stats: { hours: "500+", teachers: "25+", students: "10,000+" },
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "امتحانات الكترونية متقدمة",
-  //     subtitle: "اختبر مستواك باستمرار",
-  //     description:
-  //       "نظام امتحانات الكتروني متطور يحاكي الامتحان الحقيقي مع تقييم فوري ونصائح للتحسين",
-  //     image:
-  //       "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  //     stats: { questions: "5000+", tests: "200+", accuracy: "99%" },
-  //   },
-  // ];
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     console.log("loading");
+  //   } else if (data) {
+  //     console.log("sections:", slides);
+  //     // You can also log specific values like:
+  //   }
+  // }, [isLoading, data]); 
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => {
+      // Get current slides length from state or props
+      const length = slides.length;
+      if (length === 0) return prev;
+      return (prev + 1) % length;
+    });
+  }, [slides]);
 
-  const nextSlide = () => {
-    const length = data?.data?.length ?? 4;
-    setCurrentSlide((prev) => (prev - 1 + length) % length);
-  };
-
-  const prevSlide = () => {
-    const length = data?.data?.length ?? 4;
-
-    setCurrentSlide((prev) => (prev + 1) % length);
-  };
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => {
+      const length = slides?.length;
+      if (length === 0) return prev;
+      return (prev - 1 + length) % length;
+    });
+  }, [slides]);
 
   useEffect(() => {
+    if (slides?.length === 0) return;
+
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, []);
-  // const videoRef = useRef<HTMLVideoElement>(null);
-  // const handlePlay = () => {
-  //   if (videoRef.current) {
-  //     videoRef.current.play();
-  //   }
-  // };
+  }, [nextSlide, slides.length]);
   return (
-    <section className="relative h-screen overflow-hidden bg-gray-900">
+    <section className="relative h-[75vh] overflow-hidden bg-gray-900">
       {isLoading ? (
         <div className="flex items-center justify-center h-full text-white">
           Loading...
         </div>
       ) : (
-        <section className="relative h-screen overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900">
+        <section className="relative h-full overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900">
           {/* Background Slider  /// */}
           <div className="absolute inset-0">
-            {data.data.map((slide: any, index: number) => (
+            {slides.map((slide: any, index: number) => (
               <div
-                key={slide.id}
+                key={slide?.id}
                 className={`absolute inset-0 transition-opacity duration-1000 ${
                   index === currentSlide ? "opacity-100" : "opacity-0"
                 }`}
@@ -87,7 +71,7 @@ const Hero: React.FC = () => {
                 <div className="absolute inset-0 bg-black/50 z-10"></div>
                 <img
                   src={
-                    slide.image ||
+                    slide?.image ||
                     "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
                   }
                   alt={slide.title}
@@ -111,14 +95,15 @@ const Hero: React.FC = () => {
                 >
                   <div className="space-y-4">
                     <h2 className="text-lg font-semibold text-yellow-400 animate-pulse">
-                      {data.data ? data.data[currentSlide].subtitle : ""}
+                      {slides?.length > 0 ? slides[currentSlide]?.subtitle : ""}
                     </h2>
                     <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                      {data.data ? data.data[currentSlide].title : ""}
+                      {slides?.length > 0 ? slides[currentSlide]?.title : ""}
                     </h1>
                     <p className="text-xl text-gray-200 leading-relaxed max-w-2xl">
-                      {data.data[currentSlide].description ||
-                        "No description available."}
+                      {slides?.length > 0
+                        ? slides[currentSlide]?.header
+                        : "No description available."}
                     </p>
                   </div>
 
@@ -147,7 +132,7 @@ const Hero: React.FC = () => {
                   </div> */}
 
                   {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  {/* <div className="flex flex-col sm:flex-row gap-4">
                     <button className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center justify-center space-x-3">
                       <span>ابدأ التعلم الآن</span>
                       <BookOpen className="w-6 h-6" />
@@ -156,7 +141,7 @@ const Hero: React.FC = () => {
                       <span>شاهد الفيديو</span>
                       <Play className="w-6 h-6" />
                     </button>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Video/Image Preview */}
@@ -168,16 +153,7 @@ const Hero: React.FC = () => {
                   }`}
                 >
                   <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                    {!data.data[currentSlide].link ? (
-                      <img
-                        src={
-                          data.data[currentSlide].image ||
-                          "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                        }
-                        alt={data.data[currentSlide].title}
-                        className="w-full h-80 md:h-96 object-cover"
-                      />
-                    ) : (
+                    {slides[currentSlide]?.link && (
                       <>
                         {/* Video Player */}
                         <video
@@ -186,7 +162,7 @@ const Hero: React.FC = () => {
                         >
                           <source
                             src={
-                              data.data[currentSlide].link ||
+                              slides[currentSlide]?.link ||
                               "https://www.w3schools.com/html/mov_bbb.mp4"
                             }
                             type="video/mp4"
@@ -207,12 +183,16 @@ const Hero: React.FC = () => {
                   </div>
 
                   {/* Floating Elements */}
-                  <div className="absolute -top-4 -right-4 bg-yellow-400 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm animate-bounce">
-                    🏆 الأفضل في الأردن
-                  </div>
-                  <div className="absolute -bottom-4 -left-4 bg-green-500 text-white px-4 py-2 rounded-2xl font-bold text-sm animate-pulse">
-                    ✅ مضمون النجاح
-                  </div>
+                  {slides[currentSlide]?.link && (
+                    <div>
+                      <div className="absolute -top-4 -right-4 bg-yellow-400 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm animate-bounce">
+                        🏆 الأفضل في الأردن
+                      </div>
+                      <div className="absolute -bottom-4 -left-4 bg-green-500 text-white px-4 py-2 rounded-2xl font-bold text-sm animate-pulse">
+                        ✅ مضمون النجاح
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -221,24 +201,24 @@ const Hero: React.FC = () => {
           {/* Navigation Arrows */}
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+            className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
           >
             <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+            className="cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
           >
-            <ChevronRight className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
+            <ChevronRight className="cursor-pointer w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
           </button>
 
           {/* Slide Indicators */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
-            {data.data.map((_: any, index: number) => (
+            {slides?.map((_: any, index: number) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`cursor-pointer w-3 h-3 rounded-full transition-all duration-300 ${
                   index === currentSlide
                     ? "bg-yellow-400 w-8"
                     : "bg-white/50 hover:bg-white/70"

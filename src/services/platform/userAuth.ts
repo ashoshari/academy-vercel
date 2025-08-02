@@ -1,10 +1,10 @@
 import { NavigateFunction } from "react-router";
 
-const TOKEN_KEY = ["user_tokens", "admin_tokens"];
+const TOKEN_KEY = "user_tokens";
 
 export function getStoredTokens(): string | null {
   try {
-    const tokens = localStorage.getItem(TOKEN_KEY[0]);
+    const tokens = localStorage.getItem(TOKEN_KEY);
     return tokens ? JSON.parse(tokens) : null;
   } catch {
     return null;
@@ -16,7 +16,7 @@ export async function storeTokens(
   navigate?: NavigateFunction,
   setIsAuthenticated?: () => void
 ): Promise<void> {
-  await localStorage.setItem(TOKEN_KEY[0], JSON.stringify(tokens));
+  await localStorage.setItem(TOKEN_KEY, JSON.stringify(tokens));
 
   setIsAuthenticated && setIsAuthenticated();
 
@@ -27,8 +27,7 @@ export async function removeTokens(
   navigate?: NavigateFunction,
   setIsAuthenticated?: () => void
 ): Promise<void> {
-  await localStorage.removeItem(TOKEN_KEY[0]);
-  await localStorage.removeItem("company_domian");
+  await localStorage.removeItem(TOKEN_KEY);
 
   setIsAuthenticated && setIsAuthenticated();
 

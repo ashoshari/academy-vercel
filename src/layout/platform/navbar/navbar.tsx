@@ -3,8 +3,15 @@ import { Menu, X, GraduationCap } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import useTokenStore from "@/store/platform/useToken";
 import useToken from "@/store/platform/useToken";
+import { useNavigate } from "react-router";
+import { useCustomQuery } from "@/hooks/useQuery";
+import toast from "react-hot-toast";
 
 const Navbar: React.FC = () => {
+  const { data, isLoading } = useCustomQuery("/core/footer/", ["footer"]);
+
+  const headerData = data?.data;
+  const navigate = useNavigate();
   const clearTokens = useToken((state) => state.clearTokens);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
@@ -17,26 +24,35 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     setShowAuthModal(false);
     clearTokens();
+    navigate("/");
+    toast.success("تم تسجيل الخروج بنجاح");
   };
   const handleLoginClick = () => {
     setShowAuthModal(true);
   };
   return (
     <>
-      <nav className="bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+      <nav className="h-[8vh] bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
+        <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-full">
             {/* Logo */}
             <a href="/" className="flex items-center space-x-2">
               <div className="flex items-center space-x-3">
                 <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
-                  <GraduationCap className="w-6 h-6 text-white" />
+                  <img
+                  className="rounded-xl w-10 h-10 text-white"
+                    src={
+                      headerData?.logo ||
+                      null
+                    }
+                    alt="logo"
+                  />
                 </div>
                 <div className="text-right">
                   <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                    منصة التوجيهي
+                    {headerData?.platform_name}
                   </h1>
-                  <p className="text-xs text-gray-500">نحو التفوق</p>
+                  <p className="text-xs text-gray-500">{headerData?.slogan}</p>
                 </div>
               </div>
             </a>
@@ -74,7 +90,7 @@ const Navbar: React.FC = () => {
               {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 cursor-pointer"
+                  className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:from-gray-600 hover:to-gray-500 transition-all duration-200 transform hover:scale-105 cursor-pointer"
                 >
                   تسجيل الخروج
                 </button>
