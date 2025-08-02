@@ -1,7 +1,5 @@
-import React from 'react'
+// import React from 'react'
 
 export const filesTab = () => {
-  return (
-    <div>filesTab</div>
-  )
-}
+  return <div>filesTab</div>;
+};

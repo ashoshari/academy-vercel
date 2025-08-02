@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useExam } from "@/store/platform/useExam";
-import { useCustomPost } from "@/hooks/useMutation";
+// import { useCustomPost } from "@/hooks/useMutation";
 
 const Sidebar = ({
   setSidebarVisible,

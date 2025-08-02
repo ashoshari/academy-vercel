@@ -1,17 +1,16 @@
-import {
-  BarChart3,
-  CheckCircle,
-  Target,
-} from "lucide-react";
-import { useCustomQuery } from "@/hooks/useQuery";
-import { useParams } from "react-router";
+import { BarChart3, CheckCircle, Target } from "lucide-react";
+// import { useCustomQuery } from "@/hooks/useQuery";
+// import { useParams } from "react-router";
 const ProgressTab = () => {
-  const {courseId} = useParams()
-  const { data } = useCustomQuery(`/training/students/course/${courseId}/progress/`,["progress"])
-  
-  const courseProgress = data?.data
+  // const { courseId } = useParams();
+  // const { data } = useCustomQuery(
+  //   `/training/students/course/${courseId}/progress/`,
+  //   ["progress"]
+  // );
+
+  // const courseProgress = data?.data
   return (
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+    <div className="bg-white rounded-2xl shadow-lg p-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">تقدمك في الدورة</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -94,7 +93,7 @@ const ProgressTab = () => {
         ))} */}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProgressTab
+export default ProgressTab;

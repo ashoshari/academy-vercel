@@ -8,7 +8,7 @@ const CoursePage = () => {
   const [allLessons, setAllLessons] = useState([]);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [sidebarVisible, setSidebarVisible] = useState(true);
-  const [semesters, setSemesters] = useState([]);
+  const [_, setSemesters] = useState([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const token = window.localStorage.getItem("accessToken");
   const { courseId } = useParams();

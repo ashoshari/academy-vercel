@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import useTokenStore from "@/store/platform/useToken";
 import useToken from "@/store/platform/useToken";
@@ -8,7 +8,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import toast from "react-hot-toast";
 
 const Navbar: React.FC = () => {
-  const { data, isLoading } = useCustomQuery("/core/footer/", ["footer"]);
+  const { data } = useCustomQuery("/core/footer/", ["footer"]);
 
   const headerData = data?.data;
   const navigate = useNavigate();
@@ -40,11 +40,8 @@ const Navbar: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
                   <img
-                  className="rounded-xl w-10 h-10 text-white"
-                    src={
-                      headerData?.logo ||
-                      null
-                    }
+                    className="rounded-xl w-10 h-10 text-white"
+                    src={headerData?.logo || null}
                     alt="logo"
                   />
                 </div>

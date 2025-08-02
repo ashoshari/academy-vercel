@@ -16,7 +16,7 @@ import {
   File,
   ArrowRight,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
 import useTokenStore from "@/store/platform/useToken";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";

@@ -28,13 +28,13 @@ import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 //   teachers?: Teacher[];
 //   icon?: React.ComponentType<any>;
 // }
-interface subSubSections {
-  id: string;
-  title: string;
-  description: string;
-  is_published: boolean;
-  order: number;
-}
+// interface subSubSections {
+//   id: string;
+//   title: string;
+//   description: string;
+//   is_published: boolean;
+//   order: number;
+// }
 
 const TreePage: React.FC = () => {
   const { navHeaderId } = useParams();
@@ -196,7 +196,8 @@ const TreePage: React.FC = () => {
             </div>
             {isExpanded && (
               <div className="mt-4 space-y-4">
-                {hasChildren && !hasTeachers &&
+                {hasChildren &&
+                  !hasTeachers &&
                   node[childKey!]?.map((child: any) =>
                     renderNode(child, level + 1)
                   )}

@@ -1,11 +1,11 @@
 import { CheckCircle, FileText, Download, Clock } from "lucide-react";
-import { useLesson } from "@/store/platform/useLesson";
+// import { useLesson } from "@/store/platform/useLesson";
 import { useState } from "react";
 
-const VideoPlayer = ({ currentLesson:current, markLessonComplete }: any) => {
-  const setId = useLesson((state) => state.setId);
-  const id = useLesson((state) => state.id);
-  const [currentLesson, setCurrentLesson] = useState(current);
+const VideoPlayer = ({ currentLesson: current, markLessonComplete }: any) => {
+  // const setId = useLesson((state) => state.setId);
+  // const id = useLesson((state) => state.id);
+  const [currentLesson, _] = useState(current);
   console.log(currentLesson.is_completed);
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">

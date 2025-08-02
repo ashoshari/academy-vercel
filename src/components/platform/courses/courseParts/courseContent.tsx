@@ -9,10 +9,10 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import VideoPlayer from "./content/videoPlayer";
-import Exam from "./content/exam";
+// import Exam from "./content/exam";
 import toast from "react-hot-toast";
 import { useCustomPost } from "@/hooks/useMutation";
-import { useCustomQuery } from "@/hooks/useQuery";
+// import { useCustomQuery } from "@/hooks/useQuery";
 const CourseContent = ({
   setCurrentLessonIndex,
   currentLessonIndex,
@@ -20,8 +20,8 @@ const CourseContent = ({
   setAllLessons,
   allLessons,
   setSemesters,
-  courseData,
-}: {
+}: // courseData,
+{
   setCurrentLessonIndex: (index: number) => void;
   currentLessonIndex: number;
   currentLesson: any;
@@ -70,7 +70,7 @@ const CourseContent = ({
   }, []);
 
   // exam
-  const [isExamMode, setIsExamMode] = useState(false);
+  // const [isExamMode, setIsExamMode] = useState(false);
   // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // const [selectedAnswers, setSelectedAnswers] = useState({});
   // const [timeRemaining, setTimeRemaining] = useState(0);
@@ -80,7 +80,7 @@ const CourseContent = ({
   const navigateLesson = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
-      setIsExamMode(false);
+      // setIsExamMode(false);
     } else if (
       direction === "next" &&
       currentLessonIndex < allLessons.length - 1
