@@ -78,7 +78,7 @@ const CourseContent = ({
   const navigateLesson = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
-      setIsExamMode(false);
+      // setIsExamMode(false);
     } else if (
       direction === "next" &&
       currentLessonIndex < allLessons.length - 1

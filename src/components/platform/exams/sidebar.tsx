@@ -26,7 +26,7 @@ const ExamPage = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [semesters, setSemesters] = useState([]);
-    console.log("courseData", courseData.progress_bar);
+  console.log("courseData", courseData.progress_bar);
   useEffect(() => {
     if (courseData?.semesters) {
       const initialized = courseData.semesters.map((semester: any) => ({
@@ -219,7 +219,7 @@ const ExamPage = () => {
                                   <div className="my-[10px] flex-col text-start w-full">
                                     {topic.lessons.map((lesson: any) => (
                                       <button
-                                    //   onClick={}
+                                        //   onClick={}
                                         key={lesson.id}
                                         className="my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] text-gray-700 bg-gradient-to-r from-blue-500 to-purple-500 py-1 hover:bg-gray-50 rounded"
                                       >

@@ -190,7 +190,8 @@ const TreePage: React.FC = () => {
             </div>
             {isExpanded && (
               <div className="mt-4 space-y-4">
-                {hasChildren && !hasTeachers &&
+                {hasChildren &&
+                  !hasTeachers &&
                   node[childKey!]?.map((child: any) =>
                     renderNode(child, level + 1)
                   )}

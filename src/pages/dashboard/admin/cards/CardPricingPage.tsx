@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Plus,
-  Search,
   Save,
   X,
   CreditCard,
@@ -15,6 +14,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import toast from "react-hot-toast";
+import Loader from "@/components/core/Loader";
 
 export interface CardPricing {
   id: number;
@@ -27,7 +27,7 @@ const CardPricingPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   //   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, _] = useState("");
 
   const [newCard, setNewCard] = useState<Partial<CardPricing>>({
     price: 0,
@@ -214,7 +214,7 @@ const CardPricingPage = () => {
 
       {/* Search and Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div className="lg:col-span-2">
+        {/* <div className="lg:col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -227,7 +227,7 @@ const CardPricingPage = () => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-orange-600">
             {cardStatistics?.data?.data?.total_cards}
@@ -249,70 +249,73 @@ const CardPricingPage = () => {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {cards?.data?.data.map((card: any) => (
-          <div
-            key={card.id}
-            className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
-          >
-            {/* Header */}
+      {cards?.isLoading ? (
+        <Loader />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {cards?.data?.data.map((card: any) => (
             <div
-              className={`p-6 text-white relative overflow-hidden ${
-                card.is_active
-                  ? "bg-gradient-to-br from-orange-500 to-orange-600"
-                  : "bg-gradient-to-br from-gray-400 to-gray-500"
-              }`}
+              key={card.id}
+              className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
             >
-              <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
-              <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8"></div>
-              <div className="relative z-10 text-center">
-                <CreditCard className="w-8 h-8 mx-auto mb-3" />
-                <div className="text-3xl font-bold mb-1">{card.price}</div>
-                <div className="text-sm opacity-90">دينار أردني</div>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6">
-              {/* Status */}
-              <div className="flex items-center justify-center mb-4">
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    card.is_active
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {card.is_active ? "مفعل" : "معطل"}
-                </span>
+              {/* Header */}
+              <div
+                className={`p-6 text-white relative overflow-hidden ${
+                  card.is_active
+                    ? "bg-gradient-to-br from-orange-500 to-orange-600"
+                    : "bg-gradient-to-br from-gray-400 to-gray-500"
+                }`}
+              >
+                <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
+                <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8"></div>
+                <div className="relative z-10 text-center">
+                  <CreditCard className="w-8 h-8 mx-auto mb-3" />
+                  <div className="text-3xl font-bold mb-1">{card.price}</div>
+                  <div className="text-sm opacity-90">دينار أردني</div>
+                </div>
               </div>
 
-              {/* Date */}
-              <div className="text-center text-xs text-gray-500 mb-4">
-                تم الإنشاء: {card.createdAt}
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-center gap-2">
-                {/* Toggle Status */}
-                <button
-                  onClick={() => toggleCardStatus(card.id)}
-                  className={`p-2 rounded-lg transition-colors flex gap-2 items-center cursor-pointer ${
-                    card.is_active
-                      ? "text-green-600 bg-green-50 hover:bg-green-100"
-                      : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-                  }`}
-                  title={card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
-                >
-                  {card.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
-                  <span className="text-sm">
-                    {" "}
-                    {card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
+              {/* Content */}
+              <div className="p-6">
+                {/* Status */}
+                <div className="flex items-center justify-center mb-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      card.is_active
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {card.is_active ? "مفعل" : "معطل"}
                   </span>
-                </button>
+                </div>
 
-                {/* Edit */}
-                {/* <button
+                {/* Date */}
+                <div className="text-center text-xs text-gray-500 mb-4">
+                  تم الإنشاء: {card.createdAt}
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-center gap-2">
+                  {/* Toggle Status */}
+                  <button
+                    onClick={() => toggleCardStatus(card.id)}
+                    className={`p-2 rounded-lg transition-colors flex gap-2 items-center cursor-pointer ${
+                      card.is_active
+                        ? "text-green-600 bg-green-50 hover:bg-green-100"
+                        : "text-gray-400 bg-gray-50 hover:bg-gray-100"
+                    }`}
+                    title={card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
+                  >
+                    {card.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
+                    <span className="text-sm">
+                      {" "}
+                      {card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
+                    </span>
+                  </button>
+
+                  {/* Edit */}
+                  {/* <button
                   onClick={() => {
                     setSelectedCard(card);
                     setShowEditModal(true);
@@ -323,42 +326,43 @@ const CardPricingPage = () => {
                   <Edit size={16} />
                 </button> */}
 
-                {/* Delete */}
-                {/* <button
+                  {/* Delete */}
+                  {/* <button
                   onClick={() => handleDeleteCard(card.id)}
                   className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="حذف السعر"
                 >
                   <Trash2 size={16} />
                 </button> */}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
 
-        {cards?.data?.data?.length === 0 && (
-          <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-            <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-800 mb-2">
-              {searchTerm ? "لا توجد نتائج" : "لا توجد أسعار"}
-            </h3>
-            <p className="text-gray-500 mb-6">
-              {searchTerm
-                ? "لم يتم العثور على أسعار تطابق البحث"
-                : "ابدأ بإضافة سعر جديد للبطاقات"}
-            </p>
-            {!searchTerm && (
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-              >
-                <Plus size={16} />
-                إضافة سعر جديد
-              </button>
-            )}
-          </div>
-        )}
-      </div>
+          {cards?.data?.data?.length === 0 && (
+            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-800 mb-2">
+                {searchTerm ? "لا توجد نتائج" : "لا توجد أسعار"}
+              </h3>
+              <p className="text-gray-500 mb-6">
+                {searchTerm
+                  ? "لم يتم العثور على أسعار تطابق البحث"
+                  : "ابدأ بإضافة سعر جديد للبطاقات"}
+              </p>
+              {!searchTerm && (
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                >
+                  <Plus size={16} />
+                  إضافة سعر جديد
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Modals */}
       {showAddModal && (

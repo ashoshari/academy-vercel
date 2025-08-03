@@ -40,11 +40,8 @@ const Navbar: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
                   <img
-                  className="rounded-xl w-10 h-10 text-white"
-                    src={
-                      headerData?.logo ||
-                      null
-                    }
+                    className="rounded-xl w-10 h-10 text-white"
+                    src={headerData?.logo || null}
                     alt="logo"
                   />
                 </div>
