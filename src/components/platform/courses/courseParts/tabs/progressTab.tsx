@@ -22,7 +22,6 @@ const ProgressTab = () => {
   }
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8">
-    <div className="bg-white rounded-2xl shadow-lg p-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">تقدمك في الدورة</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -70,7 +69,9 @@ const ProgressTab = () => {
             key={lesson?.id}
             className="border border-gray-200 rounded-xl p-4"
           >
-            <h4 className="font-semibold text-gray-900 mb-3">{lesson?.title}</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              {lesson?.title}
+            </h4>
             <div className="flex items-center justify-between mb-2">
               {/* <span className="text-gray-700 font-medium">{unit.title}</span> */}
               <p className="text-sm text-gray-500">
@@ -116,8 +117,5 @@ const ProgressTab = () => {
     </div>
   );
 };
-  );
-};
 
-export default ProgressTab;
 export default ProgressTab;

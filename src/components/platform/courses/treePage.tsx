@@ -226,7 +226,7 @@ const TreePage: React.FC = () => {
                 <BookOpen className="w-6 h-6 text-white" />
               </div> */}
               <div className="text-white">
-                <h1 className="text-3xl font-bold">{data?.title}</h1>
+                <h1 className="text-3xl font-bold">{data?.title || "لا يوجد قسم"}</h1>
                 <p className="text-yellow-100 text-lg">
                   اختر المستوى والأستاذ المناسب
                 </p>
@@ -236,14 +236,14 @@ const TreePage: React.FC = () => {
             <div className="hidden md:flex items-center space-x-4 text-white">
               <div className="text-center">
                 <div className="text-2xl font-bold">
-                  {data?.statistics?.number_of_teachers}
+                  {data?.statistics?.number_of_teachers || 0}
                 </div>
                 <div className="text-sm text-yellow-100">أستاذ</div>
               </div>
               <div className="w-px h-12 bg-white/20"></div>
               <div className="text-center">
                 <div className="text-2xl font-bold">
-                  {data?.statistics?.number_of_students}
+                  {data?.statistics?.number_of_students || 0}
                 </div>
                 <div className="text-sm text-yellow-100">طالب</div>
               </div>

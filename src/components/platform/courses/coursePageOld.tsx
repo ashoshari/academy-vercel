@@ -124,7 +124,6 @@ const CoursePageOld: React.FC = () => {
   const token = window.localStorage.getItem("accessToken");
   const { courseId } = useParams();
   const { data } = useCustomQuery(
-  const { data } = useCustomQuery(
     `/training/students/course/${courseId}/`,
     ["courses"],
     {

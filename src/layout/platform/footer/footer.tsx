@@ -188,6 +188,7 @@ const Footer: React.FC = () => {
                 <a
                   key={index}
                   href={link.link}
+                  target="_blank"
                   className={`w-[25px] h-[25px] p-[5px] ${link.color} rounded-lg flex items-center justify-center hover:${link.hover} transition-colors duration-200`}
                 >
                   {React.createElement(link.icon, { className: "w-5 h-5" })}

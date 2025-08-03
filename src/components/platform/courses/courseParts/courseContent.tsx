@@ -68,7 +68,7 @@ const CourseContent = ({
   // }, []);
 
   // exam
-  const [_, setIsExamMode] = useState(false);
+  // const [_, setIsExamMode] = useState(false);
   // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // const [selectedAnswers, setSelectedAnswers] = useState({});
   // const [timeRemaining, setTimeRemaining] = useState(0);
