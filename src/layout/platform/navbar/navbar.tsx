@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import useTokenStore from "@/store/platform/useToken";
 import useToken from "@/store/platform/useToken";
@@ -8,7 +8,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import toast from "react-hot-toast";
 
 const Navbar: React.FC = () => {
-  const { data, isLoading } = useCustomQuery("/core/footer/", ["footer"]);
+  const { data } = useCustomQuery("/core/footer/", ["footer"]);
 
   const headerData = data?.data;
   const navigate = useNavigate();

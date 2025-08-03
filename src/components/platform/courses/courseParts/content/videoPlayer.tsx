@@ -1,12 +1,8 @@
 import { CheckCircle, FileText, Download, Clock } from "lucide-react";
 import { useLesson } from "@/store/platform/useLesson";
-import { useState } from "react";
 
-const VideoPlayer = ({ currentLesson:current, markLessonComplete }: any) => {
-  const setId = useLesson((state) => state.setId);
-  const id = useLesson((state) => state.id);
-  const [currentLesson, setCurrentLesson] = useState(current);
-  console.log(currentLesson.is_completed);
+const VideoPlayer = ({ markLessonComplete }: any) => {
+  const currentLesson = useLesson((state) => state.currentLesson);
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video bg-black rounded-t-2xl overflow-hidden">
@@ -14,7 +10,7 @@ const VideoPlayer = ({ currentLesson:current, markLessonComplete }: any) => {
           width="100%"
           height="100%"
           src={
-            // currentLesson?.link ||
+            currentLesson?.link ||
             "https://www.youtube.com/embed/watch?v=Eoo4HzILB-M"
           }
           title={currentLesson?.title}
@@ -85,16 +81,16 @@ const VideoPlayer = ({ currentLesson:current, markLessonComplete }: any) => {
         <div className="flex items-center justify-between">
           <button
             onClick={markLessonComplete}
-            disabled={currentLesson.isCompleted}
+            disabled={currentLesson.is_completed}
             className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
-              currentLesson.isCompleted
+              currentLesson.is_completed
                 ? "bg-green-100 text-green-800 cursor-not-allowed"
                 : "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
             }`}
           >
             <CheckCircle className="w-5 h-5" />
             <span>
-              {currentLesson.isCompleted ? "مكتمل" : "وضع علامة مكتمل"}
+              {currentLesson?.is_completed ? "مكتمل" : "وضع علامة مكتمل"}
             </span>
           </button>
         </div>

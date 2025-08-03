@@ -4,12 +4,18 @@ import Header from "./header";
 import { useParams } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
 import CourseContent from "./courseContent";
+import { useLesson } from "@/store/platform/useLesson";
 const CoursePage = () => {
   const [allLessons, setAllLessons] = useState([]);
-  const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [sidebarVisible, setSidebarVisible] = useState(true);
-  const [semesters, setSemesters] = useState([]);
+  const [_, setSemesters] = useState([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const setCurrentLessonIndex = useLesson(
+    (state) => state.setCurrentLessonIndex
+  );
+  const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
+  const currentLesson = useLesson((state) => state.currentLesson);
   const token = window.localStorage.getItem("accessToken");
   const { courseId } = useParams();
   const { data } = useCustomQuery(
@@ -22,7 +28,6 @@ const CoursePage = () => {
     }
   );
   const courseData = data?.data;
-  console.log("courseData", courseData);
   const sidebarCollapseHandler = (state: boolean) => {
     setSidebarCollapsed(state);
   };
@@ -45,7 +50,13 @@ const CoursePage = () => {
       setSemesters(initialized);
     }
   }, [courseData]);
-  const currentLesson = allLessons[currentLessonIndex];
+
+  useEffect(() => {
+    const activeLesson = allLessons[currentLessonIndex];
+    if (activeLesson) {
+      setCurrentLesson(activeLesson);
+    }
+  }, [currentLessonIndex, allLessons]);
 
   useEffect(() => {
     const lessons: any = [];
@@ -122,11 +133,8 @@ const CoursePage = () => {
         courseData={courseData}
       />
       <CourseContent
-        setCurrentLessonIndex={setCurrentLessonIndex}
-        currentLessonIndex={currentLessonIndex}
         allLessons={allLessons}
         courseData={courseData}
-        currentLesson={currentLesson}
         setAllLessons={setAllLessons}
         setSemesters={setSemesters}
       />

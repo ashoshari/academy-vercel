@@ -16,7 +16,7 @@ import {
   File,
   ArrowRight,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
 import useTokenStore from "@/store/platform/useToken";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
@@ -266,7 +266,7 @@ const TeacherProfile: React.FC = () => {
     }
   };
   const handleCourseClick = (course: any) => {
-    if (!course.is_enrolled) {
+    if (course?.is_enrolled || course?.is_free) {
       if (!isMoblieOrTablet) {
         if (isLoggedIn) {
           navigate(`/coursePage/${course?.id}`);
@@ -339,7 +339,10 @@ const TeacherProfile: React.FC = () => {
     >
       <div className="relative">
         <img
-          src={course?.image}
+          src={
+            course?.image ||
+            "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+          }
           alt={course?.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
@@ -408,7 +411,10 @@ const TeacherProfile: React.FC = () => {
     >
       <div className="relative">
         <img
-          src={course?.image}
+          src={
+            course?.image ||
+            "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+          }
           alt={course?.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
@@ -824,7 +830,7 @@ const TeacherProfile: React.FC = () => {
           <div className="min-h-96">
             {activeTab === "free_courses" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {!isLoading && coursesData?.length > 0 ? (
+                {!isLoading && freeCoursesData?.length > 0 ? (
                   freeCoursesData?.map(renderFreeCourseCard)
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">

@@ -28,13 +28,6 @@ import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 //   teachers?: Teacher[];
 //   icon?: React.ComponentType<any>;
 // }
-interface subSubSections {
-  id: string;
-  title: string;
-  description: string;
-  is_published: boolean;
-  order: number;
-}
 
 const TreePage: React.FC = () => {
   const { navHeaderId } = useParams();
@@ -46,6 +39,7 @@ const TreePage: React.FC = () => {
   const navigate = useNavigate();
 
   const data = treeData?.data.find((node: any) => node.id === navHeaderId);
+  console.log("data", data);
   const toggleNode = (nodeId: string) => {
     const newExpanded = new Set(expandedNodes);
     if (newExpanded.has(nodeId)) {

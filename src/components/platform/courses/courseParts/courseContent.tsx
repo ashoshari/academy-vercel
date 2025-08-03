@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Play,
   BarChart3,
@@ -9,68 +9,66 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import VideoPlayer from "./content/videoPlayer";
-import Exam from "./content/exam";
 import toast from "react-hot-toast";
 import { useCustomPost } from "@/hooks/useMutation";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useLesson } from "@/store/platform/useLesson";
+import ProgressTab from "./tabs/progressTab";
+import { FilesTab } from "./tabs/filesTab";
 const CourseContent = ({
-  setCurrentLessonIndex,
-  currentLessonIndex,
-  currentLesson,
   setAllLessons,
   allLessons,
   setSemesters,
-  courseData,
 }: {
-  setCurrentLessonIndex: (index: number) => void;
-  currentLessonIndex: number;
-  currentLesson: any;
   setAllLessons: any;
   allLessons: any;
   setSemesters: any;
   courseData: any;
 }) => {
   const [activeTab, setActiveTab] = useState("content");
+  const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const setCurrentLessonIndex = useLesson(
+    (state) => state.setCurrentLessonIndex
+  );
+  // const currentLesson = useLesson((state) => state.currentLesson);
   const { mutateAsync: completeMutateAsync } = useCustomPost(
     "/training/students/lesson/complete/",
     ["complete"]
   );
 
-  console.log(currentLesson.is_completed);
-  useEffect(() => {
-    const completeLesson = async () => {
-      try {
-        const response = await fetch("/training/students/lesson/complete/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${window.localStorage.getItem(
-              "accessToken"
-            )}`,
-          },
-          body: JSON.stringify({
-            lesson_id: currentLesson.id,
-          }),
-        });
+  // useEffect(() => {
+  //   const completeLesson = async () => {
+  //     try {
+  //       const response = await fetch("/training/students/lesson/complete/", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${window.localStorage.getItem(
+  //             "accessToken"
+  //           )}`,
+  //         },
+  //         body: JSON.stringify({
+  //           lesson_id: currentLesson.id,
+  //         }),
+  //       });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Request failed");
-        }
+  //       if (!response.ok) {
+  //         const errorData = await response.json();
+  //         throw new Error(errorData.message || "Request failed");
+  //       }
 
-        const result = await response.json();
-        console.log("Lesson completion success:", result);
-      } catch (error) {
-        console.error("Error completing lesson:", error);
-        // Optional: toast.error("فشل إرسال الطلب");
-      }
-    };
+  //       const result = await response.json();
+  //       console.log("Lesson completion success:", result);
+  //     } catch (error) {
+  //       console.error("Error completing lesson:", error);
+  //       // Optional: toast.error("فشل إرسال الطلب");
+  //     }
+  //   };
 
-    completeLesson();
-  }, []);
+  //   completeLesson();
+  // }, []);
 
   // exam
-  const [isExamMode, setIsExamMode] = useState(false);
+  const [_, setIsExamMode] = useState(false);
   // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // const [selectedAnswers, setSelectedAnswers] = useState({});
   // const [timeRemaining, setTimeRemaining] = useState(0);
@@ -100,8 +98,6 @@ const CourseContent = ({
   };
   const markLessonComplete = () => {
     const updatedLessons = [...allLessons];
-    console.log(updatedLessons[currentLessonIndex]);
-    console.log(currentLessonIndex);
     updatedLessons[currentLessonIndex].isCompleted = true;
     completeMutateAsync(updatedLessons[currentLessonIndex].id);
 
@@ -172,10 +168,7 @@ const CourseContent = ({
         <div className="space-y-8">
           {/* Main Content */}
 
-          <VideoPlayer
-            currentLesson={currentLesson}
-            markLessonComplete={markLessonComplete}
-          />
+          <VideoPlayer markLessonComplete={markLessonComplete} />
           {/* <Exam/> */}
 
           {/* {isExamMode ? (
@@ -232,10 +225,10 @@ const CourseContent = ({
         </div>
       )}
 
-      {/* {activeTab === "progress" && renderProgressTab()}
-      {activeTab === "files" && renderFilesTab()}
-      {activeTab === "notes" && renderNotesTab()}
-      {activeTab === "questions" && renderQuestionsTab()} */}
+      {activeTab === "progress" && <ProgressTab />}
+      {activeTab === "files" && <FilesTab />}
+      {/* {activeTab === "notes" && renderNotesTab()} */}
+      {/* {activeTab === "questions" && renderQuestionsTab()} */}
     </div>
   );
 };

@@ -3,9 +3,7 @@ import {
   ArrowRight,
   Play,
   FileText,
-  Monitor,
   CheckCircle,
-  Lock,
   Clock,
   ChevronRight,
   ChevronDown,
@@ -125,7 +123,7 @@ import { useParams } from "react-router";
 const CoursePageOld: React.FC = () => {
   const token = window.localStorage.getItem("accessToken");
   const { courseId } = useParams();
-  const { data, isLoading } = useCustomQuery(
+  const { data } = useCustomQuery(
     `/training/students/course/${courseId}/`,
     ["courses"],
     {
@@ -142,7 +140,7 @@ const CoursePageOld: React.FC = () => {
   // }
 
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
-  const isExpanded = Object.keys(courseData?.semesters || {}).length > 0;
+  // const isExpanded = Object.keys(courseData?.semesters || {}).length > 0;
 
   const [chapters, setChapters] = useState<any[]>([]);
 
@@ -192,16 +190,16 @@ const CoursePageOld: React.FC = () => {
   const [examResults, setExamResults] = useState<any>(null);
 
   // Sample course data
-  const courseContent = {
-    id: 0,
-    title: "دورة الرياضيات الشاملة - الجبر والهندسة",
-    instructor: "أ. محمد الأحمد",
-    description: "دورة شاملة تغطي جميع فروع الرياضيات للتوجيهي العلمي",
-    totalLessons: 45,
-    duration: "3 أشهر",
-    rating: 4.9,
-    students: 320,
-  };
+  // const courseContent = {
+  //   id: 0,
+  //   title: "دورة الرياضيات الشاملة - الجبر والهندسة",
+  //   instructor: "أ. محمد الأحمد",
+  //   description: "دورة شاملة تغطي جميع فروع الرياضيات للتوجيهي العلمي",
+  //   totalLessons: 45,
+  //   duration: "3 أشهر",
+  //   rating: 4.9,
+  //   students: 320,
+  // };
 
   // Sample exam data
   const sampleExam: any = {
@@ -251,143 +249,143 @@ const CoursePageOld: React.FC = () => {
 
   useEffect(() => {
     // Initialize course data
-    const initialChapters = [
-      {
-        id: 1,
-        title: "الفصل الأول - الجبر الأساسي",
-        isExpanded: true,
-        units: [
-          {
-            id: 1,
-            title: "الوحدة الأولى - المعادلات الخطية",
-            isExpanded: true,
-            lessons: [
-              {
-                id: 1,
-                title: "مقدمة في المعادلات الخطية",
-                type: "video",
-                duration: "15 دقيقة",
-                videoUrl: "dQw4w9WgXcQ",
-                isCompleted: false,
-                isLocked: false,
-                description: "تعلم أساسيات المعادلات الخطية وكيفية حلها",
-                files: [
-                  {
-                    id: 1,
-                    name: "ملخص الدرس.pdf",
-                    type: "pdf",
-                    size: "2.1 MB",
-                    url: "#",
-                  },
-                  {
-                    id: 2,
-                    name: "أمثلة إضافية.doc",
-                    type: "doc",
-                    size: "1.5 MB",
-                    url: "#",
-                  },
-                ],
-              },
-              {
-                id: 2,
-                title: "حل المعادلات بخطوة واحدة",
-                type: "video",
-                duration: "20 دقيقة",
-                videoUrl: "dQw4w9WgXcQ",
-                isCompleted: false,
-                isLocked: true,
-                description: "طرق حل المعادلات البسيطة",
-                files: [
-                  {
-                    id: 3,
-                    name: "تمارين الدرس.pdf",
-                    type: "pdf",
-                    size: "1.8 MB",
-                    url: "#",
-                  },
-                ],
-              },
-              {
-                id: 3,
-                title: "امتحان الوحدة الأولى",
-                type: "exam",
-                duration: "30 دقيقة",
-                isCompleted: false,
-                isLocked: true,
-                description: "اختبار شامل على المعادلات الخطية",
-              },
-            ],
-          },
-          {
-            id: 2,
-            title: "الوحدة الثانية - المعادلات التربيعية",
-            isExpanded: false,
-            lessons: [
-              {
-                id: 4,
-                title: "مقدمة في المعادلات التربيعية",
-                type: "video",
-                duration: "18 دقيقة",
-                videoUrl: "dQw4w9WgXcQ",
-                isCompleted: false,
-                isLocked: true,
-                description: "فهم المعادلات التربيعية وخصائصها",
-              },
-              {
-                id: 5,
-                title: "طرق حل المعادلات التربيعية",
-                type: "video",
-                duration: "25 دقيقة",
-                videoUrl: "dQw4w9WgXcQ",
-                isCompleted: false,
-                isLocked: true,
-                description: "التحليل والقانون العام",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 2,
-        title: "الفصل الثاني - الهندسة التحليلية",
-        isExpanded: false,
-        units: [
-          {
-            id: 3,
-            title: "الوحدة الأولى - النقاط والمستقيمات",
-            isExpanded: false,
-            lessons: [
-              {
-                id: 6,
-                title: "النظام الإحداثي",
-                type: "video",
-                duration: "22 دقيقة",
-                videoUrl: "dQw4w9WgXcQ",
-                isCompleted: false,
-                isLocked: true,
-                description: "فهم النظام الإحداثي الديكارتي",
-              },
-            ],
-          },
-        ],
-      },
-    ];
+    // const initialChapters = [
+    //   {
+    //     id: 1,
+    //     title: "الفصل الأول - الجبر الأساسي",
+    //     isExpanded: true,
+    //     units: [
+    //       {
+    //         id: 1,
+    //         title: "الوحدة الأولى - المعادلات الخطية",
+    //         isExpanded: true,
+    //         lessons: [
+    //           {
+    //             id: 1,
+    //             title: "مقدمة في المعادلات الخطية",
+    //             type: "video",
+    //             duration: "15 دقيقة",
+    //             videoUrl: "dQw4w9WgXcQ",
+    //             isCompleted: false,
+    //             isLocked: false,
+    //             description: "تعلم أساسيات المعادلات الخطية وكيفية حلها",
+    //             files: [
+    //               {
+    //                 id: 1,
+    //                 name: "ملخص الدرس.pdf",
+    //                 type: "pdf",
+    //                 size: "2.1 MB",
+    //                 url: "#",
+    //               },
+    //               {
+    //                 id: 2,
+    //                 name: "أمثلة إضافية.doc",
+    //                 type: "doc",
+    //                 size: "1.5 MB",
+    //                 url: "#",
+    //               },
+    //             ],
+    //           },
+    //           {
+    //             id: 2,
+    //             title: "حل المعادلات بخطوة واحدة",
+    //             type: "video",
+    //             duration: "20 دقيقة",
+    //             videoUrl: "dQw4w9WgXcQ",
+    //             isCompleted: false,
+    //             isLocked: true,
+    //             description: "طرق حل المعادلات البسيطة",
+    //             files: [
+    //               {
+    //                 id: 3,
+    //                 name: "تمارين الدرس.pdf",
+    //                 type: "pdf",
+    //                 size: "1.8 MB",
+    //                 url: "#",
+    //               },
+    //             ],
+    //           },
+    //           {
+    //             id: 3,
+    //             title: "امتحان الوحدة الأولى",
+    //             type: "exam",
+    //             duration: "30 دقيقة",
+    //             isCompleted: false,
+    //             isLocked: true,
+    //             description: "اختبار شامل على المعادلات الخطية",
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         id: 2,
+    //         title: "الوحدة الثانية - المعادلات التربيعية",
+    //         isExpanded: false,
+    //         lessons: [
+    //           {
+    //             id: 4,
+    //             title: "مقدمة في المعادلات التربيعية",
+    //             type: "video",
+    //             duration: "18 دقيقة",
+    //             videoUrl: "dQw4w9WgXcQ",
+    //             isCompleted: false,
+    //             isLocked: true,
+    //             description: "فهم المعادلات التربيعية وخصائصها",
+    //           },
+    //           {
+    //             id: 5,
+    //             title: "طرق حل المعادلات التربيعية",
+    //             type: "video",
+    //             duration: "25 دقيقة",
+    //             videoUrl: "dQw4w9WgXcQ",
+    //             isCompleted: false,
+    //             isLocked: true,
+    //             description: "التحليل والقانون العام",
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     id: 2,
+    //     title: "الفصل الثاني - الهندسة التحليلية",
+    //     isExpanded: false,
+    //     units: [
+    //       {
+    //         id: 3,
+    //         title: "الوحدة الأولى - النقاط والمستقيمات",
+    //         isExpanded: false,
+    //         lessons: [
+    //           {
+    //             id: 6,
+    //             title: "النظام الإحداثي",
+    //             type: "video",
+    //             duration: "22 دقيقة",
+    //             videoUrl: "dQw4w9WgXcQ",
+    //             isCompleted: false,
+    //             isLocked: true,
+    //             description: "فهم النظام الإحداثي الديكارتي",
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // ];
 
     if (!courseData?.semesters) return;
 
-    const hasSemesters = Object.keys(courseData.semesters).length > 0;
+    // const hasSemesters = Object.keys(courseData.semesters).length > 0;
 
-    const enrichedChapters = Object.values(courseData.semesters).map(
-      (semester: any) => ({
-        ...semester,
-        isExpanded: hasSemesters,
-        units:
-          semester.units?.map((unit: any) => ({
-            ...unit,
-            isExpanded: hasSemesters,
-          })) || [],
-      })
-    );
+    // const enrichedChapters = Object.values(courseData.semesters).map(
+    //   (semester: any) => ({
+    //     ...semester,
+    //     isExpanded: hasSemesters,
+    //     units:
+    //       semester.units?.map((unit: any) => ({
+    //         ...unit,
+    //         isExpanded: hasSemesters,
+    //       })) || [],
+    //   })
+    // );
 
     // setChapters(enrichedChapters);
     // if (isLoading) {
@@ -575,17 +573,17 @@ const CoursePageOld: React.FC = () => {
     );
   };
 
-  const handleLessonClick = (lessonIndex: any) => {
-    const lesson = allLessons[lessonIndex];
-    if (!lesson.isLocked) {
-      setCurrentLessonIndex(lessonIndex);
-      if (lesson.type === "exam") {
-        startExam();
-      } else {
-        setIsExamMode(false);
-      }
-    }
-  };
+  // const handleLessonClick = (lessonIndex: any) => {
+  //   const lesson = allLessons[lessonIndex];
+  //   if (!lesson.isLocked) {
+  //     setCurrentLessonIndex(lessonIndex);
+  //     if (lesson.type === "exam") {
+  //       startExam();
+  //     } else {
+  //       setIsExamMode(false);
+  //     }
+  //   }
+  // };
 
   const markLessonComplete = () => {
     const updatedLessons = [...allLessons];

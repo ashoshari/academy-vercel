@@ -13,7 +13,7 @@ import { useParams } from "react-router";
 const ExamPage = () => {
   const token = window.localStorage.getItem("accessToken");
   const { courseId } = useParams();
-  const { data, isLoading } = useCustomQuery(
+  const { data } = useCustomQuery(
     `/training/students/course/${courseId}/`,
     ["courses"],
     {

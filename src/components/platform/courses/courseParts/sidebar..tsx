@@ -12,14 +12,14 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useExam } from "@/store/platform/useExam";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useLesson } from "@/store/platform/useLesson";
 
 const Sidebar = ({
   setSidebarVisible,
   sidebarVisible,
   sidebarCollapsed,
   sidebarCollapseHandler,
-  setCurrentLessonIndex,
+  // setCurrentLessonIndex,
   courseData,
 }: {
   setSidebarVisible: any;
@@ -30,10 +30,13 @@ const Sidebar = ({
   courseData: any;
 }) => {
   const [semesters, setSemesters] = useState([]);
-  const [active, setActive] = useState(0);
   const setIsExamMode = useExam((state) => state.setIsExamMode);
   const setStartExam = useExam((state) => state.setStartExam);
-  console.log(courseData);
+  const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const setCurrentLessonIndex = useLesson(
+    (state) => state.setCurrentLessonIndex
+  );
+  // console.log(courseData);
   useEffect(() => {
     if (courseData?.semesters) {
       const initialized = courseData.semesters.map((semester: any) => ({
@@ -52,6 +55,25 @@ const Sidebar = ({
       }));
       setSemesters(initialized);
     }
+  }, [courseData]);
+
+function getFirstIncompleteLesson(course: any) {
+  for (const semester of course.semesters || []) {
+    for (const unit of semester.units || []) {
+      for (const topic of unit.topics || []) {
+        for (const lesson of topic.lessons || []) {
+          if (!lesson.is_completed) {
+            console.log
+            return lesson};
+        }
+      }
+    }
+  }
+  return null;
+}
+  useEffect(() => {
+    const lesson = getFirstIncompleteLesson(courseData);
+    if (lesson) setCurrentLessonIndex(lesson || 0);
   }, [courseData]);
   const toggleSemester = (semsterId: any) => {
     setSemesters((prev: any) =>
@@ -100,12 +122,9 @@ const Sidebar = ({
     );
   };
   const handleLessonClick = (lesson: any, lessonIndex: number) => {
-    console.log("lesson", lesson);
-    console.log("lessonIndex", lessonIndex);
-    console.log("lessonType", lesson.type);
     if (lesson.is_completed) {
       setCurrentLessonIndex(lessonIndex);
-      setActive(lessonIndex);
+      // setActive(lessonIndex);
       if (lesson.type != "exam") {
         setIsExamMode(false);
         console.log("NotExam");
@@ -252,7 +271,7 @@ const Sidebar = ({
                                                  ? "bg-green-100 text-green-600 hover:bg-green-200 duration-[0.5s]"
                                                  : "opacity-60"
                                              } py-1 hover:bg-gray-50 rounded ${
-                                            active == index &&
+                                            currentLessonIndex == index &&
                                             "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                                           }`}
                                         >
@@ -265,7 +284,7 @@ const Sidebar = ({
                                                 {lesson.time_in_minutes} دقيقة
                                               </p>
                                             </div>
-                                            {active == index ? (
+                                            {currentLessonIndex == index ? (
                                               <Play className="w-4 h-4" />
                                             ) : lesson.is_completed ? (
                                               <CheckCircle className="w-4 h-4" />
