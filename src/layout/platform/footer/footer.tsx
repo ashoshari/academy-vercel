@@ -24,11 +24,6 @@ const Footer: React.FC = () => {
   const navigate = useNavigate();
   const footerData = data?.data;
 
-  // if (isLoading) {
-  //   console.log("loading");
-  // } else if (footerData) {
-  //     footerData?.links?.map(({ id, title }: { id: string; title: string }) => console.log("id",id," \n name",title))
-  // }
   const socialMediaData: any = [
     {
       name: "Facebook",

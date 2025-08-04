@@ -124,13 +124,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
       formdata.append("name", formData.fullName);
     }
 
-    console.log("Submitting form data:", formdata);
     try {
       const res = isLogin
         ? await loginMutateAsync(formdata)
         : await RegisterMutateAsync(formdata);
       if (res.status) {
-        setTokens(res.data.tokens.access);
+        setTokens(`"${res.data.tokens.access}"`);
         setFormData({ mobile: "", password: "", fullName: "", otp: "" });
         toast.success(
           isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
@@ -144,13 +143,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         // }
       } else {
         // Handle API returning success: false
-        console.log("API response:", res.error);
         toast.error(
           res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
         );
       }
     } catch (error: any) {
-      console.log(error.response.data.error);
       const errorData = error.response?.data?.error;
 
       if (errorData?.mobile_number?.[0]) {

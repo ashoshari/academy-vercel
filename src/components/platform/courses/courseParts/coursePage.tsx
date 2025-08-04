@@ -16,7 +16,7 @@ const CoursePage = () => {
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   const currentLesson = useLesson((state) => state.currentLesson);
-  const token = window.localStorage.getItem("accessToken");
+  const token = window.localStorage.getItem("auth_tokens");
   const { courseId } = useParams();
   const { data } = useCustomQuery(
     `/training/students/course/${courseId}/`,

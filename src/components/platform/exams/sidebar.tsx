@@ -11,7 +11,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useParams } from "react-router";
 
 const ExamPage = () => {
-  const token = window.localStorage.getItem("accessToken");
+  const token = window.localStorage.getItem("auth_tokens");
   const { courseId } = useParams();
   const { data } = useCustomQuery(
     `/training/students/course/${courseId}/`,
@@ -26,7 +26,6 @@ const ExamPage = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [semesters, setSemesters] = useState([]);
-  console.log("courseData", courseData.progress_bar);
   useEffect(() => {
     if (courseData?.semesters) {
       const initialized = courseData.semesters.map((semester: any) => ({
@@ -44,7 +43,6 @@ const ExamPage = () => {
           })) || [],
       }));
       setSemesters(initialized);
-      console.log("initialized", initialized);
     }
   }, [courseData]);
   const toggleSemester = (semsterId: any) => {
@@ -55,7 +53,6 @@ const ExamPage = () => {
     );
   };
 
-  //   console.log("semesters", semesters);
   const toggleUnit = (semesterId: any, unitId: any) => {
     setSemesters((prev: any) =>
       prev.map((sm: any) =>

@@ -15,6 +15,9 @@ import {
   Zap,
   File,
   ArrowRight,
+  FileText,
+  Download,
+  FileArchive,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -22,70 +25,37 @@ import useTokenStore from "@/store/platform/useToken";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import { toast } from "react-hot-toast";
-
-interface Course {
-  id: number;
-  title: string;
-  grade: string;
-  subject: string;
-  description: string;
-  price: number;
-  duration: string;
-  lessons: number;
-  students: number;
-  rating: number;
-  image: string;
-  isActive: boolean;
-}
-
-// interface Session {
-//   id: number;
-//   title: string;
-//   date: string;
-//   time: string;
-//   duration: string;
-//   type: "live" | "recorded";
-//   students: number;
-//   price: number;
-//   description: string;
-// }
-
-// interface File {
-//   id: number;
-//   title: string;
-//   type: "pdf" | "doc" | "ppt" | "video";
-//   size: string;
-//   downloads: number;
-//   uploadDate: string;
-//   description: string;
-//   price: number;
-// }
-
-// interface FreeSession {
-//   id: number;
-//   title: string;
-//   date: string;
-//   time: string;
-//   duration: string;
-//   topic: string;
-//   registered: number;
-//   maxStudents: number;
-//   description: string;
-// }
+import { formatDateTimeSimple } from "@/utils/formatDateTime";
+import { useCustomPost } from "@/hooks/useMutation";
 
 const TeacherProfile: React.FC = () => {
   const navigate = useNavigate();
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const [activeTab, setActiveTab] = useState("free_courses");
   const [showActivationModal, setShowActivationModal] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [activationCode, setActivationCode] = useState("");
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  // Get Teacher
   const { data, isLoading } = useCustomQuery(
     "/training/students/teacher/0bc3c31f-f4c8-4cc9-8e6e-006707650544/",
     ["teachers"]
   );
+  // Handle Download
+  const { mutateAsync: downloadFiles } = useCustomPost(
+    "/training/students/resources-download/",
+    ["downloadFiles"]
+  );
+  const handleDownload = async (resourceId: any) => {
+    try {
+      await downloadFiles({
+        resource_id: resourceId,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleLogin = () => {
     setShowAuthModal(false);
   };
@@ -93,135 +63,14 @@ const TeacherProfile: React.FC = () => {
     setShowAuthModal(true);
   };
   const teacherData = data?.data;
-  const freeCoursesData = data?.data.free_courses;
-  const coursesData = data?.data.courses;
-  const filesData = data?.data.files;
-  const freeExamsData = data?.data.free_exams;
+  const freeCoursesData = data?.data?.free_courses;
+  const coursesData = data?.data?.courses;
+  const filesData = data?.data?.resources;
+  const freeExamsData = data?.data?.free_exams;
 
   const isMoblieOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(
     navigator.userAgent
   );
-  // if (isLoading) {
-  //   console.log("loading");
-  // } else if (teacherData) {
-  //   console.log("teacherData:", freeExamsData);
-  //   // You can also log specific values like:
-  // }
-
-  // Sample sessions data
-  // const sessions: Session[] = [
-  //   {
-  //     id: 1,
-  //     title: "حصة مباشرة - التفاضل والتكامل",
-  //     date: "2025-01-20",
-  //     time: "19:00",
-  //     duration: "90 دقيقة",
-  //     type: "live",
-  //     students: 45,
-  //     price: 15,
-  //     description:
-  //       "شرح مفصل لقوانين التفاضل والتكامل مع حل أمثلة متنوعة وأسئلة الطلاب المباشرة",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "حصة مسجلة - الهندسة التحليلية",
-  //     date: "2025-01-18",
-  //     time: "متاح دائماً",
-  //     duration: "75 دقيقة",
-  //     type: "recorded",
-  //     students: 120,
-  //     price: 10,
-  //     description:
-  //       "شرح شامل للهندسة التحليلية والمعادلات الخطية مع أمثلة تطبيقية",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "حصة مباشرة - حل المعادلات التربيعية",
-  //     date: "2025-01-22",
-  //     time: "20:00",
-  //     duration: "60 دقيقة",
-  //     type: "live",
-  //     students: 38,
-  //     price: 12,
-  //     description:
-  //       "طرق متنوعة لحل المعادلات التربيعية والتطبيقات العملية عليها",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "حصة مسجلة - الإحصاء والاحتمالات",
-  //     date: "2025-01-15",
-  //     time: "متاح دائماً",
-  //     duration: "85 دقيقة",
-  //     type: "recorded",
-  //     students: 95,
-  //     price: 10,
-  //     description:
-  //       "مقدمة شاملة في الإحصاء والاحتمالات مع حل مسائل متدرجة الصعوبة",
-  //   },
-  // ];
-
-  // Sample free sessions data
-  // const freeSessions: FreeSession[] = [
-  //   {
-  //     id: 1,
-  //     title: "ورشة مجانية - نصائح للنجاح في التوجيهي",
-  //     date: "2025-01-25",
-  //     time: "18:00",
-  //     duration: "60 دقيقة",
-  //     topic: "استراتيجيات الدراسة",
-  //     registered: 85,
-  //     maxStudents: 100,
-  //     description:
-  //       "ورشة تفاعلية تقدم أهم النصائح والاستراتيجيات للنجاح في امتحان التوجيهي",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "جلسة أسئلة وأجوبة مجانية",
-  //     date: "2025-01-28",
-  //     time: "19:30",
-  //     duration: "45 دقيقة",
-  //     topic: "حل الشكوك والاستفسارات",
-  //     registered: 62,
-  //     maxStudents: 80,
-  //     description:
-  //       "جلسة مفتوحة للإجابة على جميع أسئلة الطلاب حول مادة الرياضيات",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "حصة تجريبية - التفاضل للمبتدئين",
-  //     date: "2025-01-30",
-  //     time: "20:00",
-  //     duration: "75 دقيقة",
-  //     topic: "مقدمة في التفاضل",
-  //     registered: 45,
-  //     maxStudents: 60,
-  //     description: "حصة تجريبية مجانية لتعريف الطلاب بأساسيات التفاضل وأهميته",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "ورشة حل المسائل الصعبة",
-  //     date: "2025-02-02",
-  //     time: "17:00",
-  //     duration: "90 دقيقة",
-  //     topic: "تقنيات حل المسائل المعقدة",
-  //     registered: 38,
-  //     maxStudents: 50,
-  //     description:
-  //       "ورشة متخصصة لتعليم تقنيات حل المسائل الصعبة والمعقدة في الرياضيات",
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "لقاء تحفيزي - طريق النجاح",
-  //     date: "2025-02-05",
-  //     time: "18:30",
-  //     duration: "30 دقيقة",
-  //     topic: "التحفيز والدافعية",
-  //     registered: 120,
-  //     maxStudents: 150,
-  //     description:
-  //       "لقاء تحفيزي لرفع معنويات الطلاب وتقوية دافعيتهم للدراسة والنجاح",
-  //   },
-  // ];
 
   const tabs = [
     {
@@ -252,7 +101,7 @@ const TeacherProfile: React.FC = () => {
     // { id: "free", title: "حصص مجانية", icon: Gift, count: freeSessions.length },
   ];
 
-  const handleCourseActivation = (course: Course) => {
+  const handleCourseActivation = (course: any) => {
     setSelectedCourse(course);
     setShowActivationModal(true);
   };
@@ -275,7 +124,6 @@ const TeacherProfile: React.FC = () => {
           handleLoginClick();
         }
       } else {
-        console.log("User is on a desktop or laptop");
         navigate(`/phone-user`);
       }
     } else {
@@ -360,15 +208,21 @@ const TeacherProfile: React.FC = () => {
             {course?.name}
           </h3>
           <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg">
-              {course?.level?.name}
-            </span>
-            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
-              {course?.subsection?.title}
-            </span>
-            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-lg">
-              {course?.material?.name}
-            </span>
+            {course?.level?.name && (
+              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg">
+                {course?.level?.name}
+              </span>
+            )}
+            {course?.subsection?.title && (
+              <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
+                {course?.subsection?.title}
+              </span>
+            )}
+            {course?.material?.name && (
+              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-lg">
+                {course?.material?.name}
+              </span>
+            )}
           </div>
         </div>
 
@@ -442,15 +296,21 @@ const TeacherProfile: React.FC = () => {
             {course?.name}
           </h3>
           <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg">
-              {course?.level?.name}
-            </span>
-            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
-              {course?.subsection?.title}
-            </span>
-            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-lg">
-              {course?.material?.name}
-            </span>
+            {course?.level?.name && (
+              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg">
+                {course?.level?.name}
+              </span>
+            )}
+            {course?.subsection?.title && (
+              <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
+                {course?.subsection?.title}
+              </span>
+            )}
+            {course?.material?.name && (
+              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-lg">
+                {course?.material?.name}
+              </span>
+            )}
           </div>
         </div>
 
@@ -499,102 +359,58 @@ const TeacherProfile: React.FC = () => {
       </div>
     </div>
   );
+  const renderFileCard = (file: any) => (
+    <div
+      key={file.id}
+      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
+    >
+      <div className="flex items-center space-x-4 mb-4">
+        <File className="w-12 h-12 text-gray-500" />
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-gray-900">
+            {file?.title || "عنوان"}
+          </h3>
+          <p className="text-gray-600 text-sm">{file?.description || "وصف"}</p>
+        </div>
+      </div>
 
-  // const renderSessionCard = (session: Session) => (
-  //   <div
-  //     key={session.id}
-  //     className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
-  //   >
-  //     <div className="flex items-start justify-between mb-4">
-  //       <div className="flex-1">
-  //         <h3 className="text-lg font-bold text-gray-900 mb-2">
-  //           {session.title}
-  //         </h3>
-  //         <p className="text-gray-600 text-sm mb-3">{session.description}</p>
-  //       </div>
-  //       <div
-  //         className={`px-3 py-1 rounded-full text-xs font-medium ${
-  //           session.type === "live"
-  //             ? "bg-red-100 text-red-800"
-  //             : "bg-blue-100 text-blue-800"
-  //         }`}
-  //       >
-  //         {session.type === "live" ? "🔴 مباشر" : "📹 مسجل"}
-  //       </div>
-  //     </div>
+      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+        <div className="flex items-center space-x-2">
+          <FileText className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">
+            {(file?.file_size / 1024).toFixed(1) || 0} MB
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Download className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Clock className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">
+            {formatDateTimeSimple(file?.created_at) || "date"}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <FileArchive className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">{file?.file_type || "File"}</span>
+        </div>
+      </div>
 
-  //     <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-  //       <div className="flex items-center space-x-2">
-  //         <Calendar className="w-4 h-4 text-gray-500" />
-  //         <span className="text-gray-600">{session.date}</span>
-  //       </div>
-  //       <div className="flex items-center space-x-2">
-  //         <Clock className="w-4 h-4 text-gray-500" />
-  //         <span className="text-gray-600">{session.time}</span>
-  //       </div>
-  //       <div className="flex items-center space-x-2">
-  //         <Timer className="w-4 h-4 text-gray-500" />
-  //         <span className="text-gray-600">{session.duration}</span>
-  //       </div>
-  //       <div className="flex items-center space-x-2">
-  //         <Users className="w-4 h-4 text-gray-500" />
-  //         <span className="text-gray-600">{session.students} طالب</span>
-  //       </div>
-  //     </div>
-
-  //     <div className="flex items-center justify-between">
-  //       <span className="text-2xl font-bold text-orange-600">
-  //         {session.price} دينار
-  //       </span>
-  //       <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105">
-  //         {session.type === "live" ? "احجز مكانك" : "شاهد الآن"}
-  //       </button>
-  //     </div>
-  //   </div>
-  // );
-
-  // const renderFileCard = (file: any) =>(
-  //   <div
-  //     key={file.id}
-  //     className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
-  //   >
-  //     <div className="flex items-start space-x-4 mb-4">
-  //       <div className="text-4xl">{getFileIcon(file.type)}</div>
-  //       <div className="flex-1">
-  //         <h3 className="text-lg font-bold text-gray-900 mb-2">{file.title}</h3>
-  //         <p className="text-gray-600 text-sm mb-3">{file.description}</p>
-  //       </div>
-  //     </div>
-
-  //     <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-  //       <div className="flex items-center space-x-2">
-  //         <FileDown className="w-4 h-4 text-gray-500" />
-  //         <span className="text-gray-600">{file.size}</span>
-  //       </div>
-  //       <div className="flex items-center space-x-2">
-  //         <Download className="w-4 h-4 text-gray-500" />
-  //         <span className="text-gray-600">{file.downloads} تحميل</span>
-  //       </div>
-  //       <div className="flex items-center space-x-2">
-  //         <Calendar className="w-4 h-4 text-gray-500" />
-  //         <span className="text-gray-600">{file.uploadDate}</span>
-  //       </div>
-  //       <div className="flex items-center space-x-2">
-  //         <span className="text-gray-600">{file.type.toUpperCase()}</span>
-  //       </div>
-  //     </div>
-
-  //     <div className="flex items-center justify-between">
-  //       <span className="text-xl font-bold text-green-600">
-  //         {file.price} دينار
-  //       </span>
-  //       <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2">
-  //         <Download className="w-4 h-4" />
-  //         <span>تحميل</span>
-  //       </button>
-  //     </div>
-  //   </div>
-  // )
+      <div className="flex w-full items-center justify-start">
+        <a
+          href={file?.file}
+          target="_blank"
+          onClick={() => handleDownload(file?.id)}
+          download
+          className="bg-gradient-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+        >
+          <Download className="w-4 h-4" />
+          <p className="">تحميل</p>
+        </a>
+      </div>
+    </div>
+  );
 
   const renderExamCard = (exam: any) => (
     <div
@@ -658,69 +474,6 @@ const TeacherProfile: React.FC = () => {
       </button>
     </div>
   );
-
-  // const renderFreeSessionCard = (session: FreeSession) => (
-  //   <div
-  //     key={session.id}
-  //     className="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-green-200 p-6 group"
-  //   >
-  //     <div className="flex items-start justify-between mb-4">
-  //       <div className="flex-1">
-  //         <div className="flex items-center space-x-2 mb-2">
-  //           <Gift className="w-5 h-5 text-green-600" />
-  //           <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-  //             مجاني
-  //           </span>
-  //         </div>
-  //         <h3 className="text-lg font-bold text-gray-900 mb-2">
-  //           {session.title}
-  //         </h3>
-  //         <p className="text-gray-600 text-sm mb-3">{session.description}</p>
-  //       </div>
-  //     </div>
-
-  //     <div className="bg-white rounded-xl p-4 mb-4">
-  //       <div className="grid grid-cols-2 gap-4 text-sm">
-  //         <div className="flex items-center space-x-2">
-  //           <Calendar className="w-4 h-4 text-gray-500" />
-  //           <span className="text-gray-600">{session.date}</span>
-  //         </div>
-  //         <div className="flex items-center space-x-2">
-  //           <Clock className="w-4 h-4 text-gray-500" />
-  //           <span className="text-gray-600">{session.time}</span>
-  //         </div>
-  //         <div className="flex items-center space-x-2">
-  //           <Timer className="w-4 h-4 text-gray-500" />
-  //           <span className="text-gray-600">{session.duration}</span>
-  //         </div>
-  //         <div className="flex items-center space-x-2">
-  //           <BookOpen className="w-4 h-4 text-gray-500" />
-  //           <span className="text-gray-600">{session.topic}</span>
-  //         </div>
-  //       </div>
-  //     </div>
-
-  //     <div className="flex items-center justify-between mb-4">
-  //       <div className="w-24 bg-gray-200 rounded-full h-2">
-  //         <div
-  //           className="bg-green-500 h-2 rounded-full transition-all duration-300"
-  //           style={{
-  //             width: `${(session.registered / session.maxStudents) * 100}%`,
-  //           }}
-  //         ></div>
-  //       </div>
-  //       <div className="text-sm text-gray-600">
-  //         <span className="font-medium">{session.registered}</span> من{" "}
-  //         <span className="font-medium">{session.maxStudents}</span> مسجل
-  //       </div>
-  //     </div>
-
-  //     <button className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2">
-  //       <Gift className="w-5 h-5" />
-  //       <span>سجل مجاناً</span>
-  //     </button>
-  //   </div>
-  // );
 
   return (
     <section>
@@ -869,8 +622,7 @@ const TeacherProfile: React.FC = () => {
             {activeTab === "files" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {!isLoading && filesData?.length > 0 ? (
-                  // filesData?.map(renderFileCard)
-                  ""
+                  filesData?.map(renderFileCard)
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
@@ -924,19 +676,19 @@ const TeacherProfile: React.FC = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   تفعيل الدورة
                 </h3>
-                <p className="text-gray-600">{selectedCourse.title}</p>
+                <p className="text-gray-600">{selectedCourse?.title}</p>
               </div>
 
               <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-700 font-medium">سعر الدورة:</span>
                   <span className="text-2xl font-bold text-orange-600">
-                    {selectedCourse.price} دينار
+                    {selectedCourse?.price} دينار
                   </span>
                 </div>
                 <div className="text-sm text-gray-600">
-                  <p>• {selectedCourse.lessons} درس تفاعلي</p>
-                  <p>• مدة الدورة: {selectedCourse.duration}</p>
+                  <p>• {selectedCourse?.lessons} درس تفاعلي</p>
+                  <p>• مدة الدورة: {selectedCourse?.duration}</p>
                   <p>• دعم فني مستمر</p>
                 </div>
               </div>

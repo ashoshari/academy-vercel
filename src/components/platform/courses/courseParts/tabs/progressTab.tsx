@@ -2,9 +2,9 @@ import { BarChart3, CheckCircle, Target } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useParams } from "react-router";
 const ProgressTab = () => {
-  const token = window.localStorage.getItem("accessToken");
+  const token = window.localStorage.getItem("auth_tokens");
   const { courseId } = useParams();
-  const { data, isLoading } = useCustomQuery(
+  const { data } = useCustomQuery(
     `/training/students/course/${courseId}/progress/`,
     ["progress"],
     {
@@ -15,11 +15,7 @@ const ProgressTab = () => {
   );
 
   const courseProgress = data?.data;
-  if (isLoading) {
-    console.log("loading");
-  } else {
-    console.log("courseProgress:", courseProgress?.progress_details);
-  }
+  
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">تقدمك في الدورة</h2>

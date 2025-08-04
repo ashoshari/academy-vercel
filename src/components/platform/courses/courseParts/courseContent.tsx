@@ -13,7 +13,9 @@ import toast from "react-hot-toast";
 import { useCustomPost } from "@/hooks/useMutation";
 import { useLesson } from "@/store/platform/useLesson";
 import ProgressTab from "./tabs/progressTab";
-import { FilesTab } from "./tabs/filesTab";
+import FilesTab from "./tabs/filesTab";
+import NotesTab from "./tabs/notesTab";
+import QuestionsTab from "./tabs/questionsTab";
 const CourseContent = ({
   setAllLessons,
   allLessons,
@@ -227,8 +229,8 @@ const CourseContent = ({
 
       {activeTab === "progress" && <ProgressTab />}
       {activeTab === "files" && <FilesTab />}
-      {/* {activeTab === "notes" && renderNotesTab()} */}
-      {/* {activeTab === "questions" && renderQuestionsTab()} */}
+      {activeTab === "notes" && <NotesTab />}
+      {activeTab === "questions" && <QuestionsTab />}
     </div>
   );
 };

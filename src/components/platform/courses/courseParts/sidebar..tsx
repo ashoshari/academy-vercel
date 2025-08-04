@@ -36,18 +36,17 @@ const Sidebar = ({
   const setCurrentLessonIndex = useLesson(
     (state) => state.setCurrentLessonIndex
   );
-  // console.log(courseData);
   useEffect(() => {
     if (courseData?.semesters) {
-      const initialized = courseData.semesters.map((semester: any) => ({
+      const initialized = courseData?.semesters?.map((semester: any) => ({
         ...semester,
         isExpanded: false,
         units:
-          semester.units?.map((unit: any) => ({
+          semester?.units?.map((unit: any) => ({
             ...unit,
             isExpanded: false,
             topics:
-              unit.topics?.map((topic: any) => ({
+              unit?.topics?.map((topic: any) => ({
                 ...topic,
                 isExpanded: false,
               })) || [],
@@ -57,20 +56,20 @@ const Sidebar = ({
     }
   }, [courseData]);
 
-function getFirstIncompleteLesson(course: any) {
-  for (const semester of course.semesters || []) {
-    for (const unit of semester.units || []) {
-      for (const topic of unit.topics || []) {
-        for (const lesson of topic.lessons || []) {
-          if (!lesson.is_completed) {
-            console.log
-            return lesson};
+  function getFirstIncompleteLesson(course: any) {
+    for (const semester of course?.semesters || []) {
+      for (const unit of semester?.units || []) {
+        for (const topic of unit?.topics || []) {
+          for (const lesson of topic?.lessons || []) {
+            if (!lesson?.is_completed) {
+              return lesson;
+            }
+          }
         }
       }
     }
+    return null;
   }
-  return null;
-}
   useEffect(() => {
     const lesson = getFirstIncompleteLesson(courseData);
     if (lesson) setCurrentLessonIndex(lesson || 0);
@@ -85,12 +84,12 @@ function getFirstIncompleteLesson(course: any) {
   const toggleUnit = (semesterId: any, unitId: any) => {
     setSemesters((prev: any) =>
       prev.map((sm: any) =>
-        sm.id === semesterId
+        sm?.id === semesterId
           ? {
               ...sm,
-              units: sm.units.map((unit: any) =>
+              units: sm?.units?.map((unit: any) =>
                 unit.id === unitId
-                  ? { ...unit, isExpanded: !unit.isExpanded }
+                  ? { ...unit, isExpanded: !unit?.isExpanded }
                   : unit
               ),
             }
@@ -104,13 +103,13 @@ function getFirstIncompleteLesson(course: any) {
         sm.id === semesterId
           ? {
               ...sm,
-              units: sm.units.map((unit: any) =>
-                unit.id === unitId
+              units: sm?.units.map((unit: any) =>
+                unit?.id === unitId
                   ? {
                       ...unit,
-                      topics: unit.topics.map((topic: any) =>
-                        topic.id === topicId
-                          ? { ...topic, isExpanded: !topic.isExpanded }
+                      topics: unit?.topics.map((topic: any) =>
+                        topic?.id === topicId
+                          ? { ...topic, isExpanded: !topic?.isExpanded }
                           : topic
                       ),
                     }
@@ -127,10 +126,8 @@ function getFirstIncompleteLesson(course: any) {
       // setActive(lessonIndex);
       if (lesson.type != "exam") {
         setIsExamMode(false);
-        console.log("NotExam");
       } else {
         setStartExam(true);
-        console.log("Exam");
       }
     } else {
       toast.error("يجب استكمال الدروس السابق");
@@ -248,26 +245,29 @@ function getFirstIncompleteLesson(course: any) {
                                 className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100"
                               >
                                 <span className="text-xs">{topic.title}</span>
-                                {topic.isExpanded ? (
-                                  <ChevronDown className="w-4 h-4 text-gray-500" />
-                                ) : (
-                                  <ChevronRight className="w-4 h-4 text-gray-500" />
-                                )}
+
+                                {topic.lessons.length > 0 ? (
+                                  topic.isExpanded ? (
+                                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                                  ) : (
+                                    <ChevronRight className="w-4 h-4 text-gray-500" />
+                                  )
+                                ) : null}
                               </button>
 
                               {topic.isExpanded &&
                                 topic.lessons?.length > 0 && (
                                   <div className="my-[10px] flex-col text-start w-full">
-                                    {topic.lessons.map(
+                                    {topic?.lessons?.map(
                                       (lesson: any, index: number) => (
                                         <button
                                           onClick={() =>
                                             handleLessonClick(lesson, index)
                                           }
-                                          key={lesson.id}
+                                          key={lesson?.id}
                                           className={`my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
                                              ${
-                                               lesson.is_completed
+                                               lesson?.is_completed
                                                  ? "bg-green-100 text-green-600 hover:bg-green-200 duration-[0.5s]"
                                                  : "opacity-60"
                                              } py-1 hover:bg-gray-50 rounded ${
@@ -278,7 +278,7 @@ function getFirstIncompleteLesson(course: any) {
                                           <div className="flex justify-between items-center p-[5px] w-full">
                                             <div className="text-start">
                                               <h6 className="">
-                                                {lesson.title}
+                                                {lesson?.title}
                                               </h6>
                                               <p className="text-[0.7rem]">
                                                 {lesson.time_in_minutes} دقيقة
