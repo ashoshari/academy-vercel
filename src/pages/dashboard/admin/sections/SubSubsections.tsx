@@ -284,7 +284,7 @@ const SubsectionsPage = () => {
       .mutateAsync({
         name: newMaterial.material,
         material: newMaterial.material,
-        specialization: selectedSpecialization.id,
+        specializations: [selectedSpecialization.id],
         is_published: newMaterial.is_published,
       })
       .then((s) => {
