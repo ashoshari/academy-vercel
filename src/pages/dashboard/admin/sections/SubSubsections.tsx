@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Plus,
-  Search,
+  // Search,
   Folder,
   BookOpen,
   FileText,
@@ -10,10 +10,13 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
-import TreeItem from "@/components/dashboard/admin/sebsections/TreeItem";
-import AddSubsectionModal from "@/components/dashboard/admin/sebsections/AddSubsectionModal";
-import EditSubsectionModal from "@/components/dashboard/admin/sebsections/EditSubsectionModal";
-import LinkSectionsModal from "@/components/dashboard/admin/sebsections/LinkSectionsModal";
+import TreeItem from "@/components/dashboard/admin/subsections/TreeItem";
+import AddSubsectionModal from "@/components/dashboard/admin/subsections/AddSubsectionModal";
+import LinkSectionsModal from "@/components/dashboard/admin/subsections/LinkSectionsModal";
+import { useCustomPost } from "@/hooks/useMutation";
+import toast from "react-hot-toast";
+import handleErrorAlerts from "@/utils/showErrorMessages";
+import EditModal from "@/components/dashboard/admin/subsections/EditSubsectionModal";
 
 export interface SubSection {
   id: number;
@@ -32,30 +35,108 @@ const SubsectionsPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
-  const [selectedSubsection, setSelectedSubsection] =
-    useState<SubSection | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
 
-  const [newSubsection, setNewSubsection] = useState<Partial<SubSection>>({
-    name: "",
+  const [showAddSubSubsectionModal, setShowAddSubSubsectionModal] =
+    useState(false);
+  const [showEditSubSubsectionModal, setShowEditSubSubsectionModal] =
+    useState(false);
+
+  const [showAddSpecializationsModal, setShowAddSpecializationsModal] =
+    useState(false);
+  const [showEditSpecializationsModal, setShowEditSpecializationsModal] =
+    useState(false);
+
+  const [showAddMaterialModal, setShowAddMaterialModal] = useState(false);
+  const [showEditMaterialModal, setShowEditMaterialModal] = useState(false);
+
+  const [selectedSubsection, setSelectedSubsection] = useState<any>({
+    id: "",
+    title: "",
     description: "",
-    parentId: null,
-    level: 1,
-    linkedSections: [],
+    sections: [],
+    order: 0,
+    is_published: false,
+    // icon: ""
+  });
+  const [selectedSubSubsection, setSelectedSubSubsection] = useState<any>();
+  const [selectedSpecialization, setSelectedSpecialization] = useState<any>();
+  const [selectedMaterial, setSelectedMaterial] = useState<any>();
+
+  // const [searchTerm, setSearchTerm] = useState("");
+
+  const [newSubsection, setNewSubsection] = useState<any>({
+    title: "",
+    description: "",
+    sections: [],
+    order: 0,
+    is_published: false,
+    // icon: "",
   });
 
-  const data = useCustomQuery("/training/admin/subsections/", ["subsections"]);
+  const [newSubSubsection, setNewSubSubsection] = useState<any>({
+    title: "",
+    description: "",
+    is_published: false,
+    subsection: "",
+    order: 0,
+  });
 
-  // Build tree structure
-  const buildTree = (items: any[], id: string | null = null): any[] => {
-    return items
-      ?.filter((item) => item.id == id)
-      .sort((a, b) => a.title.localeCompare(b.title))
-      .map((item) => ({
-        ...item,
-        children: buildTree(items, item.id),
-      })) as any[];
-  };
+  const [newSpecialization, setNewSpecialization] = useState<any>({
+    name: "",
+    description: "",
+    is_published: false,
+    order: 0,
+    subsubsection: "",
+  });
+
+  const [newMaterial, setNewMaterial] = useState<any>({
+    material: "",
+    is_published: false,
+    specialization: "",
+  });
+
+  const dataStatistics = useCustomQuery(
+    "/training/admin/subsections-statistics/",
+    ["subsections-statistics"]
+  );
+  const data = useCustomQuery("/training/admin/subsections/", ["subsections"]);
+  const sectionsData = useCustomQuery("/training/admin/sections/", [
+    "sections",
+  ]);
+  const subsubSectionsData = useCustomQuery("/training/admin/subsubsections/", [
+    "subsubsections",
+  ]);
+  const specializationsData = useCustomQuery(
+    "/training/admin/specializations/",
+    ["specializations"]
+  );
+
+  const addSubSection = useCustomPost("/training/admin/subsections/", [
+    "subsections",
+    "sections",
+    "subsections-statistics",
+  ]);
+
+  const addSubSubSection = useCustomPost("/training/admin/subsubsections/", [
+    "subsections",
+    "subsections-statistics",
+  ]);
+
+  const addSpecialization = useCustomPost("/training/admin/specializations/", [
+    "subsections",
+    "subsubsections",
+    "subsections-statistics",
+  ]);
+
+  const addMaterial = useCustomPost(
+    "/training/admin/specialization-materials/",
+    [
+      "subsections",
+      "subsubsections",
+      "specializations",
+      "subsections-statistics",
+    ]
+  );
 
   const getMainSectionIcon = (sectionId: string) => {
     const section = data?.data?.data?.sections?.find(
@@ -133,24 +214,88 @@ const SubsectionsPage = () => {
     //   });
     //   setShowAddModal(false);
     // }
+
+    // console.log("newSubsection", newSubsection);
+
+    addSubSection
+      .mutateAsync({
+        title: newSubsection.title,
+        description: newSubsection.description,
+        sections: newSubsection.sections,
+        is_published: newSubsection.is_published,
+        // icon: "ee37f6cb-e059-4c64-b7f4-de2014a21f01",
+        order: newSubsection.order,
+      })
+      .then((s) => {
+        setShowAddModal(false);
+        if (s.status) {
+          toast.success(s.message ?? "success");
+        } else {
+          toast.error(s.message ?? "Error");
+        }
+      })
+      .catch((err) => handleErrorAlerts(err?.response?.data?.error));
   };
 
-  const handleEditSubsection = () => {
-    // if (
-    //   selectedSubsection &&
-    //   selectedSubsection.name &&
-    //   selectedSubsection.description
-    // ) {
-    //   setSubsections(
-    //     subsections.map((subsection) =>
-    //       subsection.id === selectedSubsection.id
-    //         ? selectedSubsection
-    //         : subsection
-    //     )
-    //   );
-    //   setShowEditModal(false);
-    //   setSelectedSubsection(null);
-    // }
+  // Add Subsubsection
+
+  const handleAddSubSubsection = () => {
+    addSubSubSection
+      .mutateAsync({
+        title: newSubSubsection.title,
+        description: newSubSubsection.description,
+        is_published: newSubSubsection.is_published,
+        subsection: selectedSubsection.id,
+        order: newSubSubsection.order,
+      })
+      .then((s) => {
+        setShowAddSubSubsectionModal(false);
+        if (s.status) {
+          toast.success(s.message ?? "success");
+        } else {
+          toast.error(s.message ?? "Error");
+        }
+      })
+      .catch((err) => handleErrorAlerts(err?.response?.data?.error));
+  };
+
+  const handleAddSpecialization = () => {
+    addSpecialization
+      .mutateAsync({
+        name: newSpecialization.name,
+        description: newSpecialization.description,
+        is_published: newSpecialization.is_published,
+        subsubsection: selectedSubSubsection.id,
+        order: newSpecialization.order,
+      })
+      .then((s) => {
+        setShowAddSpecializationsModal(false);
+        if (s.status) {
+          toast.success(s.message ?? "success");
+        } else {
+          toast.error(s.message ?? "Error");
+        }
+      })
+      .catch((err) => handleErrorAlerts(err?.response?.data?.error));
+  };
+
+  const handleAddMaterial = () => {
+    addMaterial
+      .mutateAsync({
+        name: newMaterial.material,
+        material: newMaterial.material,
+        specialization: selectedSpecialization.id,
+        is_published: newMaterial.is_published,
+      })
+      .then((s) => {
+        setShowAddMaterialModal(false);
+        if (s.status) {
+          toast.success(s.message ?? "success");
+        } else {
+          toast.error(s.message ?? "Error");
+        }
+      })
+      .catch((err) => handleErrorAlerts(err?.response?.data?.error));
   };
 
   // const handleDeleteSubsection = (id: number) => {
@@ -169,20 +314,20 @@ const SubsectionsPage = () => {
   // }
   // };
 
-  const updateLinkedSections = (
-    subsectionId: number,
-    linkedSections: number[]
-  ) => {
-    // setSubsections(
-    //   subsections.map((subsection) =>
-    //     subsection.id === subsectionId
-    //       ? { ...subsection, linkedSections }
-    //       : subsection
-    //   )
-    // );
-    console.log(subsectionId);
-    console.log(linkedSections);
-  };
+  // const updateLinkedSections = (
+  //   subsectionId: number,
+  //   linkedSections: number[]
+  // ) => {
+  //   // setSubsections(
+  //   //   subsections.map((subsection) =>
+  //   //     subsection.id === subsectionId
+  //   //       ? { ...subsection, linkedSections }
+  //   //       : subsection
+  //   //   )
+  //   // );
+  //   console.log(subsectionId);
+  //   console.log(linkedSections);
+  // };
 
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
     {}
@@ -216,7 +361,7 @@ const SubsectionsPage = () => {
 
       {/* Search and Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div className="lg:col-span-2">
+        {/* <div className="lg:col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -229,21 +374,27 @@ const SubsectionsPage = () => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
-          <p className="text-2xl font-bold text-orange-600">
-            {/* {subsections.length} */}1
+          <p className="text-2xl font-bold text-blue-600">
+            {dataStatistics?.data?.data?.total_subsections}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأقسام</p>
         </div>
 
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-green-600">
-            {/* {subsections.filter((s) => s.linkedSections.length > 0).length} */}
-            11
+            {dataStatistics?.data?.data?.active_subsections}
           </p>
-          <p className="text-sm text-gray-600">الأقسام المرتبطة</p>
+          <p className="text-sm text-gray-600">الأقسام المفعلة</p>
+        </div>
+
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+          <p className="text-2xl font-bold text-red-600">
+            {dataStatistics?.data?.data?.inactive_subsections}
+          </p>
+          <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
         </div>
       </div>
 
@@ -261,24 +412,32 @@ const SubsectionsPage = () => {
                   item={item}
                   toggleExpanded={toggleExpanded}
                   isExpanded={isExpanded}
-                  // showSubsub={showSubsub}
-                  // setShowSubsub={setShowSubsub}
                   type="subsections"
+                  setShowAddSubSubsectionModal={setShowAddSubSubsectionModal}
+                  setShowEditModal={setShowEditModal}
+                  setSelectedSubsection={setSelectedSubsection}
+                  setShowLinkModal={setShowLinkModal}
                 />
                 {isExpanded &&
                   item?.subsubsections?.length > 0 &&
                   item?.subsubsections?.map((s: any) => {
                     const isSubExpanded = expandedItems[s.id];
                     return (
-                      <>
+                      <React.Fragment key={s.id}>
                         <TreeItem
                           getMainSectionColor={getMainSectionColor}
                           getMainSectionIcon={getMainSectionIcon}
                           index={2}
                           item={s}
+                          subSectionId={item.id}
+                          setShowEditSubSubsectionModal={
+                            setShowEditSubSubsectionModal
+                          }
+                          setShowAddSpecializationsModal={
+                            setShowAddSpecializationsModal
+                          }
+                          setSelectedSubSubsection={setSelectedSubSubsection}
                           isExpanded={isSubExpanded}
-                          // expand={expand}
-                          // setExpand={setExpand}
                           key={s.id}
                           toggleExpanded={toggleExpanded}
                           type="subsubsections"
@@ -288,14 +447,22 @@ const SubsectionsPage = () => {
                           s?.specializations?.map((spec: any) => {
                             const isSpecExpanded = expandedItems[spec.id];
                             return (
-                              <>
+                              <React.Fragment key={spec.id}>
                                 <TreeItem
                                   getMainSectionColor={getMainSectionColor}
                                   getMainSectionIcon={getMainSectionIcon}
                                   index={3}
                                   item={spec}
-                                  // expand={expand}
-                                  // setExpand={setExpand}
+                                  setShowEditSpecializationsModal={
+                                    setShowEditSpecializationsModal
+                                  }
+                                  setSelectedSpecialization={
+                                    setSelectedSpecialization
+                                  }
+                                  setShowAddMaterialModal={
+                                    setShowAddMaterialModal
+                                  }
+                                  subsubSectionId={s.id}
                                   key={spec.id}
                                   isExpanded={isSpecExpanded}
                                   toggleExpanded={toggleExpanded}
@@ -313,20 +480,25 @@ const SubsectionsPage = () => {
                                           getMainSectionIcon={
                                             getMainSectionIcon
                                           }
+                                          setShowEditMaterialModal={
+                                            setShowEditMaterialModal
+                                          }
+                                          setSelectedMaterial={
+                                            setSelectedMaterial
+                                          }
+                                          specialization={spec.id}
                                           index={4}
                                           item={mat}
                                           key={mat.id}
-                                          // expand={expand}
-                                          // setExpand={setExpand}
-                                          type="specialization_materials"
+                                          type="materials"
                                         />
                                       );
                                     }
                                   )}
-                              </>
+                              </React.Fragment>
                             );
                           })}
-                      </>
+                      </React.Fragment>
                     );
                   })}
               </div>
@@ -335,15 +507,15 @@ const SubsectionsPage = () => {
         ) : (
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
             <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-800 mb-2">
+            {/* <h3 className="text-lg font-medium text-gray-800 mb-2">
               {searchTerm ? "لا توجد نتائج" : "لا توجد أقسام فرعية"}
-            </h3>
+            </h3> */}
             <p className="text-gray-500 mb-6">
-              {searchTerm
+              {data?.data?.data?.length === 0
                 ? "لم يتم العثور على أقسام تطابق البحث"
                 : "ابدأ بإضافة قسم فرعي جديد لتنظيم المحتوى"}
             </p>
-            {!searchTerm && (
+            {data?.data?.data?.lenght === 0 && (
               <button
                 onClick={() => setShowAddModal(true)}
                 className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
@@ -359,34 +531,108 @@ const SubsectionsPage = () => {
       {/* Modals */}
       {showAddModal && (
         <AddSubsectionModal
-          getMainSectionIcon={getMainSectionIcon}
-          handleAddSubsection={handleAddSubsection}
-          mainSections={[]}
-          newSubsection={newSubsection}
-          setNewSubsection={setNewSubsection}
-          setShowAddModal={setShowAddModal}
-          subsections={[]}
+          level="sub"
+          onSave={handleAddSubsection}
+          mainSections={sectionsData.data.data ?? []}
+          data={newSubsection}
+          onChange={setNewSubsection}
+          onClose={setShowAddModal}
         />
       )}
       {showEditModal && (
-        <EditSubsectionModal
-          handleEditSubsection={handleEditSubsection}
-          selectedSubsection={selectedSubsection}
-          setSelectedSubsection={setSelectedSubsection}
-          setShowEditModal={setShowEditModal}
-          subsections={[]}
+        <EditModal
+          level="sub"
+          endpointBase="/training/admin/subsections/"
+          queryKey={["subsections"]}
+          mainSections={sectionsData.data.data ?? []}
+          data={selectedSubsection}
+          onChange={setSelectedSubsection}
+          onClose={() => setShowEditModal(false)}
         />
       )}
       {showLinkModal && (
         <LinkSectionsModal
           getMainSectionColor={getMainSectionColor}
           getMainSectionIcon={getMainSectionIcon}
-          mainSections={[]}
+          mainSections={sectionsData.data.data ?? []}
           selectedSubsection={selectedSubsection}
           setSelectedSubsection={setSelectedSubsection}
-          updateLinkedSections={updateLinkedSections}
-          handleAddSubsection={handleAddSubsection}
           setShowLinkModal={setShowLinkModal}
+        />
+      )}
+
+      {/* Subsubsections Modals */}
+
+      {showAddSubSubsectionModal && (
+        <AddSubsectionModal
+          level="subsub"
+          onSave={handleAddSubSubsection}
+          data={newSubSubsection}
+          onChange={setNewSubSubsection}
+          onClose={setShowAddSubSubsectionModal}
+          parent={selectedSubsection}
+        />
+      )}
+
+      {showEditSubSubsectionModal && (
+        <EditModal
+          level="subsub"
+          endpointBase="/training/admin/subsubsections/"
+          queryKey={["subsections"]}
+          mainSections={data?.data?.data ?? []}
+          data={selectedSubSubsection}
+          onChange={setSelectedSubSubsection}
+          onClose={() => setShowEditSubSubsectionModal(false)}
+        />
+      )}
+
+      {/* Specializations Modals */}
+
+      {showAddSpecializationsModal && (
+        <AddSubsectionModal
+          level="spec"
+          onSave={handleAddSpecialization}
+          data={newSpecialization}
+          onChange={setNewSpecialization}
+          onClose={setShowAddSpecializationsModal}
+          parent={selectedSubSubsection}
+        />
+      )}
+
+      {showEditSpecializationsModal && (
+        <EditModal
+          level="spec"
+          endpointBase="/training/admin/specializations/"
+          queryKey={["subsections", "subsubsections"]}
+          mainSections={subsubSectionsData?.data?.data ?? []}
+          data={selectedSpecialization}
+          onChange={setSelectedSpecialization}
+          onClose={() => setShowEditSpecializationsModal(false)}
+        />
+      )}
+
+      {/* Material Modals */}
+
+      {showAddMaterialModal && (
+        <AddSubsectionModal
+          level="mat"
+          onSave={handleAddMaterial}
+          data={newMaterial}
+          onChange={setNewMaterial}
+          onClose={setShowAddMaterialModal}
+          parent={selectedSpecialization}
+        />
+      )}
+
+      {showEditMaterialModal && (
+        <EditModal
+          level="mat"
+          endpointBase="/training/admin/specialization-materials/"
+          queryKey={["subsections", "subsubsections", "specializations"]}
+          mainSections={specializationsData?.data?.data ?? []}
+          data={selectedMaterial}
+          onChange={setSelectedMaterial}
+          onClose={() => setShowEditMaterialModal(false)}
         />
       )}
     </div>
