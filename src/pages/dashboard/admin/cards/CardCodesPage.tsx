@@ -25,6 +25,7 @@ import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import GenerateModal from "@/components/card-codes/GenerateModal";
+import handleErrorAlerts from "@/utils/showErrorMessages";
 
 export interface CardCode {
   id: number;
@@ -68,15 +69,16 @@ const CardCodesPage = () => {
 
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedPriceFilter, setSelectedPriceFilter] = useState<number | null>(
+
+  const [selectedPriceFilter, setSelectedPriceFilter] = useState<string | null>(
     null
   );
   const [selectedBatchFilter, setSelectedBatchFilter] = useState<string | null>(
     null
   );
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "used" | "unused" | "active" | "inactive"
-  >("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
+    "all"
+  );
   const [codeBatches, setCodeBatches] = useState<any>();
 
   const cardCodesStatistics = useCustomQuery("cards/codes-statistics/", [
@@ -88,9 +90,16 @@ const CardCodesPage = () => {
     "subsections",
   ]);
 
-  const generateCodes = useCustomQuery("cards/codes-generated/", [
-    "codes-generated",
-  ]);
+  const generateCodes = useCustomQuery(
+    `cards/codes-generated/?card_name=${searchTerm}&code_string=${selectedPriceFilter}&selectedBatchFilter=${selectedBatchFilter}&is_active=${statusFilter}`,
+    [
+      "codes-generated",
+      searchTerm,
+      selectedPriceFilter,
+      selectedBatchFilter,
+      statusFilter,
+    ]
+  );
 
   const cards = useCustomQuery("cards/", ["cards"]);
 
@@ -168,7 +177,7 @@ const CardCodesPage = () => {
     targetedSubsections: number[],
     targetingType: string
   ) => {
-    if (targetingType === "all" || targetedSubsections.length === 0) {
+    if (targetingType === "all" || targetedSubsections?.length === 0) {
       return {
         type: "all",
         display: "جميع الأقسام",
@@ -177,7 +186,7 @@ const CardCodesPage = () => {
       };
     }
 
-    if (targetedSubsections.length === 1) {
+    if (targetedSubsections?.length === 1) {
       return {
         type: "specific",
         display: getSubsectionName(targetedSubsections[0]),
@@ -188,7 +197,7 @@ const CardCodesPage = () => {
 
     return {
       type: "specific",
-      display: `${targetedSubsections.length} أقسام محددة`,
+      display: `${targetedSubsections?.length} أقسام محددة`,
       icon: Target,
       color: "text-orange-600",
     };
@@ -257,20 +266,31 @@ const CardCodesPage = () => {
     //   // });
     // }
 
-    console.log("log");
-    console.log("newBatch", generateForm);
-
-    addCode.mutateAsync({
-      card: generateForm.priceId,
-      number_of_codes: generateForm.quantity,
-      prefix: generateForm.prefix,
-      subsubsections: generateForm.targetedSubsections || [],
-      note: generateForm.notes,
-      security_information: {
-        max_uses_per_user: 1,
-        expiry_date: "2025-12-31",
-      },
-    });
+    addCode
+      .mutateAsync({
+        card: generateForm.priceId,
+        number_of_codes: generateForm.quantity,
+        prefix: generateForm.prefix,
+        subsubsections: generateForm.targetedSubsections || [],
+        note: generateForm.notes,
+        security_information: {
+          max_uses_per_user: 1,
+          expiry_date: "2025-12-31",
+        },
+      })
+      .then((res) => {
+        if (res.status) {
+          toast.success("تم تحديث حالة البطاقة بنجاح");
+          setShowGenerateModal(false);
+        } else {
+          toast.error("حدث خطاء في تحديث حالة البطاقة");
+        }
+      })
+      .catch((error) => {
+        handleErrorAlerts(
+          error?.response?.data?.message || "حدث خطأ أثناء تحديث حالة البطاقة"
+        );
+      });
   };
 
   const toggleCodeStatus = (id: string) => {
@@ -494,14 +514,12 @@ const CardCodesPage = () => {
           <select
             value={selectedPriceFilter || ""}
             onChange={(e) =>
-              setSelectedPriceFilter(
-                e.target.value ? parseInt(e.target.value) : null
-              )
+              setSelectedPriceFilter(e.target.value ? e.target.value : null)
             }
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="">جميع الأسعار</option>
-            {cardPricing.map((price: any) => (
+            {cards?.data?.data.map((price: any) => (
               <option key={price.id} value={price.id}>
                 {price.price} د.أ
               </option>
@@ -517,7 +535,7 @@ const CardCodesPage = () => {
             <option value="">جميع المجموعات</option>
             {cardCodes?.data?.data?.map((batch: any) => (
               <option key={batch.id} value={batch.id}>
-                {batch.id} ({batch?.name} د.أ)
+                ({batch?.name} - د.أ {batch?.card?.price} )
               </option>
             ))}
           </select>
@@ -529,10 +547,10 @@ const CardCodesPage = () => {
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="all">جميع الحالات</option>
-            <option value="used">مستخدم</option>
-            <option value="unused">غير مستخدم</option>
-            <option value="active">مفعل</option>
-            <option value="inactive">معطل</option>
+            <option value="true">مفعل</option>
+            <option value="false">غير مفعل</option>
+            {/* <option value="active">مفعل</option>
+            <option value="inactive">معطل</option> */}
           </select>
 
           {/* Results Count */}
@@ -594,9 +612,9 @@ const CardCodesPage = () => {
                       </span>
                     </div>
                     {/* {batch.targetingType === "specific" && */}
-                    {true && batch.subsubsections.length > 1 && (
+                    {true && batch?.subsubsections?.length > 1 && (
                       <div className="mt-2 flex flex-wrap gap-1">
-                        {batch.subsubsections.slice(0, 3).map((sec: any) => (
+                        {batch?.subsubsections?.slice(0, 3).map((sec: any) => (
                           <span
                             key={sec.id}
                             className="inline-flex items-center gap-1 px-2 py-1 bg-white/60 rounded-full text-xs"
@@ -605,9 +623,9 @@ const CardCodesPage = () => {
                             {sec.title}
                           </span>
                         ))}
-                        {batch.subsubsections.length > 3 && (
+                        {batch?.subsubsections?.length > 3 && (
                           <span className="px-2 py-1 bg-white/60 rounded-full text-xs">
-                            +{batch.subsubsections.length - 3} أخرى
+                            +{batch?.subsubsections?.length - 3} أخرى
                           </span>
                         )}
                       </div>
@@ -687,7 +705,7 @@ const CardCodesPage = () => {
                           <Clock className="w-3 h-3" />
                           <span>
                             آخر تعديل: {formatDateTimeSimple(batch.updated_at)}{" "}
-                            بواسطة {batch.updated_at}
+                            {/* بواسطة {batch.updated_at} */}
                           </span>
                         </div>
                       </div>
@@ -895,6 +913,7 @@ const CardCodesPage = () => {
           setShowGenerateModal={setShowGenerateModal}
           setGenerateForm={setGenerateForm}
           subsectionTree={subsectionTree}
+          loading={addCode.isPending}
         />
       )}
     </div>
