@@ -592,7 +592,7 @@ const SectionsPage = () => {
                       )}
                     </div> */}
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{section.name}</h3>
+                  <h3 className="text-xl font-bold mb-2">{section.title}</h3>
                   <p className="text-white/80 text-sm line-clamp-2">
                     {section.description}
                   </p>
