@@ -18,7 +18,7 @@ import TermsAndConditions from "@/pages/platform/termsAndConditions";
 import PrivacyPolicy from "@/pages/platform/privacyPolicy";
 import TeacherProfile from "@/pages/platform/teacher";
 import CoursePage from "@/components/platform/courses/courseParts/coursePage";
-import CoursePageOld from "@/components/platform/courses/coursePageOld";
+// import CoursePageOld from "@/components/platform/courses/coursePageOld";
 // import  CoursePage  from "@/components/platform/exams/sidebar";
 import Dashboard from "@/pages/dashboard/admin/Dashboard";
 import TeachersPage from "@/pages/dashboard/admin/teachers/TeachersPage";
@@ -33,6 +33,7 @@ import AllCourses from "@/components/platform/courses/allCourses";
 import SectionsPage from "@/pages/dashboard/admin/sections/SectionsPage";
 import PhoneUser from "@/pages/platform/phoneUser";
 import SubsectionsPage from "@/pages/dashboard/admin/sections/SubSubsections";
+import Exam from "@/components/platform/exams/exam";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -45,8 +46,9 @@ export default function AppRoutes() {
           <Route path="sections/:navHeaderId" element={<Courses />} />
           <Route path="all-courses" element={<AllCourses />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
-          <Route path="coursePageOld/:courseId" element={<CoursePageOld />} />
+          {/* <Route path="coursePageOld/:courseId" element={<CoursePageOld />} /> */}
           <Route path="coursePage/:courseId" element={<CoursePage />} />
+          <Route path="exam/:examId" element={<Exam />} />
           <Route path="phone-user" element={<PhoneUser />} />
           <Route path="terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />

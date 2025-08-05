@@ -12,10 +12,12 @@ import VideoPlayer from "./content/videoPlayer";
 import toast from "react-hot-toast";
 import { useCustomPost } from "@/hooks/useMutation";
 import { useLesson } from "@/store/platform/useLesson";
+import { useExam } from "@/store/platform/useExam";
 import ProgressTab from "./tabs/progressTab";
 import FilesTab from "./tabs/filesTab";
 import NotesTab from "./tabs/notesTab";
 import QuestionsTab from "./tabs/questionsTab";
+import Exam from "./content/exam";
 const CourseContent = ({
   setAllLessons,
   allLessons,
@@ -28,6 +30,8 @@ const CourseContent = ({
 }) => {
   const [activeTab, setActiveTab] = useState("content");
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const isExamMode = useExam((state) => state.isExamMode);
+  const setIsExamMode = useExam((state) => state.setIsExamMode);
   const setCurrentLessonIndex = useLesson(
     (state) => state.setCurrentLessonIndex
   );
@@ -77,10 +81,12 @@ const CourseContent = ({
   // const [examSubmitted, setExamSubmitted] = useState(false);
   // const [examResults, setExamResults] = useState(null);
   // const [currentExam, setCurrentExam] = useState(null);
+  console.log("allLessons", allLessons);
   const navigateLesson = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
-      // setIsExamMode(false);
+      const prevLesson = allLessons[currentLessonIndex - 1];
+      prevLesson?.type == "video" ? setIsExamMode(false) : setIsExamMode(true);
     } else if (
       direction === "next" &&
       currentLessonIndex < allLessons.length - 1
@@ -88,11 +94,9 @@ const CourseContent = ({
       const nextLesson = allLessons[currentLessonIndex + 1];
       if (nextLesson.is_completed) {
         setCurrentLessonIndex(currentLessonIndex + 1);
-        // if (nextLesson.type === "exam") {
-        //   startExam();
-        // } else {
-        //   setIsExamMode(false);
-        // }
+        nextLesson?.type == "video"
+          ? setIsExamMode(false)
+          : setIsExamMode(true);
       } else {
         toast.error("الدرس غير مكتمل");
       }
@@ -170,20 +174,20 @@ const CourseContent = ({
         <div className="space-y-8">
           {/* Main Content */}
 
-          <VideoPlayer markLessonComplete={markLessonComplete} />
           {/* <Exam/> */}
 
-          {/* {isExamMode ? (
-                renderExam()
-              ) : currentLesson?.[0][0].link ? (
-                renderVideoPlayer()
-              ) : currentLesson.type === "file" ? (
-                renderFileContent()
-              ) : (
-                <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-                  <p className="text-gray-500">نوع الدرس غير مدعوم</p>
-                </div>
-              )} */}
+          {
+            isExamMode ? (
+              <Exam />
+            ) : (
+              <VideoPlayer markLessonComplete={markLessonComplete} />
+            )
+            //  : (
+            //   <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            //     <p className="text-gray-500">نوع الدرس غير مدعوم</p>
+            //   </div>
+            // )
+          }
 
           {/* Navigation Controls */}
           <div className="flex items-center justify-between bg-white rounded-2xl shadow-lg p-6">

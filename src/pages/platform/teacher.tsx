@@ -132,7 +132,7 @@ const TeacherProfile: React.FC = () => {
   };
   const handleExamsClick = (exam: any) => {
     if (isLoggedIn) {
-      navigate(`/coursePage/${exam?.id}`);
+      navigate(`/exam/${exam?.id}`);
     } else {
       toast.error("لعرض المحتوى قم بتسجيل الدخول");
       handleLoginClick();
