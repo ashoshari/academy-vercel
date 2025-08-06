@@ -175,7 +175,9 @@ const CourseContent = ({
           {/* Main Content */}
           {
             isExamMode ? (
-              <Exam markLessonComplete={markLessonComplete} />
+              <Exam 
+              // markLessonComplete={markLessonComplete}
+               />
             ) : (
               <VideoPlayer markLessonComplete={markLessonComplete} />
             )

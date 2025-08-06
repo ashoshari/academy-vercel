@@ -18,6 +18,8 @@ import {
   FileText,
   Download,
   FileArchive,
+  Folder,
+  Archive,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -66,6 +68,8 @@ const TeacherProfile: React.FC = () => {
   const freeCoursesData = data?.data?.free_courses;
   const coursesData = data?.data?.courses;
   const filesData = data?.data?.resources;
+  const doesesData = data?.data?.resources;
+  const foldersData = data?.data?.resources;
   const freeExamsData = data?.data?.free_exams;
 
   const isMoblieOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(
@@ -79,7 +83,6 @@ const TeacherProfile: React.FC = () => {
       icon: BookOpen,
       count: coursesData?.length,
     },
-    // { id: "sessions", title: "الحصص", icon: Video, count: sessions.length },
     {
       id: "courses",
       title: "الدورات المدفوعة",
@@ -93,12 +96,23 @@ const TeacherProfile: React.FC = () => {
       count: filesData?.length || 0,
     },
     {
+      id: "doses",
+      title: "الدوسيهات",
+      icon: Archive,
+      count: doesesData?.length || 0,
+    },
+    {
+      id: "folders",
+      title: "المجلدات",
+      icon: Folder,
+      count: foldersData?.length || 0,
+    },
+    {
       id: "free_exams",
       title: "الامتحانات المجانية",
       icon: Monitor,
       count: freeExamsData?.length,
     },
-    // { id: "free", title: "حصص مجانية", icon: Gift, count: freeSessions.length },
   ];
 
   const handleCourseActivation = (course: any) => {
@@ -250,7 +264,7 @@ const TeacherProfile: React.FC = () => {
 
         <button
           onClick={() => handleCourseClick(course)}
-          className="w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+          className="w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
         >
           <Play className="w-5 h-5" />
           <span>دخول الدورة</span>
@@ -338,7 +352,7 @@ const TeacherProfile: React.FC = () => {
 
         <button
           onClick={() => handleCourseClick(course)}
-          className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
+          className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled
               ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
               : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
@@ -411,7 +425,110 @@ const TeacherProfile: React.FC = () => {
       </div>
     </div>
   );
+  const renderDosesCard = (file: any) => (
+    <div
+      key={file.id}
+      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
+    >
+      <div className="flex items-center space-x-4 mb-4">
+        <File className="w-12 h-12 text-gray-500" />
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-gray-900">
+            {file?.title || "عنوان"}
+          </h3>
+          <p className="text-gray-600 text-sm">{file?.description || "وصف"}</p>
+        </div>
+      </div>
 
+      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+        <div className="flex items-center space-x-2">
+          <FileText className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">
+            {(file?.file_size / 1024).toFixed(1) || 0} MB
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Download className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Clock className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">
+            {formatDateTimeSimple(file?.created_at) || "date"}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <FileArchive className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">{file?.file_type || "File"}</span>
+        </div>
+      </div>
+
+      <div className="flex w-full items-center justify-start">
+        <a
+          href={file?.file}
+          target="_blank"
+          onClick={() => handleDownload(file?.id)}
+          download
+          className="bg-gradient-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+        >
+          <Download className="w-4 h-4" />
+          <p className="">تحميل</p>
+        </a>
+      </div>
+    </div>
+  );
+  const renderFolderCard = (file: any) => (
+    <div
+      key={file.id}
+      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
+    >
+      <div className="flex items-center space-x-4 mb-4">
+        <File className="w-12 h-12 text-gray-500" />
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-gray-900">
+            {file?.title || "عنوان"}
+          </h3>
+          <p className="text-gray-600 text-sm">{file?.description || "وصف"}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+        <div className="flex items-center space-x-2">
+          <FileText className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">
+            {(file?.file_size / 1024).toFixed(1) || 0} MB
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Download className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Clock className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">
+            {formatDateTimeSimple(file?.created_at) || "date"}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <FileArchive className="w-4 h-4 text-gray-500" />
+          <span className="text-gray-600">{file?.file_type || "File"}</span>
+        </div>
+      </div>
+
+      <div className="flex w-full items-center justify-start">
+        <a
+          href={file?.file}
+          target="_blank"
+          onClick={() => handleDownload(file?.id)}
+          download
+          className="bg-gradient-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+        >
+          <Download className="w-4 h-4" />
+          <p className="">تحميل</p>
+        </a>
+      </div>
+    </div>
+  );
   const renderExamCard = (exam: any) => (
     <div
       key={exam?.id}
@@ -467,7 +584,7 @@ const TeacherProfile: React.FC = () => {
 
       <button
         onClick={() => handleExamsClick(exam)}
-        className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-purple-600 hover:to-indigo-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
+        className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white cursor-pointer py-3 px-4 rounded-xl font-semibold hover:from-purple-600 hover:to-indigo-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
       >
         <Zap className="w-5 h-5" />
         <span>ابدأ الامتحان</span>
@@ -485,11 +602,13 @@ const TeacherProfile: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-between mb-6">
               <button
-                onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}
-                className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
+                onClick={() =>
+                  window.history.length > 1 ? navigate(-1) : navigate("/")
+                }
+                className="w-12 h-12 bg-white/20 hover:bg-white/30 cursor-pointer rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
                 <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
               </button>
@@ -550,7 +669,7 @@ const TeacherProfile: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Tabs */}
           <div className="flex flex-wrap gap-2 mb-8">
             {tabs.map((tab) => {
@@ -623,6 +742,42 @@ const TeacherProfile: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {!isLoading && filesData?.length > 0 ? (
                   filesData?.map(renderFileCard)
+                ) : (
+                  <div className="col-span-3 relative flex flex-col items-center">
+                    <img
+                      className="absolute top-0 w-[400px] h-[350px] z-0"
+                      src={errorIllustation}
+                      alt="error"
+                    />
+                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
+                      لا يوجد محتوى لعرضه
+                    </h1>
+                  </div>
+                )}
+              </div>
+            )}
+            {activeTab === "doses" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {!isLoading && filesData?.length > 0 ? (
+                  filesData?.map(renderDosesCard)
+                ) : (
+                  <div className="col-span-3 relative flex flex-col items-center">
+                    <img
+                      className="absolute top-0 w-[400px] h-[350px] z-0"
+                      src={errorIllustation}
+                      alt="error"
+                    />
+                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
+                      لا يوجد محتوى لعرضه
+                    </h1>
+                  </div>
+                )}
+              </div>
+            )}
+            {activeTab === "folders" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {!isLoading && filesData?.length > 0 ? (
+                  filesData?.map(renderFolderCard)
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img

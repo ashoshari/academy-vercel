@@ -74,24 +74,48 @@ const Sidebar = ({
     const lesson = getFirstIncompleteLesson(courseData);
     if (lesson) setCurrentLessonIndex(lesson || 0);
   }, [courseData]);
-  const toggleSemester = (semsterId: any) => {
+  const toggleSemester = (semesterId: any) => {
     setSemesters((prev: any) =>
-      prev.map((sm: any) =>
-        sm.id === semsterId ? { ...sm, isExpanded: !sm.isExpanded } : sm
-      )
+      prev.map((sm: any) => {
+        if (sm.id === semesterId) {
+          const isExpanding = !sm.isExpanded;
+          return {
+            ...sm,
+            isExpanded: isExpanding,
+            units: sm.units.map((unit: any) => ({
+              ...unit,
+              isExpanded: isExpanding ? unit.isExpanded : false,
+              topics: unit.topics.map((topic: any) => ({
+                ...topic,
+                isExpanded: isExpanding ? topic.isExpanded : false,
+              })),
+            })),
+          };
+        }
+        return sm;
+      })
     );
   };
   const toggleUnit = (semesterId: any, unitId: any) => {
     setSemesters((prev: any) =>
       prev.map((sm: any) =>
-        sm?.id === semesterId
+        sm.id === semesterId
           ? {
               ...sm,
-              units: sm?.units?.map((unit: any) =>
-                unit.id === unitId
-                  ? { ...unit, isExpanded: !unit?.isExpanded }
-                  : unit
-              ),
+              units: sm.units.map((unit: any) => {
+                if (unit.id === unitId) {
+                  const isExpanding = !unit.isExpanded;
+                  return {
+                    ...unit,
+                    isExpanded: isExpanding,
+                    topics: unit.topics.map((topic: any) => ({
+                      ...topic,
+                      isExpanded: isExpanding ? topic.isExpanded : false,
+                    })),
+                  };
+                }
+                return unit;
+              }),
             }
           : sm
       )
@@ -129,7 +153,7 @@ const Sidebar = ({
       } else {
         setIsExamMode(true);
         setStartExam(true);
-        console.log("clicked")
+        console.log("clicked");
       }
     } else {
       toast.error("يجب استكمال الدروس السابق");
@@ -159,7 +183,7 @@ const Sidebar = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => sidebarCollapseHandler(!sidebarCollapsed)}
-              className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200"
+              className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200 cursor-pointer"
             >
               {sidebarCollapsed ? (
                 <PanelLeftOpen className="w-4 h-4" />
@@ -169,7 +193,7 @@ const Sidebar = ({
             </button>
             <button
               onClick={() => setSidebarVisible(false)}
-              className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200 md:hidden"
+              className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200 md:hidden cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -198,7 +222,7 @@ const Sidebar = ({
           <div key={semester?.id} className="mb-2">
             <button
               onClick={() => !sidebarCollapsed && toggleSemester(semester?.id)}
-              className={`w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 ${
+              className={`w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer${
                 sidebarCollapsed ? "justify-center" : ""
               }`}
             >
@@ -226,7 +250,7 @@ const Sidebar = ({
                     <div key={unit.id}>
                       <button
                         onClick={() => toggleUnit(semester.id, unit.id)}
-                        className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100"
+                        className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100 cursor-pointer"
                       >
                         <span className="text-sm">{unit.title}</span>
                         {unit.isExpanded ? (
@@ -244,7 +268,7 @@ const Sidebar = ({
                                 onClick={() =>
                                   toggleTopic(semester.id, unit.id, topic.id)
                                 }
-                                className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100"
+                                className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100 cursor-pointer"
                               >
                                 <span className="text-xs">{topic.title}</span>
 

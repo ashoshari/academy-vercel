@@ -480,7 +480,7 @@ const QuestionsTab = () => {
               {/* comments */}
               <div className="space-y-4 mb-4 ">
                 {question?.comments?.map((comment: any) => (
-                  <div>
+                  <div key={comment.id}>
                     <div
                       key={comment.id}
                       className={`p-4 rounded-xl border   ${

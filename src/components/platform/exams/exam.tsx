@@ -21,13 +21,8 @@ const Exam = () => {
   const { examId } = useParams();
   const navigate = useNavigate();
   const setIsExamMode = useExam((state) => state.setIsExamMode);
-  // const [currentExam, setCurrentExam] = useState<any>(null);
-  // const [examResults, setExamResults] = useState<any>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<any>([]);
-  // const [timeRemaining, setTimeRemaining] = useState(0);
-  // const [examSubmitted, setExamSubmitted] = useState(false);
-  // const currentLesson = useLesson((state) => state.currentLesson);
 
   // GET EXAM
   const { data } = useCustomQuery(`/training/students/course/exam/${examId}/`, [
@@ -36,14 +31,20 @@ const Exam = () => {
   ]);
   const examData = data?.data;
 
-  const [openExam, setOpenExam] = useState(!examData?.is_passed);
-  const [score, setScore] = useState(examData?.score);
-  const [answers, setAnswers] = useState<any>();
-  const [isPassed, setIsPassed] = useState(examData?.is_passed);
-  const [timeLeft, setTimeLeft] = useState(
-    (examData?.time_in_minutes || 0) * 60
-  );
+  const [openExam, setOpenExam] = useState(false);
+  const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState<any>([]);
+  const [isPassed, setIsPassed] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
 
+  useEffect(() => {
+    if (examData) {
+      setOpenExam(!examData.is_passed);
+      setScore(examData.score);
+      setIsPassed(examData.is_passed);
+      setTimeLeft((examData.time_in_minutes || 0) * 60);
+    }
+  }, [examData]);
   useEffect(() => {
     if (timeLeft <= 0) return;
 
@@ -60,7 +61,6 @@ const Exam = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, [timeLeft]);
-
   const formatTime = (seconds: number) => {
     const min = Math.floor(seconds / 60);
     const sec = seconds % 60;

@@ -4,7 +4,7 @@ import {
   CheckCircle,
   ChevronRight,
   ChevronLeft,
-  ArrowRight,
+  // ArrowRight,
   CircleCheckBig,
   CircleX,
 } from "lucide-react";
@@ -16,7 +16,9 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost } from "@/hooks/useMutation";
 import { toast } from "react-hot-toast";
 
-const Exam = ({ markLessonComplete }: any) => {
+const Exam = (
+  // { markLessonComplete }: any
+) => {
   // const setStartExam = useExam((state) => state.setStartExam);
   const { courseId } = useParams();
   const navigate = useNavigate();
@@ -30,20 +32,26 @@ const Exam = ({ markLessonComplete }: any) => {
   const currentLesson = useLesson((state) => state.currentLesson);
 
   // GET EXAM
-  const { data } = useCustomQuery(`/training/students/course/exam/${currentLesson?.id}/`, [
-    "exams",
-    courseId,
-  ]);
-  const examData = data?.data;
-console.log("currentLesson",currentLesson);
-  const [openExam, setOpenExam] = useState(!examData?.is_passed);
-  const [score, setScore] = useState(examData?.score);
-  const [answers, setAnswers] = useState<any>();
-  const [isPassed, setIsPassed] = useState(examData?.is_passed);
-  const [timeLeft, setTimeLeft] = useState(
-    (examData?.time_in_minutes || 0) * 60
+  const { data } = useCustomQuery(
+    `/training/students/course/exam/${currentLesson?.id}/`,
+    ["exams", courseId]
   );
+  const examData = data?.data;
+  console.log("currentLesson", currentLesson);
+  const [openExam, setOpenExam] = useState(false);
+  const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState<any>();
+  const [isPassed, setIsPassed] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
 
+  useEffect(() => {
+    if (examData) {
+      setOpenExam(!examData.is_passed);
+      setScore(examData.score);
+      setIsPassed(examData.is_passed);
+      setTimeLeft((examData.time_in_minutes || 0) * 60);
+    }
+  }, [examData]);
   useEffect(() => {
     if (timeLeft <= 0) return;
 
@@ -128,7 +136,6 @@ console.log("currentLesson",currentLesson);
   if (!examData) return null;
   return (
     <>
-    
       {openExam ? (
         <div className="bg-white rounded-2xl shadow-lg p-8">
           {/* Exam Header */}

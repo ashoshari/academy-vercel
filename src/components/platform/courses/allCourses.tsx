@@ -3,14 +3,14 @@ import {
   Play,
   Clock,
   BookOpen,
-  Award,
-  Calendar,
+  // Award,
+  // Calendar,
   Search,
   Grid,
   List,
   Users,
-  Download,
-  Target,
+  // Download,
+  // Target,
   ArrowRight,
 } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -19,8 +19,8 @@ import { formatDateTimeSimple } from "@/utils/formatDateTime";
 
 const AllCourses = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [filterSubject, setFilterSubject] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<string>("progress");
+  // const [filterSubject, setFilterSubject] = useState<string>("all");
+  // const [sortBy, setSortBy] = useState<string>("progress");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const navigate = useNavigate();
   const numberOfCourses = 3;
@@ -34,142 +34,14 @@ const AllCourses = () => {
   const myCoursesData = data?.my_courses?.data;
   const myCoursesStats = data?.statistics;
   // Extended enrolled courses data
-  const enrolledCourses = [
-    {
-      id: 1,
-      title: "دورة الرياضيات الشاملة - الجبر والهندسة",
-      teacher: "أ. محمد الأحمد",
-      subject: "الرياضيات",
-      progress: 75,
-      totalLessons: 45,
-      completedLessons: 34,
-      nextLesson: "التفاضل والتكامل - الجزء الثالث",
-      nextLessonDate: "2025-01-20",
-      rating: 4.9,
-      lastAccessed: "منذ يومين",
-      totalDuration: "3 أشهر",
-      certificate: true,
-      enrolledDate: "2024-10-15",
-      totalStudents: 1200,
-      completionRate: 85,
-      averageScore: 88,
-    },
-    {
-      id: 2,
-      title: "دورة الفيزياء المتقدمة",
-      teacher: "أ. فاطمة السعد",
-      subject: "الفيزياء",
-      progress: 45,
-      totalLessons: 38,
-      completedLessons: 17,
-      nextLesson: "الكهرباء والمغناطيسية",
-      nextLessonDate: "2025-01-21",
-      rating: 4.8,
-      lastAccessed: "منذ 3 أيام",
-      totalDuration: "2.5 أشهر",
-      certificate: true,
-      enrolledDate: "2024-11-01",
-      totalStudents: 980,
-      completionRate: 78,
-      averageScore: 82,
-    },
-    {
-      id: 3,
-      title: "دورة اللغة الإنجليزية التفاعلية",
-      teacher: "أ. ليلى المحمود",
-      subject: "اللغة الإنجليزية",
-      progress: 90,
-      totalLessons: 30,
-      completedLessons: 27,
-      nextLesson: "المراجعة النهائية",
-      nextLessonDate: "2025-01-19",
-      rating: 4.9,
-      lastAccessed: "منذ يوم واحد",
-      totalDuration: "2 أشهر",
-      certificate: true,
-      enrolledDate: "2024-11-15",
-      totalStudents: 1150,
-      completionRate: 92,
-      averageScore: 94,
-    },
-    {
-      id: 4,
-      title: "دورة الكيمياء العضوية",
-      teacher: "أ. أحمد الخالد",
-      subject: "الكيمياء",
-      progress: 60,
-      totalLessons: 32,
-      completedLessons: 19,
-      nextLesson: "المركبات الأروماتية",
-      nextLessonDate: "2025-01-22",
-      rating: 4.7,
-      lastAccessed: "منذ 4 أيام",
-      totalDuration: "2.5 أشهر",
-      certificate: true,
-      enrolledDate: "2024-10-20",
-      totalStudents: 850,
-      completionRate: 75,
-      averageScore: 79,
-    },
-    {
-      id: 5,
-      title: "دورة الأحياء الجزيئية",
-      teacher: "أ. نور العلي",
-      subject: "الأحياء",
-      progress: 30,
-      totalLessons: 28,
-      completedLessons: 8,
-      nextLesson: "الحمض النووي والوراثة",
-      nextLessonDate: "2025-01-23",
-      rating: 4.6,
-      lastAccessed: "منذ أسبوع",
-      totalDuration: "2 أشهر",
-      certificate: true,
-      enrolledDate: "2024-12-01",
-      totalStudents: 720,
-      completionRate: 68,
-      averageScore: 75,
-    },
-    {
-      id: 6,
-      title: "دورة اللغة العربية المتقدمة",
-      teacher: "أ. سامر الحسن",
-      subject: "اللغة العربية",
-      progress: 85,
-      totalLessons: 35,
-      completedLessons: 30,
-      nextLesson: "البلاغة والبيان",
-      nextLessonDate: "2025-01-24",
-      rating: 4.8,
-      lastAccessed: "منذ يوم واحد",
-      totalDuration: "3 أشهر",
-      certificate: true,
-      enrolledDate: "2024-09-10",
-      totalStudents: 1300,
-      completionRate: 88,
-      averageScore: 91,
-    },
-  ];
-
-  const subjects = [
-    "all",
-    "الرياضيات",
-    "الفيزياء",
-    "الكيمياء",
-    "الأحياء",
-    "اللغة الإنجليزية",
-    "اللغة العربية",
-  ];
-
   // Filter and sort courses
-  const filteredCourses = enrolledCourses.filter((course) => {
+  const filteredCourses = myCoursesData?.filter((course:any) => {
     // Filter By Subject
     // const matchesSubject =
     //   filterSubject === "all" || course.subject === filterSubject;
-
     const matchesSearch =
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.teacher.toLowerCase().includes(searchTerm.toLowerCase());
+      course?.course_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course?.teacher.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
   // Sort By
@@ -193,11 +65,10 @@ const AllCourses = () => {
 
   const renderCourseCard = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {myCoursesData?.map((course: any) => (
+      {filteredCourses?.map((course: any) => (
         <div
           key={course?.id}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group cursor-pointer transform hover:scale-105"
-          //   onClick={() => onCourseClick(course.id)}
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group transform hover:scale-105"
         >
           <div className="p-6">
             {/* Header */}
@@ -223,7 +94,7 @@ const AllCourses = () => {
                   <circle
                     cx="24"
                     cy="24"
-                    r="18"
+                    r="20"
                     stroke="#e5e7eb"
                     strokeWidth="4"
                     fill="none"
@@ -231,13 +102,13 @@ const AllCourses = () => {
                   <circle
                     cx="24"
                     cy="24"
-                    r="18"
+                    r="20"
                     stroke="#3b82f6"
                     strokeWidth="4"
                     fill="none"
-                    strokeDasharray={2 * Math.PI * 18}
+                    strokeDasharray={2 * Math.PI * 20}
                     strokeDashoffset={
-                      (1 - course?.progress / 100) * (2 * Math.PI * 18)
+                      (1 - course?.progress / 100) * (2 * Math.PI * 20)
                     }
                     strokeLinecap="round"
                     className="transition-all duration-500"
@@ -300,7 +171,7 @@ const AllCourses = () => {
             {/* Continue Button */}
             <button
               onClick={() => navigate(`/coursePage/${course?.id}`)}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
+              className="w-full cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
             >
               <Play className="w-4 h-4" />
               <span>متابعة التعلم</span>
@@ -313,10 +184,9 @@ const AllCourses = () => {
 
   const renderCourseList = () => (
     <div
-      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
-      //   onClick={() => onCourseClick(course.id)}
+      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group"
     >
-      {myCoursesData?.map((course: any) => (
+      {filteredCourses?.map((course: any) => (
         <div className="p-6">
           <div className="flex items-center space-x-6">
             {/* Progress Circle */}
@@ -403,7 +273,7 @@ const AllCourses = () => {
             <div className="flex-shrink-0">
               <button
                 onClick={() => navigate(`/coursePage/${course?.id}`)}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white cursor-pointer px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
               >
                 <Play className="w-5 h-5" />
                 <span>متابعة</span>
@@ -425,7 +295,7 @@ const AllCourses = () => {
               onClick={() =>
                 window.history.length > 1 ? navigate(-1) : navigate("/")
               }
-              className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
+              className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl cursor-pointer flex items-center justify-center transition-all duration-200 group"
             >
               <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
             </button>
@@ -514,7 +384,7 @@ const AllCourses = () => {
             <div className="flex items-center bg-gray-100 rounded-xl p-1">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-all duration-200 ${
+                className={`p-2 rounded-lg transition-all cursor-pointer duration-200 ${
                   viewMode === "grid"
                     ? "bg-white shadow-sm text-blue-600"
                     : "text-gray-600"
@@ -524,7 +394,7 @@ const AllCourses = () => {
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-all duration-200 ${
+                className={`p-2 rounded-lg transition-all cursor-pointer duration-200 ${
                   viewMode === "list"
                     ? "bg-white shadow-sm text-blue-600"
                     : "text-gray-600"
@@ -556,7 +426,7 @@ const AllCourses = () => {
         )}
 
         {/* Empty State */}
-        {filteredCourses.length === 0 && (
+        {filteredCourses?.length === 0 && (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <BookOpen className="w-12 h-12 text-gray-400" />
