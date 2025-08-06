@@ -173,12 +173,9 @@ const CourseContent = ({
       {activeTab === "content" && (
         <div className="space-y-8">
           {/* Main Content */}
-
-          {/* <Exam/> */}
-
           {
             isExamMode ? (
-              <Exam />
+              <Exam markLessonComplete={markLessonComplete} />
             ) : (
               <VideoPlayer markLessonComplete={markLessonComplete} />
             )

@@ -121,13 +121,15 @@ const Sidebar = ({
     );
   };
   const handleLessonClick = (lesson: any, lessonIndex: number) => {
-    if (lesson.is_completed) {
+    if (lesson?.is_completed) {
       setCurrentLessonIndex(lessonIndex);
       // setActive(lessonIndex);
-      if (lesson.type != "exam") {
+      if (lesson?.type != "exam") {
         setIsExamMode(false);
       } else {
+        setIsExamMode(true);
         setStartExam(true);
+        console.log("clicked")
       }
     } else {
       toast.error("يجب استكمال الدروس السابق");

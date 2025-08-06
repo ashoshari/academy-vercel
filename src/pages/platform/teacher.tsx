@@ -488,7 +488,7 @@ const TeacherProfile: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-between mb-6">
               <button
-                onClick={() => navigate(-1)}
+                onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}
                 className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
                 <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
