@@ -20,10 +20,12 @@ import { useLesson } from "@/store/platform/useLesson";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 
-const NotesTab = () => {
+const TextNotes = () => {
   const [showAddNote, setShowAddNote] = useState(false);
-  const [showEditNote, setShowEditNote] = useState(false);
   const [newNote, setNewNote] = useState("");
+
+  const [editingNoteId, setEditingNoteId] = useState(null);
+
   const [editNote, setEditNote] = useState("");
   const [noteId, setNoteId] = useState();
   const currentLesson = useLesson((state) => state.currentLesson);
@@ -84,7 +86,7 @@ const NotesTab = () => {
         handleErrorAlerts("حدث خطاء في تعديل الملاحظة");
       }
       setEditNote("");
-      setShowEditNote(false);
+      setEditingNoteId(null);
     }
   };
   const handleAddNote = async () => {
@@ -109,7 +111,7 @@ const NotesTab = () => {
         <h2 className="text-2xl font-bold text-gray-900">الملاحظات</h2>
         <button
           onClick={() => setShowAddNote(true)}
-          className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 flex items-center space-x-2"
+          className="cursor-pointer bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 flex items-center space-x-2"
         >
           <Plus className="w-4 h-4" />
           <span>إضافة ملاحظة</span>
@@ -139,7 +141,7 @@ const NotesTab = () => {
               <button
                 onClick={handleAddNote}
                 disabled={!newNote.trim()}
-                className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 حفظ
               </button>
@@ -148,7 +150,7 @@ const NotesTab = () => {
                   setShowAddNote(false);
                   setNewNote("");
                 }}
-                className="border border-gray-300 text-gray-700 px-6 py-2 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
+                className="cursor-pointer border border-gray-300 text-gray-700 px-6 py-2 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
               >
                 إلغاء
               </button>
@@ -205,10 +207,13 @@ const NotesTab = () => {
                 <div>
                   <button
                     onClick={() => {
-                      setShowEditNote(!showEditNote);
+                      setEditNote("");
+                      setEditingNoteId(
+                        editingNoteId === note?.id ? null : note?.id
+                      );
                       setNoteId(note?.id);
                     }}
-                    className="p-2 text-blue-600 cursor-pointer hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    className="cursor-pointer p-2 text-blue-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
@@ -224,7 +229,7 @@ const NotesTab = () => {
                 </div>
               </div>
               {/* Edit Note */}
-              {showEditNote && note?.id == noteId && (
+              {editingNoteId && note?.id == noteId && (
                 <div className="bg-gray-50 rounded-xl p-6 mb-6">
                   <h3 className="font-semibold text-gray-900 mb-4">
                     تعديل الملاحظة
@@ -241,16 +246,16 @@ const NotesTab = () => {
                       <button
                         onClick={handleEditNote}
                         disabled={!editNote.trim()}
-                        className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="cursor-pointer bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         حفظ
                       </button>
                       <button
                         onClick={() => {
-                          setShowEditNote(false);
+                          setEditingNoteId(null);
                           setEditNote("");
                         }}
-                        className="border border-gray-300 text-gray-700 px-6 py-2 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
+                        className="cursor-pointer border border-gray-300 text-gray-700 px-6 py-2 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
                       >
                         إلغاء
                       </button>
@@ -266,4 +271,4 @@ const NotesTab = () => {
   );
 };
 
-export default NotesTab;
+export default TextNotes;

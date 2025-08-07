@@ -81,7 +81,6 @@ const CourseContent = ({
   // const [examSubmitted, setExamSubmitted] = useState(false);
   // const [examResults, setExamResults] = useState(null);
   // const [currentExam, setCurrentExam] = useState(null);
-  console.log("allLessons", allLessons);
   const navigateLesson = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
@@ -193,7 +192,7 @@ const CourseContent = ({
             <button
               onClick={() => navigateLesson("prev")}
               disabled={currentLessonIndex === 0}
-              className="flex items-center space-x-2 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center space-x-2 px-6 py-3 cursor-pointer border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-5 h-5" />
               <span>الدرس السابق</span>
@@ -221,7 +220,7 @@ const CourseContent = ({
                 currentLessonIndex === allLessons.length - 1 ||
                 allLessons[currentLessonIndex + 1]?.isLocked
               }
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center space-x-2 cursor-pointer px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>الدرس التالي</span>
               <ChevronLeft className="w-5 h-5" />

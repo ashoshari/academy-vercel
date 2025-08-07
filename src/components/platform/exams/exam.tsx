@@ -353,79 +353,75 @@ const Exam = () => {
           </div>
           {/* Detailed Results */}
           <div>
-            {examData?.questions?.map((question: any, questionIndex: any) => (
-              <div
-                className={`p-6 rounded-xl border-2 my-[10px] ${
-                  answers?.find((a: any) => a?.question_id === question?.id)
-                    .is_correct
-                    ? "border-green-200 bg-green-50"
-                    : "border-red-200 bg-red-50"
-                }`}
-              >
-                <div className="flex items-start space-x-3 mb-4">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
-                      answers?.find((a: any) => a?.question_id === question?.id)
-                        .is_correct
-                        ? "bg-green-500"
-                        : "bg-red-500"
-                    }`}
-                  >
-                    {questionIndex + 1}
-                  </div>
-                  <h4 className="font-semibold text-gray-900 mb-3">
-                    {question?.question_text}
-                  </h4>
-                </div>
-                <div className="space-y-3">
-                  {question?.answers?.map((answer: any, answerIndex: any) => (
+            {examData?.questions?.map((question: any, questionIndex: any) => {
+              const matchedAnswer = answers?.find(
+                (a: any) => a?.question_id === question?.id
+              );
+              const isCorrect = matchedAnswer?.is_correct;
+              const correctAnswerId = matchedAnswer?.correct_answer_id;
+              const userAnswerId = matchedAnswer?.user_answer_id;
+              const currentAnswer = answers?.[questionIndex];
+              return (
+                <div
+                key={questionIndex}
+                  className={`p-6 rounded-xl border-2 my-[10px] ${
+                    isCorrect
+                      ? "border-green-200 bg-green-50"
+                      : "border-red-200 bg-red-50"
+                  }`}
+                >
+                  <div className="flex items-start space-x-3 mb-4">
                     <div
-                      key={answerIndex}
-                      className={`w-full p-4 text-right rounded-xl border-2 transition-all duration-200 ${
-                        answers?.find(
-                          (a: any) => a?.question_id === question?.id
-                        ).correct_answer_id === answer?.id
-                          ? "border-green-500 bg-green-50 text-green-900"
-                          : answer?.id ===
-                            answers?.find(
-                              (a: any) => a?.question_id === question?.id
-                            ).user_answer_id
-                          ? "border-red-500 bg-red-100 text-red-900"
-                          : "border-gray-200"
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
+                        isCorrect ? "bg-green-500" : "bg-red-500"
                       }`}
                     >
-                      <div className="flex items-center space-x-3">
-                        {answer?.id ===
-                        answers?.find(
-                          (a: any) => a?.question_id === question?.id
-                        ).correct_answer_id ? (
-                          <CircleCheckBig className="w-6 h-6" />
-                        ) : (
-                          answer?.id ===
-                            answers?.find(
-                              (a: any) => a?.question_id === question?.id
-                            ).user_answer_id && (
-                            <CircleX className="w-6 h-6 text-red-500" />
-                          )
-                        )}
-
-                        <span className="flex-1 font-medium">
-                          {answer?.answer_text}
-                        </span>
-                      </div>
+                      {questionIndex + 1}
                     </div>
-                  ))}
-                </div>
-                {answers?.[questionIndex].explanation && (
-                  <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                    <h5 className="font-semibold text-blue-900 mb-2">الشرح:</h5>
-                    <p className="text-blue-800">
-                      {answers?.[questionIndex].explanation}
-                    </p>
+                    <h4 className="font-semibold text-gray-900 mb-3">
+                      {question?.question_text}
+                    </h4>
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className="space-y-3">
+                    {question?.answers?.map((answer: any, answerIndex: any) => (
+                      <div
+                        key={answerIndex}
+                        className={`w-full p-4 text-right rounded-xl border-2 transition-all duration-200 ${
+                          correctAnswerId === answer?.id
+                            ? "border-green-500 bg-green-50 text-green-900"
+                            : answer?.id === userAnswerId
+                            ? "border-red-500 bg-red-100 text-red-900"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          {answer?.id === correctAnswerId ? (
+                            <CircleCheckBig className="w-6 h-6" />
+                          ) : (
+                            answer?.id === userAnswerId && (
+                              <CircleX className="w-6 h-6 text-red-500" />
+                            )
+                          )}
+                          <span className="flex-1 font-medium">
+                            {answer?.answer_text}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {currentAnswer?.explanation && (
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                      <h5 className="font-semibold text-blue-900 mb-2">
+                        الشرح:
+                      </h5>
+                      <p className="text-blue-800">
+                        {currentAnswer?.explanation}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex justify-center space-x-4">

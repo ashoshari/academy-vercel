@@ -33,7 +33,7 @@ const QuestionsTab = () => {
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
   const [newComment, setNewComment] = useState("");
   // questions
-  const [showEditQuestion, setShowEditQuestion] = useState(false);
+  const [editingQuetionId, setEditingQuestionId] = useState(null);
   const [questionId, setQuestionId] = useState("");
   const [editQuestionTitle, setEditQuestionTitle] = useState("");
   const [editQuestionContent, setEditQuestionContent] = useState("");
@@ -45,7 +45,7 @@ const QuestionsTab = () => {
   }, [data?.data?.questions]);
 
   //comments
-  const [showEditComment, setShowEditComment] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState(null);
   const [commentId, setcommentId] = useState();
   const [editCommentContent, setEditCommentContent] = useState("");
 
@@ -222,7 +222,7 @@ const QuestionsTab = () => {
 
       setEditQuestionTitle("");
       setEditQuestionContent("");
-      setShowEditQuestion(false);
+      setEditingQuestionId(null);
     }
   };
 
@@ -271,7 +271,7 @@ const QuestionsTab = () => {
         handleErrorAlerts("حدث خطأ في تعديل الأسئلة");
       }
       setEditCommentContent("");
-      setShowEditComment(false);
+      setEditingCommentId(null);
     }
   };
 
@@ -386,7 +386,13 @@ const QuestionsTab = () => {
                     <div className="">
                       <button
                         onClick={() => {
-                          setShowEditQuestion(!showEditQuestion);
+                          setEditQuestionTitle("");
+                          setEditQuestionContent("");
+                          setEditingQuestionId(
+                            editingQuetionId === question?.id
+                              ? null
+                              : question?.id
+                          );
                           setQuestionId(question?.id);
                         }}
                         className="p-2 text-blue-600 cursor-pointer hover:bg-red-50 rounded-lg transition-colors duration-200"
@@ -429,7 +435,7 @@ const QuestionsTab = () => {
                 </div>
               </div>
               {/* Edit questions */}
-              {showEditQuestion && question?.id == questionId && (
+              {editingQuetionId && question?.id == questionId && (
                 <div className="bg-gray-50 rounded-xl p-6 mb-6">
                   <h3 className="font-semibold text-gray-900 mb-4">
                     تعديل سؤال{" "}
@@ -464,7 +470,7 @@ const QuestionsTab = () => {
                       </button>
                       <button
                         onClick={() => {
-                          setShowEditQuestion(false);
+                          setEditingQuestionId(null);
                           setEditQuestionTitle("");
                           setEditQuestionContent("");
                         }}
@@ -510,7 +516,12 @@ const QuestionsTab = () => {
                         <div className="">
                           <button
                             onClick={() => {
-                              setShowEditComment(!showEditComment);
+                              setEditCommentContent("");
+                              setEditingCommentId(
+                                editingCommentId === comment?.id
+                                  ? null
+                                  : comment?.id
+                              );
                               setcommentId(comment?.id);
                             }}
                             className="p-2 text-blue-600 cursor-pointer hover:bg-red-50 rounded-lg transition-colors duration-200"
@@ -559,7 +570,7 @@ const QuestionsTab = () => {
                     </div>
                     {/* Edit Comment */}
                     <div className=" border-gray-200 pt-4">
-                      {showEditComment && commentId === comment.id && (
+                      {editingCommentId && commentId === comment.id && (
                         <div className="space-y-3">
                           <textarea
                             value={editCommentContent}
@@ -583,7 +594,7 @@ const QuestionsTab = () => {
                             <button
                               onClick={() => {
                                 setSelectedQuestion(null);
-                                setShowEditComment(false);
+                                setEditingCommentId(null);
                                 setNewComment("");
                               }}
                               className="border border-gray-300 text-gray-700 px-4 py-2 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"

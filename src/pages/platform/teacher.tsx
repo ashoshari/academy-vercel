@@ -68,8 +68,8 @@ const TeacherProfile: React.FC = () => {
   const freeCoursesData = data?.data?.free_courses;
   const coursesData = data?.data?.courses;
   const filesData = data?.data?.resources;
-  const doesesData = data?.data?.resources;
-  const foldersData = data?.data?.resources;
+  const dossiersData = data?.data?.resources;
+  const ministry_questions = data?.data?.resources;
   const freeExamsData = data?.data?.free_exams;
 
   const isMoblieOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(
@@ -96,16 +96,16 @@ const TeacherProfile: React.FC = () => {
       count: filesData?.length || 0,
     },
     {
-      id: "doses",
+      id: "dossiers",
       title: "الدوسيهات",
       icon: Archive,
-      count: doesesData?.length || 0,
+      count: dossiersData?.length || 0,
     },
     {
-      id: "folders",
-      title: "المجلدات",
+      id: "ministry_questions",
+      title: "الأسئلة الوزارية",
       icon: Folder,
-      count: foldersData?.length || 0,
+      count: ministry_questions?.length || 0,
     },
     {
       id: "free_exams",
@@ -756,7 +756,7 @@ const TeacherProfile: React.FC = () => {
                 )}
               </div>
             )}
-            {activeTab === "doses" && (
+            {activeTab === "dossiers" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {!isLoading && filesData?.length > 0 ? (
                   filesData?.map(renderDosesCard)
@@ -774,7 +774,7 @@ const TeacherProfile: React.FC = () => {
                 )}
               </div>
             )}
-            {activeTab === "folders" && (
+            {activeTab === "ministry_questions" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {!isLoading && filesData?.length > 0 ? (
                   filesData?.map(renderFolderCard)
@@ -811,12 +811,6 @@ const TeacherProfile: React.FC = () => {
                 )}
               </div>
             )}
-
-            {/* {activeTab === "sessions" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {sessions.map(renderSessionCard)}
-            </div>
-          )} */}
           </div>
         </div>
 
