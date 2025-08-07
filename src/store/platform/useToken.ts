@@ -8,14 +8,14 @@ interface TokenState {
 }
 
 // Read token from localStorage once during store initialization
-const initialAccessToken = localStorage.getItem("accessToken");
+const initialAccessToken = localStorage.getItem("auth_tokens");
 
 const useTokenStore = create<TokenState>((set) => ({
   accessToken: initialAccessToken,
   isLoggedIn: !!initialAccessToken,
 
   setTokens: (access) => {
-    localStorage.setItem("accessToken", access);
+    localStorage.setItem("auth_tokens", access);
     set({
       accessToken: access,
       isLoggedIn: true,
@@ -23,7 +23,7 @@ const useTokenStore = create<TokenState>((set) => ({
   },
 
   clearTokens: () => {
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("auth_tokens");
     set({
       accessToken: null,
       isLoggedIn: false,

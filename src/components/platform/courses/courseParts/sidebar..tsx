@@ -12,14 +12,14 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useExam } from "@/store/platform/useExam";
-// import { useCustomPost } from "@/hooks/useMutation";
+import { useLesson } from "@/store/platform/useLesson";
 
 const Sidebar = ({
   setSidebarVisible,
   sidebarVisible,
   sidebarCollapsed,
   sidebarCollapseHandler,
-  setCurrentLessonIndex,
+  // setCurrentLessonIndex,
   courseData,
 }: {
   setSidebarVisible: any;
@@ -30,21 +30,23 @@ const Sidebar = ({
   courseData: any;
 }) => {
   const [semesters, setSemesters] = useState([]);
-  const [active, setActive] = useState(0);
   const setIsExamMode = useExam((state) => state.setIsExamMode);
   const setStartExam = useExam((state) => state.setStartExam);
-  console.log(courseData);
+  const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const setCurrentLessonIndex = useLesson(
+    (state) => state.setCurrentLessonIndex
+  );
   useEffect(() => {
     if (courseData?.semesters) {
-      const initialized = courseData.semesters.map((semester: any) => ({
+      const initialized = courseData?.semesters?.map((semester: any) => ({
         ...semester,
         isExpanded: false,
         units:
-          semester.units?.map((unit: any) => ({
+          semester?.units?.map((unit: any) => ({
             ...unit,
             isExpanded: false,
             topics:
-              unit.topics?.map((topic: any) => ({
+              unit?.topics?.map((topic: any) => ({
                 ...topic,
                 isExpanded: false,
               })) || [],
@@ -53,11 +55,45 @@ const Sidebar = ({
       setSemesters(initialized);
     }
   }, [courseData]);
-  const toggleSemester = (semsterId: any) => {
+
+  function getFirstIncompleteLesson(course: any) {
+    for (const semester of course?.semesters || []) {
+      for (const unit of semester?.units || []) {
+        for (const topic of unit?.topics || []) {
+          for (const lesson of topic?.lessons || []) {
+            if (!lesson?.is_completed) {
+              return lesson;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+  useEffect(() => {
+    const lesson = getFirstIncompleteLesson(courseData);
+    if (lesson) setCurrentLessonIndex(lesson || 0);
+  }, [courseData]);
+  const toggleSemester = (semesterId: any) => {
     setSemesters((prev: any) =>
-      prev.map((sm: any) =>
-        sm.id === semsterId ? { ...sm, isExpanded: !sm.isExpanded } : sm
-      )
+      prev.map((sm: any) => {
+        if (sm.id === semesterId) {
+          const isExpanding = !sm.isExpanded;
+          return {
+            ...sm,
+            isExpanded: isExpanding,
+            units: sm.units.map((unit: any) => ({
+              ...unit,
+              isExpanded: isExpanding ? unit.isExpanded : false,
+              topics: unit.topics.map((topic: any) => ({
+                ...topic,
+                isExpanded: isExpanding ? topic.isExpanded : false,
+              })),
+            })),
+          };
+        }
+        return sm;
+      })
     );
   };
   const toggleUnit = (semesterId: any, unitId: any) => {
@@ -66,11 +102,20 @@ const Sidebar = ({
         sm.id === semesterId
           ? {
               ...sm,
-              units: sm.units.map((unit: any) =>
-                unit.id === unitId
-                  ? { ...unit, isExpanded: !unit.isExpanded }
-                  : unit
-              ),
+              units: sm.units.map((unit: any) => {
+                if (unit.id === unitId) {
+                  const isExpanding = !unit.isExpanded;
+                  return {
+                    ...unit,
+                    isExpanded: isExpanding,
+                    topics: unit.topics.map((topic: any) => ({
+                      ...topic,
+                      isExpanded: isExpanding ? topic.isExpanded : false,
+                    })),
+                  };
+                }
+                return unit;
+              }),
             }
           : sm
       )
@@ -82,13 +127,13 @@ const Sidebar = ({
         sm.id === semesterId
           ? {
               ...sm,
-              units: sm.units.map((unit: any) =>
-                unit.id === unitId
+              units: sm?.units.map((unit: any) =>
+                unit?.id === unitId
                   ? {
                       ...unit,
-                      topics: unit.topics.map((topic: any) =>
-                        topic.id === topicId
-                          ? { ...topic, isExpanded: !topic.isExpanded }
+                      topics: unit?.topics.map((topic: any) =>
+                        topic?.id === topicId
+                          ? { ...topic, isExpanded: !topic?.isExpanded }
                           : topic
                       ),
                     }
@@ -100,18 +145,15 @@ const Sidebar = ({
     );
   };
   const handleLessonClick = (lesson: any, lessonIndex: number) => {
-    console.log("lesson", lesson);
-    console.log("lessonIndex", lessonIndex);
-    console.log("lessonType", lesson.type);
-    if (lesson.is_completed) {
+    if (lesson?.is_completed) {
       setCurrentLessonIndex(lessonIndex);
-      setActive(lessonIndex);
-      if (lesson.type != "exam") {
+      // setActive(lessonIndex);
+      if (lesson?.type != "exam") {
         setIsExamMode(false);
-        console.log("NotExam");
       } else {
+        setIsExamMode(true);
         setStartExam(true);
-        console.log("Exam");
+        console.log("clicked");
       }
     } else {
       toast.error("يجب استكمال الدروس السابق");
@@ -141,7 +183,7 @@ const Sidebar = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => sidebarCollapseHandler(!sidebarCollapsed)}
-              className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200"
+              className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200 cursor-pointer"
             >
               {sidebarCollapsed ? (
                 <PanelLeftOpen className="w-4 h-4" />
@@ -151,7 +193,7 @@ const Sidebar = ({
             </button>
             <button
               onClick={() => setSidebarVisible(false)}
-              className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200 md:hidden"
+              className="p-2 hover:bg-white/50 rounded-lg transition-colors duration-200 md:hidden cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -180,7 +222,7 @@ const Sidebar = ({
           <div key={semester?.id} className="mb-2">
             <button
               onClick={() => !sidebarCollapsed && toggleSemester(semester?.id)}
-              className={`w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 ${
+              className={`w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer${
                 sidebarCollapsed ? "justify-center" : ""
               }`}
             >
@@ -208,7 +250,7 @@ const Sidebar = ({
                     <div key={unit.id}>
                       <button
                         onClick={() => toggleUnit(semester.id, unit.id)}
-                        className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100"
+                        className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100 cursor-pointer"
                       >
                         <span className="text-sm">{unit.title}</span>
                         {unit.isExpanded ? (
@@ -226,46 +268,49 @@ const Sidebar = ({
                                 onClick={() =>
                                   toggleTopic(semester.id, unit.id, topic.id)
                                 }
-                                className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100"
+                                className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100 cursor-pointer"
                               >
                                 <span className="text-xs">{topic.title}</span>
-                                {topic.isExpanded ? (
-                                  <ChevronDown className="w-4 h-4 text-gray-500" />
-                                ) : (
-                                  <ChevronRight className="w-4 h-4 text-gray-500" />
-                                )}
+
+                                {topic.lessons.length > 0 ? (
+                                  topic.isExpanded ? (
+                                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                                  ) : (
+                                    <ChevronRight className="w-4 h-4 text-gray-500" />
+                                  )
+                                ) : null}
                               </button>
 
                               {topic.isExpanded &&
                                 topic.lessons?.length > 0 && (
                                   <div className="my-[10px] flex-col text-start w-full">
-                                    {topic.lessons.map(
+                                    {topic?.lessons?.map(
                                       (lesson: any, index: number) => (
                                         <button
                                           onClick={() =>
                                             handleLessonClick(lesson, index)
                                           }
-                                          key={lesson.id}
+                                          key={lesson?.id}
                                           className={`my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
                                              ${
-                                               lesson.is_completed
+                                               lesson?.is_completed
                                                  ? "bg-green-100 text-green-600 hover:bg-green-200 duration-[0.5s]"
                                                  : "opacity-60"
                                              } py-1 hover:bg-gray-50 rounded ${
-                                            active == index &&
+                                            currentLessonIndex == index &&
                                             "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                                           }`}
                                         >
                                           <div className="flex justify-between items-center p-[5px] w-full">
                                             <div className="text-start">
                                               <h6 className="">
-                                                {lesson.title}
+                                                {lesson?.title}
                                               </h6>
                                               <p className="text-[0.7rem]">
                                                 {lesson.time_in_minutes} دقيقة
                                               </p>
                                             </div>
-                                            {active == index ? (
+                                            {currentLessonIndex == index ? (
                                               <Play className="w-4 h-4" />
                                             ) : lesson.is_completed ? (
                                               <CheckCircle className="w-4 h-4" />

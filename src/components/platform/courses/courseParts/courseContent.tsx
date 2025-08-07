@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Play,
   BarChart3,
@@ -9,68 +9,72 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import VideoPlayer from "./content/videoPlayer";
-// import Exam from "./content/exam";
 import toast from "react-hot-toast";
 import { useCustomPost } from "@/hooks/useMutation";
-// import { useCustomQuery } from "@/hooks/useQuery";
+import { useLesson } from "@/store/platform/useLesson";
+import { useExam } from "@/store/platform/useExam";
+import ProgressTab from "./tabs/progressTab";
+import FilesTab from "./tabs/filesTab";
+import NotesTab from "./tabs/notesTab";
+import QuestionsTab from "./tabs/questionsTab";
+import Exam from "./content/exam";
 const CourseContent = ({
-  setCurrentLessonIndex,
-  currentLessonIndex,
-  currentLesson,
   setAllLessons,
   allLessons,
   setSemesters,
-}: // courseData,
-{
-  setCurrentLessonIndex: (index: number) => void;
-  currentLessonIndex: number;
-  currentLesson: any;
+}: {
   setAllLessons: any;
   allLessons: any;
   setSemesters: any;
   courseData: any;
 }) => {
   const [activeTab, setActiveTab] = useState("content");
+  const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const isExamMode = useExam((state) => state.isExamMode);
+  const setIsExamMode = useExam((state) => state.setIsExamMode);
+  const setCurrentLessonIndex = useLesson(
+    (state) => state.setCurrentLessonIndex
+  );
+  // const currentLesson = useLesson((state) => state.currentLesson);
   const { mutateAsync: completeMutateAsync } = useCustomPost(
     "/training/students/lesson/complete/",
     ["complete"]
   );
 
-  console.log(currentLesson.is_completed);
-  useEffect(() => {
-    const completeLesson = async () => {
-      try {
-        const response = await fetch("/training/students/lesson/complete/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${window.localStorage.getItem(
-              "accessToken"
-            )}`,
-          },
-          body: JSON.stringify({
-            lesson_id: currentLesson.id,
-          }),
-        });
+  // useEffect(() => {
+  //   const completeLesson = async () => {
+  //     try {
+  //       const response = await fetch("/training/students/lesson/complete/", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${window.localStorage.getItem(
+  //             "accessToken"
+  //           )}`,
+  //         },
+  //         body: JSON.stringify({
+  //           lesson_id: currentLesson.id,
+  //         }),
+  //       });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Request failed");
-        }
+  //       if (!response.ok) {
+  //         const errorData = await response.json();
+  //         throw new Error(errorData.message || "Request failed");
+  //       }
 
-        const result = await response.json();
-        console.log("Lesson completion success:", result);
-      } catch (error) {
-        console.error("Error completing lesson:", error);
-        // Optional: toast.error("فشل إرسال الطلب");
-      }
-    };
+  //       const result = await response.json();
+  //       console.log("Lesson completion success:", result);
+  //     } catch (error) {
+  //       console.error("Error completing lesson:", error);
+  //       // Optional: toast.error("فشل إرسال الطلب");
+  //     }
+  //   };
 
-    completeLesson();
-  }, []);
+  //   completeLesson();
+  // }, []);
 
   // exam
-  // const [isExamMode, setIsExamMode] = useState(false);
+  // const [_, setIsExamMode] = useState(false);
   // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // const [selectedAnswers, setSelectedAnswers] = useState({});
   // const [timeRemaining, setTimeRemaining] = useState(0);
@@ -80,7 +84,8 @@ const CourseContent = ({
   const navigateLesson = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
-      // setIsExamMode(false);
+      const prevLesson = allLessons[currentLessonIndex - 1];
+      prevLesson?.type == "video" ? setIsExamMode(false) : setIsExamMode(true);
     } else if (
       direction === "next" &&
       currentLessonIndex < allLessons.length - 1
@@ -88,11 +93,9 @@ const CourseContent = ({
       const nextLesson = allLessons[currentLessonIndex + 1];
       if (nextLesson.is_completed) {
         setCurrentLessonIndex(currentLessonIndex + 1);
-        // if (nextLesson.type === "exam") {
-        //   startExam();
-        // } else {
-        //   setIsExamMode(false);
-        // }
+        nextLesson?.type == "video"
+          ? setIsExamMode(false)
+          : setIsExamMode(true);
       } else {
         toast.error("الدرس غير مكتمل");
       }
@@ -100,8 +103,6 @@ const CourseContent = ({
   };
   const markLessonComplete = () => {
     const updatedLessons = [...allLessons];
-    console.log(updatedLessons[currentLessonIndex]);
-    console.log(currentLessonIndex);
     updatedLessons[currentLessonIndex].isCompleted = true;
     completeMutateAsync(updatedLessons[currentLessonIndex].id);
 
@@ -171,31 +172,27 @@ const CourseContent = ({
       {activeTab === "content" && (
         <div className="space-y-8">
           {/* Main Content */}
-
-          <VideoPlayer
-            currentLesson={currentLesson}
-            markLessonComplete={markLessonComplete}
-          />
-          {/* <Exam/> */}
-
-          {/* {isExamMode ? (
-                renderExam()
-              ) : currentLesson?.[0][0].link ? (
-                renderVideoPlayer()
-              ) : currentLesson.type === "file" ? (
-                renderFileContent()
-              ) : (
-                <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-                  <p className="text-gray-500">نوع الدرس غير مدعوم</p>
-                </div>
-              )} */}
+          {
+            isExamMode ? (
+              <Exam 
+              // markLessonComplete={markLessonComplete}
+               />
+            ) : (
+              <VideoPlayer markLessonComplete={markLessonComplete} />
+            )
+            //  : (
+            //   <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            //     <p className="text-gray-500">نوع الدرس غير مدعوم</p>
+            //   </div>
+            // )
+          }
 
           {/* Navigation Controls */}
           <div className="flex items-center justify-between bg-white rounded-2xl shadow-lg p-6">
             <button
               onClick={() => navigateLesson("prev")}
               disabled={currentLessonIndex === 0}
-              className="flex items-center space-x-2 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center space-x-2 px-6 py-3 cursor-pointer border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-5 h-5" />
               <span>الدرس السابق</span>
@@ -223,7 +220,7 @@ const CourseContent = ({
                 currentLessonIndex === allLessons.length - 1 ||
                 allLessons[currentLessonIndex + 1]?.isLocked
               }
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center space-x-2 cursor-pointer px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>الدرس التالي</span>
               <ChevronLeft className="w-5 h-5" />
@@ -232,10 +229,10 @@ const CourseContent = ({
         </div>
       )}
 
-      {/* {activeTab === "progress" && renderProgressTab()}
-      {activeTab === "files" && renderFilesTab()}
-      {activeTab === "notes" && renderNotesTab()}
-      {activeTab === "questions" && renderQuestionsTab()} */}
+      {activeTab === "progress" && <ProgressTab />}
+      {activeTab === "files" && <FilesTab />}
+      {activeTab === "notes" && <NotesTab />}
+      {activeTab === "questions" && <QuestionsTab />}
     </div>
   );
 };

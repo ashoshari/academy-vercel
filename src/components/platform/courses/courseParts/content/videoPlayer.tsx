@@ -1,12 +1,21 @@
 import { CheckCircle, FileText, Download, Clock } from "lucide-react";
-// import { useLesson } from "@/store/platform/useLesson";
-import { useState } from "react";
+import { useLesson } from "@/store/platform/useLesson";
+import { useCustomPost } from "@/hooks/useMutation";
 
-const VideoPlayer = ({ currentLesson: current, markLessonComplete }: any) => {
-  // const setId = useLesson((state) => state.setId);
-  // const id = useLesson((state) => state.id);
-  const [currentLesson, _] = useState(current);
-  console.log(currentLesson.is_completed);
+const VideoPlayer = ({ markLessonComplete }: any) => {
+  const currentLesson = useLesson((state) => state.currentLesson);
+  const { mutateAsync: downloadFiles } = useCustomPost(
+    "/training/students/resources-download/",
+    ["downloadFiles"]
+  );
+  const handleDownload = async (resourceId: any) => {
+    try {
+      await downloadFiles({
+        resource_id: resourceId,
+      });
+    } catch (error) {
+    }
+  };
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video bg-black rounded-t-2xl overflow-hidden">
@@ -14,13 +23,14 @@ const VideoPlayer = ({ currentLesson: current, markLessonComplete }: any) => {
           width="100%"
           height="100%"
           src={
-            // currentLesson?.link ||
-            "https://www.youtube.com/embed/watch?v=Eoo4HzILB-M"
+            "https://www.youtube.com/embed/" + currentLesson?.link ||
+            "?si=3uTi5rBiWUGXQ8gT"
           }
           title={currentLesson?.title}
-          allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
-          className="w-full h-full"
         ></iframe>
       </div>
 
@@ -53,24 +63,19 @@ const VideoPlayer = ({ currentLesson: current, markLessonComplete }: any) => {
                 <a
                   href={resource.file}
                   target="_blank"
-                  key={resource.id}
+                  key={resource?.id}
+                  onClick={() => handleDownload(resource?.id)}
                   className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200"
                   download
                 >
-                  {resource.image ? (
-                    <img
-                      className="w-[50px]"
-                      src={resource.image}
-                      alt={resource.name}
-                    />
-                  ) : (
-                    <FileText className="w-5 h-5 text-blue-500" />
-                  )}
+                  <FileText className="w-5 h-5 text-blue-500" />
                   <div className="flex-1">
                     <div className="font-medium text-gray-900 text-sm">
-                      {resource.description}
+                      {resource?.title || "ملف"}
                     </div>
-                    <div className="text-xs text-gray-500">{resource.size}</div>
+                    <div className="text-xs text-gray-500">
+                      {(resource?.file_size / 1024).toFixed(1) || 0} MB
+                    </div>
                   </div>
                   <button className="p-2 text-blue-600 cursor-pointer hover:bg-blue-50 rounded-lg transition-colors duration-200">
                     <Download className="w-4 h-4" />
@@ -85,16 +90,16 @@ const VideoPlayer = ({ currentLesson: current, markLessonComplete }: any) => {
         <div className="flex items-center justify-between">
           <button
             onClick={markLessonComplete}
-            disabled={currentLesson.isCompleted}
+            disabled={currentLesson.is_completed}
             className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
-              currentLesson.isCompleted
+              currentLesson.is_completed
                 ? "bg-green-100 text-green-800 cursor-not-allowed"
                 : "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
             }`}
           >
             <CheckCircle className="w-5 h-5" />
             <span>
-              {currentLesson.isCompleted ? "مكتمل" : "وضع علامة مكتمل"}
+              {currentLesson?.is_completed ? "مكتمل" : "وضع علامة مكتمل"}
             </span>
           </button>
         </div>

@@ -1,12 +1,16 @@
 import { create } from "zustand";
 interface LessonState {
-  id: string;
-  setId: (id: string) => void;
+  currentLessonIndex: number;
+  setCurrentLessonIndex: (currentLessonIndex: number) => void;
+  currentLesson: any;
+  setCurrentLesson: (currentLesson: any) => void;
 }
 
 export const useLesson = create<LessonState>((set) => ({
-  id: "",
-  setId: (id: string) => {
-    set({ id });
+  currentLessonIndex: 0,
+  currentLesson: null,
+  setCurrentLessonIndex: (currentLessonIndex: number) => {
+    set({ currentLessonIndex });
   },
+  setCurrentLesson: (currentLesson: any) => set({ currentLesson }),
 }));
