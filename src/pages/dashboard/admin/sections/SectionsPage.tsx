@@ -8,6 +8,8 @@ import {
   Calendar,
   ToggleLeft,
   ToggleRight,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDate } from "@/services/date";
@@ -375,15 +377,72 @@ const EditSectionModal = ({
   </div>
 );
 
+const ConfirmToggleModal = ({
+  onClose,
+  onConfirm,
+  sectionName,
+  isEnabled,
+}: {
+  onClose: () => void;
+  onConfirm: () => void;
+  sectionName: string;
+  isEnabled: boolean;
+}) => {
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        {/* Header */}
+        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-gray-800">تأكيد الإجراء</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="p-6 text-right space-y-4">
+          <p className="text-gray-700 text-base font-medium">
+            هل أنت متأكد من {isEnabled ? "إخفاء" : "إظهار"} القسم
+            <span className="font-bold text-orange-600"> {sectionName}</span>؟
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-gray-200 flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-5 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition"
+          >
+            إلغاء
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`px-5 py-2 rounded-lg text-white transition ${
+              isEnabled
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-green-500 hover:bg-green-600"
+            }`}
+          >
+            نعم، {isEnabled ? "إخفاء" : "إظهار"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SectionsPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedSection, setSelectedSection] = useState<MainSection | null>(
     null
   );
-  // const [searchTerm, setSearchTerm] = useState("");
+  const [confirmToggleModal, setConfirmToggleModal] = useState(false);
 
-  console.log(selectedSection, "selectedSection");
+  // const [searchTerm, setSearchTerm] = useState("");
 
   const [newSection, setNewSection] = useState<Partial<MainSection>>({
     name: "",
@@ -486,14 +545,32 @@ const SectionsPage = () => {
   //     //   setSections(sections.filter((section) => section.id !== id));
   //   }
   // };
+  console.log("first", selectedSection?.isEnabled);
 
-  // const toggleSectionStatus = () => {
-  // setSections(
-  //   sections.map((section) =>
-  //     section.id === id ? { ...section, [field]: !section[field] } : section
-  //   )
-  // );
-  // };
+  const toggleSectionStatus = () => {
+    if (!selectedSection) {
+      return;
+    }
+
+    editSection
+      .mutateAsync({
+        is_published: !selectedSection.isEnabled,
+      })
+      .then((res) => {
+        if (res.status) {
+          setSelectedSection(null);
+          setConfirmToggleModal(false);
+          toast.success(res.message);
+        } else {
+          toast.error(res.error);
+        }
+      })
+      .catch((error) => {
+        handleErrorAlerts(
+          error?.response?.data?.error || "حدث خطاء في اضافة القسم"
+        );
+      });
+  };
 
   return (
     <div className="space-y-6">
@@ -646,10 +723,25 @@ const SectionsPage = () => {
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                   <div className="flex items-center gap-1">
                     {/* Toggle Status */}
-                    {/* <button
-                      onClick={() => toggleSectionStatus()}
+                    <button
+                      onClick={() => {
+                        setSelectedSection({
+                          id: section.id,
+                          name: section.title,
+                          description: section.description,
+                          icon: section.icon.id,
+                          color: section.color.id,
+                          isFree: section.isFree ?? false,
+                          isEnabled: section.is_published,
+                          studentsCount: section.studentsCount ?? 0,
+                          itemsCount: section.itemsCount ?? 0,
+                          createdAt: section.created_at,
+                        });
+
+                        setConfirmToggleModal(true);
+                      }}
                       className={`p-2 rounded-lg transition-colors ${
-                        section.is_published
+                        !section.is_published
                           ? "text-green-600 bg-green-50 hover:bg-green-100"
                           : "text-gray-400 bg-gray-50 hover:bg-gray-100"
                       }`}
@@ -657,12 +749,12 @@ const SectionsPage = () => {
                         section.is_published ? "تعطيل القسم" : "تفعيل القسم"
                       }
                     >
-                      {section.is_published ? (
+                      {!section.is_published ? (
                         <Eye size={16} />
                       ) : (
                         <EyeOff size={16} />
                       )}
-                    </button> */}
+                    </button>
                   </div>
 
                   <div className="flex items-center gap-1">
@@ -749,6 +841,17 @@ const SectionsPage = () => {
           selectedSection={selectedSection}
           setSelectedSection={setSelectedSection}
           setShowEditModal={setShowEditModal}
+        />
+      )}
+
+      {confirmToggleModal && (
+        <ConfirmToggleModal
+          onClose={() => setConfirmToggleModal(false)}
+          onConfirm={async () => {
+            toggleSectionStatus();
+          }}
+          sectionName={selectedSection?.name ?? ""}
+          isEnabled={selectedSection?.isEnabled ?? false}
         />
       )}
     </div>

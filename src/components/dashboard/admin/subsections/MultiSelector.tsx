@@ -23,7 +23,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const available = options
-    .filter((o) => !value.includes(o.id))
+    .filter((o) => !value?.includes(o.id))
     .filter((o) => o.title.toLowerCase().includes(query.toLowerCase()));
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
                     focus-within:border-orange-500`}
         onClick={() => setOpen(true)}
       >
-        {value.map((id) => {
+        {value?.map((id) => {
           const opt = options.find((o) => o.id === id)!;
           return (
             <span

@@ -185,6 +185,20 @@ export default function TreeItem({
                     : ""}
                 </button>
               )}
+              {type === "subsubsections" && (
+                <button
+                  onClick={() => {
+                    setSelectedSubSubsection?.(item);
+                    // setSelectedSpecialization?.(item);
+                    setShowAddMaterialModal?.(true);
+                  }}
+                  className=" p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
+                  title=" إضافة مادة  "
+                >
+                  <Plus size={16} />
+                  إضافة مادة
+                </button>
+              )}
             </div>
 
             {/* Stats and Actions */}
@@ -220,16 +234,18 @@ export default function TreeItem({
               </div>
 
               <div className="flex items-center gap-1">
-                <button
-                  onClick={() => {
-                    setSelectedSubsection?.(item);
-                    setShowLinkModal?.(true);
-                  }}
-                  className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="ربط بالأقسام الرئيسية"
-                >
-                  <Link size={16} />
-                </button>
+                {type === "subsections" && (
+                  <button
+                    onClick={() => {
+                      setSelectedSubsection?.(item);
+                      setShowLinkModal?.(true);
+                    }}
+                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="ربط بالأقسام الرئيسية"
+                  >
+                    <Link size={16} />
+                  </button>
+                )}
 
                 <button
                   onClick={() => {

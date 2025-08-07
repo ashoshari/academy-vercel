@@ -15,6 +15,7 @@ import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import toast from "react-hot-toast";
 import Loader from "@/components/core/Loader";
+import { formatDateTimeSimple } from "@/utils/formatDateTime";
 
 export interface CardPricing {
   id: number;
@@ -292,7 +293,7 @@ const CardPricingPage = () => {
 
                 {/* Date */}
                 <div className="text-center text-xs text-gray-500 mb-4">
-                  تم الإنشاء: {card.createdAt}
+                  تم الإنشاء: {formatDateTimeSimple(card.created_at)}
                 </div>
 
                 {/* Actions */}
