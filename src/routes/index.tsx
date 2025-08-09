@@ -22,7 +22,7 @@ import CoursePage from "@/components/platform/courses/courseParts/coursePage";
 // import  CoursePage  from "@/components/platform/exams/sidebar";
 import Dashboard from "@/pages/dashboard/admin/Dashboard";
 import TeachersPage from "@/pages/dashboard/admin/teachers/TeachersPage";
-import StudentsPage from "@/pages/dashboard/admin/StudentsPage";
+import StudentsPage from "@/pages/dashboard/admin/students/StudentsPage";
 import CoursesPage from "@/pages/dashboard/admin/CoursesPage";
 import AddTeacherPage from "@/pages/dashboard/admin/teachers/AddTeacherPage";
 import EditTeacherPage from "@/pages/dashboard/admin/teachers/EditTeacherPage";
@@ -34,6 +34,9 @@ import SectionsPage from "@/pages/dashboard/admin/sections/SectionsPage";
 import PhoneUser from "@/pages/platform/phoneUser";
 import SubsectionsPage from "@/pages/dashboard/admin/sections/SubSubsections";
 import Exam from "@/components/platform/exams/exam";
+import AddStudentPage from "@/pages/dashboard/admin/students/AddStudentPage";
+import EditStudentPage from "@/pages/dashboard/admin/students/EditStudentPage";
+import StudentDetailsPage from "@/pages/dashboard/admin/students/StudentDetailsPage";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -58,21 +61,31 @@ export default function AppRoutes() {
         {isAuthenticated && (
           <Route path="dashboard" element={<Layout />}>
             <Route index element={<Dashboard />} />
+
+            {/* students */}
+            <Route path="students" element={<StudentsPage />} />
+            <Route path="students/add" element={<AddStudentPage />} />
+            <Route path="students/edit/:id" element={<EditStudentPage />} />
+            <Route path="students/:id" element={<StudentDetailsPage />} />
+            {/* students */}
+
             {/* teachers */}
             <Route path="teachers" element={<TeachersPage />} />
             <Route path="teachers/add" element={<AddTeacherPage />} />
             <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
             <Route path="teachers/:id" element={<TeacherDetailsPage />} />
             {/* teachers */}
+
             {/* sections */}
             <Route path="sections" element={<SectionsPage />} />
             <Route path="sub-sections" element={<SubsectionsPage />} />
             {/* sections */}
+
             {/* cards */}
             <Route path="card-pricing" element={<CardPricingPage />} />
             <Route path="card-codes" element={<CardCodesPage />} />
-            {/* cards */}س
-            <Route path="students" element={<StudentsPage />} />
+            {/* cards */}
+
             <Route path="courses" element={<CoursesPage />} />
           </Route>
         )}

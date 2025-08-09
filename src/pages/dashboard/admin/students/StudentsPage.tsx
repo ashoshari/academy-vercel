@@ -24,6 +24,8 @@ import {
   XCircle,
   DollarSign,
 } from "lucide-react";
+import { useNavigate } from "react-router";
+import { useCustomQuery } from "@/hooks/useQuery";
 
 export interface Student {
   id: number;
@@ -98,8 +100,7 @@ export interface ActivityRecord {
 }
 
 const StudentsPage = () => {
-  const [__, setShowAddModal] = useState(false);
-  const [_, setShowEditModal] = useState(false);
+  const navigate = useNavigate();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -107,23 +108,14 @@ const StudentsPage = () => {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive" | "verified" | "unverified"
   >("all");
+
   const [courseFilter, setCourseFilter] = useState<string>("");
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
-  //   const [newStudent, setNewStudent] = useState<Partial<Student>>({
-  //     name: "",
-  //     email: "",
-  //     phone: "",
-  //     dateOfBirth: "",
-  //     gender: "male",
-  //     location: "",
-  //     parentPhone: "",
-  //     parentEmail: "",
-  //     schoolName: "",
-  //     grade: "",
-  //     isActive: true,
-  //     isVerified: false,
-  //   });
+  const data = useCustomQuery("/account/admin/students/", ["students"]);
+  const dataStatistics = useCustomQuery("/account/admin/students-statistics/", [
+    "students-statistics",
+  ]);
 
   // Sample data for students
   const [studentsData, setStudentsData] = useState<Student[]>([
@@ -427,72 +419,6 @@ const StudentsPage = () => {
   // Get unique grades for filter
   const uniqueGrades = [...new Set(studentsData.map((s) => s.grade))];
 
-  //   const handleAddStudent = () => {
-  //     if (newStudent.name && newStudent.email && newStudent.phone) {
-  //       const student: Student = {
-  //         id: Date.now(),
-  //         name: newStudent.name,
-  //         email: newStudent.email,
-  //         phone: newStudent.phone,
-  //         dateOfBirth: newStudent.dateOfBirth || "",
-  //         gender: newStudent.gender || "male",
-  //         location: newStudent.location || "",
-  //         parentPhone: newStudent.parentPhone,
-  //         parentEmail: newStudent.parentEmail,
-  //         schoolName: newStudent.schoolName,
-  //         grade: newStudent.grade || "",
-  //         isActive: newStudent.isActive || false,
-  //         isVerified: newStudent.isVerified || false,
-  //         registrationDate: new Date().toISOString().split("T")[0],
-  //         lastLogin: "",
-  //         totalCoursesEnrolled: 0,
-  //         completedCourses: 0,
-  //         currentCourses: 0,
-  //         totalSpent: 0,
-  //         averageGrade: 0,
-  //         studyHours: 0,
-  //         enrolledCourses: [],
-  //         achievements: [],
-  //         paymentHistory: [],
-  //         activityLog: [],
-  //       };
-
-  //       setStudentsData([...studentsData, student]);
-  //       setNewStudent({
-  //         name: "",
-  //         email: "",
-  //         phone: "",
-  //         dateOfBirth: "",
-  //         gender: "male",
-  //         location: "",
-  //         parentPhone: "",
-  //         parentEmail: "",
-  //         schoolName: "",
-  //         grade: "",
-  //         isActive: true,
-  //         isVerified: false,
-  //       });
-  //       setShowAddModal(false);
-  //     }
-  //   };
-
-  //   const handleEditStudent = () => {
-  //     if (
-  //       selectedStudent &&
-  //       selectedStudent.name &&
-  //       selectedStudent.email &&
-  //       selectedStudent.phone
-  //     ) {
-  //       setStudentsData(
-  //         studentsData.map((student) =>
-  //           student.id === selectedStudent.id ? selectedStudent : student
-  //         )
-  //       );
-  //       setShowEditModal(false);
-  //       setSelectedStudent(null);
-  //     }
-  //   };
-
   const handleDeleteStudent = (id: number) => {
     if (
       confirm("هل أنت متأكد من حذف هذا الطالب؟ سيتم حذف جميع بياناته نهائياً.")
@@ -542,44 +468,44 @@ const StudentsPage = () => {
     }
   };
 
-  const exportToExcel = () => {
-    const csvContent = [
-      [
-        "الاسم",
-        "البريد الإلكتروني",
-        "الهاتف",
-        "الصف",
-        "الحالة",
-        "مؤكد",
-        "الدورات المسجلة",
-        "الدورات المكتملة",
-        "المعدل",
-        "إجمالي الإنفاق",
-      ],
-      ...filteredStudents.map((student) => [
-        student.name,
-        student.email,
-        student.phone,
-        student.grade,
-        student.isActive ? "نشط" : "غير نشط",
-        student.isVerified ? "مؤكد" : "غير مؤكد",
-        student.totalCoursesEnrolled,
-        student.completedCourses,
-        student.averageGrade,
-        student.totalSpent,
-      ]),
-    ]
-      .map((row) => row.join(","))
-      .join("\n");
+  // const exportToExcel = () => {
+  //   const csvContent = [
+  //     [
+  //       "الاسم",
+  //       "البريد الإلكتروني",
+  //       "الهاتف",
+  //       "الصف",
+  //       "الحالة",
+  //       "مؤكد",
+  //       "الدورات المسجلة",
+  //       "الدورات المكتملة",
+  //       "المعدل",
+  //       "إجمالي الإنفاق",
+  //     ],
+  //     ...filteredStudents.map((student) => [
+  //       student.name,
+  //       student.email,
+  //       student.phone,
+  //       student.grade,
+  //       student.isActive ? "نشط" : "غير نشط",
+  //       student.isVerified ? "مؤكد" : "غير مؤكد",
+  //       student.totalCoursesEnrolled,
+  //       student.completedCourses,
+  //       student.averageGrade,
+  //       student.totalSpent,
+  //     ]),
+  //   ]
+  //     .map((row) => row.join(","))
+  //     .join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `students-${new Date().toISOString().split("T")[0]}.csv`;
-    link.click();
-  };
+  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  //   const link = document.createElement("a");
+  //   link.href = URL.createObjectURL(blob);
+  //   link.download = `students-${new Date().toISOString().split("T")[0]}.csv`;
+  //   link.click();
+  // };
 
-  const StudentCard = ({ student }: { student: Student }) => (
+  const StudentCard = ({ student }: { student: any }) => (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
       <div className="p-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white">
@@ -587,7 +513,7 @@ const StudentsPage = () => {
           <div className="relative">
             <img
               src={
-                student.avatar ||
+                student.image ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
                   student.name
                 )}&background=ffffff&color=f97316&size=64`
@@ -595,16 +521,16 @@ const StudentsPage = () => {
               alt={student.name}
               className="w-16 h-16 rounded-full border-2 border-white/20"
             />
-            <div
+            {/* <div
               className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
                 student.isActive ? "bg-green-500" : "bg-gray-400"
               }`}
-            ></div>
+            ></div> */}
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-lg mb-1">{student.name}</h3>
             <p className="text-orange-100 text-sm">{student.grade}</p>
-            <div className="flex items-center gap-2 mt-2">
+            {/* <div className="flex items-center gap-2 mt-2">
               {student.isVerified && (
                 <span className="bg-green-400/20 text-green-100 px-2 py-1 rounded-full text-xs font-medium">
                   مؤكد
@@ -619,7 +545,7 @@ const StudentsPage = () => {
               >
                 {student.isActive ? "نشط" : "غير نشط"}
               </span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -629,25 +555,25 @@ const StudentsPage = () => {
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="text-center">
             <div className="text-2xl font-bold text-gray-800">
-              {student.totalCoursesEnrolled}
+              {student.total_number_of_enrolled_courses}
             </div>
             <div className="text-xs text-gray-500">دورات مسجلة</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600">
-              {student.completedCourses}
+              {student.total_number_of_completed_courses}
             </div>
             <div className="text-xs text-gray-500">دورات مكتملة</div>
           </div>
-          <div className="text-center">
+          {/* <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">
-              {student.averageGrade.toFixed(1)}%
+              {student.total_number_of_completed_courses} %
             </div>
             <div className="text-xs text-gray-500">المعدل</div>
-          </div>
+          </div> */}
           <div className="text-center">
             <div className="text-2xl font-bold text-orange-600">
-              {student.totalSpent} د.أ
+              {student.total_spend} د.أ
             </div>
             <div className="text-xs text-gray-500">إجمالي الإنفاق</div>
           </div>
@@ -657,26 +583,28 @@ const StudentsPage = () => {
         <div className="space-y-2 mb-6">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Phone size={14} />
-            <span>{student.phone}</span>
+            <span>{student.mobile_number}</span>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Mail size={14} />
-            <span className="truncate">{student.email}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          {student.email && (
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Mail size={14} />
+              <span className="truncate">{student.email}</span>
+            </div>
+          )}
+          {/* <div className="flex items-center gap-2 text-sm text-gray-600">
             <MapPin size={14} />
             <span>{student.location}</span>
-          </div>
+          </div> */}
         </div>
 
         {/* Recent Courses */}
         <div className="mb-6">
           <h4 className="font-medium text-gray-800 mb-3">الدورات الحالية</h4>
           <div className="space-y-2">
-            {student.enrolledCourses
-              .filter((c) => c.status === "active")
+            {student?.current_courses
+              ?.filter((c: any) => c.status === "active")
               .slice(0, 2)
-              .map((course) => {
+              .map((course: any) => {
                 const IconComponent = getCourseTypeIcon(course.courseType);
                 return (
                   <div
@@ -695,7 +623,7 @@ const StudentsPage = () => {
                   </div>
                 );
               })}
-            {student.enrolledCourses.filter((c) => c.status === "active")
+            {student?.current_courses?.filter((c: any) => c.status === "active")
               .length === 0 && (
               <p className="text-sm text-gray-500 text-center py-2">
                 لا توجد دورات نشطة
@@ -707,7 +635,7 @@ const StudentsPage = () => {
         {/* Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex items-center gap-1">
-            <button
+            {/* <button
               onClick={() => toggleStudentStatus(student.id, "isActive")}
               className={`p-2 rounded-lg transition-colors ${
                 student.isActive
@@ -717,9 +645,9 @@ const StudentsPage = () => {
               title={student.isActive ? "إلغاء تفعيل الطالب" : "تفعيل الطالب"}
             >
               {student.isActive ? <UserCheck size={16} /> : <UserX size={16} />}
-            </button>
+            </button> */}
 
-            <button
+            {/* <button
               onClick={() => toggleStudentStatus(student.id, "isVerified")}
               className={`p-2 rounded-lg transition-colors ${
                 student.isVerified
@@ -733,14 +661,13 @@ const StudentsPage = () => {
               ) : (
                 <XCircle size={16} />
               )}
-            </button>
+            </button> */}
           </div>
 
           <div className="flex items-center gap-1">
             <button
               onClick={() => {
-                setSelectedStudent(student);
-                setShowDetailsModal(true);
+                navigate(`/dashboard/students/${student.id}`);
               }}
               className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               title="عرض التفاصيل"
@@ -750,8 +677,7 @@ const StudentsPage = () => {
 
             <button
               onClick={() => {
-                setSelectedStudent(student);
-                setShowEditModal(true);
+                navigate(`/dashboard/students/edit/${student.id}`);
               }}
               className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               title="تعديل الطالب"
@@ -759,13 +685,15 @@ const StudentsPage = () => {
               <Edit size={16} />
             </button>
 
-            <button
-              onClick={() => handleDeleteStudent(student.id)}
-              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              title="حذف الطالب"
-            >
-              <Trash2 size={16} />
-            </button>
+            {/* 
+              <button
+                onClick={() => handleDeleteStudent(student.id)}
+                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                title="حذف الطالب"
+              >
+                <Trash2 size={16} />
+              </button> 
+            */}
           </div>
         </div>
       </div>
@@ -1152,15 +1080,15 @@ const StudentsPage = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <button
+          {/* <button
             onClick={exportToExcel}
             className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Download size={16} />
             تصدير Excel
-          </button>
+          </button> */}
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={() => navigate("/dashboard/students/add")}
             className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
@@ -1176,7 +1104,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
               <p className="text-3xl font-bold text-gray-800">
-                {studentsData.length}
+                {dataStatistics?.data?.data?.total_students}
               </p>
             </div>
             <Users className="w-12 h-12 text-orange-500" />
@@ -1188,7 +1116,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الطلاب النشطون</p>
               <p className="text-3xl font-bold text-green-600">
-                {studentsData.filter((s) => s.isActive).length}
+                {dataStatistics?.data?.data?.active_students}
               </p>
             </div>
             <UserCheck className="w-12 h-12 text-green-500" />
@@ -1198,9 +1126,9 @@ const StudentsPage = () => {
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">الطلاب المؤكدون</p>
+              <p className="text-gray-500 text-sm">الطلاب الغير نشطون</p>
               <p className="text-3xl font-bold text-blue-600">
-                {studentsData.filter((s) => s.isVerified).length}
+                {dataStatistics?.data?.data?.inactive_students}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-blue-500" />
@@ -1212,9 +1140,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الإيرادات</p>
               <p className="text-3xl font-bold text-orange-600">
-                {studentsData
-                  .reduce((sum, s) => sum + s.totalSpent, 0)
-                  .toFixed(0)}{" "}
+                {dataStatistics?.data?.data?.total_income}
                 د.أ
               </p>
             </div>
@@ -1224,9 +1150,8 @@ const StudentsPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-          {/* Search */}
           <div className="md:col-span-2 relative">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -1238,7 +1163,6 @@ const StudentsPage = () => {
             />
           </div>
 
-          {/* Grade Filter */}
           <select
             value={gradeFilter}
             onChange={(e) => setGradeFilter(e.target.value)}
@@ -1252,7 +1176,6 @@ const StudentsPage = () => {
             ))}
           </select>
 
-          {/* Status Filter */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
@@ -1265,7 +1188,6 @@ const StudentsPage = () => {
             <option value="unverified">غير مؤكد</option>
           </select>
 
-          {/* Course Filter */}
           <input
             type="text"
             value={courseFilter}
@@ -1274,7 +1196,6 @@ const StudentsPage = () => {
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           />
 
-          {/* View Mode */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setViewMode("grid")}
@@ -1298,53 +1219,36 @@ const StudentsPage = () => {
             </button>
           </div>
 
-          {/* Results Count */}
           <div className="flex items-center justify-center bg-gray-50 rounded-lg px-4 py-2">
             <span className="text-sm text-gray-600">
               {filteredStudents.length} من {studentsData.length} طالب
             </span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Students Grid/Table */}
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStudents.map((student) => (
+          {data?.data?.data?.map((student: any) => (
             <StudentCard key={student.id} student={student} />
           ))}
 
-          {filteredStudents.length === 0 && (
+          {data?.data?.data?.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
               <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
-                {searchTerm ||
-                gradeFilter ||
-                statusFilter !== "all" ||
-                courseFilter
-                  ? "لا توجد نتائج"
-                  : "لا يوجد طلاب"}
+                لا توجد نتائج
               </h3>
-              <p className="text-gray-500 mb-6">
-                {searchTerm ||
-                gradeFilter ||
-                statusFilter !== "all" ||
-                courseFilter
-                  ? "لم يتم العثور على طلاب تطابق المعايير المحددة"
-                  : "ابدأ بإضافة طلاب جدد للمنصة"}
-              </p>
-              {!searchTerm &&
-                !gradeFilter &&
-                statusFilter === "all" &&
-                !courseFilter && (
-                  <button
-                    onClick={() => setShowAddModal(true)}
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-                  >
-                    <Plus size={16} />
-                    إضافة طالب جديد
-                  </button>
-                )}
+              <p className="text-gray-500 mb-6">ابدأ بإضافة طلاب جدد للمنصة</p>
+
+              <button
+                onClick={() => navigate("/dashboard/students/add")}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+              >
+                <Plus size={16} />
+                إضافة طالب جديد
+              </button>
             </div>
           )}
         </div>
@@ -1379,7 +1283,7 @@ const StudentsPage = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredStudents.map((student) => (
+                {data?.data?.data?.map((student: any) => (
                   <tr key={student.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
@@ -1458,8 +1362,7 @@ const StudentsPage = () => {
                         </button>
                         <button
                           onClick={() => {
-                            setSelectedStudent(student);
-                            setShowEditModal(true);
+                            navigate(`/dashboard/students/edit/${student.id}`);
                           }}
                           className="p-1 text-gray-400 hover:text-orange-600 transition-colors"
                           title="تعديل"
