@@ -1,6 +1,5 @@
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
-  X,
   Award,
   BookOpen,
   FileText,
