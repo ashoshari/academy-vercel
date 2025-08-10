@@ -10,6 +10,8 @@ const AddSubsectionModal = ({
   mainSections,
   parent,
   level,
+  selectedSubSubsection,
+  type,
 }: {
   onSave: () => void;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,6 +20,8 @@ const AddSubsectionModal = ({
   mainSections?: any;
   parent?: any;
   level: "sub" | "subsub" | "spec" | "mat";
+  selectedSubSubsection?: any;
+  type?: any;
 }) => (
   <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -51,7 +55,7 @@ const AddSubsectionModal = ({
               options={mainSections}
               value={data.sections || []}
               onChange={(ids) => onChange({ ...data, sections: ids })}
-              placeholder="قسم رئيسي (بدون أب)"
+              placeholder="اربطه مع قسم رئيسي او اكثر"
             />
           ) : level === "subsub" ? (
             <p>
@@ -65,11 +69,17 @@ const AddSubsectionModal = ({
             </p>
           ) : (
             <p>
-              اضافة مادة الي التخصص ( <strong>{parent?.name ?? ""}</strong> )
+              اضافة مادة الي {type === "material-subsub" ? "القسم" : "التخصص"}
+              {" ( "}
+              <strong>
+                {selectedSubSubsection
+                  ? selectedSubSubsection.title
+                  : parent?.name}
+              </strong>
+              {"  ) "}
             </p>
           )}
         </div>
-
         {/* Subsection Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">

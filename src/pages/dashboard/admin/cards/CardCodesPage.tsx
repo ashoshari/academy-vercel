@@ -1,3 +1,4 @@
+import { UAParser } from "ua-parser-js";
 import { useState } from "react";
 import {
   Plus,
@@ -26,6 +27,8 @@ import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import GenerateModal from "@/components/card-codes/GenerateModal";
 import handleErrorAlerts from "@/utils/showErrorMessages";
+import Pagination from "@/components/dashboard/core/Pagination";
+import Loader from "@/components/core/Loader";
 
 export interface CardCode {
   id: number;
@@ -67,15 +70,14 @@ export interface CodeBatch {
 const CardCodesPage = () => {
   const cardPricing: any = [];
 
+  const [page, setPage] = useState(1);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [selectedPriceFilter, setSelectedPriceFilter] = useState<string | null>(
     null
   );
-  const [selectedBatchFilter, setSelectedBatchFilter] = useState<string | null>(
-    null
-  );
+  const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
     "all"
   );
@@ -90,14 +92,27 @@ const CardCodesPage = () => {
     "subsections",
   ]);
 
+  const queryParams = new URLSearchParams();
+
+  if (searchTerm) queryParams.append("card_name", searchTerm);
+  if (selectedPriceFilter)
+    queryParams.append("code_string", selectedPriceFilter);
+  if (isUsed !== null && isUsed !== undefined)
+    queryParams.append("is_used", isUsed);
+  if (statusFilter) queryParams.append("is_active", statusFilter);
+  if (page) queryParams.append("page", page.toString());
+
+  const queryString = queryParams.toString();
+
   const generateCodes = useCustomQuery(
-    `cards/codes-generated/?card_name=${searchTerm}&code_string=${selectedPriceFilter}&selectedBatchFilter=${selectedBatchFilter}&is_active=${statusFilter}`,
+    `cards/codes-generated/?${queryString}`,
     [
       "codes-generated",
       searchTerm,
       selectedPriceFilter,
-      selectedBatchFilter,
+      isUsed,
       statusFilter,
+      page,
     ]
   );
 
@@ -122,11 +137,14 @@ const CardCodesPage = () => {
 
   const [generateForm, setGenerateForm] = useState({
     priceId: 0,
-    quantity: 100,
-    prefix: "CARD",
+    quantity: 0,
+    prefix: "",
     notes: "",
     targetingType: "all" as "all" | "specific",
-    targetedSubsections: [] as number[],
+    subsections: [],
+    subsubsections: [],
+    specializations: [],
+    specialization_material: [],
   });
 
   // Build tree structure for subsection selection
@@ -146,8 +164,6 @@ const CardCodesPage = () => {
 
   // const subsectionTree = buildSubsectionTree(subsections?.data?.data);
   const subsectionTree = subsections?.data?.data;
-
-  console.log("subsectionTree", subsectionTree);
 
   // const generateRandomCode = (prefix: string, price: number) => {
   //   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -203,85 +219,88 @@ const CardCodesPage = () => {
     };
   };
 
-  const handleGenerateCodes = () => {
-    // if (generateForm.priceId && generateForm.quantity > 0) {
-    //   const selectedPrice = cardPricing.find(
-    //     (p: any) => p.id === generateForm.priceId
-    //   );
-    //   if (!selectedPrice) return;
-
-    //   const userInfo = getCurrentUserInfo();
-    //   const batchId = `BATCH-${Date.now()}`;
-    //   const newCodes: CardCode[] = [];
-
-    //   for (let i = 0; i < generateForm.quantity; i++) {
-    //     newCodes.push({
-    //       id: Date.now() + i,
-    //       code: generateRandomCode(generateForm.prefix, selectedPrice.price),
-    //       priceId: generateForm.priceId,
-    //       price: selectedPrice.price,
-    //       isUsed: false,
-    //       isActive: true,
-    //       createdAt: new Date().toISOString().split("T")[0],
-    //       batchId,
-    //       targetedSubsections:
-    //         generateForm.targetingType === "all"
-    //           ? []
-    //           : generateForm.targetedSubsections,
-    //     });
-    //   }
-
-    //   // Add new batch with security info and targeting
-    // const newBatch: CodeBatch = {
-    //   id: batchId,
-    //   priceId: generateForm.priceId,
-    //   price: selectedPrice.price,
-    //   totalCodes: generateForm.quantity,
-    //   usedCodes: 0,
-    //   activeCodes: generateForm.quantity,
-    //   createdAt: new Date().toISOString().split("T")[0],
-    //   isActive: true,
-    //   createdBy: userInfo.name,
-    //   createdByRole: userInfo.role,
-    //   createdFromIP: userInfo.ip,
-    //   createdFromDevice: userInfo.device,
-    //   notes: generateForm.notes,
-    //   targetedSubsections:
-    //     generateForm.targetingType === "all"
-    //       ? []
-    //       : generateForm.targetedSubsections,
-    //   targetingType: generateForm.targetingType,
-    // };
-
-    //   console.log("newBatch", newBatch);
-    //   // setCardCodes([ ...newCodes]);
-    //   // setShowGenerateModal(false);
-    //   // setGenerateForm({
-    //   //   priceId: 0,
-    //   //   quantity: 100,
-    //   //   prefix: "CARD",
-    //   //   notes: "",
-    //   //   targetingType: "all",
-    //   //   targetedSubsections: [],
-    //   // });
-    // }
-
-    addCode
-      .mutateAsync({
-        card: generateForm.priceId,
-        number_of_codes: generateForm.quantity,
-        prefix: generateForm.prefix,
-        subsubsections: generateForm.targetedSubsections || [],
-        note: generateForm.notes,
-        security_information: {
-          max_uses_per_user: 1,
-          expiry_date: "2025-12-31",
-        },
+  const cleanObject = (obj: any) => {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([_, v]) => {
+        if (Array.isArray(v)) return v.length > 0;
+        return v !== null && v !== undefined && v !== "";
       })
+    );
+  };
+
+  const getClientInfo = () => {
+    const parser = new UAParser();
+    const result = parser.getResult();
+
+    return {
+      // 🧠 عام
+      ua: result.ua, // user-agent string
+
+      // 💻 الجهاز
+      device: {
+        model: result.device.model || "unknown",
+        type: result.device.type || "desktop",
+        vendor: result.device.vendor || "unknown",
+      },
+
+      // 💽 نظام التشغيل
+      os: {
+        name: result.os.name || "unknown",
+        version: result.os.version || "unknown",
+      },
+
+      // 🌐 المتصفح
+      browser: {
+        name: result.browser.name || "unknown",
+        version: result.browser.version || "unknown",
+        major: result.browser.major || "unknown",
+      },
+
+      // ⚙️ محرك التصفح (Rendering Engine)
+      engine: {
+        name: result.engine.name || "unknown",
+        version: result.engine.version || "unknown",
+      },
+
+      // 🧱 منصة التشغيل (CPU architecture)
+      cpu: {
+        architecture: result.cpu.architecture || "unknown",
+      },
+    };
+  };
+
+  console.log(getClientInfo(), "client info");
+  const handleGenerateCodes = () => {
+    const rawData = {
+      card: generateForm.priceId,
+      number_of_codes: generateForm.quantity,
+      prefix: generateForm.prefix,
+      subsections: generateForm?.subsections,
+      subsubsections: generateForm?.subsubsections,
+      specializations: generateForm?.specializations,
+      specialization_material: generateForm?.specialization_material,
+      note: generateForm.notes,
+      security_information: getClientInfo(),
+    };
+
+    const data = cleanObject(rawData);
+    addCode
+      .mutateAsync(data)
       .then((res) => {
         if (res.status) {
-          toast.success("تم تحديث حالة البطاقة بنجاح");
+          setGenerateForm({
+            priceId: 0,
+            quantity: 0,
+            prefix: "",
+            notes: "",
+            targetingType: "all",
+            subsections: [],
+            subsubsections: [],
+            specializations: [],
+            specialization_material: [],
+          });
           setShowGenerateModal(false);
+          toast.success("تم تحديث حالة البطاقة بنجاح");
         } else {
           toast.error("حدث خطاء في تحديث حالة البطاقة");
         }
@@ -370,55 +389,6 @@ const CardCodesPage = () => {
   //   alert("سيتم تصدير البيانات إلى PDF قريباً");
   // };
 
-  const renderSubsectionTree = (
-    items: (any & { children?: any[] })[],
-    depth: number = 0
-  ) => {
-    return items.map((item) => (
-      <div key={item.id} className="space-y-1">
-        <label
-          className={`flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer ml-${
-            depth * 4
-          }`}
-        >
-          <input
-            type="checkbox"
-            checked={generateForm.targetedSubsections.includes(item.id)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setGenerateForm({
-                  ...generateForm,
-                  targetedSubsections: [
-                    ...generateForm.targetedSubsections,
-                    item.id,
-                  ],
-                });
-              } else {
-                setGenerateForm({
-                  ...generateForm,
-                  targetedSubsections: generateForm.targetedSubsections.filter(
-                    (id) => id !== item.id
-                  ),
-                });
-              }
-            }}
-            className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-          />
-          <Folder size={16} className="text-orange-500" />
-          <span className="text-sm">{item.title}</span>
-          {item.level > 1 && (
-            <span className="text-xs text-gray-500">({item.description})</span>
-          )}
-        </label>
-        {item.children && item.children.length > 0 && (
-          <div className="ml-4">
-            {renderSubsectionTree(item.children, depth + 1)}
-          </div>
-        )}
-      </div>
-    ));
-  };
-
   return (
     <div className="space-y-6 w-full">
       {/* Header */}
@@ -491,73 +461,6 @@ const CardCodesPage = () => {
               </p>
             </div>
             <CreditCard className="w-12 h-12 text-green-500" />
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-3">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="البحث في الكودات..."
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
-            />
-          </div>
-
-          {/* Price Filter */}
-          <select
-            value={selectedPriceFilter || ""}
-            onChange={(e) =>
-              setSelectedPriceFilter(e.target.value ? e.target.value : null)
-            }
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
-          >
-            <option value="">جميع الأسعار</option>
-            {cards?.data?.data.map((price: any) => (
-              <option key={price.id} value={price.id}>
-                {price.price} د.أ
-              </option>
-            ))}
-          </select>
-
-          {/* Batch Filter */}
-          <select
-            value={selectedBatchFilter || ""}
-            onChange={(e) => setSelectedBatchFilter(e.target.value || null)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
-          >
-            <option value="">جميع المجموعات</option>
-            {cardCodes?.data?.data?.map((batch: any) => (
-              <option key={batch.id} value={batch.id}>
-                ({batch?.name} - د.أ {batch?.card?.price} )
-              </option>
-            ))}
-          </select>
-
-          {/* Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
-          >
-            <option value="all">جميع الحالات</option>
-            <option value="true">مفعل</option>
-            <option value="false">غير مفعل</option>
-            {/* <option value="active">مفعل</option>
-            <option value="inactive">معطل</option> */}
-          </select>
-
-          {/* Results Count */}
-          <div className="flex items-center justify-center bg-gray-50 rounded-lg px-4 py-2">
-            <span className="text-sm text-gray-600">
-              {cardCodes?.data?.data?.length} كود
-            </span>
           </div>
         </div>
       </div>
@@ -758,148 +661,226 @@ const CardCodesPage = () => {
         </div>
       </div>
 
-      {/* Enhanced Codes Table */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-bold text-gray-800">قائمة الكودات</h2>
-        </div>
-        {/* Responsive Table */}
-        <div className="w-full max-w-[300px] min-w-full overflow-scroll">
-          <table className="min-w-[1000px] text-sm bg-white">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                  الكود
-                </th>
-                <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                  السعر
-                </th>
-                <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                  المجموعة
-                </th>
+      {/* Enhanced Filters */}
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-3">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="البحث في الكودات..."
+              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            />
+          </div>
 
-                <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                  الحالة
-                </th>
-                <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                  مستخدم بواسطة
-                </th>
-                <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                  تاريخ الاستخدام
-                </th>
-                <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                  تاريخ الإنشاء
-                </th>
-                <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                  الإجراءات
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {generateCodes?.data?.data?.map((code: any) => {
-                return (
-                  <tr key={code.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-medium text-gray-900 truncate max-w-[100px]">
-                          {code.code_string}
-                        </span>
-                        <button
-                          onClick={() => copyToClipboard(code.code_string)}
-                          className="p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                          title="نسخ الكود"
-                        >
-                          <Copy size={14} />
-                        </button>
-                      </div>
-                    </td>
+          {/* Price Filter */}
+          <select
+            value={selectedPriceFilter || ""}
+            onChange={(e) =>
+              setSelectedPriceFilter(e.target.value ? e.target.value : null)
+            }
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+          >
+            <option value="">جميع الأسعار</option>
+            {cards?.data?.data.map((price: any) => (
+              <option key={price.id} value={price.id}>
+                {price.price} د.أ
+              </option>
+            ))}
+          </select>
 
-                    <td className="px-4 py-3 text-gray-900">
-                      {code.code.card.price} د.أ
-                    </td>
+          {/* Batch Filter */}
+          <select
+            value={isUsed || ""}
+            onChange={(e) => setIsUsed(e.target.value as any)}
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+          >
+            <option value="all">جميع الحالات</option>
+            <option value="true">مستخدم</option>
+            <option value="false">غير مستخدم</option>
+          </select>
 
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {code.code.name}
-                      </div>
+          {/* Status Filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as any)}
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+          >
+            <option value="all">جميع الحالات</option>
+            <option value="true">مفعل</option>
+            <option value="false">غير مفعل</option>
+            {/* <option value="active">مفعل</option>
+            <option value="inactive">معطل</option> */}
+          </select>
 
-                      <div className="text-xs text-gray-500">
-                        بواسطة: {code.code.generated_by}
-                      </div>
-                    </td>
-
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex gap-2">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            code.is_used
-                              ? "bg-red-100 text-red-800"
-                              : "bg-green-100 text-green-800"
-                          }`}
-                        >
-                          {code.is_used ? "مستخدم" : "متاح"}
-                        </span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            code.is_active
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {code.is_active ? "مفعل" : "معطل"}
-                        </span>
-                      </div>
-                    </td>
-
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {code.used_by?.map((el: any) => el.name).join(", ") ||
-                        "-"}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {code.usedAt || "-"}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {formatDateTimeSimple(code.created_at)}
-                    </td>
-
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => toggleCodeStatus(code.id)}
-                          className={`p-1 rounded transition-colors ${
-                            code.is_active
-                              ? "text-green-600 hover:bg-green-50"
-                              : "text-gray-400 hover:bg-gray-50"
-                          }`}
-                          title={code.is_active ? "تعطيل الكود" : "تفعيل الكود"}
-                        >
-                          {code.is_active ? (
-                            <Eye size={16} />
-                          ) : (
-                            <EyeOff size={16} />
-                          )}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-
-          {cardCodes?.data?.data?.generated_codes?.length === 0 && (
-            <div className="text-center py-12">
-              <Hash className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-800 mb-2">
-                لا توجد كودات
-              </h3>
-              <p className="text-gray-500">
-                لم يتم العثور على كودات تطابق المعايير المحددة
-              </p>
-            </div>
-          )}
+          {/* Results Count */}
+          <div className="flex items-center justify-center bg-gray-50 rounded-lg px-4 py-2">
+            <span className="text-sm text-gray-600">
+              {generateCodes?.data?.pagination?.count} كود
+            </span>
+          </div>
         </div>
       </div>
+
+      {/* Enhanced Codes Table */}
+      {generateCodes?.isLoading ? (
+        <Loader />
+      ) : (
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-bold text-gray-800">قائمة الكودات</h2>
+          </div>
+          {/* Responsive Table */}
+          <div className="w-full max-w-[300px] min-w-full overflow-scroll pb-6">
+            <table className="min-w-[1000px] text-sm bg-white">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    الكود
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    السعر
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    المجموعة
+                  </th>
+
+                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    الحالة
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    مستخدم بواسطة
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    تاريخ الاستخدام
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    تاريخ الإنشاء
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    الإجراءات
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {generateCodes?.data?.data?.map((code: any) => {
+                  return (
+                    <tr key={code.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs font-medium text-gray-900 truncate max-w-[100px]">
+                            {code.code_string}
+                          </span>
+                          <button
+                            onClick={() => copyToClipboard(code.code_string)}
+                            className="p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            title="نسخ الكود"
+                          >
+                            <Copy size={14} />
+                          </button>
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3 text-gray-900">
+                        {code.code.card.price} د.أ
+                      </td>
+
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          {code.code.name}
+                        </div>
+
+                        <div className="text-xs text-gray-500">
+                          بواسطة: {code.code.generated_by}
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex gap-2">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              code.is_used
+                                ? "bg-red-100 text-red-800"
+                                : "bg-green-100 text-green-800"
+                            }`}
+                          >
+                            {code.is_used ? "مستخدم" : "متاح"}
+                          </span>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              code.is_active
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {code.is_active ? "مفعل" : "معطل"}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {code.used_by?.map((el: any) => el.name).join(", ") ||
+                          "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {code.updated_at
+                          ? formatDateTimeSimple(code.updated_at)
+                          : "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {formatDateTimeSimple(code.created_at)}
+                      </td>
+
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => toggleCodeStatus(code.id)}
+                            className={`p-1 rounded transition-colors ${
+                              code.is_active
+                                ? "text-green-600 hover:bg-green-50"
+                                : "text-gray-400 hover:bg-gray-50"
+                            }`}
+                            title={
+                              code.is_active ? "تعطيل الكود" : "تفعيل الكود"
+                            }
+                          >
+                            {code.is_active ? (
+                              <Eye size={16} />
+                            ) : (
+                              <EyeOff size={16} />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            <Pagination
+              count={generateCodes?.data?.pagination?.count}
+              currentPage={page}
+              onPageChange={setPage}
+            />
+
+            {cardCodes?.data?.data?.generated_codes?.length === 0 && (
+              <div className="text-center py-12">
+                <Hash className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  لا توجد كودات
+                </h3>
+                <p className="text-gray-500">
+                  لم يتم العثور على كودات تطابق المعايير المحددة
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Generate Modal */}
       {showGenerateModal && (
@@ -909,7 +890,7 @@ const CardCodesPage = () => {
           generateForm={generateForm}
           getSubsectionName={getSubsectionName}
           handleGenerateCodes={handleGenerateCodes}
-          renderSubsectionTree={renderSubsectionTree}
+          // renderSubsectionTree={renderSubsectionTree}
           setShowGenerateModal={setShowGenerateModal}
           setGenerateForm={setGenerateForm}
           subsectionTree={subsectionTree}

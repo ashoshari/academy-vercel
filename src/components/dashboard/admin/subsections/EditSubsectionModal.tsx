@@ -20,6 +20,7 @@ interface Props {
   data: any; // form state {title,description,…}
   onChange: (d: any) => void; // setFormState
   onClose: () => void; // hide modal
+  type?: any;
 }
 
 const EditModal: React.FC<Props> = ({
@@ -30,6 +31,7 @@ const EditModal: React.FC<Props> = ({
   data,
   onChange,
   onClose,
+  type,
 }) => {
   /* ── normalise parent ids once ─────────────────────────── */
   const sectionIds = React.useMemo(
@@ -45,7 +47,14 @@ const EditModal: React.FC<Props> = ({
 
   const save = async () => {
     const payload =
-      level === "sub"
+      type === "material-subsub"
+        ? {
+            name: data.material,
+            material: data.material,
+            is_published: data.is_published,
+            subsubsections: data.specialization,
+          }
+        : level === "sub"
         ? {
             title: data.title,
             description: data.description,
@@ -71,9 +80,9 @@ const EditModal: React.FC<Props> = ({
           }
         : {
             name: data.material,
-            material: data.material,
+            // material: data.material,
             is_published: data.is_published,
-            specialization: data.specialization,
+            // specialization: data.specialization,
           };
 
     await mutation
@@ -170,12 +179,12 @@ const EditModal: React.FC<Props> = ({
             </div>
           ) : (
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              {/* <label className="mb-2 block text-sm font-medium text-gray-700">
                 الأقسام الأب
               </label>
               <select
                 value={
-                  mainSections?.find((m) => m.id === data?.specialization).id
+                  mainSections?.find((m) => m?.id === data?.specialization)?.id
                 }
                 onChange={(e) => {
                   onChange({ ...data, specialization: e.target.value });
@@ -188,7 +197,7 @@ const EditModal: React.FC<Props> = ({
                     {sec.name}
                   </option>
                 ))}
-              </select>
+              </select> */}
             </div>
           )}
 
