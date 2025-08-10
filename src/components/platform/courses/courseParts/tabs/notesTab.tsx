@@ -9,7 +9,7 @@ import {
   User,
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import {
   useCustomPost,
   useCustomRemove,
@@ -29,7 +29,7 @@ const TextNotes = () => {
   const [editNote, setEditNote] = useState("");
   const [noteId, setNoteId] = useState();
   const currentLesson = useLesson((state) => state.currentLesson);
-  const token = window.localStorage.getItem("auth_tokens");
+  const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
 
   //GET NOTES

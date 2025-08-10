@@ -64,7 +64,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
   const buildContentTree = (): ContentItem[] => {
     const items: ContentItem[] = [];
 
-    course.chapters.forEach((chapter: any) => {
+    course?.chapters?.forEach((chapter: any) => {
       const chapterItem: ContentItem = {
         id: chapter.id,
         type: "chapter",
@@ -546,7 +546,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
               <div>
                 <p className="text-gray-500 text-sm">الفصول</p>
                 <p className="text-3xl font-bold text-orange-600">
-                  {course.chapters.length}
+                  {course?.chapters?.length}
                 </p>
               </div>
               <BookOpen className="w-12 h-12 text-orange-500" />
@@ -558,7 +558,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
               <div>
                 <p className="text-gray-500 text-sm">الوحدات</p>
                 <p className="text-3xl font-bold text-blue-600">
-                  {course.chapters.reduce(
+                  {course?.chapters?.reduce(
                     (sum: any, chapter: any) => sum + chapter.units.length,
                     0
                   )}
@@ -573,7 +573,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
               <div>
                 <p className="text-gray-500 text-sm">الدروس</p>
                 <p className="text-3xl font-bold text-green-600">
-                  {course.chapters.reduce(
+                  {course?.chapters?.reduce(
                     (sum: any, chapter: any) =>
                       sum +
                       chapter.units.reduce(
@@ -594,7 +594,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
               <div>
                 <p className="text-gray-500 text-sm">الحصص</p>
                 <p className="text-3xl font-bold text-purple-600">
-                  {course.chapters.reduce(
+                  {course?.chapters?.reduce(
                     (sum: any, chapter: any) =>
                       sum +
                       chapter.units.reduce(

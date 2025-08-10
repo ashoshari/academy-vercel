@@ -4,13 +4,13 @@ import { Outlet } from "react-router";
 // import { useTranslation } from "react-i18next";
 
 import ScrollToTop from "@/components/scrollToTop";
-import GlobalLoading from "@/components/platform/globalLoading";
+// import GlobalLoading from "@/components/platform/globalLoading";
 
 export const PlatformLayout = () => {
   // const { i18n } = useTranslation();
   return (
     <div className="min-h-screen" dir="rtl">
-      <GlobalLoading />
+      {/* <GlobalLoading /> */}
       <ScrollToTop />
       {/* Navbar */}
       <Navbar />

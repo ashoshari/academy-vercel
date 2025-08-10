@@ -7,7 +7,7 @@ import {
   Users,
 } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useParams } from "react-router";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 

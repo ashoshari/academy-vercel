@@ -14,7 +14,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 
 const AllCourses = () => {

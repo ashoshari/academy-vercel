@@ -24,7 +24,11 @@ import CoursePage from "@/components/platform/courses/courseParts/coursePage";
 import Dashboard from "@/pages/dashboard/admin/Dashboard";
 import TeachersPage from "@/pages/dashboard/admin/teachers/TeachersPage";
 import StudentsPage from "@/pages/dashboard/admin/students/StudentsPage";
-import CoursesPage from "@/pages/dashboard/admin/CoursesPage";
+
+// Courses
+import CoursesPage from "@/pages/dashboard/admin/courses/CoursesPage";
+// import MainCoursePage from "@/pages/dashboard/admin/courses/MainCoursePage";
+
 import AddTeacherPage from "@/pages/dashboard/admin/teachers/AddTeacherPage";
 import EditTeacherPage from "@/pages/dashboard/admin/teachers/EditTeacherPage";
 import TeacherDetailsPage from "@/pages/dashboard/admin/teachers/TeacherDetailsPage";
@@ -50,7 +54,6 @@ export default function AppRoutes() {
           <Route path="sections/:navHeaderId" element={<Courses />} />
           <Route path="all-courses" element={<AllCourses />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
-          {/* <Route path="coursePageOld/:courseId" element={<CoursePageOld />} /> */}
           <Route path="coursePage/:courseId" element={<CoursePage />} />
           <Route path="exam/:examId" element={<Exam />} />
           <Route path="phone-user" element={<PhoneUser />} />
@@ -87,7 +90,10 @@ export default function AppRoutes() {
             <Route path="card-codes" element={<CardCodesPage />} />
             {/* cards */}
 
+            {/* courses */}
+            {/* <Route path="courses" element={<MainCoursePage />} /> */}
             <Route path="courses" element={<CoursesPage />} />
+            {/* courses */}
           </Route>
         )}
 

@@ -4,7 +4,7 @@ import AuthModal from "@/layout/platform/navbar/authModal";
 import useTokenStore from "@/store/platform/useToken";
 import useToken from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import toast from "react-hot-toast";
 
 const Navbar: React.FC = () => {

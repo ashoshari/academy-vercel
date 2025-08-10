@@ -22,13 +22,13 @@ import {
   Archive,
 } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import useTokenStore from "@/store/platform/useToken";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 
 const TeacherProfile: React.FC = () => {
   const navigate = useNavigate();

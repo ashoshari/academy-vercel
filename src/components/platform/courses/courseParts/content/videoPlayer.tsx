@@ -1,6 +1,6 @@
 import { CheckCircle, FileText, Download, Clock } from "lucide-react";
 import { useLesson } from "@/store/platform/useLesson";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 
 const VideoPlayer = ({ markLessonComplete }: any) => {
   const currentLesson = useLesson((state) => state.currentLesson);

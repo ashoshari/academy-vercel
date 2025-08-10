@@ -13,8 +13,8 @@ import {
   useCustomPost,
   useCustomRemove,
   useCustomUpdate,
-} from "@/hooks/useMutation";
-import { useCustomQuery } from "@/hooks/useQuery";
+} from "@/hooks/platform/usePlatformMutation";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useParams } from "react-router";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import handleErrorAlerts from "@/utils/showErrorMessages";

@@ -15,8 +15,8 @@ import {
   // useNavigate,
   useParams,
 } from "react-router";
-import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
+import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import { toast } from "react-hot-toast";
 
 const Exam = () =>

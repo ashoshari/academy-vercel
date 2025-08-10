@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Plus,
   Search,
@@ -19,46 +19,48 @@ import {
 } from "lucide-react";
 import CourseContentPage from "@/components/dashboard/admin/courses/CourseContentPage";
 import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
+import toast from "react-hot-toast";
 
-export interface Course {
-  id: number;
-  title: string;
-  description: string;
-  shortDescription: string;
-  teacherId: number;
-  teacherName: string;
-  teacherAvatar?: string;
-  price: number;
-  isFree: boolean;
-  isPublished: boolean;
-  isActive: boolean;
-  isFeatured: boolean;
-  category: string;
-  level: "beginner" | "intermediate" | "advanced";
-  language: string;
-  duration: number; // in hours
-  studentsCount: number;
-  rating: number;
-  reviewsCount: number;
-  thumbnail: string;
-  previewVideo?: string;
-  targetedSections: number[];
-  targetedSubsections: number[];
-  tags: string[];
-  requirements: string[];
-  whatYouWillLearn: string[];
-  createdAt: string;
-  updatedAt: string;
-  publishedAt?: string;
-  startDate?: string;
-  endDate?: string;
-  maxStudents?: number;
-  chapters: Chapter[];
-  files: CourseFile[];
-  exams: CourseExam[];
-  enrollments: CourseEnrollment[];
-  reviews: CourseReview[];
-}
+// export interface Course {
+//   id: number;
+//   title: string;
+//   description: string;
+//   shortDescription: string;
+//   teacherId: number;
+//   teacherName: string;
+//   teacherAvatar?: string;
+//   price: number;
+//   isFree: boolean;
+//   isPublished: boolean;
+//   isActive: boolean;
+//   isFeatured: boolean;
+//   category: string;
+//   level: "beginner" | "intermediate" | "advanced";
+//   language: string;
+//   duration: number; // in hours
+//   studentsCount: number;
+//   rating: number;
+//   reviewsCount: number;
+//   thumbnail: string;
+//   previewVideo?: string;
+//   targetedSections: number[];
+//   targetedSubsections: number[];
+//   tags: string[];
+//   requirements: string[];
+//   whatYouWillLearn: string[];
+//   createdAt: string;
+//   updatedAt: string;
+//   publishedAt?: string;
+//   startDate?: string;
+//   endDate?: string;
+//   maxStudents?: number;
+//   chapters: Chapter[];
+//   files: CourseFile[];
+//   exams: CourseExam[];
+//   enrollments: CourseEnrollment[];
+//   reviews: CourseReview[];
+// }
 
 export interface Chapter {
   id: number;
@@ -159,7 +161,7 @@ const CoursesPage = () => {
   const [currentView, setCurrentView] = useState<
     "list" | "create" | "edit" | "content"
   >("list");
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [teacherFilter, setTeacherFilter] = useState<number | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>("");
@@ -170,6 +172,8 @@ const CoursesPage = () => {
     "all" | "beginner" | "intermediate" | "advanced"
   >("all");
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [courseId, setCourseId] = useState<any>(null);
+  const [isPublishCourse, setIsPublishCourse] = useState<any>(false);
 
   // Sample courses data
   // const [courses, setCourses] = useState<Course[]>([
@@ -389,9 +393,28 @@ const CoursesPage = () => {
   //   },
   // ]);
 
-  const courses = useCustomQuery("/training/admin/courses/", ["courses"]);
+  // GET courses
+  const { data } = useCustomQuery("/training/admin/courses/", ["courses"]);
+  const courseData = data?.data;
+  console.log("courseData", courseData?.[0]);
+  // GET courses stats
+  const { data: coursesStats } = useCustomQuery(
+    "/training/admin/courses-statistics/",
+    ["coursesStats"]
+  );
 
-  const [newCourse, setNewCourse] = useState<Partial<Course>>({
+  // GET teachers
+  const { data: teachers } = useCustomQuery("/account/admin/teachers/", ["teachers"]);
+
+  const teacherData = teachers?.data;
+
+  const [courses, setCourses] = useState<any>();
+  useEffect(() => {
+    setCourses(courseData);
+  }, [courseData]);
+  const courseStatsData = coursesStats?.data;
+
+  const [newCourse, setNewCourse] = useState<Partial<any>>({
     title: "",
     description: "",
     shortDescription: "",
@@ -416,150 +439,58 @@ const CoursesPage = () => {
     endDate: "",
     maxStudents: 100,
   });
+  // POST Course
+  const { mutateAsync: editCourse } = useCustomUpdate(
+    `/training/admin/courses/${courseId}/`,
+    ["editcourses", courseId]
+  );
 
   // Filter courses
-  // const filteredCourses = courses.filter((course) => {
-  //   const matchesSearch =
-  //     course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     course.teacherName.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredCourses = courseData?.filter((course:any) => {
+    const matchesSearch =
+      course?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course?.short_description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course?.teacher?.name?.toLowerCase().includes(searchTerm.toLowerCase());
 
-  //   const matchesTeacher =
-  //     teacherFilter === null || course.teacherId === teacherFilter;
-  //   const matchesCategory =
-  //     categoryFilter === "" || course.category === categoryFilter;
-  //   const matchesStatus =
-  //     statusFilter === "all" ||
-  //     (statusFilter === "published" && course.isPublished) ||
-  //     (statusFilter === "draft" && !course.isPublished) ||
-  //     (statusFilter === "active" && course.isActive) ||
-  //     (statusFilter === "inactive" && !course.isActive);
-  //   const matchesLevel = levelFilter === "all" || course.level === levelFilter;
+    const matchesTeacher =
+      teacherFilter === null || course?.teacher?.id === teacherFilter;
+    const matchesCategory =
+      categoryFilter === "" || course?.materials[0].name === categoryFilter;
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "published" && course.isPublished) ||
+      (statusFilter === "draft" && !course.isPublished) ||
+      (statusFilter === "active" && course.isActive) ||
+      (statusFilter === "inactive" && !course.isActive);
+    const matchesLevel = levelFilter === "all" || course.level === levelFilter;
 
-  //   return (
-  //     matchesSearch &&
-  //     matchesTeacher &&
-  //     matchesCategory &&
-  //     matchesStatus &&
-  //     matchesLevel
-  //   );
-  // });
+    return (
+      matchesSearch &&
+      matchesTeacher &&
+      matchesCategory &&
+      matchesStatus &&
+      matchesLevel
+    );
+  });
 
   const uniqueCategories = [
-    ...new Set(courses?.data?.data.map((c: any) => c.category)),
+    ...new Set(courses?.data?.map((c: any) => c.category)),
   ];
 
   // Sample data for teachers
-  const [teachers] = useState<any[]>([
-    {
-      id: 1,
-      name: "د. أحمد محمد",
-      email: "ahmed.mohamed@example.com",
-      phone: "0791234567",
-      password: "Ahmed123@",
-      avatar:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150",
-      specialization: "الرياضيات",
-      experience: 8,
-      qualification: "دكتوراه",
-      bio: "دكتور في الرياضيات مع خبرة 8 سنوات في التدريس الجامعي والثانوي. متخصص في الجبر والهندسة التحليلية.",
-      location: "عمان، الأردن",
-      isActive: true,
-      isVerified: true,
-      rating: 4.8,
-      studentsCount: 156,
-      coursesCount: 12,
-      joinDate: "2024-01-15",
-      lastLogin: "2024-01-20",
-      subjects: ["الجبر", "الهندسة", "التفاضل والتكامل"],
-      certifications: ["شهادة التدريس المعتمدة", "دورة التعلم الإلكتروني"],
-      lastPasswordChange: "2024-01-15",
-    },
-    {
-      id: 2,
-      name: "أ. فاطمة أحمد",
-      email: "fatima.ahmed@example.com",
-      phone: "0792345678",
-      password: "Fatima456#",
-      avatar:
-        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150",
-      specialization: "اللغة العربية",
-      experience: 5,
-      qualification: "ماجستير",
-      bio: "معلمة لغة عربية متخصصة في الأدب والنحو مع خبرة في تدريس جميع المراحل الدراسية.",
-      location: "إربد، الأردن",
-      isActive: true,
-      isVerified: true,
-      rating: 4.6,
-      studentsCount: 134,
-      coursesCount: 8,
-      joinDate: "2024-01-10",
-      lastLogin: "2024-01-19",
-      subjects: ["النحو", "الأدب", "البلاغة"],
-      certifications: ["دبلوم التربية", "دورة طرق التدريس الحديثة"],
-      lastPasswordChange: "2024-01-10",
-    },
-    {
-      id: 3,
-      name: "م. خالد سالم",
-      email: "khaled.salem@example.com",
-      phone: "0793456789",
-      password: "Khaled789$",
-      avatar:
-        "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150",
-      specialization: "الفيزياء",
-      experience: 12,
-      qualification: "ماجستير",
-      bio: "مهندس فيزيائي مع خبرة واسعة في تدريس الفيزياء النظرية والتطبيقية لطلاب التوجيهي.",
-      location: "الزرقاء، الأردن",
-      isActive: false,
-      isVerified: true,
-      rating: 4.9,
-      studentsCount: 89,
-      coursesCount: 15,
-      joinDate: "2024-01-05",
-      lastLogin: "2024-01-18",
-      subjects: ["الميكانيكا", "الكهرباء", "البصريات"],
-      certifications: ["شهادة الهندسة المعتمدة", "دورة المختبرات العلمية"],
-      lastPasswordChange: "2024-01-05",
-    },
-    {
-      id: 4,
-      name: "د. سارة عبدالله",
-      email: "sara.abdullah@example.com",
-      phone: "0794567890",
-      password: "Sara2024!",
-      avatar:
-        "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150",
-      specialization: "الكيمياء",
-      experience: 6,
-      qualification: "دكتوراه",
-      bio: "دكتورة في الكيمياء التحليلية مع اهتمام خاص بالكيمياء العضوية وتطبيقاتها العملية.",
-      location: "عمان، الأردن",
-      isActive: true,
-      isVerified: false,
-      rating: 4.7,
-      studentsCount: 112,
-      coursesCount: 10,
-      joinDate: "2024-01-12",
-      lastLogin: "2024-01-20",
-      subjects: ["الكيمياء العضوية", "الكيمياء التحليلية", "الكيمياء الحيوية"],
-      certifications: ["دكتوراه في الكيمياء", "دورة السلامة المختبرية"],
-      lastPasswordChange: "2024-01-12",
-    },
-  ]);
+  // const [teachers,setTeachers] = useState<any>();
 
   const handleCreateCourse = () => {
     if (newCourse.title && newCourse.description && newCourse.teacherId) {
-      const course: Course = {
+      const course: any = {
         id: Date.now(),
         title: newCourse.title,
         description: newCourse.description,
         shortDescription: newCourse.shortDescription || "",
         teacherId: newCourse.teacherId,
         teacherName:
-          teachers.find((t) => t.id === newCourse.teacherId)?.name || "",
-        teacherAvatar: teachers.find((t) => t.id === newCourse.teacherId)
+          teacherData?.find((t:any) => t.id === newCourse.teacherId)?.name || "",
+        teacherAvatar: teacherData?.find((t:any) => t.id === newCourse.teacherId)
           ?.avatar,
         price: newCourse.price || 0,
         isFree: newCourse.isFree || false,
@@ -805,10 +736,26 @@ const CoursesPage = () => {
   //   }
   // };
 
-  const toggleCourseStatus = (
-    id: number,
-    field: "isPublished" | "isActive" | "isFeatured"
-  ) => {
+  const toggleCourseStatus = async () => {
+    setCourses((prev: any) =>
+      prev?.map((course: any) =>
+        course.id === courseId
+          ? { ...course, is_published: !course?.is_published }
+          : course
+      )
+    );
+    try {
+      await editCourse({ is_published: isPublishCourse });
+    } catch (error) {
+      toast.error("حدث خطاء في تعديل حالة الدورة");
+      setCourses((prevCourses: any) =>
+        prevCourses.map((course: any) =>
+          course.id === courseId
+            ? { ...course, is_published: !course.is_published }
+            : course
+        )
+      );
+    }
     // setCourses(
     //   courses.map((course) =>
     //     course.id === id
@@ -825,8 +772,7 @@ const CoursesPage = () => {
     //   )
     // );
   };
-
-  const getLevelColor = (level: Course["level"]) => {
+  const getLevelColor = (level: any) => {
     switch (level) {
       case "beginner":
         return "bg-green-100 text-green-800";
@@ -839,25 +785,28 @@ const CoursesPage = () => {
     }
   };
 
-  const CourseCard = ({ course }: { course: Course }) => (
+  const CourseCard = ({ course }: { course: any }) => (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Thumbnail */}
       <div className="relative h-48 overflow-hidden">
         <img
-          src={course.thumbnail}
-          alt={course.title}
+          src={
+            course?.image ||
+            "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
+          }
+          alt={course?.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 
         {/* Status Badges */}
         <div className="absolute top-4 right-4 flex gap-2">
-          {course.isFeatured && (
+          {course?.is_special && (
             <span className="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
               مميز
             </span>
           )}
-          {course.isFree && (
+          {course?.is_free && (
             <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
               مجاني
             </span>
@@ -871,11 +820,7 @@ const CoursesPage = () => {
               course.level
             )}`}
           >
-            {course.level === "beginner"
-              ? "مبتدئ"
-              : course.level === "intermediate"
-              ? "متوسط"
-              : "متقدم"}
+            {course?.level?.name}
           </span>
         </div>
       </div>
@@ -885,10 +830,10 @@ const CoursesPage = () => {
         {/* Header */}
         <div className="mb-4">
           <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-2">
-            {course.title}
+            {course?.name}
           </h3>
           <p className="text-gray-600 text-sm line-clamp-2">
-            {course.shortDescription}
+            {course.short_description}
           </p>
         </div>
 
@@ -896,19 +841,21 @@ const CoursesPage = () => {
         <div className="flex items-center gap-3 mb-4">
           <img
             src={
-              course.teacherAvatar ||
-              `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                course.teacherName
-              )}&background=f97316&color=ffffff&size=32`
+              course?.teacher?.image ||
+              "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
             }
-            alt={course.teacherName}
+            alt={course?.teacher?.name}
             className="w-8 h-8 rounded-full"
           />
           <div>
             <p className="font-medium text-gray-800 text-sm">
-              {course.teacherName}
+              {course?.teacher?.name}
             </p>
-            <p className="text-gray-500 text-xs">{course.category}</p>
+            <p className="text-gray-500 text-xs">
+              {course?.teacher?.materials?.map(
+                (material: any) => `${material.name} `
+              )}
+            </p>
           </div>
         </div>
 
@@ -916,30 +863,32 @@ const CoursesPage = () => {
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="text-center">
             <div className="text-lg font-bold text-gray-800">
-              {course.studentsCount}
+              {course?.maximum_number_of_students}
             </div>
             <div className="text-xs text-gray-500">طالب</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-blue-600">
-              {course.duration}h
+              {course?.time_in_hours}h
             </div>
             <div className="text-xs text-gray-500">ساعة</div>
           </div>
-          <div className="text-center">
+
+          {/* Rating */}
+          {/* <div className="text-center">
             <div className="flex items-center justify-center gap-1">
               <Star size={14} className="text-yellow-500 fill-current" />
               <span className="text-lg font-bold text-gray-800">
-                {course.rating.toFixed(1)}
+                {course?.rating.toFixed(1)}
               </span>
             </div>
             <div className="text-xs text-gray-500">
               {course.reviewsCount} تقييم
             </div>
-          </div>
-          <div className="text-center">
+          </div> */}
+          <div className="text-center col-span-2">
             <div className="text-lg font-bold text-green-600">
-              {course.isFree ? "مجاني" : `${course.price} د.أ`}
+              {course.is_free ? "مجاني" : `${course?.price} د.أ`}
             </div>
             <div className="text-xs text-gray-500">السعر</div>
           </div>
@@ -949,22 +898,22 @@ const CoursesPage = () => {
         <div className="flex gap-2 mb-4">
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${
-              course.isPublished
+              course?.is_published
                 ? "bg-green-100 text-green-800"
                 : "bg-gray-100 text-gray-800"
             }`}
           >
-            {course.isPublished ? "منشور" : "مسودة"}
+            {course?.is_published ? "منشور" : "مسودة"}
           </span>
-          <span
+          {/* <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${
-              course.isActive
+              course?.is_active
                 ? "bg-blue-100 text-blue-800"
                 : "bg-red-100 text-red-800"
             }`}
           >
-            {course.isActive ? "نشط" : "معطل"}
-          </span>
+            {course?.is_active ? "نشط" : "معطل"}
+          </span> */}
         </div>
 
         {/* Actions */}
@@ -981,31 +930,36 @@ const CoursesPage = () => {
               <Folder size={16} />
             </button>
 
-            <button
-              onClick={() => toggleCourseStatus(course.id, "isActive")}
+            {/* <button
+              onClick={() => toggleCourseStatus(course?.id, "isActive")}
               className={`p-2 rounded-lg transition-colors ${
-                course.isActive
+                course?.is_active
                   ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
               }`}
-              title={course.isActive ? "تعطيل الدورة" : "تفعيل الدورة"}
+              title={course?.is_active ? "تعطيل الدورة" : "تفعيل الدورة"}
             >
-              {course.isActive ? <Pause size={16} /> : <Play size={16} />}
-            </button>
+              {course?.is_active ? <Pause size={16} /> : <Play size={16} />}
+            </button> */}
 
             <button
-              onClick={() => toggleCourseStatus(course.id, "isPublished")}
+              onClick={() => {
+                setCourseId(course?.id);
+                setIsPublishCourse(!course?.is_Published);
+                toggleCourseStatus();
+              }}
               className={`p-2 rounded-lg transition-colors ${
-                course.isPublished
+                course?.is_Published
                   ? "text-green-600 bg-green-50 hover:bg-green-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
               }`}
-              title={course.isPublished ? "إلغاء النشر" : "نشر الدورة"}
+              title={course?.is_Published ? "إلغاء النشر" : "نشر الدورة"}
             >
-              {course.isPublished ? <Eye size={16} /> : <EyeOff size={16} />}
+              {course?.is_published ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
 
-            <button
+            {/* Raiting */}
+            {/* <button
               onClick={() => toggleCourseStatus(course.id, "isFeatured")}
               className={`p-2 rounded-lg transition-colors ${
                 course.isFeatured
@@ -1015,7 +969,7 @@ const CoursesPage = () => {
               title={course.isFeatured ? "إزالة من المميز" : "إضافة للمميز"}
             >
               <Star size={16} />
-            </button>
+            </button> */}
           </div>
 
           <div className="flex items-center gap-1">
@@ -1156,9 +1110,8 @@ const CoursesPage = () => {
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
                     <option value="">اختر المعلم</option>
-                    {teachers
-                      .filter((t) => t.isActive)
-                      .map((teacher) => (
+                    {teacherData?.filter((t:any) => t.isActive)
+                      .map((teacher:any) => (
                         <option key={teacher.id} value={teacher.id}>
                           {teacher.name} - {teacher.specialization}
                         </option>
@@ -1192,7 +1145,7 @@ const CoursesPage = () => {
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
-                        level: e.target.value as Course["level"],
+                        level: e.target.value as any,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1390,7 +1343,7 @@ const CoursesPage = () => {
                             setNewCourse({
                               ...newCourse,
                               targetedSections: currentSections.filter(
-                                (id) => id !== section.id
+                                (id: any) => id !== section.id
                               ),
                             });
                           }
@@ -1436,7 +1389,7 @@ const CoursesPage = () => {
                             setNewCourse({
                               ...newCourse,
                               targetedSubsections: currentSubsections.filter(
-                                (id) => id !== subsection.id
+                                (id: any) => id !== subsection.id
                               ),
                             });
                           }
@@ -1628,9 +1581,8 @@ const CoursesPage = () => {
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
                     <option value="">اختر المعلم</option>
-                    {teachers
-                      .filter((t) => t.isActive)
-                      .map((teacher) => (
+                    {teacherData?.filter((t:any) => t.isActive)
+                      .map((teacher:any) => (
                         <option key={teacher.id} value={teacher.id}>
                           {teacher.name} - {teacher.specialization}
                         </option>
@@ -1667,7 +1619,7 @@ const CoursesPage = () => {
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        level: e.target.value as Course["level"],
+                        level: e.target.value as any,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1958,13 +1910,13 @@ const CoursesPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي الدورات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {courses?.data?.data?.length}
+                {courseStatsData?.total_courses || 0}
               </p>
             </div>
             <BookOpen className="w-12 h-12 text-orange-500" />
@@ -1976,8 +1928,7 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الدورات النشطة</p>
               <p className="text-3xl font-bold text-green-600">
-                {/* {courses.filter((c) => c.isActive && c.isPublished).length} */}
-                2
+                {courseStatsData?.active_courses || 0}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-green-500" />
@@ -1989,30 +1940,24 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
               <p className="text-3xl font-bold text-blue-600">
-                {/* {courses.reduce((sum, c) => sum + c.studentsCount, 0)} */}2
+                {courseStatsData?.total_students_in_enrolled_courses || 0}
               </p>
             </div>
             <Users className="w-12 h-12 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">متوسط التقييم</p>
               <p className="text-3xl font-bold text-orange-600">
-                {/* {courses.length > 0
-                  ? (
-                      courses.reduce((sum, c) => sum + c.rating, 0) /
-                      courses.length
-                    ).toFixed(1)
-                  : 0} */}
                 2
               </p>
             </div>
             <Star className="w-12 h-12 text-orange-500" />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Filters */}
@@ -2039,7 +1984,7 @@ const CoursesPage = () => {
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="">جميع المعلمين</option>
-            {teachers.map((teacher) => (
+            {teacherData?.map((teacher:any) => (
               <option key={teacher.id} value={teacher.id}>
                 {teacher.name}
               </option>
@@ -2102,11 +2047,11 @@ const CoursesPage = () => {
       {/* Courses Grid/Table */}
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses?.data?.data?.map((course: any) => (
+          {filteredCourses?.map((course: any) => (
             <CourseCard key={course.id} course={course} />
           ))}
 
-          {courses?.data?.data?.length === 0 && (
+          {courseData?.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
               <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
@@ -2174,7 +2119,7 @@ const CoursesPage = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {courses?.data?.data?.map((course: any) => (
+                {courses?.data?.map((course: any) => (
                   <tr key={course.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
@@ -2219,9 +2164,7 @@ const CoursesPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-1">
                         <Star size={14} className="text-yellow-500" />
-                        <span className="text-sm font-medium">
-                          {/* {course.rating.toFixed(1)} */}2
-                        </span>
+                        <span className="text-sm font-medium">2</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

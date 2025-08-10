@@ -3,7 +3,7 @@ import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import AuthModal from "@/layout/platform/navbar/authModal";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 
 const Discover: React.FC = () => {
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);

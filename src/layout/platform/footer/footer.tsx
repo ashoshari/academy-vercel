@@ -10,7 +10,7 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 import { PiTiktokLogoLight } from "react-icons/pi";
 
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useNavigate } from "react-router";
 
 // interface socialMedia {
