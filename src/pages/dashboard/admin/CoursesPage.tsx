@@ -3,7 +3,6 @@ import {
   Plus,
   Search,
   Edit,
-  Trash2,
   Eye,
   EyeOff,
   ArrowLeft,
@@ -19,6 +18,7 @@ import {
   Folder,
 } from "lucide-react";
 import CourseContentPage from "@/components/dashboard/admin/courses/CourseContentPage";
+import { useCustomQuery } from "@/hooks/useQuery";
 
 export interface Course {
   id: number;
@@ -172,222 +172,224 @@ const CoursesPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   // Sample courses data
-  const [courses, setCourses] = useState<Course[]>([
-    {
-      id: 1,
-      title: "دورة الرياضيات المتقدمة",
-      description:
-        "دورة شاملة في الرياضيات المتقدمة تغطي التفاضل والتكامل والجبر الخطي مع تطبيقات عملية وأمثلة متنوعة لطلاب التوجيهي العلمي.",
-      shortDescription: "دورة شاملة في الرياضيات المتقدمة للتوجيهي العلمي",
-      teacherId: 1,
-      teacherName: "د. أحمد محمد",
-      teacherAvatar:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150",
-      price: 150.0,
-      isFree: false,
-      isPublished: true,
-      isActive: true,
-      isFeatured: true,
-      category: "الرياضيات",
-      level: "advanced",
-      language: "العربية",
-      duration: 40,
-      studentsCount: 156,
-      rating: 4.8,
-      reviewsCount: 89,
-      thumbnail:
-        "https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800",
-      previewVideo:
-        "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      tags: ["رياضيات", "تفاضل", "تكامل", "توجيهي"],
-      requirements: ["معرفة أساسيات الجبر", "إتقان العمليات الحسابية الأساسية"],
-      whatYouWillLearn: [
-        "إتقان مفاهيم التفاضل والتكامل",
-        "حل المسائل المعقدة في الرياضيات",
-        "تطبيق المفاهيم الرياضية في الحياة العملية",
-        "الاستعداد لامتحانات التوجيهي",
-      ],
-      createdAt: "2024-01-15",
-      updatedAt: "2024-01-20",
-      publishedAt: "2024-01-18",
-      startDate: "2024-02-01",
-      endDate: "2024-05-30",
-      maxStudents: 200,
-      chapters: [
-        {
-          id: 1,
-          courseId: 1,
-          title: "مقدمة في التفاضل",
-          description: "أساسيات التفاضل والمشتقات",
-          order: 1,
-          isPublished: true,
-          isFree: true,
-          estimatedDuration: 120,
-          units: [
-            {
-              id: 1,
-              chapterId: 1,
-              title: "تعريف المشتقة",
-              description: "مفهوم المشتقة وتطبيقاتها",
-              order: 1,
-              isPublished: true,
-              isFree: true,
-              estimatedDuration: 60,
-              lessons: [
-                {
-                  id: 1,
-                  unitId: 1,
-                  title: "المشتقة الأولى",
-                  description: "تعلم كيفية حساب المشتقة الأولى",
-                  order: 1,
-                  isPublished: true,
-                  isFree: true,
-                  estimatedDuration: 30,
-                  sessions: [
-                    {
-                      id: 1,
-                      lessonId: 1,
-                      title: "شرح المشتقة الأولى",
-                      description: "فيديو تعليمي عن المشتقة الأولى",
-                      type: "video",
-                      content:
-                        "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-                      order: 1,
-                      isPublished: true,
-                      isFree: true,
-                      estimatedDuration: 25,
-                      files: [],
-                      exams: [],
-                    },
-                    {
-                      id: 2,
-                      lessonId: 1,
-                      title: "اختبار المشتقة الأولى",
-                      description: "اختبار تقييمي على المشتقة الأولى",
-                      type: "exam",
-                      content: "1", // exam ID
-                      order: 2,
-                      isPublished: true,
-                      isFree: false,
-                      estimatedDuration: 5,
-                      files: [],
-                      exams: [],
-                    },
-                  ],
-                  files: [],
-                  exams: [],
-                },
-              ],
-              files: [],
-              exams: [],
-            },
-          ],
-          files: [],
-          exams: [],
-        },
-      ],
-      files: [],
-      exams: [],
-      enrollments: [],
-      reviews: [],
-    },
-    {
-      id: 2,
-      title: "أساسيات الفيزياء",
-      description:
-        "دورة تأسيسية في الفيزياء تغطي الميكانيكا والكهرباء والمغناطيسية مع تجارب عملية وحلول مفصلة للمسائل.",
-      shortDescription: "دورة تأسيسية شاملة في الفيزياء",
-      teacherId: 3,
-      teacherName: "م. خالد سالم",
-      teacherAvatar:
-        "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150",
-      price: 120.0,
-      isFree: false,
-      isPublished: true,
-      isActive: true,
-      isFeatured: false,
-      category: "الفيزياء",
-      level: "intermediate",
-      language: "العربية",
-      duration: 35,
-      studentsCount: 89,
-      rating: 4.6,
-      reviewsCount: 67,
-      thumbnail:
-        "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&w=800",
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      tags: ["فيزياء", "ميكانيكا", "كهرباء", "توجيهي"],
-      requirements: [
-        "معرفة أساسيات الرياضيات",
-        "فهم المفاهيم العلمية الأساسية",
-      ],
-      whatYouWillLearn: [
-        "فهم قوانين الفيزياء الأساسية",
-        "حل مسائل الميكانيكا والكهرباء",
-        "تطبيق المفاهيم الفيزيائية عملياً",
-        "الاستعداد للامتحانات النهائية",
-      ],
-      createdAt: "2024-01-12",
-      updatedAt: "2024-01-19",
-      publishedAt: "2024-01-16",
-      startDate: "2024-02-15",
-      endDate: "2024-06-15",
-      maxStudents: 150,
-      chapters: [],
-      files: [],
-      exams: [],
-      enrollments: [],
-      reviews: [],
-    },
-    {
-      id: 3,
-      title: "اللغة العربية والأدب",
-      description:
-        "دورة متخصصة في اللغة العربية والأدب تشمل النحو والصرف والبلاغة مع دراسة النصوص الأدبية الكلاسيكية والحديثة.",
-      shortDescription: "دورة متخصصة في اللغة العربية والأدب",
-      teacherId: 2,
-      teacherName: "أ. فاطمة أحمد",
-      teacherAvatar:
-        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150",
-      price: 0,
-      isFree: true,
-      isPublished: false,
-      isActive: false,
-      isFeatured: false,
-      category: "اللغة العربية",
-      level: "intermediate",
-      language: "العربية",
-      duration: 30,
-      studentsCount: 0,
-      rating: 0,
-      reviewsCount: 0,
-      thumbnail:
-        "https://images.pexels.com/photos/159581/dictionary-reference-book-learning-meaning-159581.jpeg?auto=compress&cs=tinysrgb&w=800",
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      tags: ["عربي", "نحو", "أدب", "بلاغة"],
-      requirements: ["إتقان القراءة والكتابة", "معرفة أساسيات النحو"],
-      whatYouWillLearn: [
-        "إتقان قواعد النحو والصرف",
-        "فهم وتحليل النصوص الأدبية",
-        "تطوير مهارات الكتابة والتعبير",
-        "الاستعداد لامتحانات اللغة العربية",
-      ],
-      createdAt: "2024-01-10",
-      updatedAt: "2024-01-17",
-      startDate: "2024-03-01",
-      endDate: "2024-07-01",
-      maxStudents: 100,
-      chapters: [],
-      files: [],
-      exams: [],
-      enrollments: [],
-      reviews: [],
-    },
-  ]);
+  // const [courses, setCourses] = useState<Course[]>([
+  //   {
+  //     id: 1,
+  //     title: "دورة الرياضيات المتقدمة",
+  //     description:
+  //       "دورة شاملة في الرياضيات المتقدمة تغطي التفاضل والتكامل والجبر الخطي مع تطبيقات عملية وأمثلة متنوعة لطلاب التوجيهي العلمي.",
+  //     shortDescription: "دورة شاملة في الرياضيات المتقدمة للتوجيهي العلمي",
+  //     teacherId: 1,
+  //     teacherName: "د. أحمد محمد",
+  //     teacherAvatar:
+  //       "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150",
+  //     price: 150.0,
+  //     isFree: false,
+  //     isPublished: true,
+  //     isActive: true,
+  //     isFeatured: true,
+  //     category: "الرياضيات",
+  //     level: "advanced",
+  //     language: "العربية",
+  //     duration: 40,
+  //     studentsCount: 156,
+  //     rating: 4.8,
+  //     reviewsCount: 89,
+  //     thumbnail:
+  //       "https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800",
+  //     previewVideo:
+  //       "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+  //     targetedSections: [1],
+  //     targetedSubsections: [2, 3],
+  //     tags: ["رياضيات", "تفاضل", "تكامل", "توجيهي"],
+  //     requirements: ["معرفة أساسيات الجبر", "إتقان العمليات الحسابية الأساسية"],
+  //     whatYouWillLearn: [
+  //       "إتقان مفاهيم التفاضل والتكامل",
+  //       "حل المسائل المعقدة في الرياضيات",
+  //       "تطبيق المفاهيم الرياضية في الحياة العملية",
+  //       "الاستعداد لامتحانات التوجيهي",
+  //     ],
+  //     createdAt: "2024-01-15",
+  //     updatedAt: "2024-01-20",
+  //     publishedAt: "2024-01-18",
+  //     startDate: "2024-02-01",
+  //     endDate: "2024-05-30",
+  //     maxStudents: 200,
+  //     chapters: [
+  //       {
+  //         id: 1,
+  //         courseId: 1,
+  //         title: "مقدمة في التفاضل",
+  //         description: "أساسيات التفاضل والمشتقات",
+  //         order: 1,
+  //         isPublished: true,
+  //         isFree: true,
+  //         estimatedDuration: 120,
+  //         units: [
+  //           {
+  //             id: 1,
+  //             chapterId: 1,
+  //             title: "تعريف المشتقة",
+  //             description: "مفهوم المشتقة وتطبيقاتها",
+  //             order: 1,
+  //             isPublished: true,
+  //             isFree: true,
+  //             estimatedDuration: 60,
+  //             lessons: [
+  //               {
+  //                 id: 1,
+  //                 unitId: 1,
+  //                 title: "المشتقة الأولى",
+  //                 description: "تعلم كيفية حساب المشتقة الأولى",
+  //                 order: 1,
+  //                 isPublished: true,
+  //                 isFree: true,
+  //                 estimatedDuration: 30,
+  //                 sessions: [
+  //                   {
+  //                     id: 1,
+  //                     lessonId: 1,
+  //                     title: "شرح المشتقة الأولى",
+  //                     description: "فيديو تعليمي عن المشتقة الأولى",
+  //                     type: "video",
+  //                     content:
+  //                       "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+  //                     order: 1,
+  //                     isPublished: true,
+  //                     isFree: true,
+  //                     estimatedDuration: 25,
+  //                     files: [],
+  //                     exams: [],
+  //                   },
+  //                   {
+  //                     id: 2,
+  //                     lessonId: 1,
+  //                     title: "اختبار المشتقة الأولى",
+  //                     description: "اختبار تقييمي على المشتقة الأولى",
+  //                     type: "exam",
+  //                     content: "1", // exam ID
+  //                     order: 2,
+  //                     isPublished: true,
+  //                     isFree: false,
+  //                     estimatedDuration: 5,
+  //                     files: [],
+  //                     exams: [],
+  //                   },
+  //                 ],
+  //                 files: [],
+  //                 exams: [],
+  //               },
+  //             ],
+  //             files: [],
+  //             exams: [],
+  //           },
+  //         ],
+  //         files: [],
+  //         exams: [],
+  //       },
+  //     ],
+  //     files: [],
+  //     exams: [],
+  //     enrollments: [],
+  //     reviews: [],
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "أساسيات الفيزياء",
+  //     description:
+  //       "دورة تأسيسية في الفيزياء تغطي الميكانيكا والكهرباء والمغناطيسية مع تجارب عملية وحلول مفصلة للمسائل.",
+  //     shortDescription: "دورة تأسيسية شاملة في الفيزياء",
+  //     teacherId: 3,
+  //     teacherName: "م. خالد سالم",
+  //     teacherAvatar:
+  //       "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150",
+  //     price: 120.0,
+  //     isFree: false,
+  //     isPublished: true,
+  //     isActive: true,
+  //     isFeatured: false,
+  //     category: "الفيزياء",
+  //     level: "intermediate",
+  //     language: "العربية",
+  //     duration: 35,
+  //     studentsCount: 89,
+  //     rating: 4.6,
+  //     reviewsCount: 67,
+  //     thumbnail:
+  //       "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&w=800",
+  //     targetedSections: [1],
+  //     targetedSubsections: [2, 3],
+  //     tags: ["فيزياء", "ميكانيكا", "كهرباء", "توجيهي"],
+  //     requirements: [
+  //       "معرفة أساسيات الرياضيات",
+  //       "فهم المفاهيم العلمية الأساسية",
+  //     ],
+  //     whatYouWillLearn: [
+  //       "فهم قوانين الفيزياء الأساسية",
+  //       "حل مسائل الميكانيكا والكهرباء",
+  //       "تطبيق المفاهيم الفيزيائية عملياً",
+  //       "الاستعداد للامتحانات النهائية",
+  //     ],
+  //     createdAt: "2024-01-12",
+  //     updatedAt: "2024-01-19",
+  //     publishedAt: "2024-01-16",
+  //     startDate: "2024-02-15",
+  //     endDate: "2024-06-15",
+  //     maxStudents: 150,
+  //     chapters: [],
+  //     files: [],
+  //     exams: [],
+  //     enrollments: [],
+  //     reviews: [],
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "اللغة العربية والأدب",
+  //     description:
+  //       "دورة متخصصة في اللغة العربية والأدب تشمل النحو والصرف والبلاغة مع دراسة النصوص الأدبية الكلاسيكية والحديثة.",
+  //     shortDescription: "دورة متخصصة في اللغة العربية والأدب",
+  //     teacherId: 2,
+  //     teacherName: "أ. فاطمة أحمد",
+  //     teacherAvatar:
+  //       "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150",
+  //     price: 0,
+  //     isFree: true,
+  //     isPublished: false,
+  //     isActive: false,
+  //     isFeatured: false,
+  //     category: "اللغة العربية",
+  //     level: "intermediate",
+  //     language: "العربية",
+  //     duration: 30,
+  //     studentsCount: 0,
+  //     rating: 0,
+  //     reviewsCount: 0,
+  //     thumbnail:
+  //       "https://images.pexels.com/photos/159581/dictionary-reference-book-learning-meaning-159581.jpeg?auto=compress&cs=tinysrgb&w=800",
+  //     targetedSections: [1],
+  //     targetedSubsections: [2, 3],
+  //     tags: ["عربي", "نحو", "أدب", "بلاغة"],
+  //     requirements: ["إتقان القراءة والكتابة", "معرفة أساسيات النحو"],
+  //     whatYouWillLearn: [
+  //       "إتقان قواعد النحو والصرف",
+  //       "فهم وتحليل النصوص الأدبية",
+  //       "تطوير مهارات الكتابة والتعبير",
+  //       "الاستعداد لامتحانات اللغة العربية",
+  //     ],
+  //     createdAt: "2024-01-10",
+  //     updatedAt: "2024-01-17",
+  //     startDate: "2024-03-01",
+  //     endDate: "2024-07-01",
+  //     maxStudents: 100,
+  //     chapters: [],
+  //     files: [],
+  //     exams: [],
+  //     enrollments: [],
+  //     reviews: [],
+  //   },
+  // ]);
+
+  const courses = useCustomQuery("/training/admin/courses/", ["courses"]);
 
   const [newCourse, setNewCourse] = useState<Partial<Course>>({
     title: "",
@@ -416,34 +418,36 @@ const CoursesPage = () => {
   });
 
   // Filter courses
-  const filteredCourses = courses.filter((course) => {
-    const matchesSearch =
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.teacherName.toLowerCase().includes(searchTerm.toLowerCase());
+  // const filteredCourses = courses.filter((course) => {
+  //   const matchesSearch =
+  //     course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     course.teacherName.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesTeacher =
-      teacherFilter === null || course.teacherId === teacherFilter;
-    const matchesCategory =
-      categoryFilter === "" || course.category === categoryFilter;
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "published" && course.isPublished) ||
-      (statusFilter === "draft" && !course.isPublished) ||
-      (statusFilter === "active" && course.isActive) ||
-      (statusFilter === "inactive" && !course.isActive);
-    const matchesLevel = levelFilter === "all" || course.level === levelFilter;
+  //   const matchesTeacher =
+  //     teacherFilter === null || course.teacherId === teacherFilter;
+  //   const matchesCategory =
+  //     categoryFilter === "" || course.category === categoryFilter;
+  //   const matchesStatus =
+  //     statusFilter === "all" ||
+  //     (statusFilter === "published" && course.isPublished) ||
+  //     (statusFilter === "draft" && !course.isPublished) ||
+  //     (statusFilter === "active" && course.isActive) ||
+  //     (statusFilter === "inactive" && !course.isActive);
+  //   const matchesLevel = levelFilter === "all" || course.level === levelFilter;
 
-    return (
-      matchesSearch &&
-      matchesTeacher &&
-      matchesCategory &&
-      matchesStatus &&
-      matchesLevel
-    );
-  });
+  //   return (
+  //     matchesSearch &&
+  //     matchesTeacher &&
+  //     matchesCategory &&
+  //     matchesStatus &&
+  //     matchesLevel
+  //   );
+  // });
 
-  const uniqueCategories = [...new Set(courses.map((c) => c.category))];
+  const uniqueCategories = [
+    ...new Set(courses?.data?.data.map((c: any) => c.category)),
+  ];
 
   // Sample data for teachers
   const [teachers] = useState<any[]>([
@@ -593,7 +597,7 @@ const CoursesPage = () => {
         reviews: [],
       };
 
-      setCourses([...courses, course]);
+      // setCourses([...courses, course]);
       setNewCourse({
         title: "",
         description: "",
@@ -770,56 +774,56 @@ const CoursesPage = () => {
       selectedCourse.description &&
       selectedCourse.teacherId
     ) {
-      setCourses(
-        courses.map((course) =>
-          course.id === selectedCourse.id
-            ? {
-                ...selectedCourse,
-                updatedAt: new Date().toISOString().split("T")[0],
-                teacherName:
-                  teachers.find((t) => t.id === selectedCourse.teacherId)
-                    ?.name || selectedCourse.teacherName,
-                teacherAvatar:
-                  teachers.find((t) => t.id === selectedCourse.teacherId)
-                    ?.avatar || selectedCourse.teacherAvatar,
-              }
-            : course
-        )
-      );
+      // setCourses(
+      //   courses.map((course) =>
+      //     course.id === selectedCourse.id
+      //       ? {
+      //           ...selectedCourse,
+      //           updatedAt: new Date().toISOString().split("T")[0],
+      //           teacherName:
+      //             teachers.find((t) => t.id === selectedCourse.teacherId)
+      //               ?.name || selectedCourse.teacherName,
+      //           teacherAvatar:
+      //             teachers.find((t) => t.id === selectedCourse.teacherId)
+      //               ?.avatar || selectedCourse.teacherAvatar,
+      //         }
+      //       : course
+      //   )
+      // );
       setCurrentView("list");
       setSelectedCourse(null);
     }
   };
 
-  const handleDeleteCourse = (id: number) => {
-    if (
-      confirm(
-        "هل أنت متأكد من حذف هذه الدورة؟ سيتم حذف جميع المحتوى المرتبط بها."
-      )
-    ) {
-      setCourses(courses.filter((course) => course.id !== id));
-    }
-  };
+  // const handleDeleteCourse = (id: number) => {
+  //   if (
+  //     confirm(
+  //       "هل أنت متأكد من حذف هذه الدورة؟ سيتم حذف جميع المحتوى المرتبط بها."
+  //     )
+  //   ) {
+  // setCourses(courses.filter((course) => course.id !== id));
+  //   }
+  // };
 
   const toggleCourseStatus = (
     id: number,
     field: "isPublished" | "isActive" | "isFeatured"
   ) => {
-    setCourses(
-      courses.map((course) =>
-        course.id === id
-          ? {
-              ...course,
-              [field]: !course[field],
-              updatedAt: new Date().toISOString().split("T")[0],
-              publishedAt:
-                field === "isPublished" && !course[field]
-                  ? new Date().toISOString().split("T")[0]
-                  : course.publishedAt,
-            }
-          : course
-      )
-    );
+    // setCourses(
+    //   courses.map((course) =>
+    //     course.id === id
+    //       ? {
+    //           ...course,
+    //           [field]: !course[field],
+    //           updatedAt: new Date().toISOString().split("T")[0],
+    //           publishedAt:
+    //             field === "isPublished" && !course[field]
+    //               ? new Date().toISOString().split("T")[0]
+    //               : course.publishedAt,
+    //         }
+    //       : course
+    //   )
+    // );
   };
 
   const getLevelColor = (level: Course["level"]) => {
@@ -1026,13 +1030,13 @@ const CoursesPage = () => {
               <Edit size={16} />
             </button>
 
-            <button
+            {/* <button
               onClick={() => handleDeleteCourse(course.id)}
               className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               title="حذف الدورة"
             >
               <Trash2 size={16} />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -1046,11 +1050,11 @@ const CoursesPage = () => {
         course={selectedCourse}
         onBack={() => setCurrentView("list")}
         onUpdateCourse={(updatedCourse) => {
-          setCourses(
-            courses.map((course) =>
-              course.id === updatedCourse.id ? updatedCourse : course
-            )
-          );
+          // setCourses(
+          //   courses.map((course) =>
+          //     course.id === updatedCourse.id ? updatedCourse : course
+          //   )
+          // );
           setSelectedCourse(updatedCourse);
         }}
       />
@@ -1960,7 +1964,7 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الدورات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {courses.length}
+                {courses?.data?.data?.length}
               </p>
             </div>
             <BookOpen className="w-12 h-12 text-orange-500" />
@@ -1972,7 +1976,8 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الدورات النشطة</p>
               <p className="text-3xl font-bold text-green-600">
-                {courses.filter((c) => c.isActive && c.isPublished).length}
+                {/* {courses.filter((c) => c.isActive && c.isPublished).length} */}
+                2
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-green-500" />
@@ -1984,7 +1989,7 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
               <p className="text-3xl font-bold text-blue-600">
-                {courses.reduce((sum, c) => sum + c.studentsCount, 0)}
+                {/* {courses.reduce((sum, c) => sum + c.studentsCount, 0)} */}2
               </p>
             </div>
             <Users className="w-12 h-12 text-blue-500" />
@@ -1996,12 +2001,13 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">متوسط التقييم</p>
               <p className="text-3xl font-bold text-orange-600">
-                {courses.length > 0
+                {/* {courses.length > 0
                   ? (
                       courses.reduce((sum, c) => sum + c.rating, 0) /
                       courses.length
                     ).toFixed(1)
-                  : 0}
+                  : 0} */}
+                2
               </p>
             </div>
             <Star className="w-12 h-12 text-orange-500" />
@@ -2047,11 +2053,11 @@ const CoursesPage = () => {
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="">جميع التصنيفات</option>
-            {uniqueCategories.map((category) => (
+            {/* {uniqueCategories.map((category: any) => (
               <option key={category} value={category}>
                 {category}
               </option>
-            ))}
+            ))} */}
           </select>
 
           {/* Status Filter */}
@@ -2096,11 +2102,11 @@ const CoursesPage = () => {
       {/* Courses Grid/Table */}
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses.map((course) => (
+          {courses?.data?.data?.map((course: any) => (
             <CourseCard key={course.id} course={course} />
           ))}
 
-          {filteredCourses.length === 0 && (
+          {courses?.data?.data?.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
               <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
@@ -2168,7 +2174,7 @@ const CoursesPage = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredCourses.map((course) => (
+                {courses?.data?.data?.map((course: any) => (
                   <tr key={course.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
@@ -2214,7 +2220,7 @@ const CoursesPage = () => {
                       <div className="flex items-center gap-1">
                         <Star size={14} className="text-yellow-500" />
                         <span className="text-sm font-medium">
-                          {course.rating.toFixed(1)}
+                          {/* {course.rating.toFixed(1)} */}2
                         </span>
                       </div>
                     </td>
@@ -2265,13 +2271,13 @@ const CoursesPage = () => {
                         >
                           <Edit size={16} />
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => handleDeleteCourse(course.id)}
                           className="p-1 text-gray-400 hover:text-red-600 transition-colors"
                           title="حذف"
                         >
                           <Trash2 size={16} />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
