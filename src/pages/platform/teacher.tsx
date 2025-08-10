@@ -115,17 +115,23 @@ const TeacherProfile: React.FC = () => {
     },
   ];
 
+  // POST ACTIVATION
+  const { mutateAsync: postActivation } = useCustomPost(
+    "/training/students/activate-course/",
+    ["postActivation"]
+  );
   const handleCourseActivation = (course: any) => {
     setSelectedCourse(course);
     setShowActivationModal(true);
   };
-
-  const handleActivationSubmit = () => {
-    if (activationCode.trim()) {
-      // Simulate activation
+  const handleActivationSubmit = async () => {
+    try {
+      await postActivation(activationCode);
       setShowActivationModal(false);
       setActivationCode("");
-      alert("تم تفعيل الدورة بنجاح! 🎉");
+      toast.success("تم تفعيل الدورة بنجاح! 🎉");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error);
     }
   };
   const handleCourseClick = (course: any) => {
@@ -376,38 +382,42 @@ const TeacherProfile: React.FC = () => {
   const renderFileCard = (file: any) => (
     <div
       key={file.id}
-      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
+      className="bg-white flex flex-col justify-between rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
     >
-      <div className="flex items-center space-x-4 mb-4">
-        <File className="w-12 h-12 text-gray-500" />
-        <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-900">
-            {file?.title || "عنوان"}
-          </h3>
-          <p className="text-gray-600 text-sm">{file?.description || "وصف"}</p>
+      <div>
+        <div className="flex items-center space-x-4 mb-4">
+          <File className="w-12 h-12 text-gray-500" />
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-gray-900">
+              {file?.title || "عنوان"}
+            </h3>
+            <p className="text-gray-600 text-sm">
+              {file?.description || "وصف"}
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-        <div className="flex items-center space-x-2">
-          <FileText className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">
-            {(file?.file_size / 1024).toFixed(1) || 0} MB
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Download className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Clock className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">
-            {formatDateTimeSimple(file?.created_at) || "date"}
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <FileArchive className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">{file?.file_type || "File"}</span>
+        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+          <div className="flex items-center space-x-2">
+            <FileText className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">
+              {(file?.file_size / 1024).toFixed(1) || 0} MB
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Download className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Clock className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">
+              {formatDateTimeSimple(file?.created_at) || "date"}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <FileArchive className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">{file?.file_type || "File"}</span>
+          </div>
         </div>
       </div>
 
@@ -428,38 +438,43 @@ const TeacherProfile: React.FC = () => {
   const renderDosesCard = (file: any) => (
     <div
       key={file.id}
-      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
+      className="bg-white flex flex-col justify-between rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
     >
-      <div className="flex items-center space-x-4 mb-4">
-        <File className="w-12 h-12 text-gray-500" />
-        <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-900">
-            {file?.title || "عنوان"}
-          </h3>
-          <p className="text-gray-600 text-sm">{file?.description || "وصف"}</p>
+      <div>
+        <div className="flex items-center space-x-4 mb-4">
+          <File className="w-12 h-12 text-gray-500" />
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-gray-900">
+              {file?.title || "عنوان"}
+            </h3>
+            <p className="text-gray-600 text-sm">
+              {file?.description || "وصف"}
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-        <div className="flex items-center space-x-2">
-          <FileText className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">
-            {(file?.file_size / 1024).toFixed(1) || 0} MB
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Download className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Clock className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">
-            {formatDateTimeSimple(file?.created_at) || "date"}
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <FileArchive className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">{file?.file_type || "File"}</span>
+        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+          <div className="flex items-center space-x-2">
+            <FileText className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">
+              {(file?.file_size / 1024).toFixed(1) || 0} MB
+            </span>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Download className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Clock className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">
+              {formatDateTimeSimple(file?.created_at) || "date"}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <FileArchive className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">{file?.file_type || "File"}</span>
+          </div>
         </div>
       </div>
 
@@ -480,38 +495,43 @@ const TeacherProfile: React.FC = () => {
   const renderFolderCard = (file: any) => (
     <div
       key={file.id}
-      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
+      className="bg-white flex flex-col justify-between rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
     >
-      <div className="flex items-center space-x-4 mb-4">
-        <File className="w-12 h-12 text-gray-500" />
-        <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-900">
-            {file?.title || "عنوان"}
-          </h3>
-          <p className="text-gray-600 text-sm">{file?.description || "وصف"}</p>
+      <div>
+        <div className="flex items-center space-x-4 mb-4">
+          <File className="w-12 h-12 text-gray-500" />
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-gray-900">
+              {file?.title || "عنوان"}
+            </h3>
+            <p className="text-gray-600 text-sm">
+              {file?.description || "وصف"}
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-        <div className="flex items-center space-x-2">
-          <FileText className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">
-            {(file?.file_size / 1024).toFixed(1) || 0} MB
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Download className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Clock className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">
-            {formatDateTimeSimple(file?.created_at) || "date"}
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <FileArchive className="w-4 h-4 text-gray-500" />
-          <span className="text-gray-600">{file?.file_type || "File"}</span>
+        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+          <div className="flex items-center space-x-2">
+            <FileText className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">
+              {(file?.file_size / 1024).toFixed(1) || 0} MB
+            </span>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Download className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Clock className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">
+              {formatDateTimeSimple(file?.created_at) || "date"}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <FileArchive className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">{file?.file_type || "File"}</span>
+          </div>
         </div>
       </div>
 
@@ -602,7 +622,7 @@ const TeacherProfile: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-between mb-6">
               <button
                 onClick={() =>
@@ -669,16 +689,16 @@ const TeacherProfile: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Tabs */}
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-y-2 justify-between mb-8">
             {tabs.map((tab) => {
               const IconComponent = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center justify-between space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  className={`cursor-pointer flex items-center justify-between w-full md:w-[13rem] h-[4rem] mx-[5px] space-x-2 px-10 md:px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
                     activeTab === tab.id
                       ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
                       : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
@@ -860,7 +880,7 @@ const TeacherProfile: React.FC = () => {
                   <button
                     onClick={handleActivationSubmit}
                     disabled={!activationCode.trim()}
-                    className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="cursor-pointer flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     تفعيل الدورة
                   </button>
@@ -869,7 +889,7 @@ const TeacherProfile: React.FC = () => {
                       setShowActivationModal(false);
                       setActivationCode("");
                     }}
-                    className="px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
+                    className="cursor-pointer px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
                   >
                     إلغاء
                   </button>
