@@ -20,6 +20,7 @@ import {
   CheckCircle,
   Target,
 } from "lucide-react";
+import { useCustomQuery } from "@/hooks/useQuery";
 
 interface CourseContentPageProps {
   course: any;
@@ -46,13 +47,18 @@ interface ContentItem {
   children?: ContentItem[];
 }
 
-const CourseContentPage: React.FC<CourseContentPageProps> = ({
-  course,
-  onBack,
-}) => {
+const CourseContentPage = ({ course, onBack }: any) => {
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
     "tree"
   );
+
+  // GET courseContent Statistics
+  const { data } = useCustomQuery(
+    `/training/admin/course-content-statistics/`,
+    ["course-content-statistics"]
+  );
+  const contentStatisticsData = data?.data;
+
   const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -529,7 +535,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
             <h1 className="text-2xl font-bold text-gray-800">
               إدارة محتوى الدورة
             </h1>
-            <p className="text-gray-600 text-sm">{course.title}</p>
+            <p className="text-gray-600 text-sm">{course?.name}</p>
           </div>
           <button
             onClick={() => setCurrentView("add")}
@@ -547,7 +553,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
               <div>
                 <p className="text-gray-500 text-sm">الفصول</p>
                 <p className="text-3xl font-bold text-orange-600">
-                  {course?.chapters?.length}
+                  {contentStatisticsData?.total_semesters}
                 </p>
               </div>
               <BookOpen className="w-12 h-12 text-orange-500" />
@@ -559,10 +565,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
               <div>
                 <p className="text-gray-500 text-sm">الوحدات</p>
                 <p className="text-3xl font-bold text-blue-600">
-                  {course?.chapters?.reduce(
-                    (sum: any, chapter: any) => sum + chapter.units.length,
-                    0
-                  )}
+                  {contentStatisticsData?.total_units}
                 </p>
               </div>
               <Folder className="w-12 h-12 text-blue-500" />
@@ -572,18 +575,9 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">الدروس</p>
+                <p className="text-gray-500 text-sm">المواضيع</p>
                 <p className="text-3xl font-bold text-green-600">
-                  {course?.chapters?.reduce(
-                    (sum: any, chapter: any) =>
-                      sum +
-                      chapter.units.reduce(
-                        (unitSum: any, unit: any) =>
-                          unitSum + unit.lessons.length,
-                        0
-                      ),
-                    0
-                  )}
+                  {contentStatisticsData?.total_topics}
                 </p>
               </div>
               <File className="w-12 h-12 text-green-500" />
@@ -593,23 +587,9 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">الحصص</p>
+                <p className="text-gray-500 text-sm">الدروس</p>
                 <p className="text-3xl font-bold text-purple-600">
-                  {course?.chapters?.reduce(
-                    (sum: any, chapter: any) =>
-                      sum +
-                      chapter.units.reduce(
-                        (unitSum: any, unit: any) =>
-                          unitSum +
-                          unit.lessons.reduce(
-                            (lessonSum: any, lesson: any) =>
-                              lessonSum + lesson.sessions.length,
-                            0
-                          ),
-                        0
-                      ),
-                    0
-                  )}
+                  {contentStatisticsData?.total_lessons}
                 </p>
               </div>
               <Video className="w-12 h-12 text-purple-500" />

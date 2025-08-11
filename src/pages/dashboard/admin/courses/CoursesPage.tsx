@@ -794,7 +794,7 @@ const CoursesPage = () => {
       <CourseContentPage
         course={selectedCourse}
         onBack={() => setCurrentView("list")}
-        onUpdateCourse={(updatedCourse) => {
+        onUpdateCourse={(updatedCourse: any) => {
           // setCourses(
           //   courses.map((course) =>
           //     course.id === updatedCourse.id ? updatedCourse : course

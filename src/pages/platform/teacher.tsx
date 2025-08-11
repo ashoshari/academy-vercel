@@ -81,13 +81,13 @@ const TeacherProfile: React.FC = () => {
       id: "free_courses",
       title: "الدورات المجانية",
       icon: BookOpen,
-      count: coursesData?.length,
+      count: freeCoursesData?.length || 0,
     },
     {
       id: "courses",
       title: "الدورات المدفوعة",
       icon: BookOpen,
-      count: freeCoursesData?.length,
+      count: coursesData?.length || 0,
     },
     {
       id: "files",
@@ -693,10 +693,10 @@ const TeacherProfile: React.FC = () => {
           {/* Tabs */}
           <div className="flex flex-wrap gap-y-2 justify-between mb-8">
             {tabs.map((tab) => {
-              const IconComponent = tab.icon;
+              const IconComponent = tab?.icon;
               return (
                 <button
-                  key={tab.id}
+                  key={tab?.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`cursor-pointer flex items-center justify-between w-full md:w-[13rem] h-[4rem] mx-[5px] space-x-2 px-10 md:px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
                     activeTab === tab.id
