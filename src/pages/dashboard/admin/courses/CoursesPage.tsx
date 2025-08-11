@@ -16,11 +16,14 @@ import {
   Play,
   Pause,
   Folder,
+  ArrowRight,
 } from "lucide-react";
 import CourseContentPage from "@/components/dashboard/admin/courses/CourseContentPage";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
+import { formToJSON } from "axios";
+import { formatDate } from "@/services/date";
 
 // export interface Course {
 //   id: number;
@@ -163,7 +166,7 @@ const CoursesPage = () => {
   >("list");
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [teacherFilter, setTeacherFilter] = useState<number | null>(null);
+  const [teacherFilter, setTeacherFilter] = useState<any>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "published" | "draft" | "active" | "inactive"
@@ -173,7 +176,6 @@ const CoursesPage = () => {
   >("all");
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
   const [courseId, setCourseId] = useState<any>(null);
-  const [isPublishCourse, setIsPublishCourse] = useState<any>(false);
 
   // Sample courses data
   // const [courses, setCourses] = useState<Course[]>([
@@ -396,7 +398,6 @@ const CoursesPage = () => {
   // GET courses
   const { data } = useCustomQuery("/training/admin/courses/", ["courses"]);
   const courseData = data?.data;
-  console.log("courseData", courseData?.[0]);
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
@@ -404,64 +405,60 @@ const CoursesPage = () => {
   );
 
   // GET teachers
-  const { data: teachers } = useCustomQuery("/account/admin/teachers/", ["teachers"]);
+  const { data: teachers } = useCustomQuery("/account/admin/teachers/", [
+    "teachers",
+  ]);
 
   const teacherData = teachers?.data;
 
-  const [courses, setCourses] = useState<any>();
+  // GET Specializations
+  const { data: specializations } = useCustomQuery(
+    "/training/admin/specializations/",
+    ["specializations"]
+  );
+
+  // GET Specializations_material
+  const { data: specializations_material } = useCustomQuery(
+    "/training/admin/specialization-materials/",
+    ["specializations_material"]
+  );
+
+  const specializationData = specializations?.data;
+  const specialization_materialData = specializations_material?.data;
+
+  const [courses, setCourses] = useState<any>(courseData);
   useEffect(() => {
     setCourses(courseData);
   }, [courseData]);
   const courseStatsData = coursesStats?.data;
 
-  const [newCourse, setNewCourse] = useState<Partial<any>>({
-    title: "",
-    description: "",
-    shortDescription: "",
-    teacherId: 0,
-    price: 0,
-    isFree: true,
-    isPublished: false,
-    isActive: false,
-    isFeatured: false,
-    category: "",
-    level: "beginner",
-    language: "العربية",
-    duration: 0,
-    thumbnail: "",
-    previewVideo: "",
-    targetedSections: [],
-    targetedSubsections: [],
-    tags: [],
-    requirements: [],
-    whatYouWillLearn: [],
-    startDate: "",
-    endDate: "",
-    maxStudents: 100,
-  });
-  // POST Course
+  const [newCourse, setNewCourse] = useState<any>({});
+
+  // PUT Course
   const { mutateAsync: editCourse } = useCustomUpdate(
     `/training/admin/courses/${courseId}/`,
     ["editcourses", courseId]
   );
 
   // Filter courses
-  const filteredCourses = courseData?.filter((course:any) => {
+  const filteredCourses = courses?.filter((course: any) => {
     const matchesSearch =
       course?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course?.short_description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course?.short_description
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       course?.teacher?.name?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesTeacher =
       teacherFilter === null || course?.teacher?.id === teacherFilter;
     const matchesCategory =
-      categoryFilter === "" || course?.materials[0].name === categoryFilter;
+      categoryFilter === "" || course?.specialization?.name === categoryFilter;
     const matchesStatus =
       statusFilter === "all" ||
-      (statusFilter === "published" && course.isPublished) ||
-      (statusFilter === "draft" && !course.isPublished) ||
-      (statusFilter === "active" && course.isActive) ||
-      (statusFilter === "inactive" && !course.isActive);
+      (statusFilter === "published" && course?.is_published) ||
+      (statusFilter === "draft" && !course?.is_published);
+    // (statusFilter === "active" && course.isActive) ||
+    // (statusFilter === "inactive" && !course.isActive);
     const matchesLevel = levelFilter === "all" || course.level === levelFilter;
 
     return (
@@ -472,257 +469,32 @@ const CoursesPage = () => {
       matchesLevel
     );
   });
-
+  console.log("filteredCourses", filteredCourses);
   const uniqueCategories = [
     ...new Set(courses?.data?.map((c: any) => c.category)),
   ];
 
-  // Sample data for teachers
-  // const [teachers,setTeachers] = useState<any>();
-
-  const handleCreateCourse = () => {
-    if (newCourse.title && newCourse.description && newCourse.teacherId) {
-      const course: any = {
-        id: Date.now(),
-        title: newCourse.title,
-        description: newCourse.description,
-        shortDescription: newCourse.shortDescription || "",
-        teacherId: newCourse.teacherId,
-        teacherName:
-          teacherData?.find((t:any) => t.id === newCourse.teacherId)?.name || "",
-        teacherAvatar: teacherData?.find((t:any) => t.id === newCourse.teacherId)
-          ?.avatar,
-        price: newCourse.price || 0,
-        isFree: newCourse.isFree || false,
-        isPublished: newCourse.isPublished || false,
-        isActive: newCourse.isActive || false,
-        isFeatured: newCourse.isFeatured || false,
-        category: newCourse.category || "",
-        level: newCourse.level || "beginner",
-        language: newCourse.language || "العربية",
-        duration: newCourse.duration || 0,
-        studentsCount: 0,
-        rating: 0,
-        reviewsCount: 0,
-        thumbnail:
-          newCourse.thumbnail ||
-          "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800",
-        previewVideo: newCourse.previewVideo,
-        targetedSections: newCourse.targetedSections || [],
-        targetedSubsections: newCourse.targetedSubsections || [],
-        tags: newCourse.tags || [],
-        requirements: newCourse.requirements || [],
-        whatYouWillLearn: newCourse.whatYouWillLearn || [],
-        createdAt: new Date().toISOString().split("T")[0],
-        updatedAt: new Date().toISOString().split("T")[0],
-        publishedAt: newCourse.isPublished
-          ? new Date().toISOString().split("T")[0]
-          : undefined,
-        startDate: newCourse.startDate,
-        endDate: newCourse.endDate,
-        maxStudents: newCourse.maxStudents || 100,
-        chapters: [],
-        files: [],
-        exams: [],
-        enrollments: [],
-        reviews: [],
-      };
-
-      // setCourses([...courses, course]);
-      setNewCourse({
-        title: "",
-        description: "",
-        shortDescription: "",
-        teacherId: 0,
-        price: 0,
-        isFree: true,
-        isPublished: false,
-        isActive: false,
-        isFeatured: false,
-        category: "",
-        level: "beginner",
-        language: "العربية",
-        duration: 0,
-        thumbnail: "",
-        previewVideo: "",
-        targetedSections: [],
-        targetedSubsections: [],
-        tags: [],
-        requirements: [],
-        whatYouWillLearn: [],
-        startDate: "",
-        endDate: "",
-        maxStudents: 100,
-      });
+  // POST New Course
+  const { mutateAsync: createCourse } = useCustomPost(
+    "/training/admin/courses/",
+    ["postCourses"]
+  );
+  const handleCreateCourse = async () => {
+    try {
+      const res = await createCourse(newCourse);
+      toast.success(res.message ?? "تم الحفظ بنجاح");
       setCurrentView("list");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error);
     }
   };
-
-  // Sample data for main sections
-  const [mainSections, __] = useState<any[]>([
-    {
-      id: 1,
-      name: "امتحانات",
-      description: "امتحانات تجريبية وتقييمية لجميع المواد الدراسية",
-      icon: "BookOpen",
-      color: "blue",
-      isFree: true,
-      isEnabled: true,
-      studentsCount: 1247,
-      itemsCount: 89,
-      createdAt: "2024-01-10",
-    },
-    {
-      id: 2,
-      name: "أسئلة وزارية",
-      description: "مجموعة شاملة من الأسئلة الوزارية للسنوات السابقة",
-      icon: "FileText",
-      color: "green",
-      isFree: false,
-      isEnabled: true,
-      studentsCount: 892,
-      itemsCount: 156,
-      createdAt: "2024-01-08",
-    },
-    {
-      id: 3,
-      name: "دورات",
-      description: "دورات تعليمية متخصصة مع شهادات معتمدة",
-      icon: "GraduationCap",
-      color: "purple",
-      isFree: false,
-      isEnabled: true,
-      studentsCount: 634,
-      itemsCount: 45,
-      createdAt: "2024-01-05",
-    },
-    {
-      id: 4,
-      name: "بطاقات",
-      description: "بطاقات تعليمية تفاعلية لتسهيل عملية الحفظ والمراجعة",
-      icon: "CreditCard",
-      color: "yellow",
-      isFree: true,
-      isEnabled: true,
-      studentsCount: 423,
-      itemsCount: 78,
-      createdAt: "2024-01-03",
-    },
-  ]);
-
-  // Sample data for subsections
-  const [subsections, _] = useState<any[]>([
-    {
-      id: 1,
-      name: "التوجيهي",
-      description: "المرحلة الثانوية العامة - التوجيهي",
-      parentId: null,
-      level: 1,
-      linkedSections: [1, 2, 3],
-      studentsCount: 856,
-      itemsCount: 234,
-      isExpanded: true,
-      createdAt: "2024-01-10",
-    },
-    {
-      id: 2,
-      name: "توجيهي 2007",
-      description: "منهاج التوجيهي للعام 2007",
-      parentId: 1,
-      level: 2,
-      linkedSections: [1, 2],
-      studentsCount: 312,
-      itemsCount: 89,
-      isExpanded: false,
-      createdAt: "2024-01-10",
-    },
-    {
-      id: 3,
-      name: "توجيهي 2008",
-      description: "منهاج التوجيهي للعام 2008",
-      parentId: 1,
-      level: 2,
-      linkedSections: [1, 2, 3],
-      studentsCount: 287,
-      itemsCount: 76,
-      isExpanded: false,
-      createdAt: "2024-01-10",
-    },
-    {
-      id: 4,
-      name: "الصفوف الأساسية",
-      description: "المرحلة الأساسية من الصف الأول إلى العاشر",
-      parentId: null,
-      level: 1,
-      linkedSections: [4],
-      studentsCount: 1243,
-      itemsCount: 456,
-      isExpanded: true,
-      createdAt: "2024-01-08",
-    },
-    {
-      id: 5,
-      name: "الصف الأول",
-      description: "المنهاج الدراسي للصف الأول الأساسي",
-      parentId: 4,
-      level: 2,
-      linkedSections: [4],
-      studentsCount: 156,
-      itemsCount: 45,
-      isExpanded: false,
-      createdAt: "2024-01-08",
-    },
-    {
-      id: 6,
-      name: "الصف الثاني",
-      description: "المنهاج الدراسي للصف الثاني الأساسي",
-      parentId: 4,
-      level: 2,
-      linkedSections: [4],
-      studentsCount: 134,
-      itemsCount: 38,
-      isExpanded: false,
-      createdAt: "2024-01-08",
-    },
-    {
-      id: 7,
-      name: "الصف العاشر",
-      description: "المنهاج الدراسي للصف العاشر الأساسي",
-      parentId: 4,
-      level: 2,
-      linkedSections: [1, 4],
-      studentsCount: 298,
-      itemsCount: 87,
-      isExpanded: false,
-      createdAt: "2024-01-08",
-    },
-  ]);
-
-  const handleEditCourse = () => {
-    if (
-      selectedCourse &&
-      selectedCourse.title &&
-      selectedCourse.description &&
-      selectedCourse.teacherId
-    ) {
-      // setCourses(
-      //   courses.map((course) =>
-      //     course.id === selectedCourse.id
-      //       ? {
-      //           ...selectedCourse,
-      //           updatedAt: new Date().toISOString().split("T")[0],
-      //           teacherName:
-      //             teachers.find((t) => t.id === selectedCourse.teacherId)
-      //               ?.name || selectedCourse.teacherName,
-      //           teacherAvatar:
-      //             teachers.find((t) => t.id === selectedCourse.teacherId)
-      //               ?.avatar || selectedCourse.teacherAvatar,
-      //         }
-      //       : course
-      //   )
-      // );
+  const handleEditCourse = async () => {
+    try {
+      const res = await editCourse(newCourse);
+      toast.success(res.message ?? "تم الحفظ بنجاح");
       setCurrentView("list");
-      setSelectedCourse(null);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error);
     }
   };
 
@@ -736,16 +508,19 @@ const CoursesPage = () => {
   //   }
   // };
 
-  const toggleCourseStatus = async () => {
+  const toggleCourseStatus = async (courseId: string) => {
     setCourses((prev: any) =>
       prev?.map((course: any) =>
-        course.id === courseId
+        course?.id === courseId
           ? { ...course, is_published: !course?.is_published }
           : course
       )
     );
+    setCourseId(courseId);
+    const updateCourse = courses.find((c: any) => c?.id === courseId);
+    const newStatus = !updateCourse?.is_published;
     try {
-      await editCourse({ is_published: isPublishCourse });
+      await editCourse({ is_published: newStatus });
     } catch (error) {
       toast.error("حدث خطاء في تعديل حالة الدورة");
       setCourses((prevCourses: any) =>
@@ -774,11 +549,11 @@ const CoursesPage = () => {
   };
   const getLevelColor = (level: any) => {
     switch (level) {
-      case "beginner":
+      case "مبتدئ":
         return "bg-green-100 text-green-800";
-      case "intermediate":
+      case "متوسط":
         return "bg-yellow-100 text-yellow-800";
-      case "advanced":
+      case "متقدم":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -812,6 +587,15 @@ const CoursesPage = () => {
             </span>
           )}
         </div>
+        <div className="absolute top-4 left-4 flex gap-2">
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelColor(
+              course?.level?.name
+            )}`}
+          >
+            {course?.level?.name || "غير محدد"}
+          </span>
+        </div>
 
         {/* Level Badge */}
         <div className="absolute bottom-4 right-4">
@@ -820,7 +604,16 @@ const CoursesPage = () => {
               course.level
             )}`}
           >
-            {course?.level?.name}
+            {course?.specialization_material?.name}
+          </span>
+        </div>
+        <div className="absolute bottom-4 left-4">
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelColor(
+              course.level
+            )}`}
+          >
+            {course?.specialization?.name || "غير محدد"}
           </span>
         </div>
       </div>
@@ -944,9 +737,7 @@ const CoursesPage = () => {
 
             <button
               onClick={() => {
-                setCourseId(course?.id);
-                setIsPublishCourse(!course?.is_Published);
-                toggleCourseStatus();
+                toggleCourseStatus(course?.id);
               }}
               className={`p-2 rounded-lg transition-colors ${
                 course?.is_Published
@@ -1022,10 +813,14 @@ const CoursesPage = () => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentView("list")}
+            onClick={() => {
+              setNewCourse({
+              });
+              setCurrentView("list")
+            }}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <ArrowLeft size={20} />
+            <ArrowRight size={20} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
@@ -1052,9 +847,9 @@ const CoursesPage = () => {
                 </label>
                 <input
                   type="text"
-                  value={newCourse.title || ""}
+                  value={newCourse?.name || ""}
                   onChange={(e) =>
-                    setNewCourse({ ...newCourse, title: e.target.value })
+                    setNewCourse({ ...newCourse, name: e.target.value })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="أدخل عنوان الدورة..."
@@ -1067,11 +862,11 @@ const CoursesPage = () => {
                 </label>
                 <input
                   type="text"
-                  value={newCourse.shortDescription || ""}
+                  value={newCourse?.short_description || ""}
                   onChange={(e) =>
                     setNewCourse({
                       ...newCourse,
-                      shortDescription: e.target.value,
+                      short_description: e.target.value,
                     })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1084,9 +879,12 @@ const CoursesPage = () => {
                   الوصف التفصيلي *
                 </label>
                 <textarea
-                  value={newCourse.description || ""}
+                  value={newCourse?.long_description || ""}
                   onChange={(e) =>
-                    setNewCourse({ ...newCourse, description: e.target.value })
+                    setNewCourse({
+                      ...newCourse,
+                      long_description: e.target.value,
+                    })
                   }
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
@@ -1094,28 +892,28 @@ const CoursesPage = () => {
                 />
               </div>
 
+              {/* Teacher and specialization */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     المعلم *
                   </label>
                   <select
-                    value={newCourse.teacherId || ""}
+                    value={newCourse?.teacher || ""}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
-                        teacherId: parseInt(e.target.value),
+                        teacher: e.target.value,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
                     <option value="">اختر المعلم</option>
-                    {teacherData?.filter((t:any) => t.isActive)
-                      .map((teacher:any) => (
-                        <option key={teacher.id} value={teacher.id}>
-                          {teacher.name} - {teacher.specialization}
-                        </option>
-                      ))}
+                    {teacherData?.map((teacher: any) => (
+                      <option key={teacher?.id} value={teacher?.id}>
+                        {teacher.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -1125,12 +923,12 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="text"
-                    value={newCourse.category || ""}
+                    value={newCourse?.category || ""}
                     onChange={(e) =>
                       setNewCourse({ ...newCourse, category: e.target.value })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="مثل: الرياضيات، الفيزياء"
+                    placeholder="مثل: علمي ، ادبي"
                   />
                 </div>
               </div>
@@ -1141,7 +939,9 @@ const CoursesPage = () => {
                     المستوى
                   </label>
                   <select
-                    value={newCourse.level || "beginner"}
+                    value={
+                      newCourse?.level || "d72e95dd-dc4c-4495-8ec5-cea7e7c5a0c3"
+                    }
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
@@ -1150,9 +950,15 @@ const CoursesPage = () => {
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
-                    <option value="beginner">مبتدئ</option>
-                    <option value="intermediate">متوسط</option>
-                    <option value="advanced">متقدم</option>
+                    <option value="d72e95dd-dc4c-4495-8ec5-cea7e7c5a0c3">
+                      مبتدئ
+                    </option>
+                    <option value="e6ec8a9c-e0d0-47ae-a2c9-2f6defb2ca97">
+                      متوسط
+                    </option>
+                    <option value="381137cd-7aa9-4165-a0e1-181dc686cb50">
+                      متقدم
+                    </option>
                   </select>
                 </div>
 
@@ -1162,11 +968,11 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newCourse.duration || ""}
+                    value={newCourse.time_in_hours || ""}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
-                        duration: parseInt(e.target.value) || 0,
+                        time_in_hours: parseInt(e.target.value) || 0,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1176,34 +982,53 @@ const CoursesPage = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  رابط الصورة المصغرة
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="fileUpload"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  الصورة المصغرة
                 </label>
-                <input
-                  type="url"
-                  value={newCourse.thumbnail || ""}
-                  onChange={(e) =>
-                    setNewCourse({ ...newCourse, thumbnail: e.target.value })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
+                <div className="flex items-center gap-2">
+                  <label
+                    htmlFor="fileUpload"
+                    className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                  >
+                    اختر الصورة المصغرة
+                  </label>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  رابط فيديو المعاينة
-                </label>
-                <input
-                  type="url"
-                  value={newCourse.previewVideo || ""}
-                  onChange={(e) =>
-                    setNewCourse({ ...newCourse, previewVideo: e.target.value })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  placeholder="https://example.com/preview.mp4"
-                />
+                  <input
+                    id="fileUpload"
+                    type="file"
+                    className="invisible w-0 h-0"
+                    onChange={(e) => {
+                      console.log("e.target.files", e.target.files?.[0]);
+                      setNewCourse({
+                        ...newCourse,
+                        image: e.target.files?.[0],
+                      });
+                    }}
+                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, image/svg+xml"
+                  />
+
+                  <span id="fileName" className="text-sm text-gray-500">
+                    {newCourse?.image
+                      ? newCourse?.image?.name
+                      : "لم يتم اختيار صورة"}
+                  </span>
+                  {(typeof newCourse?.image === "string" ||
+                    newCourse?.image instanceof File) && (
+                    <img
+                      src={
+                        newCourse?.image instanceof File
+                          ? URL.createObjectURL(newCourse.image)
+                          : newCourse?.image
+                      }
+                      alt="Preview"
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
@@ -1223,9 +1048,9 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={newCourse.isFree === true}
+                      checked={newCourse.is_free === true}
                       onChange={() =>
-                        setNewCourse({ ...newCourse, isFree: true, price: 0 })
+                        setNewCourse({ ...newCourse, is_free: true, price: 0 })
                       }
                       className="text-orange-600 focus:ring-orange-500"
                     />
@@ -1235,20 +1060,20 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={newCourse.isFree === false}
+                      checked={newCourse.is_free === false}
                       onChange={() =>
-                        setNewCourse({ ...newCourse, isFree: false })
+                        setNewCourse({ ...newCourse, is_free: false })
                       }
                       className="text-orange-600 focus:ring-orange-500"
                     />
                     <span>دورة مدفوعة</span>
                   </label>
                 </div>
-                {newCourse.isFree === false && (
+                {newCourse?.is_free === false && (
                   <div className="mt-3">
                     <input
                       type="number"
-                      value={newCourse.price || ""}
+                      value={newCourse?.price || ""}
                       onChange={(e) =>
                         setNewCourse({
                           ...newCourse,
@@ -1272,9 +1097,9 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="date"
-                    value={newCourse.startDate || ""}
+                    value={newCourse?.start_date || ""}
                     onChange={(e) =>
-                      setNewCourse({ ...newCourse, startDate: e.target.value })
+                      setNewCourse({ ...newCourse, start_date: e.target.value })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   />
@@ -1286,16 +1111,17 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="date"
-                    value={newCourse.endDate || ""}
+                    value={newCourse.end_date || ""}
                     onChange={(e) =>
-                      setNewCourse({ ...newCourse, endDate: e.target.value })
+                      setNewCourse({ ...newCourse, end_date: e.target.value })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   />
                 </div>
               </div>
 
-              <div>
+              {/* Max Students */}
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الحد الأقصى للطلاب
                 </label>
@@ -1312,45 +1138,50 @@ const CoursesPage = () => {
                   placeholder="100"
                   min="1"
                 />
-              </div>
+              </div> */}
 
               {/* Targeted Sections */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  الأقسام الرئيسية المستهدفة
+                  التخصصات المستهدفة
                 </label>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {mainSections.map((section) => (
-                    <label key={section.id} className="flex items-center gap-2">
+                  {specializationData?.map((specialization: any) => (
+                    <label
+                      key={specialization?.id}
+                      className="flex items-center gap-2"
+                    >
                       <input
                         type="checkbox"
                         checked={
-                          newCourse.targetedSections?.includes(section.id) ||
-                          false
+                          newCourse.specialization?.includes(
+                            specialization?.id
+                          ) || false
                         }
                         onChange={(e) => {
-                          const currentSections =
-                            newCourse.targetedSections || [];
+                          const currentcurrentSpecialization =
+                            newCourse.specialization || [];
                           if (e.target.checked) {
                             setNewCourse({
                               ...newCourse,
-                              targetedSections: [
-                                ...currentSections,
-                                section.id,
+                              specialization: [
+                                ...currentcurrentSpecialization,
+                                specialization?.id,
                               ],
                             });
                           } else {
                             setNewCourse({
                               ...newCourse,
-                              targetedSections: currentSections.filter(
-                                (id: any) => id !== section.id
-                              ),
+                              specialization:
+                                currentcurrentSpecialization.filter(
+                                  (id: any) => id !== specialization?.id
+                                ),
                             });
                           }
                         }}
                         className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                       />
-                      <span className="text-sm">{section.name}</span>
+                      <span className="text-sm">{specialization?.name}</span>
                     </label>
                   ))}
                 </div>
@@ -1362,43 +1193,49 @@ const CoursesPage = () => {
                   الأقسام الفرعية المستهدفة
                 </label>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {subsections.map((subsection) => (
-                    <label
-                      key={subsection.id}
-                      className="flex items-center gap-2"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={
-                          newCourse.targetedSubsections?.includes(
-                            subsection.id
-                          ) || false
-                        }
-                        onChange={(e) => {
-                          const currentSubsections =
-                            newCourse.targetedSubsections || [];
-                          if (e.target.checked) {
-                            setNewCourse({
-                              ...newCourse,
-                              targetedSubsections: [
-                                ...currentSubsections,
-                                subsection.id,
-                              ],
-                            });
-                          } else {
-                            setNewCourse({
-                              ...newCourse,
-                              targetedSubsections: currentSubsections.filter(
-                                (id: any) => id !== subsection.id
-                              ),
-                            });
+                  {specialization_materialData?.map(
+                    (specialization_material: any) => (
+                      <label
+                        key={specialization_material?.id}
+                        className="flex items-center gap-2"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={
+                            newCourse.specialization?.includes(
+                              specialization_material?.id
+                            ) || false
                           }
-                        }}
-                        className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                      />
-                      <span className="text-sm">{subsection.name}</span>
-                    </label>
-                  ))}
+                          onChange={(e) => {
+                            const currentSpecialization_material =
+                              newCourse.specialization_material || [];
+                            if (e.target.checked) {
+                              setNewCourse({
+                                ...newCourse,
+                                specialization_material: [
+                                  ...currentSpecialization_material,
+                                  specialization_material?.id,
+                                ],
+                              });
+                            } else {
+                              setNewCourse({
+                                ...newCourse,
+                                specialization:
+                                  currentSpecialization_material.filter(
+                                    (id: any) =>
+                                      id !== specialization_material?.id
+                                  ),
+                              });
+                            }
+                          }}
+                          className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                        />
+                        <span className="text-sm">
+                          {specialization_material?.name}
+                        </span>
+                      </label>
+                    )
+                  )}
                 </div>
               </div>
 
@@ -1411,18 +1248,19 @@ const CoursesPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newCourse.isPublished || false}
+                    checked={newCourse.is_published || false}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
-                        isPublished: e.target.checked,
+                        is_published: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                {/* Active */}
+                {/* <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">نشط</p>
                     <p className="text-sm text-gray-500">يمكن التسجيل فيه</p>
@@ -1435,7 +1273,7 @@ const CoursesPage = () => {
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
-                </div>
+                </div> */}
 
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
@@ -1444,11 +1282,11 @@ const CoursesPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newCourse.isFeatured || false}
+                    checked={newCourse.is_special || false}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
-                        isFeatured: e.target.checked,
+                        is_special: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
@@ -1469,9 +1307,10 @@ const CoursesPage = () => {
             <button
               onClick={handleCreateCourse}
               disabled={
-                !newCourse.title ||
-                !newCourse.description ||
-                !newCourse.teacherId
+                !newCourse.name ||
+                !newCourse.short_description ||
+                !newCourse.long_description ||
+                !newCourse.teacher
               }
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1494,11 +1333,11 @@ const CoursesPage = () => {
             onClick={() => setCurrentView("list")}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <ArrowLeft size={20} />
+            <ArrowRight size={20} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">تعديل الدورة</h1>
-            <p className="text-gray-600 text-sm">{selectedCourse.title}</p>
+            <p className="text-gray-600 text-sm">{selectedCourse?.name}</p>
           </div>
         </div>
 
@@ -1517,11 +1356,11 @@ const CoursesPage = () => {
                 </label>
                 <input
                   type="text"
-                  value={selectedCourse.title}
+                  value={selectedCourse?.name}
                   onChange={(e) =>
                     setSelectedCourse({
                       ...selectedCourse,
-                      title: e.target.value,
+                      name: e.target.value,
                     })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1535,11 +1374,11 @@ const CoursesPage = () => {
                 </label>
                 <input
                   type="text"
-                  value={selectedCourse.shortDescription}
+                  value={selectedCourse?.short_description}
                   onChange={(e) =>
                     setSelectedCourse({
                       ...selectedCourse,
-                      shortDescription: e.target.value,
+                      short_description: e.target.value,
                     })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1552,11 +1391,11 @@ const CoursesPage = () => {
                   الوصف التفصيلي *
                 </label>
                 <textarea
-                  value={selectedCourse.description}
+                  value={selectedCourse?.long_description}
                   onChange={(e) =>
                     setSelectedCourse({
                       ...selectedCourse,
-                      description: e.target.value,
+                      long_description: e.target.value,
                     })
                   }
                   rows={4}
@@ -1571,20 +1410,21 @@ const CoursesPage = () => {
                     المعلم *
                   </label>
                   <select
-                    value={selectedCourse.teacherId}
+                    value={selectedCourse?.teacher}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        teacherId: parseInt(e.target.value),
+                        teacher: e.target.value,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
                     <option value="">اختر المعلم</option>
-                    {teacherData?.filter((t:any) => t.isActive)
-                      .map((teacher:any) => (
+                    {teacherData
+                      ?.filter((t: any) => t.is_active)
+                      .map((teacher: any) => (
                         <option key={teacher.id} value={teacher.id}>
-                          {teacher.name} - {teacher.specialization}
+                          {teacher.name}
                         </option>
                       ))}
                   </select>
@@ -1596,15 +1436,15 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="text"
-                    value={selectedCourse.category}
+                    value={selectedCourse?.specialization}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        category: e.target.value,
+                        specialization: e.target.value,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="مثل: الرياضيات، الفيزياء"
+                    placeholder="مثل:  علمي ، أدبي"
                   />
                 </div>
               </div>
@@ -1615,7 +1455,7 @@ const CoursesPage = () => {
                     المستوى
                   </label>
                   <select
-                    value={selectedCourse.level}
+                    value={selectedCourse?.level}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
@@ -1624,9 +1464,15 @@ const CoursesPage = () => {
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
-                    <option value="beginner">مبتدئ</option>
-                    <option value="intermediate">متوسط</option>
-                    <option value="advanced">متقدم</option>
+                    <option value="d72e95dd-dc4c-4495-8ec5-cea7e7c5a0c3">
+                      مبتدئ
+                    </option>
+                    <option value="e6ec8a9c-e0d0-47ae-a2c9-2f6defb2ca97">
+                      متوسط
+                    </option>
+                    <option value="381137cd-7aa9-4165-a0e1-181dc686cb50">
+                      متقدم
+                    </option>
                   </select>
                 </div>
 
@@ -1636,11 +1482,11 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={selectedCourse.duration}
+                    value={selectedCourse?.time_in_hours}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        duration: parseInt(e.target.value) || 0,
+                        time_in_hours: parseInt(e.target.value) || 0,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1650,7 +1496,56 @@ const CoursesPage = () => {
                 </div>
               </div>
 
-              <div>
+              {/* Image */}
+              <div className="flex flex-col justify-center gap-2">
+                <label
+                  htmlFor="fileUpload"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  الصورة المصغرة
+                </label>
+                <div className="flex items-center gap-2">
+                  <label
+                    htmlFor="fileUpload"
+                    className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                  >
+                    اختر الصورة المصغرة
+                  </label>
+
+                  <input
+                    id="fileUpload"
+                    type="file"
+                    className="invisible w-0 h-0"
+                    onChange={(e) => {
+                      setSelectedCourse({
+                        ...selectedCourse,
+                        image: e.target.files?.[0],
+                      });
+                    }}
+                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, image/svg+xml"
+                  />
+
+                  <span id="fileName" className="text-sm text-gray-500">
+                    {selectedCourse?.image
+                      ? selectedCourse?.image?.name
+                      : "لم يتم اختيار صورة"}
+                  </span>
+                  {(typeof selectedCourse?.image === "string" ||
+                    selectedCourse?.image instanceof File) && (
+                    <img
+                      src={
+                        selectedCourse?.image instanceof File
+                          ? URL.createObjectURL(selectedCourse.image)
+                          : selectedCourse?.image // existing image URL from DB
+                      }
+                      alt="Preview"
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   رابط الصورة المصغرة
                 </label>
@@ -1666,9 +1561,9 @@ const CoursesPage = () => {
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="https://example.com/image.jpg"
                 />
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   رابط فيديو المعاينة
                 </label>
@@ -1684,7 +1579,7 @@ const CoursesPage = () => {
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="https://example.com/preview.mp4"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Settings */}
@@ -1703,11 +1598,11 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={selectedCourse.isFree === true}
+                      checked={selectedCourse?.is_free === true}
                       onChange={() =>
                         setSelectedCourse({
                           ...selectedCourse,
-                          isFree: true,
+                          is_free: true,
                           price: 0,
                         })
                       }
@@ -1719,20 +1614,20 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={selectedCourse.isFree === false}
+                      checked={selectedCourse?.is_free === false}
                       onChange={() =>
-                        setSelectedCourse({ ...selectedCourse, isFree: false })
+                        setSelectedCourse({ ...selectedCourse, is_free: false })
                       }
                       className="text-orange-600 focus:ring-orange-500"
                     />
                     <span>دورة مدفوعة</span>
                   </label>
                 </div>
-                {selectedCourse.isFree === false && (
+                {selectedCourse?.is_free === false && (
                   <div className="mt-3">
                     <input
                       type="number"
-                      value={selectedCourse.price}
+                      value={selectedCourse?.price}
                       onChange={(e) =>
                         setSelectedCourse({
                           ...selectedCourse,
@@ -1756,11 +1651,11 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="date"
-                    value={selectedCourse.startDate || ""}
+                    value={formatDate(selectedCourse?.start_date) || ""}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        startDate: e.target.value,
+                        start_date: e.target.value,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1773,11 +1668,11 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="date"
-                    value={selectedCourse.endDate || ""}
+                    value={formatDate(selectedCourse?.end_date) || ""}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        endDate: e.target.value,
+                        end_date: e.target.value,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1785,17 +1680,18 @@ const CoursesPage = () => {
                 </div>
               </div>
 
+              {/* Maximum Students */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الحد الأقصى للطلاب
                 </label>
                 <input
                   type="number"
-                  value={selectedCourse.maxStudents || ""}
+                  value={selectedCourse?.maximum_number_of_students || 0}
                   onChange={(e) =>
                     setSelectedCourse({
                       ...selectedCourse,
-                      maxStudents: parseInt(e.target.value) || 0,
+                      maximum_number_of_students: parseInt(e.target.value) || 0,
                     })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1813,34 +1709,34 @@ const CoursesPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={selectedCourse.isPublished}
+                    checked={selectedCourse.is_published}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        isPublished: e.target.checked,
+                        is_published: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                {/* <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">نشط</p>
                     <p className="text-sm text-gray-500">يمكن التسجيل فيه</p>
                   </div>
                   <input
                     type="checkbox"
-                    checked={selectedCourse.isActive}
+                    checked={selectedCourse?.is_published}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        isActive: e.target.checked,
+                        is_published: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
-                </div>
+                </div> */}
 
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
@@ -1849,11 +1745,11 @@ const CoursesPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={selectedCourse.isFeatured}
+                    checked={selectedCourse?.is_special}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        isFeatured: e.target.checked,
+                        is_special: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
@@ -1874,9 +1770,10 @@ const CoursesPage = () => {
             <button
               onClick={handleEditCourse}
               disabled={
-                !selectedCourse.title ||
-                !selectedCourse.description ||
-                !selectedCourse.teacherId
+                !selectedCourse?.name ||
+                !selectedCourse?.short_description ||
+                !selectedCourse?.long_description ||
+                !selectedCourse?.teacher
               }
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1979,12 +1876,12 @@ const CoursesPage = () => {
           <select
             value={teacherFilter || ""}
             onChange={(e) =>
-              setTeacherFilter(e.target.value ? parseInt(e.target.value) : null)
+              setTeacherFilter(e.target.value ? e.target.value : null)
             }
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="">جميع المعلمين</option>
-            {teacherData?.map((teacher:any) => (
+            {teacherData?.map((teacher: any) => (
               <option key={teacher.id} value={teacher.id}>
                 {teacher.name}
               </option>
@@ -1998,11 +1895,11 @@ const CoursesPage = () => {
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="">جميع التصنيفات</option>
-            {/* {uniqueCategories.map((category: any) => (
-              <option key={category} value={category}>
-                {category}
+            {specializationData?.map((category: any) => (
+              <option key={category?.id} value={category?.name}>
+                {category?.name}
               </option>
-            ))} */}
+            ))}
           </select>
 
           {/* Status Filter */}
@@ -2014,8 +1911,8 @@ const CoursesPage = () => {
             <option value="all">جميع الحالات</option>
             <option value="published">منشور</option>
             <option value="draft">مسودة</option>
-            <option value="active">نشط</option>
-            <option value="inactive">معطل</option>
+            {/* <option value="active">نشط</option>
+            <option value="inactive">معطل</option> */}
           </select>
 
           {/* View Mode */}
@@ -2104,9 +2001,9 @@ const CoursesPage = () => {
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     الطلاب
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {/* <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     التقييم
-                  </th>
+                  </th> */}
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     السعر
                   </th>
@@ -2119,21 +2016,24 @@ const CoursesPage = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {courses?.data?.map((course: any) => (
-                  <tr key={course.id} className="hover:bg-gray-50">
+                {filteredCourses?.map((course: any) => (
+                  <tr key={course?.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         <img
-                          src={course.thumbnail}
-                          alt={course.title}
+                          src={
+                            course?.image ||
+                            "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
+                          }
+                          alt={course?.name}
                           className="w-12 h-12 rounded-lg object-cover"
                         />
                         <div>
                           <div className="font-medium text-gray-900 line-clamp-1">
-                            {course.title}
+                            {course?.name}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {course.duration}h • {course.level}
+                            {course?.time_in_hours}h • {course?.level?.name}
                           </div>
                         </div>
                       </div>
@@ -2142,46 +2042,44 @@ const CoursesPage = () => {
                       <div className="flex items-center gap-2">
                         <img
                           src={
-                            course.teacherAvatar ||
-                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                              course.teacherName
-                            )}&background=f97316&color=ffffff&size=32`
+                            course?.teacher?.image ||
+                            "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
                           }
-                          alt={course.teacherName}
+                          alt={course?.teacher?.name}
                           className="w-8 h-8 rounded-full"
                         />
                         <span className="text-sm text-gray-900">
-                          {course.teacherName}
+                          {course?.teacher?.name}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {course.category}
+                      {course?.specialization?.name || "غير محدد"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {course.studentsCount}
+                      {course?.maximum_number_of_students}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-1">
                         <Star size={14} className="text-yellow-500" />
                         <span className="text-sm font-medium">2</span>
                       </div>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {course.isFree ? "مجاني" : `${course.price} د.أ`}
+                      {course?.is_free ? "مجاني" : `${course?.price} د.أ`}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex gap-2">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            course.isPublished
+                            course?.is_published
                               ? "bg-green-100 text-green-800"
                               : "bg-gray-100 text-gray-800"
                           }`}
                         >
-                          {course.isPublished ? "منشور" : "مسودة"}
+                          {course?.is_published ? "منشور" : "مسودة"}
                         </span>
-                        <span
+                        {/* <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             course.isActive
                               ? "bg-blue-100 text-blue-800"
@@ -2189,7 +2087,7 @@ const CoursesPage = () => {
                           }`}
                         >
                           {course.isActive ? "نشط" : "معطل"}
-                        </span>
+                        </span> */}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -2204,6 +2102,26 @@ const CoursesPage = () => {
                         >
                           <Folder size={16} />
                         </button>
+                        <button
+                          onClick={() => {
+                            toggleCourseStatus(course?.id);
+                          }}
+                          className={`p-2 rounded-lg transition-colors ${
+                            course?.is_Published
+                              ? "text-green-600 bg-green-50 hover:bg-green-100"
+                              : "text-gray-400 bg-gray-50 hover:bg-gray-100"
+                          }`}
+                          title={
+                            course?.is_Published ? "إلغاء النشر" : "نشر الدورة"
+                          }
+                        >
+                          {course?.is_published ? (
+                            <Eye size={16} />
+                          ) : (
+                            <EyeOff size={16} />
+                          )}
+                        </button>
+
                         <button
                           onClick={() => {
                             setSelectedCourse(course);

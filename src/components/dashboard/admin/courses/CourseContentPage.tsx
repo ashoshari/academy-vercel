@@ -5,6 +5,7 @@ import {
   Edit,
   Trash2,
   ArrowLeft,
+  ArrowRight,
   ArrowUp,
   ArrowDown,
   BookOpen,
@@ -522,7 +523,7 @@ const CourseContentPage: React.FC<CourseContentPageProps> = ({
             onClick={onBack}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <ArrowLeft size={20} />
+            <ArrowRight size={20} />
           </button>
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-800">
