@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Plus,
   Search,
@@ -21,6 +21,7 @@ import {
   Target,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
+import { set } from "lodash";
 
 interface CourseContentPageProps {
   course: any;
@@ -51,16 +52,25 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
     "tree"
   );
-
+  // GET courseContent
+  const { data: courseContent, isLoading } = useCustomQuery(
+    `/training/admin/courses/${course?.id}/`,
+    ["course-content", course?.id]
+  );
+  console.log(`/training/admin/courses/${course?.id}/`);
+  console.log(`/training/admin/courses/${course?.id}/`);
+  console.log("courseContent", courseContent);
+  const courseContentData = courseContent?.data;
+  const courseContentTree = courseContentData?.semesters;
   // GET courseContent Statistics
-  const { data } = useCustomQuery(
+  const { data: contentStatistics } = useCustomQuery(
     `/training/admin/course-content-statistics/`,
     ["course-content-statistics"]
   );
-  const contentStatisticsData = data?.data;
-
-  const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
-  const [expandedItems, setExpandedItems] = useState<number[]>([]);
+  console.log("course", course);
+  const contentStatisticsData = contentStatistics?.data;
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [expandedItems, setExpandedItems] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<
     "all" | ContentType | SessionType
@@ -68,86 +78,89 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [showUnpublished, setShowUnpublished] = useState(true);
 
   // تحويل بيانات الدورة إلى هيكل شجري
-  const buildContentTree = (): ContentItem[] => {
-    const items: ContentItem[] = [];
+  // const buildContentTree = (): ContentItem[] => {
+  //   const items: ContentItem[] = [];
 
-    course?.chapters?.forEach((chapter: any) => {
-      const chapterItem: ContentItem = {
-        id: chapter.id,
-        type: "chapter",
-        title: chapter.title,
-        description: chapter.description,
-        order: chapter.order,
-        isPublished: chapter.isPublished,
-        isFree: chapter.isFree,
-        estimatedDuration: chapter.estimatedDuration,
-        children: [],
-      };
+  //   course?.chapters?.forEach((chapter: any) => {
+  //     const chapterItem: ContentItem = {
+  //       id: chapter.id,
+  //       type: "chapter",
+  //       title: chapter.title,
+  //       description: chapter.description,
+  //       order: chapter.order,
+  //       isPublished: chapter.isPublished,
+  //       isFree: chapter.isFree,
+  //       estimatedDuration: chapter.estimatedDuration,
+  //       children: [],
+  //     };
 
-      chapter.units.forEach((unit: any) => {
-        const unitItem: ContentItem = {
-          id: unit.id,
-          type: "unit",
-          title: unit.title,
-          description: unit.description,
-          order: unit.order,
-          isPublished: unit.isPublished,
-          isFree: unit.isFree,
-          estimatedDuration: unit.estimatedDuration,
-          parentId: chapter.id,
-          children: [],
-        };
+  //     chapter.units.forEach((unit: any) => {
+  //       const unitItem: ContentItem = {
+  //         id: unit.id,
+  //         type: "unit",
+  //         title: unit.title,
+  //         description: unit.description,
+  //         order: unit.order,
+  //         isPublished: unit.isPublished,
+  //         isFree: unit.isFree,
+  //         estimatedDuration: unit.estimatedDuration,
+  //         parentId: chapter.id,
+  //         children: [],
+  //       };
 
-        unit.lessons.forEach((lesson: any) => {
-          const lessonItem: ContentItem = {
-            id: lesson.id,
-            type: "lesson",
-            title: lesson.title,
-            description: lesson.description,
-            order: lesson.order,
-            isPublished: lesson.isPublished,
-            isFree: lesson.isFree,
-            estimatedDuration: lesson.estimatedDuration,
-            parentId: unit.id,
-            children: [],
-          };
+  //       unit.lessons.forEach((lesson: any) => {
+  //         const lessonItem: ContentItem = {
+  //           id: lesson.id,
+  //           type: "lesson",
+  //           title: lesson.title,
+  //           description: lesson.description,
+  //           order: lesson.order,
+  //           isPublished: lesson.isPublished,
+  //           isFree: lesson.isFree,
+  //           estimatedDuration: lesson.estimatedDuration,
+  //           parentId: unit.id,
+  //           children: [],
+  //         };
 
-          lesson.sessions.forEach((session: any) => {
-            const sessionItem: ContentItem = {
-              id: session.id,
-              type: "session",
-              title: session.title,
-              description: session.description,
-              order: session.order,
-              isPublished: session.isPublished,
-              isFree: session.isFree,
-              estimatedDuration: session.estimatedDuration,
-              parentId: lesson.id,
-              sessionType: session.type === "video" ? "video" : "exam",
-              videoUrl: session.type === "video" ? session.content : undefined,
-              examId:
-                session.type === "exam" ? parseInt(session.content) : undefined,
-            };
+  //         lesson.sessions.forEach((session: any) => {
+  //           const sessionItem: ContentItem = {
+  //             id: session.id,
+  //             type: "session",
+  //             title: session.title,
+  //             description: session.description,
+  //             order: session.order,
+  //             isPublished: session.isPublished,
+  //             isFree: session.isFree,
+  //             estimatedDuration: session.estimatedDuration,
+  //             parentId: lesson.id,
+  //             sessionType: session.type === "video" ? "video" : "exam",
+  //             videoUrl: session.type === "video" ? session.content : undefined,
+  //             examId:
+  //               session.type === "exam" ? parseInt(session.content) : undefined,
+  //           };
 
-            lessonItem.children!.push(sessionItem);
-          });
+  //           lessonItem.children!.push(sessionItem);
+  //         });
 
-          unitItem.children!.push(lessonItem);
-        });
+  //         unitItem.children!.push(lessonItem);
+  //       });
 
-        chapterItem.children!.push(unitItem);
-      });
+  //       chapterItem.children!.push(unitItem);
+  //     });
 
-      items.push(chapterItem);
-    });
+  //     items.push(chapterItem);
+  //   });
 
-    return items;
-  };
+  //   return items;
+  // };
 
-  const [contentTree, setContentTree] = useState<ContentItem[]>(
-    buildContentTree()
-  );
+  const [contentTree, setContentTree] = useState<any>();
 
+  useEffect(() => {
+    setContentTree(courseContentTree);
+  }, [courseContentTree]);
+
+  // اضافة عنصر جديد
   const [newItem, setNewItem] = useState<Partial<ContentItem>>({
     type: "chapter",
     title: "",
@@ -181,25 +194,27 @@ const CourseContentPage = ({ course, onBack }: any) => {
       return matchesSearch && matchesType && matchesPublished;
     });
   };
-
-  const filteredContent = filterContent([...contentTree]);
+  console.log("contentTree", contentTree);
+  // const filteredContent = filterContent([...contentTree]);
 
   const toggleExpanded = (id: number) => {
-    setExpandedItems((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    setExpandedItems((prev: any) =>
+      prev.includes(id)
+        ? prev.filter((itemId: any) => itemId !== id)
+        : [...prev, id]
     );
   };
 
-  const getItemIcon = (item: ContentItem) => {
-    switch (item.type) {
-      case "chapter":
+  const getItemIcon = (depth: any, item: any) => {
+    switch (depth) {
+      case 0:
         return BookOpen;
-      case "unit":
+      case 1:
         return Folder;
-      case "lesson":
+      case 2:
         return File;
-      case "session":
-        return item.sessionType === "video" ? Video : CheckCircle;
+      case 3:
+        return item?.type === "Video" ? Video : CheckCircle;
       default:
         return File;
     }
@@ -273,17 +288,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
     setContentTree(addToTree(contentTree));
 
     // إعادة تعيين النموذج
-    setNewItem({
-      type: "chapter",
-      title: "",
-      description: "",
-      isPublished: false,
-      isFree: false,
-      estimatedDuration: 0,
-      sessionType: "video",
-      videoUrl: "",
-      examId: undefined,
-    });
+    setNewItem({});
 
     setCurrentView("tree");
   };
@@ -340,12 +345,21 @@ const CourseContentPage = ({ course, onBack }: any) => {
     setContentTree(moveInTree(contentTree));
   };
 
-  const renderTreeItem = (item: ContentItem, depth: number = 0) => {
-    const IconComponent = getItemIcon(item);
+  const renderTreeItem = (item: any, depth: any = 0) => {
+    const childKey: any = Object.keys(item).find(
+      (key) =>
+        Array.isArray(item[key]) &&
+        item[key].length > 0 &&
+        item[key].every(
+          (child: any) => typeof child === "object" && "id" in child
+        )
+    );
+    const hasChildren = Boolean(childKey);
+    const children = hasChildren ? item[childKey] : [];
+    const IconComponent = getItemIcon(depth, item);
     const iconColor = getItemColor(item);
-    const hasChildren = item.children && item.children.length > 0;
     const isExpanded = expandedItems.includes(item.id);
-
+    console.log("item", item);
     return (
       <div key={item.id} className="space-y-2">
         <div
@@ -421,12 +435,12 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     <div className="flex flex-col gap-1">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          item.isPublished
+                          item?.ispublished
                             ? "bg-green-100 text-green-800"
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
-                        {item.isPublished ? "منشور" : "مسودة"}
+                        {item?.ispublished ? "منشور" : "مسودة"}
                       </span>
                       {item.isFree && (
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -438,21 +452,21 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     {/* Duration */}
                     <div className="text-xs text-gray-500 flex items-center gap-1">
                       <Clock size={12} />
-                      {item.estimatedDuration} دقيقة
+                      {item?.time_in_minutes} دقيقة
                     </div>
 
                     {/* Actions */}
                     <div className="flex items-center gap-1">
                       {/* Move Up/Down */}
                       <button
-                        onClick={() => moveItem(item.id, "up")}
+                        onClick={() => moveItem(item?.id, "up")}
                         className="p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأعلى"
                       >
                         <ArrowUp size={14} />
                       </button>
                       <button
-                        onClick={() => moveItem(item.id, "down")}
+                        onClick={() => moveItem(item?.id, "down")}
                         className="p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأسفل"
                       >
@@ -472,13 +486,13 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       </button>
 
                       {/* Delete */}
-                      <button
+                      {/* <button
                         onClick={() => handleDeleteItem(item.id)}
                         className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                         title="حذف"
                       >
                         <Trash2 size={14} />
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>
@@ -490,7 +504,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         {/* Render Children */}
         {hasChildren && isExpanded && (
           <div className="space-y-2">
-            {item.children!.map((child) => renderTreeItem(child, depth + 1))}
+            {children?.map((child: any) => renderTreeItem(child, depth + 1))}
           </div>
         )}
       </div>
@@ -599,25 +613,26 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
         {/* Filters */}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="flex justify-between  gap-4">
             {/* Search */}
-            <div className="relative">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="البحث في المحتوى..."
-                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-              />
-            </div>
+            <div className="flex items-center gap-x-[20px]">
+              <div className="relative">
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="البحث في المحتوى..."
+                  className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                />
+              </div>
 
-            {/* Type Filter */}
-            <select
+              {/* Type Filter */}
+              {/* <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as any)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-            >
+              >
               <option value="all">جميع الأنواع</option>
               <option value="chapter">الفصول</option>
               <option value="unit">الوحدات</option>
@@ -625,23 +640,24 @@ const CourseContentPage = ({ course, onBack }: any) => {
               <option value="session">الحصص</option>
               <option value="video">فيديوهات</option>
               <option value="exam">امتحانات</option>
-            </select>
+            </select> */}
 
-            {/* Published Filter */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="showUnpublished"
-                checked={showUnpublished}
-                onChange={(e) => setShowUnpublished(e.target.checked)}
-                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-              />
-              <label
-                htmlFor="showUnpublished"
-                className="text-sm text-gray-700"
-              >
-                إظهار المسودات
-              </label>
+              {/* Published Filter */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="showUnpublished"
+                  checked={showUnpublished}
+                  onChange={(e) => setShowUnpublished(e.target.checked)}
+                  className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                />
+                <label
+                  htmlFor="showUnpublished"
+                  className="text-sm text-gray-700"
+                >
+                  إظهار المسودات
+                </label>
+              </div>
             </div>
 
             {/* Expand All */}
@@ -675,13 +691,16 @@ const CourseContentPage = ({ course, onBack }: any) => {
         {/* Content Tree */}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="space-y-4">
-            {filteredContent.length > 0 ? (
-              filteredContent.map((item) => renderTreeItem(item))
+            {courseContentTree?.length > 0 ? (
+              courseContentTree?.map((item: any) => renderTreeItem(item))
             ) : (
               <div className="text-center py-12">
                 <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   لا يوجد محتوى
+                </h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  {contentTree?.length > 0 ? "لا يوجد محتوى" : "ل يوجد محتوى"}
                 </h3>
                 <p className="text-gray-500 mb-6">
                   ابدأ بإضافة فصول ووحدات ودروس للدورة

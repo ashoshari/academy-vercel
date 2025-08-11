@@ -426,9 +426,9 @@ const CoursesPage = () => {
   const specializationData = specializations?.data;
   const specialization_materialData = specializations_material?.data;
 
-  const [courses, setCourses] = useState<any>(courseData);
+  const [courses, setCourses] = useState<any>(courseData?.data);
   useEffect(() => {
-    setCourses(courseData);
+    setCourses(courseData?.data);
   }, [courseData]);
   const courseStatsData = coursesStats?.data;
 
@@ -439,7 +439,6 @@ const CoursesPage = () => {
     `/training/admin/courses/${courseId}/`,
     ["editcourses", courseId]
   );
-
   // Filter courses
   const filteredCourses = courses?.filter((course: any) => {
     const matchesSearch =
@@ -469,7 +468,6 @@ const CoursesPage = () => {
       matchesLevel
     );
   });
-  console.log("filteredCourses", filteredCourses);
   const uniqueCategories = [
     ...new Set(courses?.data?.map((c: any) => c.category)),
   ];
@@ -814,9 +812,8 @@ const CoursesPage = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => {
-              setNewCourse({
-              });
-              setCurrentView("list")
+              setNewCourse({});
+              setCurrentView("list");
             }}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
@@ -1002,7 +999,6 @@ const CoursesPage = () => {
                     type="file"
                     className="invisible w-0 h-0"
                     onChange={(e) => {
-                      console.log("e.target.files", e.target.files?.[0]);
                       setNewCourse({
                         ...newCourse,
                         image: e.target.files?.[0],
