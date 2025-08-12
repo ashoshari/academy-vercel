@@ -37,6 +37,7 @@ import Exam from "@/components/platform/exams/exam";
 import AddStudentPage from "@/pages/dashboard/admin/students/AddStudentPage";
 import EditStudentPage from "@/pages/dashboard/admin/students/EditStudentPage";
 import StudentDetailsPage from "@/pages/dashboard/admin/students/StudentDetailsPage";
+import ExamsPage from "@/pages/dashboard/admin/exams/ExamsPage";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -76,6 +77,14 @@ export default function AppRoutes() {
             <Route path="teachers/:id" element={<TeacherDetailsPage />} />
             {/* teachers */}
 
+            {/* courses */}
+            <Route path="courses" element={<CoursesPage />} />
+            {/* courses */}
+
+            {/* exams */}
+            <Route path="exams" element={<ExamsPage />} />
+            {/* exams */}
+
             {/* sections */}
             <Route path="sections" element={<SectionsPage />} />
             <Route path="sub-sections" element={<SubsectionsPage />} />
@@ -85,8 +94,6 @@ export default function AppRoutes() {
             <Route path="card-pricing" element={<CardPricingPage />} />
             <Route path="card-codes" element={<CardCodesPage />} />
             {/* cards */}
-
-            <Route path="courses" element={<CoursesPage />} />
           </Route>
         )}
 
