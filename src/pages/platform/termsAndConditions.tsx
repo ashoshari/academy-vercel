@@ -1,4 +1,4 @@
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 const termsAndConditions = () => {
   const { data: terms } = useCustomQuery(
     "/core/web-views/terms_and_conditions/",

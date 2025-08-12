@@ -8,7 +8,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 // import { storeTokens } from "@/services/platform/userAuth";
 import { toast } from "react-hot-toast";
 
@@ -146,6 +146,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         toast.error(
           res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
         );
+
       }
     } catch (error: any) {
       const errorData = error.response?.data?.error;

@@ -11,6 +11,7 @@ import "react-calendar/dist/Calendar.css";
 
 import ContactPage from "@/pages/Contact";
 
+// Platform
 import { PlatformLayout } from "@/layout/platform/layout";
 import Home from "@/pages/platform/Home";
 import Courses from "@/pages/platform/courses";
@@ -18,12 +19,16 @@ import TermsAndConditions from "@/pages/platform/termsAndConditions";
 import PrivacyPolicy from "@/pages/platform/privacyPolicy";
 import TeacherProfile from "@/pages/platform/teacher";
 import CoursePage from "@/components/platform/courses/courseParts/coursePage";
-// import CoursePageOld from "@/components/platform/courses/coursePageOld";
-// import  CoursePage  from "@/components/platform/exams/sidebar";
+
+// Dashboard
 import Dashboard from "@/pages/dashboard/admin/Dashboard";
 import TeachersPage from "@/pages/dashboard/admin/teachers/TeachersPage";
 import StudentsPage from "@/pages/dashboard/admin/students/StudentsPage";
-import CoursesPage from "@/pages/dashboard/admin/CoursesPage";
+
+// Courses
+import CoursesPage from "@/pages/dashboard/admin/courses/CoursesPage";
+// import MainCoursePage from "@/pages/dashboard/admin/courses/MainCoursePage";
+
 import AddTeacherPage from "@/pages/dashboard/admin/teachers/AddTeacherPage";
 import EditTeacherPage from "@/pages/dashboard/admin/teachers/EditTeacherPage";
 import TeacherDetailsPage from "@/pages/dashboard/admin/teachers/TeacherDetailsPage";
@@ -50,7 +55,6 @@ export default function AppRoutes() {
           <Route path="sections/:navHeaderId" element={<Courses />} />
           <Route path="all-courses" element={<AllCourses />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
-          {/* <Route path="coursePageOld/:courseId" element={<CoursePageOld />} /> */}
           <Route path="coursePage/:courseId" element={<CoursePage />} />
           <Route path="exam/:examId" element={<Exam />} />
           <Route path="phone-user" element={<PhoneUser />} />

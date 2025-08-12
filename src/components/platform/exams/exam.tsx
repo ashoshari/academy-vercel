@@ -9,12 +9,13 @@ import {
   CircleX,
 } from "lucide-react";
 import { useExam } from "@/store/platform/useExam";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // import { useLesson } from "@/store/platform/useLesson";
 import { useNavigate, useParams } from "react-router";
-import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
+import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import { toast } from "react-hot-toast";
+import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 
 const Exam = () => {
   // const setStartExam = useExam((state) => state.setStartExam);
@@ -25,12 +26,11 @@ const Exam = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<any>([]);
 
   // GET EXAM
-  const { data } = useCustomQuery(`/training/students/course/exam/${examId}/`, [
-    "exams",
-    examId,
-  ]);
+  const { data, error } = useCustomQuery(
+    `/training/students/course/exam/${examId}/`,
+    ["exams", examId]
+  );
   const examData = data?.data;
-
   const [openExam, setOpenExam] = useState(false);
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState<any>([]);
@@ -45,22 +45,29 @@ const Exam = () => {
       setTimeLeft((examData.time_in_minutes || 0) * 60);
     }
   }, [examData]);
+
+  const hasSubmitted = useRef(false);
   useEffect(() => {
     if (timeLeft <= 0) return;
 
     const interval = setInterval(() => {
-      setTimeLeft((prev: number) => {
+      setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          toast.error("انتهى الوقت");
-          handleExamSubmit();
+          if (!hasSubmitted.current) {
+            hasSubmitted.current = true;
+            toast.error("انتهى الوقت");
+            handleExamSubmit(true);
+          }
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
+
     return () => clearInterval(interval);
   }, [timeLeft]);
+
   const formatTime = (seconds: number) => {
     const min = Math.floor(seconds / 60);
     const sec = seconds % 60;
@@ -111,23 +118,37 @@ const Exam = () => {
     // setCurrentExam(null);
     // setExamResults(null);
   };
-  const handleExamSubmit = async () => {
+  const handleExamSubmit = async (timer?: any) => {
     if (!examData) return;
     try {
       const res = await postExam({ answers: selectedAnswers });
       setScore(res?.data?.score);
       setIsPassed(res?.data?.is_passed);
       setAnswers(res?.data?.answers);
-      toast.success("تم تقديم الامتحان بنجاح");
+      !timer && toast.success("تم تقديم الامتحان بنجاح");
     } catch (error: any) {
       toast.error(error?.response?.data?.error);
     }
     setOpenExam(false);
   };
 
-  if (!examData) return null;
+  if (!examData && !error) return null;
   return (
-    <>
+    <section>
+      {error && (
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+          <div className="text-center">
+            <img
+              src={errorIllustation}
+              alt="404"
+              className="w-[200px] h-[200px] mx-auto mb-4"
+            />
+            <p className="text-gray-600">
+              ليس لديك الصلاحيات لمشاهدة هذا المحتوى
+            </p>
+          </div>
+        </div>
+      )}
       <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
         <div className="px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
@@ -162,7 +183,7 @@ const Exam = () => {
           </div>
         </div>
       </div>
-      {openExam ? (
+      {openExam && !error ? (
         <div className="bg-white rounded-2xl shadow-lg p-8">
           {/* Exam Header */}
           <div className="flex items-center justify-between mb-8">
@@ -363,7 +384,7 @@ const Exam = () => {
               const currentAnswer = answers?.[questionIndex];
               return (
                 <div
-                key={questionIndex}
+                  key={questionIndex}
                   className={`p-6 rounded-xl border-2 my-[10px] ${
                     isCorrect
                       ? "border-green-200 bg-green-50"
@@ -442,7 +463,7 @@ const Exam = () => {
           </div>
         </div>
       )}
-    </>
+    </section>
   );
 };
 

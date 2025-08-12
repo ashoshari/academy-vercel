@@ -1,4 +1,4 @@
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 
 const privacyPolicy = () => {
   const { data: terms } = useCustomQuery(

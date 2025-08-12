@@ -1,10 +1,11 @@
 import { NavigateFunction } from "react-router";
 
-const TOKEN_KEY = "user_tokens";
+const TOKEN_KEY = "platform_auth_tokens";
 
 export function getStoredTokens(): string | null {
   try {
     const tokens = localStorage.getItem(TOKEN_KEY);
+    console.log("tokens", tokens);
     return tokens ? JSON.parse(tokens) : null;
   } catch {
     return null;
@@ -28,6 +29,7 @@ export async function removeTokens(
   setIsAuthenticated?: () => void
 ): Promise<void> {
   await localStorage.removeItem(TOKEN_KEY);
+  await localStorage.removeItem("company_domian");
 
   setIsAuthenticated && setIsAuthenticated();
 

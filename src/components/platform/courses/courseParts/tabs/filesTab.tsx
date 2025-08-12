@@ -6,12 +6,12 @@ import {
   Clock,
   FileArchive,
 } from "lucide-react";
-import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
+import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import { useParams } from "react-router";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 const FilesTab = () => {
-  const token = window.localStorage.getItem("auth_tokens");
+  const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
   const { data } = useCustomQuery(
     `/training/students/course/${courseId}/`,

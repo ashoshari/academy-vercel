@@ -7,7 +7,7 @@ import {
   Users,
 } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useParams } from "react-router";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 
@@ -69,7 +69,7 @@ const TreePage: React.FC = () => {
         </div>
       </div>
 
-      <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105">
+      <button className="w-full cursor-pointer bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105">
         عرض الملف الشخصي
       </button>
     </div>
@@ -173,9 +173,9 @@ const TreePage: React.FC = () => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}
-                className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
+                className="w-12 h-12 cursor-pointer bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
-                <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200 cursor-pointer" />
+                <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
               </button>
               {/* <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-white" />

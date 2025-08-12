@@ -1,5 +1,5 @@
 import { BarChart3, CheckCircle, Target } from "lucide-react";
-import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useParams } from "react-router";
 const ProgressTab = () => {
   const token = window.localStorage.getItem("auth_tokens");
