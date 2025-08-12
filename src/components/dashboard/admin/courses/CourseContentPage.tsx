@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Plus,
   Search,
@@ -21,80 +21,80 @@ import {
   Target,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { set } from "lodash";
-
-interface CourseContentPageProps {
-  course: any;
-  onBack: () => void;
-  onUpdateCourse: (course: any) => void;
-}
-
-type ContentType = "chapter" | "unit" | "lesson" | "session";
-type SessionType = "video" | "exam";
-
-interface ContentItem {
-  id: number;
-  type: ContentType;
-  title: string;
-  description: string;
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  parentId?: number;
-  sessionType?: SessionType;
-  videoUrl?: string;
-  examId?: number;
-  children?: ContentItem[];
-}
+import { useCustomPost } from "@/hooks/useMutation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CourseContentPage = ({ course, onBack }: any) => {
+  const queryClient = useQueryClient();
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
     "tree"
   );
   // GET courseContent
-  const { data: courseContent, isLoading } = useCustomQuery(
+  const { data: courseContent } = useCustomQuery(
     `/training/admin/courses/${course?.id}/`,
     ["course-content", course?.id]
   );
-  console.log(`/training/admin/courses/${course?.id}/`);
-  console.log(`/training/admin/courses/${course?.id}/`);
-  console.log("courseContent", courseContent);
+  // GET Exams
+  const { data: exams } = useCustomQuery("/training/admin/exams/", ["exams"]);
+
   const courseContentData = courseContent?.data;
   const courseContentTree = courseContentData?.semesters;
+  const examData = exams?.data;
   // GET courseContent Statistics
   const { data: contentStatistics } = useCustomQuery(
     `/training/admin/course-content-statistics/`,
     ["course-content-statistics"]
   );
-  console.log("course", course);
+
+  // POST Add Semester
+  const { mutateAsync: postSemesters } = useCustomPost(
+    "/training/admin/semesters/",
+    ["postSemesters"]
+  );
+
+  // POST Add Units
+  const { mutateAsync: postUnits } = useCustomPost("/training/admin/units/", [
+    "postUnits",
+  ]);
+
+  // POST Add Topics
+  const { mutateAsync: postTopics } = useCustomPost("/training/admin/topics/", [
+    "postTopics",
+  ]);
+
+  // POST Add Lesson
+  const { mutateAsync: postLessons } = useCustomPost(
+    "/training/admin/lessons/",
+    ["postLessons"]
+  );
+
   const contentStatisticsData = contentStatistics?.data;
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [expandedItems, setExpandedItems] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState<
-    "all" | ContentType | SessionType
-  >("all");
+  const [filterType, setFilterType] = useState<any>("all");
   const [showUnpublished, setShowUnpublished] = useState(true);
+  const [layer, setLayer] = useState();
+  const [filteredContent, setFilteredContent] = useState<any>([]);
 
   // تحويل بيانات الدورة إلى هيكل شجري
   // const buildContentTree = (): ContentItem[] => {
   //   const items: ContentItem[] = [];
 
-  //   course?.chapters?.forEach((chapter: any) => {
-  //     const chapterItem: ContentItem = {
-  //       id: chapter.id,
-  //       type: "chapter",
-  //       title: chapter.title,
-  //       description: chapter.description,
-  //       order: chapter.order,
-  //       isPublished: chapter.isPublished,
-  //       isFree: chapter.isFree,
-  //       estimatedDuration: chapter.estimatedDuration,
+  //   course?.semesters?.forEach((semester: any) => {
+  //     const semesterItem: ContentItem = {
+  //       id: semester.id,
+  //       type: "semester",
+  //       title: semester.title,
+  //       description: semester.description,
+  //       order: semester.order,
+  //       isPublished: semester.isPublished,
+  //       isFree: semester.isFree,
+  //       estimatedDuration: semester.estimatedDuration,
   //       children: [],
   //     };
 
-  //     chapter.units.forEach((unit: any) => {
+  //     semester.units.forEach((unit: any) => {
   //       const unitItem: ContentItem = {
   //         id: unit.id,
   //         type: "unit",
@@ -104,51 +104,51 @@ const CourseContentPage = ({ course, onBack }: any) => {
   //         isPublished: unit.isPublished,
   //         isFree: unit.isFree,
   //         estimatedDuration: unit.estimatedDuration,
-  //         parentId: chapter.id,
+  //         parentId: semester.id,
   //         children: [],
   //       };
 
-  //       unit.lessons.forEach((lesson: any) => {
-  //         const lessonItem: ContentItem = {
-  //           id: lesson.id,
-  //           type: "lesson",
-  //           title: lesson.title,
-  //           description: lesson.description,
-  //           order: lesson.order,
-  //           isPublished: lesson.isPublished,
-  //           isFree: lesson.isFree,
-  //           estimatedDuration: lesson.estimatedDuration,
+  //       unit.topics.forEach((topic: any) => {
+  //         const topicItem: ContentItem = {
+  //           id: topic.id,
+  //           type: "topic",
+  //           title: topic.title,
+  //           description: topic.description,
+  //           order: topic.order,
+  //           isPublished: topic.isPublished,
+  //           isFree: topic.isFree,
+  //           estimatedDuration: topic.estimatedDuration,
   //           parentId: unit.id,
   //           children: [],
   //         };
 
-  //         lesson.sessions.forEach((session: any) => {
-  //           const sessionItem: ContentItem = {
-  //             id: session.id,
-  //             type: "session",
-  //             title: session.title,
-  //             description: session.description,
-  //             order: session.order,
-  //             isPublished: session.isPublished,
-  //             isFree: session.isFree,
-  //             estimatedDuration: session.estimatedDuration,
-  //             parentId: lesson.id,
-  //             sessionType: session.type === "video" ? "video" : "exam",
-  //             videoUrl: session.type === "video" ? session.content : undefined,
+  //         topic.lessons.forEach((lesson: any) => {
+  //           const lessonItem: ContentItem = {
+  //             id: lesson.id,
+  //             type: "lesson",
+  //             title: lesson.title,
+  //             description: lesson.description,
+  //             order: lesson.order,
+  //             isPublished: lesson.isPublished,
+  //             isFree: lesson.isFree,
+  //             estimatedDuration: lesson.estimatedDuration,
+  //             parentId: topic.id,
+  //             lessonType: lesson.type === "video" ? "video" : "exam",
+  //             videoUrl: lesson.type === "video" ? lesson.content : undefined,
   //             examId:
-  //               session.type === "exam" ? parseInt(session.content) : undefined,
+  //               lesson.type === "exam" ? parseInt(lesson.content) : undefined,
   //           };
 
-  //           lessonItem.children!.push(sessionItem);
+  //           topicItem.children!.push(lessonItem);
   //         });
 
-  //         unitItem.children!.push(lessonItem);
+  //         unitItem.children!.push(topicItem);
   //       });
 
-  //       chapterItem.children!.push(unitItem);
+  //       semesterItem.children!.push(unitItem);
   //     });
 
-  //     items.push(chapterItem);
+  //     items.push(semesterItem);
   //   });
 
   //   return items;
@@ -161,43 +161,48 @@ const CourseContentPage = ({ course, onBack }: any) => {
   }, [courseContentTree]);
 
   // اضافة عنصر جديد
-  const [newItem, setNewItem] = useState<Partial<ContentItem>>({
-    type: "chapter",
-    title: "",
-    description: "",
-    isPublished: false,
-    isFree: false,
-    estimatedDuration: 0,
-    sessionType: "video",
-    videoUrl: "",
-    examId: undefined,
+  const [newItem, setNewItem] = useState<any>({
+    type: "semester",
   });
 
   // فلترة المحتوى
-  const filterContent = (items: ContentItem[]): ContentItem[] => {
-    return items.filter((item) => {
-      const matchesSearch =
-        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const filterContent = (items: any) => {
+    return items
+      .map((item: any) => {
+        const childKey = Object.keys(item).find(
+          (key) =>
+            Array.isArray(item[key]) &&
+            item[key].length > 0 &&
+            item[key].every(
+              (child: any) => typeof child === "object" && "id" in child
+            )
+        );
 
-      const matchesType =
-        filterType === "all" ||
-        item.type === filterType ||
-        (item.type === "session" && item.sessionType === filterType);
+        let children = childKey ? filterContent(item[childKey]) : [];
 
-      const matchesPublished = showUnpublished || item.isPublished;
+        const matchesSearch =
+          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-      if (item.children && item.children.length > 0) {
-        item.children = filterContent(item.children);
-      }
+        const matchesPublished = showUnpublished || item?.is_published;
 
-      return matchesSearch && matchesType && matchesPublished;
-    });
+        // ✅ Keep parent if it matches itself or has matching children
+        if ((matchesSearch && matchesPublished) || children.length > 0) {
+          return {
+            ...item,
+            ...(childKey ? { [childKey]: children } : {}),
+          };
+        }
+        return null;
+      })
+      .filter(Boolean); // remove nulls
   };
-  console.log("contentTree", contentTree);
-  // const filteredContent = filterContent([...contentTree]);
+  useEffect(() => {
+    const result = filterContent(contentTree ? contentTree : []);
+    setFilteredContent(result);
+  }, [contentTree, searchTerm, showUnpublished]);
 
-  const toggleExpanded = (id: number) => {
+  const toggleExpanded = (id: any) => {
     setExpandedItems((prev: any) =>
       prev.includes(id)
         ? prev.filter((itemId: any) => itemId !== id)
@@ -220,126 +225,171 @@ const CourseContentPage = ({ course, onBack }: any) => {
     }
   };
 
-  const getItemColor = (item: ContentItem) => {
+  const getItemColor = (item: any) => {
     switch (item.type) {
-      case "chapter":
+      case "semester":
         return "text-orange-600";
       case "unit":
         return "text-blue-600";
-      case "lesson":
+      case "topic":
         return "text-green-600";
-      case "session":
-        return item.sessionType === "video"
-          ? "text-purple-600"
-          : "text-red-600";
+      case "lesson":
+        return item.lessonType === "video" ? "text-purple-600" : "text-red-600";
       default:
         return "text-gray-600";
     }
   };
 
-  const handleAddItem = () => {
+  const handleAddItem = async () => {
     if (!newItem.title || !newItem.description) return;
 
-    const item: ContentItem = {
-      id: Date.now(),
-      type: newItem.type as ContentType,
+    const addItem = {
       title: newItem.title,
       description: newItem.description,
-      order: 1,
-      isPublished: newItem.isPublished || false,
-      isFree: newItem.isFree || false,
-      estimatedDuration: newItem.estimatedDuration || 0,
-      parentId: newItem.parentId,
-      sessionType: newItem.type === "session" ? newItem.sessionType : undefined,
-      videoUrl:
-        newItem.type === "session" && newItem.sessionType === "video"
-          ? newItem.videoUrl
-          : undefined,
-      examId:
-        newItem.type === "session" && newItem.sessionType === "exam"
-          ? newItem.examId
-          : undefined,
-      children: newItem.type !== "session" ? [] : undefined,
+      time_in_minutes: newItem.estimatedDuration,
+      is_published: newItem.isPublished,
+      [newItem.type === "unit"
+        ? "semester"
+        : newItem.type === "topic"
+        ? "unit"
+        : "topic"]: newItem.parentId,
+      ...(newItem.type === "semester" && { course: course?.id }),
+      ...(newItem.lessonType && { type: newItem.lessonType }),
+      ...(newItem.videoUrl && { link: newItem.videoUrl }),
+      ...(newItem.examId && { exam: newItem.examId }),
+      ...(newItem.order !== undefined && { order: newItem.order }),
     };
+    try {
+      newItem.type === "semester"
+        ? await postSemesters(addItem)
+        : newItem.type === "unit"
+        ? await postUnits(addItem)
+        : newItem.type === "topic"
+        ? await postTopics(addItem)
+        : await postLessons(addItem);
+
+      queryClient.invalidateQueries({
+        queryKey: ["course-content"],
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    // const item: any = {
+    //   id: Date.now(),
+    //   type: newItem.type as ContentType,
+    //   title: newItem.title,
+    //   description: newItem.description,
+    //   order: 1,
+    //   isPublished: newItem.isPublished || false,
+    //   isFree: newItem.isFree || false,
+    //   estimatedDuration: newItem.estimatedDuration || 0,
+    //   parentId: newItem.parentId,
+    //   lessonType: newItem.type === "lesson" ? newItem.lessonType : undefined,
+    //   videoUrl:
+    //     newItem.type === "lesson" && newItem.lessonType === "video"
+    //       ? newItem.videoUrl
+    //       : undefined,
+    //   examId:
+    //     newItem.type === "lesson" && newItem.lessonType === "exam"
+    //       ? newItem.examId
+    //       : undefined,
+    //   children: newItem.type !== "lesson" ? [] : undefined,
+    // };
 
     // إضافة العنصر للشجرة
-    const addToTree = (items: ContentItem[]): ContentItem[] => {
-      if (!newItem.parentId) {
-        return [...items, item];
-      }
+    // const addToTree = (items: any) => {
+    //   if (!newItem.parentId) {
+    //     return [...items, item];
+    //   }
 
-      return items.map((treeItem) => {
-        if (treeItem.id === newItem.parentId) {
-          return {
-            ...treeItem,
-            children: [...(treeItem.children || []), item],
-          };
-        }
-        if (treeItem.children) {
-          return {
-            ...treeItem,
-            children: addToTree(treeItem.children),
-          };
-        }
-        return treeItem;
-      });
-    };
+    //   return items.map((treeItem:any) => {
+    //     if (treeItem.id === newItem.parentId) {
+    //       return {
+    //         ...treeItem,
+    //         children: [...(treeItem.children || []), item],
+    //       };
+    //     }
+    //     if (treeItem.children) {
+    //       return {
+    //         ...treeItem,
+    //         children: addToTree(treeItem.children),
+    //       };
+    //     }
+    //     return treeItem;
+    //   });
+    // };
 
-    setContentTree(addToTree(contentTree));
+    // setContentTree(addToTree(contentTree));
 
     // إعادة تعيين النموذج
     setNewItem({});
-
     setCurrentView("tree");
   };
 
-  const handleDeleteItem = (id: number) => {
-    if (
-      !confirm(
-        "هل أنت متأكد من حذف هذا العنصر؟ سيتم حذف جميع العناصر التابعة له."
-      )
-    )
-      return;
+  // const handleDeleteItem = (id: any) => {
+  //   if (
+  //     !confirm(
+  //       "هل أنت متأكد من حذف هذا العنصر؟ سيتم حذف جميع العناصر التابعة له."
+  //     )
+  //   )
+  //     return;
 
-    const deleteFromTree = (items: ContentItem[]): ContentItem[] => {
-      return items.filter((item) => {
-        if (item.id === id) return false;
-        if (item.children) {
-          item.children = deleteFromTree(item.children);
+  //   const deleteFromTree = (items: any) => {
+  //     return items.filter((item:any) => {
+  //       if (item.id === id) return false;
+  //       if (item.children) {
+  //         item.children = deleteFromTree(item.children);
+  //       }
+  //       return true;
+  //     });
+  //   };
+
+  //   setContentTree(deleteFromTree(contentTree));
+  // };
+
+  const moveItem = (id: any, direction: "up" | "down") => {
+    const moveInTree = (items: any) => {
+      const index = items.findIndex((item: any) => item?.id === id);
+      if (index !== -1) {
+        // Found the item here → move it
+        const newItems = [...items];
+        const targetIndex = direction === "up" ? index - 1 : index + 1;
+
+        if (targetIndex >= 0 && targetIndex < newItems.length) {
+          [newItems[index], newItems[targetIndex]] = [
+            newItems[targetIndex],
+            newItems[index],
+          ];
+
+          // Update order
+          newItems.forEach((item, idx) => {
+            item.order = idx + 1;
+          });
         }
-        return true;
+
+        return newItems;
+      }
+
+      // Not found here → search in children dynamically
+      return items.map((item: any) => {
+        const childKey = Object.keys(item).find(
+          (key) =>
+            Array.isArray(item[key]) &&
+            item[key].length > 0 &&
+            item[key].every(
+              (child: any) => typeof child === "object" && "id" in child
+            )
+        );
+
+        if (childKey) {
+          return {
+            ...item,
+            [childKey]: moveInTree(item[childKey]),
+          };
+        }
+
+        return item;
       });
-    };
-
-    setContentTree(deleteFromTree(contentTree));
-  };
-
-  const moveItem = (id: number, direction: "up" | "down") => {
-    const moveInTree = (items: ContentItem[]): ContentItem[] => {
-      const index = items.findIndex((item) => item.id === id);
-      if (index === -1) {
-        return items.map((item) => ({
-          ...item,
-          children: item.children ? moveInTree(item.children) : undefined,
-        }));
-      }
-
-      const newItems = [...items];
-      const targetIndex = direction === "up" ? index - 1 : index + 1;
-
-      if (targetIndex >= 0 && targetIndex < newItems.length) {
-        [newItems[index], newItems[targetIndex]] = [
-          newItems[targetIndex],
-          newItems[index],
-        ];
-
-        // تحديث ترقيم الترتيب
-        newItems.forEach((item, idx) => {
-          item.order = idx + 1;
-        });
-      }
-
-      return newItems;
     };
 
     setContentTree(moveInTree(contentTree));
@@ -359,7 +409,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
     const IconComponent = getItemIcon(depth, item);
     const iconColor = getItemColor(item);
     const isExpanded = expandedItems.includes(item.id);
-    console.log("item", item);
     return (
       <div key={item.id} className="space-y-2">
         <div
@@ -387,7 +436,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
               {/* Content */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between">
+                <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <h3 className="font-bold text-gray-800 mb-1">
                       {item.title}
@@ -396,19 +445,19 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       {item.description}
                     </p>
 
-                    {/* Session Details */}
-                    {item.type === "session" && (
+                    {/* lesson Details */}
+                    {item.type === "lesson" && (
                       <div className="mt-2 flex items-center gap-2">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            item.sessionType === "video"
+                            item.lessonType === "video"
                               ? "bg-purple-100 text-purple-800"
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {item.sessionType === "video" ? "فيديو" : "امتحان"}
+                          {item.lessonType === "video" ? "فيديو" : "امتحان"}
                         </span>
-                        {item.sessionType === "video" && item.videoUrl && (
+                        {item.lessonType === "video" && item.videoUrl && (
                           <a
                             href={item.videoUrl}
                             target="_blank"
@@ -419,7 +468,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                             رابط الفيديو
                           </a>
                         )}
-                        {item.sessionType === "exam" && item.examId && (
+                        {item.lessonType === "exam" && item.examId && (
                           <span className="text-red-600 text-xs flex items-center gap-1">
                             <Target size={12} />
                             امتحان #{item.examId}
@@ -435,14 +484,14 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     <div className="flex flex-col gap-1">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          item?.ispublished
+                          item?.is_published
                             ? "bg-green-100 text-green-800"
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
-                        {item?.ispublished ? "منشور" : "مسودة"}
+                        {item?.is_published ? "منشور" : "مسودة"}
                       </span>
-                      {item.isFree && (
+                      {item.is_free && (
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                           مجاني
                         </span>
@@ -511,25 +560,34 @@ const CourseContentPage = ({ course, onBack }: any) => {
     );
   };
 
-  const getAvailableParents = (type: ContentType): ContentItem[] => {
-    const parents: ContentItem[] = [];
+  const getAvailableParents = (type: any) => {
+    const parents: any = [];
+    const collectParents = (items: any) => {
+      items.forEach((item: any) => {
+        const childKey: any = Object.keys(item).find(
+          (key) =>
+            Array.isArray(item[key]) &&
+            item[key].length > 0 &&
+            item[key].every(
+              (child: any) => typeof child === "object" && "id" in child
+            )
+        );
+        const hasChildren = Boolean(childKey);
+        const children = hasChildren ? item[childKey] : [];
 
-    const collectParents = (items: ContentItem[], targetType: ContentType) => {
-      items.forEach((item) => {
         if (
-          (type === "unit" && item.type === "chapter") ||
-          (type === "lesson" && item.type === "unit") ||
-          (type === "session" && item.type === "lesson")
+          (type === "unit" && item.course) ||
+          (type === "topic" && item.semester) ||
+          (type === "lesson" && item.unit)
         ) {
           parents.push(item);
         }
-        if (item.children) {
-          collectParents(item.children, targetType);
+        if (hasChildren) {
+          collectParents(children);
         }
       });
     };
-
-    collectParents(contentTree, type);
+    collectParents(contentTree);
     return parents;
   };
 
@@ -603,7 +661,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               <div>
                 <p className="text-gray-500 text-sm">الدروس</p>
                 <p className="text-3xl font-bold text-purple-600">
-                  {contentStatisticsData?.total_lessons}
+                  {contentStatisticsData?.total_topics}
                 </p>
               </div>
               <Video className="w-12 h-12 text-purple-500" />
@@ -634,10 +692,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
               className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
               >
               <option value="all">جميع الأنواع</option>
-              <option value="chapter">الفصول</option>
+              <option value="semester">الفصول</option>
               <option value="unit">الوحدات</option>
-              <option value="lesson">الدروس</option>
-              <option value="session">الحصص</option>
+              <option value="topic">الدروس</option>
+              <option value="lesson">الحصص</option>
               <option value="video">فيديوهات</option>
               <option value="exam">امتحانات</option>
             </select> */}
@@ -664,13 +722,28 @@ const CourseContentPage = ({ course, onBack }: any) => {
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  const allIds: number[] = [];
-                  const collectIds = (items: ContentItem[]) => {
-                    items.forEach((item) => {
-                      allIds.push(item.id);
-                      if (item.children) collectIds(item.children);
+                  const allIds: any[] = [];
+                  const collectIds = (items: any[]) => {
+                    items.forEach((item: any) => {
+                      const childKey: any = Object.keys(item).find(
+                        (key) =>
+                          Array.isArray(item[key]) &&
+                          item[key].length > 0 &&
+                          item[key].every(
+                            (child: any) =>
+                              typeof child === "object" && "id" in child
+                          )
+                      );
+
+                      const hasChildren = Boolean(childKey);
+                      const children = hasChildren ? item[childKey] : [];
+
+                      allIds.push(item?.id);
+
+                      if (hasChildren) collectIds(children);
                     });
                   };
+
                   collectIds(contentTree);
                   setExpandedItems(allIds);
                 }}
@@ -691,8 +764,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
         {/* Content Tree */}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="space-y-4">
-            {courseContentTree?.length > 0 ? (
-              courseContentTree?.map((item: any) => renderTreeItem(item))
+            {filteredContent?.length > 0 ? (
+              filteredContent?.map((item: any) => renderTreeItem(item))
             ) : (
               <div className="text-center py-12">
                 <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -728,9 +801,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setCurrentView("tree")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <ArrowLeft size={20} />
+            <ArrowRight size={20} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
@@ -757,7 +830,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     {
-                      value: "chapter",
+                      value: "semester",
                       label: "فصل",
                       icon: BookOpen,
                       color: "orange",
@@ -769,14 +842,14 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       color: "blue",
                     },
                     {
-                      value: "lesson",
-                      label: "درس",
+                      value: "topic",
+                      label: "موضوع",
                       icon: File,
                       color: "green",
                     },
                     {
-                      value: "session",
-                      label: "حصة",
+                      value: "lesson",
+                      label: "درس",
                       icon: Video,
                       color: "purple",
                     },
@@ -786,7 +859,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       onClick={() =>
                         setNewItem({
                           ...newItem,
-                          type: type.value as ContentType,
+                          type: type.value,
                         })
                       }
                       className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
@@ -803,14 +876,14 @@ const CourseContentPage = ({ course, onBack }: any) => {
               </div>
 
               {/* Parent Selection */}
-              {newItem.type !== "chapter" && (
+              {newItem.type !== "semester" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     {newItem.type === "unit"
                       ? "الفصل الأب"
-                      : newItem.type === "lesson"
+                      : newItem.type === "topic"
                       ? "الوحدة الأب"
-                      : "الدرس الأب"}{" "}
+                      : "الموضوع الأب"}{" "}
                     *
                   </label>
                   <select
@@ -818,19 +891,17 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     onChange={(e) =>
                       setNewItem({
                         ...newItem,
-                        parentId: parseInt(e.target.value),
+                        parentId: e.target.value,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
                     <option value="">اختر العنصر الأب</option>
-                    {getAvailableParents(newItem.type as ContentType).map(
-                      (parent) => (
-                        <option key={parent.id} value={parent.id}>
-                          {parent.title}
-                        </option>
-                      )
-                    )}
+                    {getAvailableParents(newItem.type).map((parent: any) => (
+                      <option key={parent.id} value={parent.id}>
+                        {parent.title}
+                      </option>
+                    ))}
                   </select>
                 </div>
               )}
@@ -888,25 +959,25 @@ const CourseContentPage = ({ course, onBack }: any) => {
               </div>
             </div>
 
-            {/* Session Specific Settings */}
+            {/* lesson Specific Settings */}
             <div className="space-y-6">
               <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
                 الإعدادات
               </h2>
 
-              {/* Session Type (only for sessions) */}
-              {newItem.type === "session" && (
+              {/* lesson Type (only for lessons) */}
+              {newItem.type === "lesson" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    نوع الحصة *
+                    نوع الدرس *
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() =>
-                        setNewItem({ ...newItem, sessionType: "video" })
+                        setNewItem({ ...newItem, lessonType: "video" })
                       }
                       className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                        newItem.sessionType === "video"
+                        newItem.lessonType === "video"
                           ? "border-purple-500 bg-purple-50 text-purple-700"
                           : "border-gray-200 hover:border-gray-300"
                       }`}
@@ -921,10 +992,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     </button>
                     <button
                       onClick={() =>
-                        setNewItem({ ...newItem, sessionType: "exam" })
+                        setNewItem({ ...newItem, lessonType: "exam" })
                       }
                       className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                        newItem.sessionType === "exam"
+                        newItem.lessonType === "exam"
                           ? "border-red-500 bg-red-50 text-red-700"
                           : "border-gray-200 hover:border-gray-300"
                       }`}
@@ -941,27 +1012,26 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 </div>
               )}
 
-              {/* Video URL (for video sessions) */}
-              {newItem.type === "session" &&
-                newItem.sessionType === "video" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      رابط الفيديو *
-                    </label>
-                    <input
-                      type="url"
-                      value={newItem.videoUrl || ""}
-                      onChange={(e) =>
-                        setNewItem({ ...newItem, videoUrl: e.target.value })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                      placeholder="https://example.com/video.mp4"
-                    />
-                  </div>
-                )}
+              {/* Video URL (for video lessons) */}
+              {newItem.type === "lesson" && newItem.lessonType === "video" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    رابط الفيديو *
+                  </label>
+                  <input
+                    type="url"
+                    value={newItem.videoUrl || ""}
+                    onChange={(e) =>
+                      setNewItem({ ...newItem, videoUrl: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="https://example.com/video.mp4"
+                  />
+                </div>
+              )}
 
-              {/* Exam Selection (for exam sessions) */}
-              {newItem.type === "session" && newItem.sessionType === "exam" && (
+              {/* Exam Selection (for exam lessons) */}
+              {newItem.type === "lesson" && newItem.lessonType === "exam" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     الامتحان *
@@ -971,15 +1041,17 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     onChange={(e) =>
                       setNewItem({
                         ...newItem,
-                        examId: parseInt(e.target.value),
+                        examId: e.target.value,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
                     <option value="">اختر الامتحان</option>
-                    <option value="1">امتحان الرياضيات - الفصل الأول</option>
-                    <option value="2">اختبار سريع - الفيزياء</option>
-                    <option value="3">امتحان اللغة العربية النهائي</option>
+                    {examData.map((exam: any) => (
+                      <option key={exam?.id} value={exam?.id}>
+                        {exam.title}
+                      </option>
+                    ))}
                   </select>
                 </div>
               )}
@@ -1022,13 +1094,13 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <h4 className="font-medium text-blue-800 mb-2">معاينة</h4>
                   <div className="flex items-center gap-2 text-blue-700">
-                    {newItem.type === "chapter" && <BookOpen size={16} />}
+                    {newItem.type === "semester" && <BookOpen size={16} />}
                     {newItem.type === "unit" && <Folder size={16} />}
-                    {newItem.type === "lesson" && <File size={16} />}
-                    {newItem.type === "session" &&
-                      newItem.sessionType === "video" && <Video size={16} />}
-                    {newItem.type === "session" &&
-                      newItem.sessionType === "exam" && (
+                    {newItem.type === "topic" && <File size={16} />}
+                    {newItem.type === "lesson" &&
+                      newItem.lessonType === "video" && <Video size={16} />}
+                    {newItem.type === "lesson" &&
+                      newItem.lessonType === "exam" && (
                         <CheckCircle size={16} />
                       )}
                     <span className="font-medium">{newItem.title}</span>
@@ -1050,16 +1122,16 @@ const CourseContentPage = ({ course, onBack }: any) => {
               إلغاء
             </button>
             <button
-              onClick={handleAddItem}
+              onClick={() => handleAddItem()}
               disabled={
                 !newItem.title ||
                 !newItem.description ||
-                (newItem.type !== "chapter" && !newItem.parentId) ||
-                (newItem.type === "session" &&
-                  newItem.sessionType === "video" &&
+                (newItem.type !== "semester" && !newItem.parentId) ||
+                (newItem.type === "lesson" &&
+                  newItem.lessonType === "video" &&
                   !newItem.videoUrl) ||
-                (newItem.type === "session" &&
-                  newItem.sessionType === "exam" &&
+                (newItem.type === "lesson" &&
+                  newItem.lessonType === "exam" &&
                   !newItem.examId)
               }
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -1155,9 +1227,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 />
               </div>
 
-              {/* Video URL (for video sessions) */}
-              {selectedItem.type === "session" &&
-                selectedItem.sessionType === "video" && (
+              {/* Video URL (for video lessons) */}
+              {selectedItem.type === "lesson" &&
+                selectedItem.lessonType === "video" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       رابط الفيديو *
@@ -1177,9 +1249,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   </div>
                 )}
 
-              {/* Exam Selection (for exam sessions) */}
-              {selectedItem.type === "session" &&
-                selectedItem.sessionType === "exam" && (
+              {/* Exam Selection (for exam lessons) */}
+              {selectedItem.type === "lesson" &&
+                selectedItem.lessonType === "exam" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       الامتحان *
@@ -1254,25 +1326,25 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   معلومات النوع
                 </h4>
                 <div className="flex items-center gap-2 text-blue-700">
-                  {selectedItem.type === "chapter" && <BookOpen size={16} />}
+                  {selectedItem.type === "semester" && <BookOpen size={16} />}
                   {selectedItem.type === "unit" && <Folder size={16} />}
-                  {selectedItem.type === "lesson" && <File size={16} />}
-                  {selectedItem.type === "session" &&
-                    selectedItem.sessionType === "video" && <Video size={16} />}
-                  {selectedItem.type === "session" &&
-                    selectedItem.sessionType === "exam" && (
+                  {selectedItem.type === "topic" && <File size={16} />}
+                  {selectedItem.type === "lesson" &&
+                    selectedItem.lessonType === "video" && <Video size={16} />}
+                  {selectedItem.type === "lesson" &&
+                    selectedItem.lessonType === "exam" && (
                       <CheckCircle size={16} />
                     )}
                   <span className="font-medium">
-                    {selectedItem.type === "chapter"
+                    {selectedItem.type === "semester"
                       ? "فصل"
                       : selectedItem.type === "unit"
                       ? "وحدة"
-                      : selectedItem.type === "lesson"
-                      ? "درس"
-                      : selectedItem.sessionType === "video"
-                      ? "حصة فيديو"
-                      : "حصة امتحان"}
+                      : selectedItem.type === "topic"
+                      ? "موضوع"
+                      : selectedItem.lessonType === "video"
+                      ? "درس فيديو"
+                      : "درس امتحان"}
                   </span>
                 </div>
               </div>
@@ -1290,8 +1362,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
             <button
               onClick={() => {
                 // Update the item in the tree
-                const updateInTree = (items: ContentItem[]): ContentItem[] => {
-                  return items.map((item) => {
+                const updateInTree = (items: any) => {
+                  return items.map((item: any) => {
                     if (item.id === selectedItem.id) {
                       return selectedItem;
                     }
