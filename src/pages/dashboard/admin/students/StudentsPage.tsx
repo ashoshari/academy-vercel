@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
+import Loader from "@/components/core/Loader";
 
 export interface Student {
   id: number;
@@ -560,29 +561,34 @@ const StudentsPage = () => {
 
       {/* Students Grid/Table */}
       {/* {viewMode === "grid" ? ( */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data?.data?.data?.map((student: any) => (
-          <StudentCard key={student.id} student={student} />
-        ))}
+      {data?.isLoading ? (
+        <Loader />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data?.data?.data?.map((student: any) => (
+            <StudentCard key={student.id} student={student} />
+          ))}
 
-        {data?.data?.data?.length === 0 && (
-          <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-            <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-800 mb-2">
-              لا توجد نتائج
-            </h3>
-            <p className="text-gray-500 mb-6">ابدأ بإضافة طلاب جدد للمنصة</p>
+          {data?.data?.data?.length === 0 && (
+            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-800 mb-2">
+                لا توجد نتائج
+              </h3>
+              <p className="text-gray-500 mb-6">ابدأ بإضافة طلاب جدد للمنصة</p>
 
-            <button
-              onClick={() => navigate("/dashboard/students/add")}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-            >
-              <Plus size={16} />
-              إضافة طالب جديد
-            </button>
-          </div>
-        )}
-      </div>
+              <button
+                onClick={() => navigate("/dashboard/students/add")}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+              >
+                <Plus size={16} />
+                إضافة طالب جديد
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ) : ( */}
 
       {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">

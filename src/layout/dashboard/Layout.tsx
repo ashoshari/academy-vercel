@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
 
-// import { useTranslation } from "react-i18next";
 import { removeTokens } from "@/services/auth";
 import useAuth from "@/store/useAuth";
 import {
@@ -10,67 +9,27 @@ import {
   LogOut,
   Home,
   Settings,
-  // Image,
-  // Layers,
-  // FolderTree,
   Users,
-  // CreditCard,
-  // Hash,
   GraduationCap,
   BookOpen,
   CreditCard,
   Hash,
   Layers,
   FolderTree,
-  // Upload,
-  // BarChart3,
 } from "lucide-react";
 import AnimatedBackground from "@/components/login/AnimatedBackground";
 
 const Layout = () => {
-  // const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuth();
-  // const [currentPage, setCurrentPage] = useState<DashboardPage>("home");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  // Sample data for card pricing - SIMPLIFIED
-  // const [cardPricing, setCardPricing] = useState<any[]>([
-  //   {
-  //     id: 1,
-  //     price: 20.0,
-  //     isActive: true,
-  //     createdAt: "2024-01-01",
-  //   },
-  //   {
-  //     id: 2,
-  //     price: 50.0,
-  //     isActive: true,
-  //     createdAt: "2024-01-05",
-  //   },
-  //   {
-  //     id: 3,
-  //     price: 15.0,
-  //     isActive: false,
-  //     createdAt: "2024-01-10",
-  //   },
-  //   {
-  //     id: 4,
-  //     price: 75.0,
-  //     isActive: true,
-  //     createdAt: "2024-01-12",
-  //   },
-  // ]);
-
-  // Sample data for students
-  // const [students, setStudents] = useState<any[]>([]);
 
   const menuItems = [
     { id: "", label: "الرئيسية", icon: Home },
     { id: "students", label: "الطلاب", icon: GraduationCap },
     { id: "teachers", label: "المعلمين", icon: Users },
     { id: "courses", label: "الدورات", icon: BookOpen },
-    // { id: "exams", label: "الامتحانات", icon: BookOpen },
+    { id: "exams", label: "الامتحانات", icon: BookOpen },
     // { id: "files", label: "الملفات", icon: Upload },
     // { id: "slider", label: "السلايدر", icon: Image },
     { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
