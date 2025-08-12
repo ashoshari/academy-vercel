@@ -34,9 +34,11 @@ export default function AddTeacherPage() {
   const addTeacher = useCustomPost("account/admin/teachers/", ["teachers"]);
 
   const onSubmit = async (data: FormValues) => {
-    console.log("data", data);
     try {
-      const res = await addTeacher.mutateAsync(data);
+      const res = await addTeacher.mutateAsync({
+        ...data,
+        material: [data.material],
+      });
       if (res?.status) {
         toast.success("تم إضافة المعلم بنجاح");
         reset();

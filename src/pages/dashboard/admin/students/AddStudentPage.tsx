@@ -25,7 +25,6 @@ const AddStudentPage = () => {
   const addTeacher = useCustomPost("account/admin/students/", ["students"]);
 
   const onSubmit = async (data: FormValues) => {
-    console.log("data", data);
     try {
       const res = await addTeacher.mutateAsync(data);
       if (res?.status) {

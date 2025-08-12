@@ -48,7 +48,7 @@ export default function EditTeacherPage() {
       setValue("name", t.name);
       setValue("email", t.email);
       setValue("mobile_number", t.mobile_number);
-      setValue("material", t.material);
+      setValue("material", t.material?.id);
       setValue("is_active", t.is_active);
     }
   }, [teacherData, setValue]);

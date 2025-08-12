@@ -166,6 +166,7 @@ const ExamsPage = () => {
     "exams",
     "exams-statistics",
   ]);
+
   const updateExam = useCustomUpdate(
     `training/admin/exams/${selectedExam?.id}/`,
     ["exams"]
