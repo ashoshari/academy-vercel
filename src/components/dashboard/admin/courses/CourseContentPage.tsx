@@ -3,7 +3,7 @@ import {
   Plus,
   Search,
   Edit,
-  Trash2,
+  // Trash2,
   ArrowLeft,
   ArrowRight,
   ArrowUp,
@@ -72,9 +72,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [expandedItems, setExpandedItems] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState<any>("all");
+  // const [filterType, setFilterType] = useState<any>("all");
   const [showUnpublished, setShowUnpublished] = useState(true);
-  const [layer, setLayer] = useState();
+  // const [layer, setLayer] = useState();
   const [filteredContent, setFilteredContent] = useState<any>([]);
 
   // تحويل بيانات الدورة إلى هيكل شجري

@@ -1,6 +1,6 @@
-import { useCustomQuery } from "@/hooks/useQuery";
+// import { useCustomQuery } from "@/hooks/useQuery";
 const MainCoursePage = () => {
-  const courses = useCustomQuery("/training/admin/courses/", ["courses"]);
+  // const courses = useCustomQuery("/training/admin/courses/", ["courses"]);
 
   return <div>MainCoursePage</div>;
 };

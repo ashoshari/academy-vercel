@@ -5,16 +5,16 @@ import {
   Edit,
   Eye,
   EyeOff,
-  ArrowLeft,
+  // ArrowLeft,
   BookOpen,
   Users,
   CheckCircle,
   BarChart3,
   PieChart,
-  Star,
+  // Star,
   Save,
-  Play,
-  Pause,
+  // Play,
+  // Pause,
   Folder,
   ArrowRight,
 } from "lucide-react";
@@ -22,7 +22,6 @@ import CourseContentPage from "@/components/dashboard/admin/courses/CourseConten
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
-import { formToJSON } from "axios";
 import { formatDate } from "@/services/date";
 
 // export interface Course {
@@ -468,9 +467,9 @@ const CoursesPage = () => {
       matchesLevel
     );
   });
-  const uniqueCategories = [
-    ...new Set(courses?.data?.map((c: any) => c.category)),
-  ];
+  // const uniqueCategories = [
+  //   ...new Set(courses?.data?.map((c: any) => c.category)),
+  // ];
 
   // POST New Course
   const { mutateAsync: createCourse } = useCustomPost(
