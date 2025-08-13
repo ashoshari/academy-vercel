@@ -5,7 +5,6 @@ const TOKEN_KEY = "platform_auth_tokens";
 export function getStoredTokens(): string | null {
   try {
     const tokens = localStorage.getItem(TOKEN_KEY);
-    console.log("tokens", tokens);
     return tokens ? JSON.parse(tokens) : null;
   } catch {
     return null;

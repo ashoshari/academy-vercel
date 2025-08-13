@@ -23,142 +23,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
-
-// export interface Course {
-//   id: number;
-//   title: string;
-//   description: string;
-//   shortDescription: string;
-//   teacherId: number;
-//   teacherName: string;
-//   teacherAvatar?: string;
-//   price: number;
-//   isFree: boolean;
-//   isPublished: boolean;
-//   isActive: boolean;
-//   isFeatured: boolean;
-//   category: string;
-//   level: "beginner" | "intermediate" | "advanced";
-//   language: string;
-//   duration: number; // in hours
-//   studentsCount: number;
-//   rating: number;
-//   reviewsCount: number;
-//   thumbnail: string;
-//   previewVideo?: string;
-//   targetedSections: number[];
-//   targetedSubsections: number[];
-//   tags: string[];
-//   requirements: string[];
-//   whatYouWillLearn: string[];
-//   createdAt: string;
-//   updatedAt: string;
-//   publishedAt?: string;
-//   startDate?: string;
-//   endDate?: string;
-//   maxStudents?: number;
-//   chapters: Chapter[];
-//   files: CourseFile[];
-//   exams: CourseExam[];
-//   enrollments: CourseEnrollment[];
-//   reviews: CourseReview[];
-// }
-
-export interface Chapter {
-  id: number;
-  courseId: number;
-  title: string;
-  description: string;
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  units: Unit[];
-  files: CourseFile[];
-  exams: CourseExam[];
-}
-
-export interface Unit {
-  id: number;
-  chapterId: number;
-  title: string;
-  description: string;
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  lessons: Lesson[];
-  files: CourseFile[];
-  exams: CourseExam[];
-}
-
-export interface Lesson {
-  id: number;
-  unitId: number;
-  title: string;
-  description: string;
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  sessions: Session[];
-  files: CourseFile[];
-  exams: CourseExam[];
-}
-
-export interface Session {
-  id: number;
-  lessonId: number;
-  title: string;
-  description: string;
-  type: "video" | "text" | "interactive" | "assignment" | "exam";
-  content: string; // URL for video, text content, or exam ID
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  files: CourseFile[];
-  exams: CourseExam[];
-}
-
-export interface CourseFile {
-  id: number;
-  name: string;
-  type: string;
-  size: number;
-  url: string;
-  uploadedAt: string;
-}
-
-export interface CourseExam {
-  id: number;
-  title: string;
-  description: string;
-  examId: number; // Reference to exam in ExamsPage
-  isRequired: boolean;
-  passingScore: number;
-  maxAttempts: number;
-}
-
-export interface CourseEnrollment {
-  id: number;
-  studentId: number;
-  studentName: string;
-  enrolledAt: string;
-  completedAt?: string;
-  progress: number;
-  status: "active" | "completed" | "dropped" | "paused";
-}
-
-export interface CourseReview {
-  id: number;
-  studentId: number;
-  studentName: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-}
-
+import Pagination from "@/components/dashboard/core/Pagination";
 const CoursesPage = () => {
   const [currentView, setCurrentView] = useState<
     "list" | "create" | "edit" | "content"
@@ -175,228 +40,17 @@ const CoursesPage = () => {
   >("all");
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
   const [courseId, setCourseId] = useState<any>(null);
-
-  // Sample courses data
-  // const [courses, setCourses] = useState<Course[]>([
-  //   {
-  //     id: 1,
-  //     title: "دورة الرياضيات المتقدمة",
-  //     description:
-  //       "دورة شاملة في الرياضيات المتقدمة تغطي التفاضل والتكامل والجبر الخطي مع تطبيقات عملية وأمثلة متنوعة لطلاب التوجيهي العلمي.",
-  //     shortDescription: "دورة شاملة في الرياضيات المتقدمة للتوجيهي العلمي",
-  //     teacherId: 1,
-  //     teacherName: "د. أحمد محمد",
-  //     teacherAvatar:
-  //       "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //     price: 150.0,
-  //     isFree: false,
-  //     isPublished: true,
-  //     isActive: true,
-  //     isFeatured: true,
-  //     category: "الرياضيات",
-  //     level: "advanced",
-  //     language: "العربية",
-  //     duration: 40,
-  //     studentsCount: 156,
-  //     rating: 4.8,
-  //     reviewsCount: 89,
-  //     thumbnail:
-  //       "https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800",
-  //     previewVideo:
-  //       "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-  //     targetedSections: [1],
-  //     targetedSubsections: [2, 3],
-  //     tags: ["رياضيات", "تفاضل", "تكامل", "توجيهي"],
-  //     requirements: ["معرفة أساسيات الجبر", "إتقان العمليات الحسابية الأساسية"],
-  //     whatYouWillLearn: [
-  //       "إتقان مفاهيم التفاضل والتكامل",
-  //       "حل المسائل المعقدة في الرياضيات",
-  //       "تطبيق المفاهيم الرياضية في الحياة العملية",
-  //       "الاستعداد لامتحانات التوجيهي",
-  //     ],
-  //     createdAt: "2024-01-15",
-  //     updatedAt: "2024-01-20",
-  //     publishedAt: "2024-01-18",
-  //     startDate: "2024-02-01",
-  //     endDate: "2024-05-30",
-  //     maxStudents: 200,
-  //     chapters: [
-  //       {
-  //         id: 1,
-  //         courseId: 1,
-  //         title: "مقدمة في التفاضل",
-  //         description: "أساسيات التفاضل والمشتقات",
-  //         order: 1,
-  //         isPublished: true,
-  //         isFree: true,
-  //         estimatedDuration: 120,
-  //         units: [
-  //           {
-  //             id: 1,
-  //             chapterId: 1,
-  //             title: "تعريف المشتقة",
-  //             description: "مفهوم المشتقة وتطبيقاتها",
-  //             order: 1,
-  //             isPublished: true,
-  //             isFree: true,
-  //             estimatedDuration: 60,
-  //             lessons: [
-  //               {
-  //                 id: 1,
-  //                 unitId: 1,
-  //                 title: "المشتقة الأولى",
-  //                 description: "تعلم كيفية حساب المشتقة الأولى",
-  //                 order: 1,
-  //                 isPublished: true,
-  //                 isFree: true,
-  //                 estimatedDuration: 30,
-  //                 sessions: [
-  //                   {
-  //                     id: 1,
-  //                     lessonId: 1,
-  //                     title: "شرح المشتقة الأولى",
-  //                     description: "فيديو تعليمي عن المشتقة الأولى",
-  //                     type: "video",
-  //                     content:
-  //                       "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-  //                     order: 1,
-  //                     isPublished: true,
-  //                     isFree: true,
-  //                     estimatedDuration: 25,
-  //                     files: [],
-  //                     exams: [],
-  //                   },
-  //                   {
-  //                     id: 2,
-  //                     lessonId: 1,
-  //                     title: "اختبار المشتقة الأولى",
-  //                     description: "اختبار تقييمي على المشتقة الأولى",
-  //                     type: "exam",
-  //                     content: "1", // exam ID
-  //                     order: 2,
-  //                     isPublished: true,
-  //                     isFree: false,
-  //                     estimatedDuration: 5,
-  //                     files: [],
-  //                     exams: [],
-  //                   },
-  //                 ],
-  //                 files: [],
-  //                 exams: [],
-  //               },
-  //             ],
-  //             files: [],
-  //             exams: [],
-  //           },
-  //         ],
-  //         files: [],
-  //         exams: [],
-  //       },
-  //     ],
-  //     files: [],
-  //     exams: [],
-  //     enrollments: [],
-  //     reviews: [],
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "أساسيات الفيزياء",
-  //     description:
-  //       "دورة تأسيسية في الفيزياء تغطي الميكانيكا والكهرباء والمغناطيسية مع تجارب عملية وحلول مفصلة للمسائل.",
-  //     shortDescription: "دورة تأسيسية شاملة في الفيزياء",
-  //     teacherId: 3,
-  //     teacherName: "م. خالد سالم",
-  //     teacherAvatar:
-  //       "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //     price: 120.0,
-  //     isFree: false,
-  //     isPublished: true,
-  //     isActive: true,
-  //     isFeatured: false,
-  //     category: "الفيزياء",
-  //     level: "intermediate",
-  //     language: "العربية",
-  //     duration: 35,
-  //     studentsCount: 89,
-  //     rating: 4.6,
-  //     reviewsCount: 67,
-  //     thumbnail:
-  //       "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&w=800",
-  //     targetedSections: [1],
-  //     targetedSubsections: [2, 3],
-  //     tags: ["فيزياء", "ميكانيكا", "كهرباء", "توجيهي"],
-  //     requirements: [
-  //       "معرفة أساسيات الرياضيات",
-  //       "فهم المفاهيم العلمية الأساسية",
-  //     ],
-  //     whatYouWillLearn: [
-  //       "فهم قوانين الفيزياء الأساسية",
-  //       "حل مسائل الميكانيكا والكهرباء",
-  //       "تطبيق المفاهيم الفيزيائية عملياً",
-  //       "الاستعداد للامتحانات النهائية",
-  //     ],
-  //     createdAt: "2024-01-12",
-  //     updatedAt: "2024-01-19",
-  //     publishedAt: "2024-01-16",
-  //     startDate: "2024-02-15",
-  //     endDate: "2024-06-15",
-  //     maxStudents: 150,
-  //     chapters: [],
-  //     files: [],
-  //     exams: [],
-  //     enrollments: [],
-  //     reviews: [],
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "اللغة العربية والأدب",
-  //     description:
-  //       "دورة متخصصة في اللغة العربية والأدب تشمل النحو والصرف والبلاغة مع دراسة النصوص الأدبية الكلاسيكية والحديثة.",
-  //     shortDescription: "دورة متخصصة في اللغة العربية والأدب",
-  //     teacherId: 2,
-  //     teacherName: "أ. فاطمة أحمد",
-  //     teacherAvatar:
-  //       "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //     price: 0,
-  //     isFree: true,
-  //     isPublished: false,
-  //     isActive: false,
-  //     isFeatured: false,
-  //     category: "اللغة العربية",
-  //     level: "intermediate",
-  //     language: "العربية",
-  //     duration: 30,
-  //     studentsCount: 0,
-  //     rating: 0,
-  //     reviewsCount: 0,
-  //     thumbnail:
-  //       "https://images.pexels.com/photos/159581/dictionary-reference-book-learning-meaning-159581.jpeg?auto=compress&cs=tinysrgb&w=800",
-  //     targetedSections: [1],
-  //     targetedSubsections: [2, 3],
-  //     tags: ["عربي", "نحو", "أدب", "بلاغة"],
-  //     requirements: ["إتقان القراءة والكتابة", "معرفة أساسيات النحو"],
-  //     whatYouWillLearn: [
-  //       "إتقان قواعد النحو والصرف",
-  //       "فهم وتحليل النصوص الأدبية",
-  //       "تطوير مهارات الكتابة والتعبير",
-  //       "الاستعداد لامتحانات اللغة العربية",
-  //     ],
-  //     createdAt: "2024-01-10",
-  //     updatedAt: "2024-01-17",
-  //     startDate: "2024-03-01",
-  //     endDate: "2024-07-01",
-  //     maxStudents: 100,
-  //     chapters: [],
-  //     files: [],
-  //     exams: [],
-  //     enrollments: [],
-  //     reviews: [],
-  //   },
-  // ]);
+  const [page, setPage] = useState(1);
+  const numberOfCourses = 9;
 
   // GET courses
-  const { data } = useCustomQuery("/training/admin/courses/", ["courses"]);
+  const { data } = useCustomQuery(
+    `/training/admin/courses/?page_size=${numberOfCourses}&page=${page}`,
+    ["courses"]
+  );
   const courseData = data?.data;
+  const paginationData = data?.my_courses?.pagination;
+
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
@@ -1943,7 +1597,7 @@ const CoursesPage = () => {
             <CourseCard key={course.id} course={course} />
           ))}
 
-          {courseData?.length === 0 && (
+          {filteredCourses?.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
               <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
@@ -2143,6 +1797,11 @@ const CoursesPage = () => {
           </div>
         </div>
       )}
+      <Pagination
+        currentPage={page}
+        count={paginationData?.count}
+        onPageChange={setPage}
+      />
     </div>
   );
 };

@@ -92,7 +92,6 @@ const Exam = () => {
   };
   const handleAnswerSelect = (questionId: any, answerId: any) => {
     setSelectedAnswers((prev: any) => {
-      console.log("selectedAnswers", selectedAnswers);
       const exists = prev?.some((ans: any) => ans.question_id === questionId);
 
       if (exists) {
@@ -318,8 +317,6 @@ const Exam = () => {
             ) : (
               <button
                 onClick={() => {
-                  console.log("currentQuestionIndex", currentQuestionIndex);
-                  console.log("selectedAnswers", selectedAnswers.length);
                   currentQuestionIndex !== selectedAnswers.length
                     ? setCurrentQuestionIndex(
                         Math.min(

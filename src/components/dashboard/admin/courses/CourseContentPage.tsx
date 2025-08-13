@@ -21,11 +21,19 @@ import {
   Target,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const CourseContentPage = ({ course, onBack }: any) => {
   const queryClient = useQueryClient();
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [expandedItems, setExpandedItems] = useState<any>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  // const [filterType, setFilterType] = useState<any>("all");
+  const [showUnpublished, setShowUnpublished] = useState(true);
+  // const [layer, setLayer] = useState();
+  const [filteredContent, setFilteredContent] = useState<any>([]);
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
     "tree"
   );
@@ -37,8 +45,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
   // GET Exams
   const { data: exams } = useCustomQuery("/training/admin/exams/", ["exams"]);
 
-  const courseContentData = courseContent?.data;
-  const courseContentTree = courseContentData?.semesters;
   const examData = exams?.data;
   // GET courseContent Statistics
   const { data: contentStatistics } = useCustomQuery(
@@ -46,36 +52,52 @@ const CourseContentPage = ({ course, onBack }: any) => {
     ["course-content-statistics"]
   );
 
-  // POST Add Semester
+  const courseContentData = courseContent?.data;
+  const courseContentTree = courseContentData?.semesters;
+  const contentStatisticsData = contentStatistics?.data;
+
+  // POST Semester
   const { mutateAsync: postSemesters } = useCustomPost(
     "/training/admin/semesters/",
     ["postSemesters"]
   );
-
-  // POST Add Units
+  // POST Units
   const { mutateAsync: postUnits } = useCustomPost("/training/admin/units/", [
     "postUnits",
   ]);
-
-  // POST Add Topics
+  // POST Topics
   const { mutateAsync: postTopics } = useCustomPost("/training/admin/topics/", [
     "postTopics",
   ]);
-
-  // POST Add Lesson
+  // POST Lesson
   const { mutateAsync: postLessons } = useCustomPost(
     "/training/admin/lessons/",
     ["postLessons"]
   );
 
-  const contentStatisticsData = contentStatistics?.data;
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [expandedItems, setExpandedItems] = useState<any>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  // const [filterType, setFilterType] = useState<any>("all");
-  const [showUnpublished, setShowUnpublished] = useState(true);
-  // const [layer, setLayer] = useState();
-  const [filteredContent, setFilteredContent] = useState<any>([]);
+  // PUT Semester
+  const { mutateAsync: putSemesters } = useCustomUpdate(
+    `/training/admin/semesters/${selectedItem?.id}/`,
+    ["putSemesters"]
+  );
+
+  // PUT Semester
+  const { mutateAsync: putUnits } = useCustomUpdate(
+    `/training/admin/units/${selectedItem?.id}/`,
+    ["putUnits"]
+  );
+
+  // PUT Semester
+  const { mutateAsync: putTopics } = useCustomUpdate(
+    `/training/admin/topics/${selectedItem?.id}/`,
+    ["putTopics"]
+  );
+
+  // PUT Semester
+  const { mutateAsync: putLessons } = useCustomUpdate(
+    `/training/admin/lessons/${selectedItem?.id}/`,
+    ["putLessons"]
+  );
 
   // تحويل بيانات الدورة إلى هيكل شجري
   // const buildContentTree = (): ContentItem[] => {
@@ -260,7 +282,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       ...(newItem.order !== undefined && { order: newItem.order }),
     };
     try {
-      newItem.type === "semester"
+      const response = newItem.type === "semester"
         ? await postSemesters(addItem)
         : newItem.type === "unit"
         ? await postUnits(addItem)
@@ -271,59 +293,42 @@ const CourseContentPage = ({ course, onBack }: any) => {
       queryClient.invalidateQueries({
         queryKey: ["course-content"],
       });
-    } catch (err) {
-      console.log(err);
+      toast.success(response?.message ?? "تم الحفظ بنجاح");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error);
     }
-    // const item: any = {
-    //   id: Date.now(),
-    //   type: newItem.type as ContentType,
-    //   title: newItem.title,
-    //   description: newItem.description,
-    //   order: 1,
-    //   isPublished: newItem.isPublished || false,
-    //   isFree: newItem.isFree || false,
-    //   estimatedDuration: newItem.estimatedDuration || 0,
-    //   parentId: newItem.parentId,
-    //   lessonType: newItem.type === "lesson" ? newItem.lessonType : undefined,
-    //   videoUrl:
-    //     newItem.type === "lesson" && newItem.lessonType === "video"
-    //       ? newItem.videoUrl
-    //       : undefined,
-    //   examId:
-    //     newItem.type === "lesson" && newItem.lessonType === "exam"
-    //       ? newItem.examId
-    //       : undefined,
-    //   children: newItem.type !== "lesson" ? [] : undefined,
-    // };
-
-    // إضافة العنصر للشجرة
-    // const addToTree = (items: any) => {
-    //   if (!newItem.parentId) {
-    //     return [...items, item];
-    //   }
-
-    //   return items.map((treeItem:any) => {
-    //     if (treeItem.id === newItem.parentId) {
-    //       return {
-    //         ...treeItem,
-    //         children: [...(treeItem.children || []), item],
-    //       };
-    //     }
-    //     if (treeItem.children) {
-    //       return {
-    //         ...treeItem,
-    //         children: addToTree(treeItem.children),
-    //       };
-    //     }
-    //     return treeItem;
-    //   });
-    // };
-
-    // setContentTree(addToTree(contentTree));
-
     // إعادة تعيين النموذج
     setNewItem({});
     setCurrentView("tree");
+  };
+  const handleEditItem = async () => {
+    const editedContent = {
+      title: selectedItem?.title,
+      description: selectedItem?.description,
+      time_in_minutes: selectedItem?.time_in_minutes,
+      is_published: selectedItem?.is_published,
+      // is_free: selectedItem?.is_free,
+      ...(selectedItem?.link && { link: selectedItem?.link }),
+      ...(selectedItem?.exam && { exam: selectedItem?.exam }),
+      ...(selectedItem?.order && { exam: selectedItem?.order }),
+    };
+    try {
+      const response = selectedItem?.course
+        ? await putSemesters(editedContent)
+        : selectedItem?.semester
+        ? await putUnits(editedContent)
+        : selectedItem?.unit
+        ? await putTopics(editedContent)
+        : await putLessons(editedContent);
+      queryClient.invalidateQueries({
+        queryKey: ["course-content"],
+      });
+      toast.success(response?.message ?? "تم تعديل المحتوى بنجاح");
+      setCurrentView("tree");
+      setSelectedItem(null);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error);
+    }
   };
 
   // const handleDeleteItem = (id: any) => {
@@ -1159,7 +1164,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">تعديل المحتوى</h1>
-            <p className="text-gray-600 text-sm">{selectedItem.title}</p>
+            <p className="text-gray-600 text-sm">{selectedItem?.title}</p>
           </div>
         </div>
 
@@ -1179,7 +1184,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 </label>
                 <input
                   type="text"
-                  value={selectedItem.title}
+                  value={selectedItem?.title}
                   onChange={(e) =>
                     setSelectedItem({ ...selectedItem, title: e.target.value })
                   }
@@ -1194,7 +1199,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   الوصف *
                 </label>
                 <textarea
-                  value={selectedItem.description}
+                  value={selectedItem?.description}
                   onChange={(e) =>
                     setSelectedItem({
                       ...selectedItem,
@@ -1214,11 +1219,11 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 </label>
                 <input
                   type="number"
-                  value={selectedItem.estimatedDuration}
+                  value={selectedItem?.time_in_minutes}
                   onChange={(e) =>
                     setSelectedItem({
                       ...selectedItem,
-                      estimatedDuration: parseInt(e.target.value) || 0,
+                      time_in_minutes: parseInt(e.target.value) || 0,
                     })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1228,15 +1233,15 @@ const CourseContentPage = ({ course, onBack }: any) => {
               </div>
 
               {/* Video URL (for video lessons) */}
-              {selectedItem.type === "lesson" &&
-                selectedItem.lessonType === "video" && (
+              {selectedItem?.topic &&
+                selectedItem?.type.toLowerCase() === "video" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       رابط الفيديو *
                     </label>
                     <input
                       type="url"
-                      value={selectedItem.videoUrl || ""}
+                      value={selectedItem?.link || ""}
                       onChange={(e) =>
                         setSelectedItem({
                           ...selectedItem,
@@ -1250,26 +1255,27 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 )}
 
               {/* Exam Selection (for exam lessons) */}
-              {selectedItem.type === "lesson" &&
-                selectedItem.lessonType === "exam" && (
+              {selectedItem?.topic &&
+                selectedItem?.type.toLowerCase() === "exam" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       الامتحان *
                     </label>
                     <select
-                      value={selectedItem.examId || ""}
+                      value={selectedItem.exam || ""}
                       onChange={(e) =>
                         setSelectedItem({
                           ...selectedItem,
-                          examId: parseInt(e.target.value),
+                          exam: e.target.value,
                         })
                       }
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     >
-                      <option value="">اختر الامتحان</option>
-                      <option value="1">امتحان الرياضيات - الفصل الأول</option>
-                      <option value="2">اختبار سريع - الفيزياء</option>
-                      <option value="3">امتحان اللغة العربية النهائي</option>
+                      {examData.map((exam: any) => (
+                        <option key={exam?.id} value={exam?.id}>
+                          {exam.title}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 )}
@@ -1290,11 +1296,11 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={selectedItem.isPublished}
+                    checked={selectedItem.is_published}
                     onChange={(e) =>
                       setSelectedItem({
                         ...selectedItem,
-                        isPublished: e.target.checked,
+                        is_published: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
@@ -1308,11 +1314,11 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={selectedItem.isFree}
+                    checked={selectedItem?.is_free}
                     onChange={(e) =>
                       setSelectedItem({
                         ...selectedItem,
-                        isFree: e.target.checked,
+                        is_free: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
@@ -1326,23 +1332,25 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   معلومات النوع
                 </h4>
                 <div className="flex items-center gap-2 text-blue-700">
-                  {selectedItem.type === "semester" && <BookOpen size={16} />}
-                  {selectedItem.type === "unit" && <Folder size={16} />}
-                  {selectedItem.type === "topic" && <File size={16} />}
-                  {selectedItem.type === "lesson" &&
-                    selectedItem.lessonType === "video" && <Video size={16} />}
-                  {selectedItem.type === "lesson" &&
-                    selectedItem.lessonType === "exam" && (
+                  {selectedItem?.course && <BookOpen size={16} />}
+                  {selectedItem?.semester && <Folder size={16} />}
+                  {selectedItem?.unit && <File size={16} />}
+                  {selectedItem?.topic &&
+                    selectedItem?.type.toLowerCase() === "video" && (
+                      <Video size={16} />
+                    )}
+                  {selectedItem?.topic &&
+                    selectedItem?.type.toLowerCase() === "exam" && (
                       <CheckCircle size={16} />
                     )}
                   <span className="font-medium">
-                    {selectedItem.type === "semester"
+                    {selectedItem?.course
                       ? "فصل"
-                      : selectedItem.type === "unit"
+                      : selectedItem?.semester
                       ? "وحدة"
-                      : selectedItem.type === "topic"
+                      : selectedItem?.unit
                       ? "موضوع"
-                      : selectedItem.lessonType === "video"
+                      : selectedItem?.type.toLowerCase() === "video"
                       ? "درس فيديو"
                       : "درس امتحان"}
                   </span>
@@ -1362,24 +1370,23 @@ const CourseContentPage = ({ course, onBack }: any) => {
             <button
               onClick={() => {
                 // Update the item in the tree
-                const updateInTree = (items: any) => {
-                  return items.map((item: any) => {
-                    if (item.id === selectedItem.id) {
-                      return selectedItem;
-                    }
-                    if (item.children) {
-                      return {
-                        ...item,
-                        children: updateInTree(item.children),
-                      };
-                    }
-                    return item;
-                  });
-                };
+                // const updateInTree = (items: any) => {
+                //   return items.map((item: any) => {
+                //     if (item.id === selectedItem.id) {
+                //       return selectedItem;
+                //     }
+                //     if (item.children) {
+                //       return {
+                //         ...item,
+                //         children: updateInTree(item.children),
+                //       };
+                //     }
+                //     return item;
+                //   });
+                // };
+                // setContentTree(updateInTree(contentTree));
 
-                setContentTree(updateInTree(contentTree));
-                setCurrentView("tree");
-                setSelectedItem(null);
+                handleEditItem();
               }}
               disabled={!selectedItem.title || !selectedItem.description}
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
