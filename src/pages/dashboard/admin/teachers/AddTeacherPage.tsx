@@ -31,6 +31,7 @@ export default function AddTeacherPage() {
   const { data: dataMaterials } = useCustomQuery("core/materials/", [
     "materials",
   ]);
+
   const addTeacher = useCustomPost("account/admin/teachers/", ["teachers"]);
 
   const onSubmit = async (data: FormValues) => {
