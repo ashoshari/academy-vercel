@@ -24,13 +24,11 @@ const EditStudentPage = () => {
     reset,
   } = useForm<FormValues>();
 
-  // جلب بيانات الطالب
-  const studentData = useCustomQuery(`account/admin/students/${id}`, [
+  const studentData = useCustomQuery(`account/admin/students/${id}/`, [
     "student",
     id,
   ]);
 
-  // تعديل الطالب
   const updateStudent = useCustomPost(`account/admin/students/${id}/`, [
     "students",
   ]);
@@ -38,9 +36,9 @@ const EditStudentPage = () => {
   useEffect(() => {
     if (studentData.data) {
       reset({
-        name: studentData.data.name,
-        mobile_number: studentData.data.mobile_number,
-        password: "", // مش هنرجع الباسورد القديم
+        name: studentData?.data?.data?.name,
+        mobile_number: studentData?.data?.data?.mobile_number,
+        password: "",
       });
     }
   }, [studentData.data, reset]);
@@ -103,14 +101,14 @@ const EditStudentPage = () => {
         </div>
 
         {/* كلمة المرور */}
-        <div className="md:col-span-2">
+        <div>
           <label className="block mb-2 font-medium text-sm text-gray-700">
             كلمة المرور (اتركه فارغ لو مش هتغيره)
           </label>
           <input
             type="text"
             {...register("password")}
-            className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
             placeholder="أدخل كلمة المرور الجديدة"
           />
         </div>

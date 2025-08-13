@@ -15,11 +15,8 @@ const StudentDetailsPage = () => {
     "student-details",
     id,
   ]);
-  const selectedStudent = data?.data?.data;
 
-  //   if (!selectedStudent) {
-  //     return <div className="p-6 text-center">لا يوجد بيانات للطالب</div>;
-  //   }
+  const selectedStudent = data?.data?.data;
 
   const getCourseTypeIcon = (type: string) => {
     switch (type) {
@@ -81,114 +78,6 @@ const StudentDetailsPage = () => {
           <div className="p-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Personal Info */}
-              <div className="lg:col-span-1">
-                <div className="bg-gray-50 rounded-xl p-6 mb-6">
-                  <h3 className="font-bold text-gray-800 mb-4">
-                    المعلومات الشخصية
-                  </h3>
-                  <div className="space-y-3">
-                    <div>
-                      <span className="text-sm text-gray-500">
-                        البريد الإلكتروني
-                      </span>
-                      <p className="font-medium">{selectedStudent?.email}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">رقم الهاتف</span>
-                      <p className="font-medium">{selectedStudent?.phone}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">
-                        تاريخ الميلاد
-                      </span>
-                      <p className="font-medium">
-                        {selectedStudent?.dateOfBirth}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">الجنس</span>
-                      <p className="font-medium">
-                        {selectedStudent?.gender === "male" ? "ذكر" : "أنثى"}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">الموقع</span>
-                      <p className="font-medium">{selectedStudent?.location}</p>
-                    </div>
-                    {selectedStudent?.schoolName && (
-                      <div>
-                        <span className="text-sm text-gray-500">المدرسة</span>
-                        <p className="font-medium">
-                          {selectedStudent?.schoolName}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Parent Info */}
-                {(selectedStudent?.parentPhone ||
-                  selectedStudent?.parentEmail) && (
-                  <div className="bg-blue-50 rounded-xl p-6 mb-6">
-                    <h3 className="font-bold text-gray-800 mb-4">
-                      معلومات ولي الأمر
-                    </h3>
-                    <div className="space-y-3">
-                      {selectedStudent?.parentPhone && (
-                        <div>
-                          <span className="text-sm text-gray-500">
-                            هاتف ولي الأمر
-                          </span>
-                          <p className="font-medium">
-                            {selectedStudent?.parentPhone}
-                          </p>
-                        </div>
-                      )}
-                      {selectedStudent?.parentEmail && (
-                        <div>
-                          <span className="text-sm text-gray-500">
-                            بريد ولي الأمر
-                          </span>
-                          <p className="font-medium">
-                            {selectedStudent?.parentEmail}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Statistics */}
-                <div className="bg-orange-50 rounded-xl p-6">
-                  <h3 className="font-bold text-gray-800 mb-4">الإحصائيات</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">تاريخ التسجيل</span>
-                      <span className="font-medium">
-                        {selectedStudent?.registrationDate}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">آخر دخول</span>
-                      <span className="font-medium">
-                        {selectedStudent?.lastLogin}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">ساعات الدراسة</span>
-                      <span className="font-medium">
-                        {selectedStudent?.studyHours} ساعة
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">الإنجازات</span>
-                      <span className="font-medium">
-                        {selectedStudent?.achievements?.length}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               {/* Courses and Activity */}
               <div className="lg:col-span-2">
@@ -291,7 +180,7 @@ const StudentDetailsPage = () => {
                 </div>
 
                 {/* Achievements */}
-                {selectedStudent?.achievements.length > 0 && (
+                {selectedStudent?.achievements?.length > 0 && (
                   <div className="mb-6">
                     <h3 className="font-bold text-gray-800 mb-4">الإنجازات</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -326,7 +215,7 @@ const StudentDetailsPage = () => {
                     سجل المدفوعات
                   </h3>
                   <div className="space-y-2">
-                    {selectedStudent?.paymentHistory.map((payment: any) => (
+                    {selectedStudent?.paymentHistory?.map((payment: any) => (
                       <div
                         key={payment.id}
                         className="bg-green-50 border border-green-200 rounded-lg p-3"
@@ -371,7 +260,7 @@ const StudentDetailsPage = () => {
                   <h3 className="font-bold text-gray-800 mb-4">سجل النشاط</h3>
                   <div className="space-y-2">
                     {selectedStudent?.activityLog
-                      .slice(0, 5)
+                      ?.slice(0, 5)
                       .map((activity: any) => (
                         <div
                           key={activity.id}
