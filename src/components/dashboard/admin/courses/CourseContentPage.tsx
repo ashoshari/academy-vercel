@@ -426,7 +426,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               {hasChildren && (
                 <button
                   onClick={() => toggleExpanded(item.id)}
-                  className="p-1 hover:bg-orange-50 rounded transition-colors"
+                  className="cursor-pointer p-1 hover:bg-orange-50 rounded transition-colors"
                 >
                   {isExpanded ? (
                     <ChevronDown size={16} className="text-orange-600" />
@@ -514,14 +514,14 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       {/* Move Up/Down */}
                       <button
                         onClick={() => moveItem(item?.id, "up")}
-                        className="p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأعلى"
                       >
                         <ArrowUp size={14} />
                       </button>
                       <button
                         onClick={() => moveItem(item?.id, "down")}
-                        className="p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأسفل"
                       >
                         <ArrowDown size={14} />
@@ -533,7 +533,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           setSelectedItem(item);
                           setCurrentView("edit");
                         }}
-                        className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                         title="تعديل"
                       >
                         <Edit size={14} />
@@ -542,7 +542,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       {/* Delete */}
                       {/* <button
                         onClick={() => handleDeleteItem(item.id)}
-                        className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                         title="حذف"
                       >
                         <Trash2 size={14} />
@@ -604,7 +604,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowRight size={20} />
           </button>
@@ -616,7 +616,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
           <button
             onClick={() => setCurrentView("add")}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
           >
             <Plus size={16} />
             إضافة محتوى
@@ -752,13 +752,13 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   collectIds(contentTree);
                   setExpandedItems(allIds);
                 }}
-                className="px-3 py-1 text-sm bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-200 transition-colors"
+                className="cursor-pointer px-3 py-1 text-sm bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-200 transition-colors"
               >
                 توسيع الكل
               </button>
               <button
                 onClick={() => setExpandedItems([])}
-                className="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                className="cursor-pointer px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 طي الكل
               </button>
@@ -785,7 +785,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 </p>
                 <button
                   onClick={() => setCurrentView("add")}
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة محتوى جديد
@@ -867,7 +867,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           type: type.value,
                         })
                       }
-                      className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+                      className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
                         newItem.type === type.value
                           ? `border-${type.color}-500 bg-${type.color}-50 text-${type.color}-700`
                           : "border-gray-200 hover:border-gray-300"
@@ -981,7 +981,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       onClick={() =>
                         setNewItem({ ...newItem, lessonType: "video" })
                       }
-                      className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+                      className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
                         newItem.lessonType === "video"
                           ? "border-purple-500 bg-purple-50 text-purple-700"
                           : "border-gray-200 hover:border-gray-300"
@@ -999,7 +999,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       onClick={() =>
                         setNewItem({ ...newItem, lessonType: "exam" })
                       }
-                      className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+                      className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
                         newItem.lessonType === "exam"
                           ? "border-red-500 bg-red-50 text-red-700"
                           : "border-gray-200 hover:border-gray-300"
@@ -1122,7 +1122,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
               onClick={() => setCurrentView("tree")}
-              className="px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
@@ -1139,7 +1139,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   newItem.lessonType === "exam" &&
                   !newItem.examId)
               }
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إضافة المحتوى
@@ -1158,7 +1158,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setCurrentView("tree")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
@@ -1363,7 +1363,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
               onClick={() => setCurrentView("tree")}
-              className="px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
@@ -1389,7 +1389,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 handleEditItem();
               }}
               disabled={!selectedItem.title || !selectedItem.description}
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات

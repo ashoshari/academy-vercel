@@ -24,6 +24,7 @@ import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
+import Loader from "@/components/core/Loader";
 const CoursesPage = () => {
   const [currentView, setCurrentView] = useState<
     "list" | "create" | "edit" | "content"
@@ -44,12 +45,12 @@ const CoursesPage = () => {
   const numberOfCourses = 9;
 
   // GET courses
-  const { data } = useCustomQuery(
+  const { data, isLoading } = useCustomQuery(
     `/training/admin/courses/?page_size=${numberOfCourses}&page=${page}`,
-    ["courses"]
+    ["courses", page]
   );
   const courseData = data?.data;
-  const paginationData = data?.my_courses?.pagination;
+  const paginationData = data?.data?.pagination;
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
@@ -70,13 +71,14 @@ const CoursesPage = () => {
   );
 
   // GET Specializations_material
-  const { data: specializations_material } = useCustomQuery(
+  const { data: specialization_material } = useCustomQuery(
     "/training/admin/specialization-materials/",
     ["specializations_material"]
   );
 
   const specializationData = specializations?.data;
-  const specialization_materialData = specializations_material?.data;
+  const specialization_materialData = specialization_material?.data;
+  console.log("specialization_materialData", specialization_materialData);
 
   const [courses, setCourses] = useState<any>(courseData?.data);
   useEffect(() => {
@@ -391,7 +393,7 @@ const CoursesPage = () => {
                 setSelectedCourse(course);
                 setCurrentView("content");
               }}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               title="إدارة المحتوى"
             >
               <Folder size={16} />
@@ -399,7 +401,7 @@ const CoursesPage = () => {
 
             {/* <button
               onClick={() => toggleCourseStatus(course?.id, "isActive")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 course?.is_active
                   ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -413,7 +415,7 @@ const CoursesPage = () => {
               onClick={() => {
                 toggleCourseStatus(course?.id);
               }}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 course?.is_Published
                   ? "text-green-600 bg-green-50 hover:bg-green-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -426,7 +428,7 @@ const CoursesPage = () => {
             {/* Raiting */}
             {/* <button
               onClick={() => toggleCourseStatus(course.id, "isFeatured")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 course.isFeatured
                   ? "text-yellow-600 bg-yellow-50 hover:bg-yellow-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -443,7 +445,7 @@ const CoursesPage = () => {
                 setSelectedCourse(course);
                 setCurrentView("edit");
               }}
-              className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               title="تعديل الدورة"
             >
               <Edit size={16} />
@@ -451,7 +453,7 @@ const CoursesPage = () => {
 
             {/* <button
               onClick={() => handleDeleteCourse(course.id)}
-              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               title="حذف الدورة"
             >
               <Trash2 size={16} />
@@ -491,7 +493,7 @@ const CoursesPage = () => {
               setNewCourse({});
               setCurrentView("list");
             }}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowRight size={20} />
           </button>
@@ -874,7 +876,7 @@ const CoursesPage = () => {
                         <input
                           type="checkbox"
                           checked={
-                            newCourse.specialization?.includes(
+                            newCourse.specialization_material?.includes(
                               specialization_material?.id
                             ) || false
                           }
@@ -892,7 +894,7 @@ const CoursesPage = () => {
                             } else {
                               setNewCourse({
                                 ...newCourse,
-                                specialization:
+                                specialization_material:
                                   currentSpecialization_material.filter(
                                     (id: any) =>
                                       id !== specialization_material?.id
@@ -972,7 +974,7 @@ const CoursesPage = () => {
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
               onClick={() => setCurrentView("list")}
-              className="px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
@@ -984,7 +986,7 @@ const CoursesPage = () => {
                 !newCourse.long_description ||
                 !newCourse.teacher
               }
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الدورة
@@ -1003,7 +1005,7 @@ const CoursesPage = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setCurrentView("list")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowRight size={20} />
           </button>
@@ -1435,7 +1437,7 @@ const CoursesPage = () => {
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
               onClick={() => setCurrentView("list")}
-              className="px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
@@ -1450,7 +1452,7 @@ const CoursesPage = () => {
                 !selectedCourse?.long_description ||
                 !selectedCourse?.teacher
               }
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات
@@ -1474,7 +1476,7 @@ const CoursesPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء دورة جديدة
@@ -1594,7 +1596,7 @@ const CoursesPage = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
                   ? "bg-orange-100 text-orange-600"
                   : "text-gray-400 hover:bg-gray-100"
@@ -1604,7 +1606,7 @@ const CoursesPage = () => {
             </button>
             <button
               onClick={() => setViewMode("table")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
                   ? "bg-orange-100 text-orange-600"
                   : "text-gray-400 hover:bg-gray-100"
@@ -1618,45 +1620,56 @@ const CoursesPage = () => {
 
       {/* Courses Grid/Table */}
       {viewMode === "grid" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses?.map((course: any) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
+        !isLoading ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredCourses?.map((course: any) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
 
-          {filteredCourses?.length === 0 && (
-            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-              <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-800 mb-2">
-                {searchTerm ||
-                teacherFilter ||
-                categoryFilter ||
-                statusFilter !== "all"
-                  ? "لا توجد نتائج"
-                  : "لا توجد دورات"}
-              </h3>
-              <p className="text-gray-500 mb-6">
-                {searchTerm ||
-                teacherFilter ||
-                categoryFilter ||
-                statusFilter !== "all"
-                  ? "لم يتم العثور على دورات تطابق المعايير المحددة"
-                  : "ابدأ بإنشاء دورة تعليمية جديدة"}
-              </p>
-              {!searchTerm &&
-                !teacherFilter &&
-                !categoryFilter &&
-                statusFilter === "all" && (
-                  <button
-                    onClick={() => setCurrentView("create")}
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-                  >
-                    <Plus size={16} />
-                    إنشاء دورة جديدة
-                  </button>
-                )}
+              {filteredCourses?.length === 0 && (
+                <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+                  <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">
+                    {searchTerm ||
+                    teacherFilter ||
+                    categoryFilter ||
+                    statusFilter !== "all"
+                      ? "لا توجد نتائج"
+                      : "لا توجد دورات"}
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    {searchTerm ||
+                    teacherFilter ||
+                    categoryFilter ||
+                    statusFilter !== "all"
+                      ? "لم يتم العثور على دورات تطابق المعايير المحددة"
+                      : "ابدأ بإنشاء دورة تعليمية جديدة"}
+                  </p>
+                  {!searchTerm &&
+                    !teacherFilter &&
+                    !categoryFilter &&
+                    statusFilter === "all" && (
+                      <button
+                        onClick={() => setCurrentView("create")}
+                        className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                      >
+                        <Plus size={16} />
+                        إنشاء دورة جديدة
+                      </button>
+                    )}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+            <Pagination
+              currentPage={page}
+              count={paginationData?.count}
+              onPageChange={setPage}
+            />
+          </>
+        ) : (
+          <Loader />
+        )
       ) : (
         // Table View
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
@@ -1772,7 +1785,7 @@ const CoursesPage = () => {
                             setSelectedCourse(course);
                             setCurrentView("content");
                           }}
-                          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
                           title="إدارة المحتوى"
                         >
                           <Folder size={16} />
@@ -1781,7 +1794,7 @@ const CoursesPage = () => {
                           onClick={() => {
                             toggleCourseStatus(course?.id);
                           }}
-                          className={`p-2 rounded-lg transition-colors ${
+                          className={`cursor-pointer p-2 rounded-lg transition-colors ${
                             course?.is_Published
                               ? "text-green-600 bg-green-50 hover:bg-green-100"
                               : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -1802,14 +1815,14 @@ const CoursesPage = () => {
                             setSelectedCourse(course);
                             setCurrentView("edit");
                           }}
-                          className="p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
                           title="تعديل"
                         >
                           <Edit size={16} />
                         </button>
                         {/* <button
                           onClick={() => handleDeleteCourse(course.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
                           title="حذف"
                         >
                           <Trash2 size={16} />
@@ -1823,11 +1836,6 @@ const CoursesPage = () => {
           </div>
         </div>
       )}
-      <Pagination
-        currentPage={page}
-        count={paginationData?.count}
-        onPageChange={setPage}
-      />
     </div>
   );
 };
