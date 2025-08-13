@@ -50,7 +50,6 @@ const CoursesPage = () => {
   );
   const courseData = data?.data;
   const paginationData = data?.my_courses?.pagination;
-
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
@@ -86,6 +85,7 @@ const CoursesPage = () => {
   const courseStatsData = coursesStats?.data;
 
   const [newCourse, setNewCourse] = useState<any>({});
+  // const [editCourseData, setEditCourseData] = useState<any>({});
 
   // PUT Course
   const { mutateAsync: editCourse } = useCustomUpdate(
@@ -140,10 +140,33 @@ const CoursesPage = () => {
     }
   };
   const handleEditCourse = async () => {
+    const currentCourse = courseData?.data.find(
+      (course: any) => course?.id === selectedCourse?.id
+    );
+    const changedData = Object.keys(selectedCourse)
+      .filter(
+        (key) =>
+          selectedCourse[key as keyof typeof selectedCourse] !==
+          currentCourse[key as keyof typeof currentCourse]
+      )
+      .reduce((acc, key) => {
+        acc[key] = selectedCourse[key as keyof typeof selectedCourse];
+        return acc;
+      }, {} as Record<string, any>);
     try {
-      const res = await editCourse(newCourse);
-      toast.success(res.message ?? "تم الحفظ بنجاح");
-      setCurrentView("list");
+      if (selectedCourse?.id == currentCourse?.id) {
+        const formData = new FormData();
+        Object.entries(changedData).forEach(([key, value]) => {
+          if (value instanceof File) {
+            formData.append(key, value); // send file as file
+          } else {
+            formData.append(key, String(value));
+          }
+        });
+        const res = await editCourse(formData);
+        toast.success(res.message ?? "تم الحفظ بنجاح");
+        setCurrentView("list");
+      }
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
     }
@@ -1085,7 +1108,7 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="text"
-                    value={selectedCourse?.specialization}
+                    value={selectedCourse?.specialization.name}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
@@ -1417,7 +1440,10 @@ const CoursesPage = () => {
               إلغاء
             </button>
             <button
-              onClick={handleEditCourse}
+              onClick={() => {
+                setCourseId(selectedCourse?.id);
+                handleEditCourse();
+              }}
               disabled={
                 !selectedCourse?.name ||
                 !selectedCourse?.short_description ||
