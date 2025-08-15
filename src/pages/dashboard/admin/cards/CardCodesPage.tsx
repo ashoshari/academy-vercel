@@ -619,8 +619,46 @@ const CardCodesPage = () => {
                         <div className="text-xs text-blue-600 font-medium mb-1">
                           ملاحظات:
                         </div>
-                        <div className="text-sm text-blue-800">
+                        <div className="text-sm text-blue-800 mb-4">
                           {batch.note}
+                        </div>
+                      </div>
+                    )}
+
+                    {batch.security_information && (
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <div className="text-xs text-blue-600 font-medium mb-1">
+                          معلومات الأمان :
+                        </div>
+                        <div className="text-xs text-blue-700 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <User size={12} />
+                            <span>
+                              المنشئ: {batch?.generated_by?.name}
+                              {" - "}
+                              {batch?.generated_by?.type?.name}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Smartphone size={12} />
+                            <span>
+                              الجهاز:{" "}
+                              {batch?.security_information?.device?.vendor}
+                              {" - "}
+                              {batch?.security_information?.device?.model}
+                              {" - "}
+                              {batch?.security_information?.device?.type}
+                              {" - "}
+                              {batch?.security_information?.browser?.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Clock size={12} />
+                            <span>
+                              التاريخ: {formatDateTimeSimple(batch.created_at)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     )}
