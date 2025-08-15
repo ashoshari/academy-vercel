@@ -31,7 +31,6 @@ const CoursesPage = () => {
     "list" | "create" | "edit" | "content"
   >("list");
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
-  console.log("selectedCourse", selectedCourse);
   const [searchTerm, setSearchTerm] = useState("");
   const [teacherFilter, setTeacherFilter] = useState<any>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>("");
@@ -284,6 +283,7 @@ const CoursesPage = () => {
       {/* Thumbnail */}
       <div className="relative h-48 overflow-hidden">
         <img
+          loading="lazy"
           src={
             course?.image ||
             "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
@@ -352,6 +352,7 @@ const CoursesPage = () => {
         {/* Teacher */}
         <div className="flex items-center gap-3 mb-4">
           <img
+            loading="lazy"
             src={
               course?.teacher?.image ||
               "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
@@ -748,6 +749,7 @@ const CoursesPage = () => {
                   {(typeof newCourse?.image === "string" ||
                     newCourse?.image instanceof File) && (
                     <img
+                      loading="lazy"
                       src={
                         newCourse?.image instanceof File
                           ? URL.createObjectURL(newCourse.image)
@@ -1266,6 +1268,7 @@ const CoursesPage = () => {
                   {(typeof selectedCourse?.image === "string" ||
                     selectedCourse?.image instanceof File) && (
                     <img
+                      loading="lazy"
                       src={
                         selectedCourse?.image instanceof File
                           ? URL.createObjectURL(selectedCourse.image)
@@ -1837,6 +1840,7 @@ const CoursesPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         <img
+                          loading="lazy"
                           src={
                             course?.image ||
                             "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
@@ -1857,6 +1861,7 @@ const CoursesPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <img
+                          loading="lazy"
                           src={
                             course?.teacher?.image ||
                             "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"

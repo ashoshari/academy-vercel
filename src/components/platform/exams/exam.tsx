@@ -138,6 +138,7 @@ const Exam = () => {
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
           <div className="text-center">
             <img
+            loading="lazy"
               src={errorIllustation}
               alt="404"
               className="w-[200px] h-[200px] mx-auto mb-4"

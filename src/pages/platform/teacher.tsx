@@ -29,6 +29,7 @@ import AuthModal from "@/layout/platform/navbar/authModal";
 import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TeacherProfile: React.FC = () => {
   const navigate = useNavigate();
@@ -43,8 +44,9 @@ const TeacherProfile: React.FC = () => {
   // Get Teacher
   const { data, isLoading } = useCustomQuery(
     `/training/students/teacher/${id}/`,
-    ["teachers"]
+    ["teachers", id]
   );
+  const queryClient = useQueryClient();
   // Handle Download
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
@@ -119,7 +121,7 @@ const TeacherProfile: React.FC = () => {
 
   // POST ACTIVATION
   const { mutateAsync: postActivation } = useCustomPost(
-    "/training/students/activate-course/",
+    "/training/students/course/enroll/",
     ["postActivation"]
   );
   const handleCourseActivation = (course: any) => {
@@ -127,17 +129,24 @@ const TeacherProfile: React.FC = () => {
     setShowActivationModal(true);
   };
   const handleActivationSubmit = async () => {
+    const addCourse = {
+      course_id: selectedCourse?.id,
+      generated_code: activationCode,
+    };
+
     try {
-      await postActivation(activationCode);
+      const response = await postActivation(addCourse);
+      console.log("response", response);
       setShowActivationModal(false);
       setActivationCode("");
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
       toast.success("تم تفعيل الدورة بنجاح! 🎉");
     } catch (error: any) {
       toast.error(error?.response?.data?.error);
     }
   };
   const handleCourseClick = (course: any) => {
-    if (course?.is_enrolled || course?.is_free) {
+    if (course?.is_enrolled) {
       if (!isMoblieOrTablet) {
         if (isLoggedIn) {
           navigate(`/coursePage/${course?.id}`);
@@ -209,6 +218,7 @@ const TeacherProfile: React.FC = () => {
     >
       <div className="relative">
         <img
+          loading="lazy"
           src={
             course?.image ||
             "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -272,10 +282,23 @@ const TeacherProfile: React.FC = () => {
 
         <button
           onClick={() => handleCourseClick(course)}
-          className="w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+          className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
+            course?.is_enrolled
+              ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+              : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
+          }`}
         >
-          <Play className="w-5 h-5" />
-          <span>دخول الدورة</span>
+          {course?.is_enrolled ? (
+            <>
+              <Play className="w-5 h-5" />
+              <span>دخول الدورة</span>
+            </>
+          ) : (
+            <>
+              <CreditCard className="w-5 h-5" />
+              <span>تفعيل الدورة</span>
+            </>
+          )}
         </button>
       </div>
     </div>
@@ -287,6 +310,7 @@ const TeacherProfile: React.FC = () => {
     >
       <div className="relative">
         <img
+          loading="lazy"
           src={
             course?.image ||
             "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -308,7 +332,7 @@ const TeacherProfile: React.FC = () => {
           )}
         </div>
         <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-          {course?.price} دينار
+          {course?.card_price?.price} دينار
         </div>
       </div>
 
@@ -440,11 +464,12 @@ const TeacherProfile: React.FC = () => {
   const renderBooksesCard = (book: any) => (
     <>
       <div
-        key={book?.id}
+        key={book?.name}
         className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
       >
         <div className="relative">
           <img
+            loading="lazy"
             src={
               book?.image ||
               "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -515,6 +540,7 @@ const TeacherProfile: React.FC = () => {
       >
         <div className="relative">
           <img
+            loading="lazy"
             src={
               question?.image ||
               "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -667,6 +693,7 @@ const TeacherProfile: React.FC = () => {
             <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
               <div className="relative">
                 <img
+                  loading="lazy"
                   src={
                     teacherData?.image ||
                     "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -757,6 +784,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -776,6 +804,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -795,6 +824,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -813,6 +843,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -831,6 +862,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -850,6 +882,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -881,35 +914,49 @@ const TeacherProfile: React.FC = () => {
               <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-700 font-medium">سعر الدورة:</span>
-                  <span className="text-2xl font-bold text-orange-600">
-                    {selectedCourse?.price} دينار
-                  </span>
+                  {selectedCourse?.card_price?.price ? (
+                    <span className="text-2xl font-bold text-orange-600">
+                      {selectedCourse?.card_price?.price} دينار
+                    </span>
+                  ) : (
+                    <span className="text-2xl font-bold text-orange-600">
+                      مجانا
+                    </span>
+                  )}
                 </div>
                 <div className="text-sm text-gray-600">
                   <p>• {selectedCourse?.lessons} درس تفاعلي</p>
-                  <p>• مدة الدورة: {selectedCourse?.duration}</p>
+                  <p>• مدة الدورة: {selectedCourse?.time_in_hours} ساعة</p>
                   <p>• دعم فني مستمر</p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    كود تفعيل البطاقة
-                  </label>
-                  <input
-                    type="text"
-                    value={activationCode}
-                    onChange={(e) => setActivationCode(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
-                    placeholder="أدخل كود التفعيل"
-                  />
+                  {!selectedCourse?.is_free && (
+                    <>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        كود تفعيل البطاقة
+                      </label>
+                      <input
+                        type="text"
+                        value={activationCode}
+                        onChange={(e) => {
+                          setActivationCode(e.target.value);
+                        }}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
+                        placeholder="أدخل كود التفعيل"
+                      />
+                    </>
+                  )}
                 </div>
 
                 <div className="flex space-x-3">
                   <button
                     onClick={handleActivationSubmit}
-                    disabled={!activationCode.trim()}
+                    disabled={
+                      !selectedCourse?.is_free && !activationCode.trim()
+                    }
                     className="cursor-pointer flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     تفعيل الدورة

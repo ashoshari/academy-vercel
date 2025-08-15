@@ -32,8 +32,9 @@ import {
   XSquare,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost
-  // , useCustomUpdate 
+import {
+  useCustomPost,
+  // , useCustomUpdate
 } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
@@ -338,6 +339,7 @@ const resourcessPage = () => {
         <div className="relative h-32 bg-gray-50 flex items-center justify-center">
           {resource?.image ? (
             <img
+              loading="lazy"
               src={resource?.image}
               alt={resource?.title}
               className="w-full h-full object-cover"
@@ -543,6 +545,7 @@ const resourcessPage = () => {
                       }}
                     />
                     <img
+                      loading="lazy"
                       src={URL.createObjectURL(uploadResources?.image)}
                       className="h-[200px] w-[250px] object-cover rounded-lg"
                     />

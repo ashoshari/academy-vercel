@@ -422,6 +422,7 @@ const FilesPage = () => {
         <div className="relative h-32 bg-gray-50 flex items-center justify-center">
           {file.thumbnail ? (
             <img
+              loading="lazy"
               src={file.thumbnail}
               alt={file.name}
               className="w-full h-full object-cover"
@@ -628,7 +629,7 @@ const FilesPage = () => {
                     <button
                       onClick={() => {
                         const newFiles = uploadFiles.files.filter(
-                          (_:any, i:any) => i !== index
+                          (_: any, i: any) => i !== index
                         );
                         setUploadFiles({ ...uploadFiles, files: newFiles });
                       }}
