@@ -23,12 +23,11 @@ const AllCourses = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const numberOfCourses = 9;
 
   // GET MY COURSES
   const { data } = useCustomQuery(
-    `/training/students/my-courses/?page_size=${numberOfCourses}&page=${page}`,
-    ["myAllCourses", numberOfCourses, page]
+    `/training/students/my-courses/?page=${page}`,
+    ["myAllCourses", page]
   );
   const paginationData = data?.my_courses?.pagination;
   const myCoursesData = data?.my_courses?.data;

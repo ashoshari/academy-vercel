@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import {
-  Plus,
+  // Plus,
   Search,
-  Edit,
+  // Edit,
   Trash2,
   Eye,
   Download,
   Upload,
-  ArrowLeft,
+  // ArrowLeft,
   Folder,
   FolderOpen,
   File,
@@ -17,34 +17,34 @@ import {
   FileAudio,
   Archive,
   HardDrive,
-  Cloud,
-  Link,
-  Copy,
-  Move,
+  // Cloud,
+  // Link,
+  // Copy,
+  // Move,
   Share,
   Lock,
   Unlock,
-  Calendar,
-  User,
-  Hash,
-  Filter,
+  // Calendar,
+  // User,
+  // Hash,
+  // Filter,
   Grid,
   List,
-  SortAsc,
-  SortDesc,
-  MoreVertical,
+  // SortAsc,
+  // SortDesc,
+  // MoreVertical,
   X,
-  Save,
+  // Save,
   FolderPlus,
   UploadCloud,
   ExternalLink,
-  Info,
-  Settings,
+  // Info,
+  // Settings,
   Star,
-  Tag,
-  Clock,
-  CheckCircle,
-  AlertCircle,
+  // Tag,
+  // Clock,
+  // CheckCircle,
+  // AlertCircle,
 } from "lucide-react";
 
 export interface FileItem {
@@ -93,11 +93,11 @@ export interface FileStats {
 }
 
 const FilesPage = () => {
-  const [currentView, setCurrentView] = useState<
-    "list" | "upload" | "create-folder"
-  >("list");
+  // const [currentView, setCurrentView] = useState<
+  //   "list" | "upload" | "create-folder"
+  // >("list");
   const [currentPath, setCurrentPath] = useState<number | null>(null);
-  const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
+  // const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [fileTypeFilter, setFileTypeFilter] = useState<
     "all" | "folder" | "document" | "image" | "video" | "audio" | "archive"
@@ -114,158 +114,8 @@ const FilesPage = () => {
   const [showCreateFolderModal, setShowCreateFolderModal] = useState(false);
 
   // Sample files data
-  const [files, setFiles] = useState<FileItem[]>([
-    {
-      id: 1,
-      name: "مواد الرياضيات",
-      type: "folder",
-      size: 0,
-      parentId: null,
-      path: "/مواد الرياضيات",
-      isPublic: true,
-      isShared: false,
-      isFavorite: false,
-      description: "مجلد يحتوي على جميع مواد الرياضيات",
-      tags: ["رياضيات", "تعليم"],
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      uploadedBy: "د. أحمد محمد",
-      uploadedAt: "2024-01-15",
-      lastModified: "2024-01-20",
-      downloadCount: 0,
-      accessLevel: "students",
-    },
-    {
-      id: 2,
-      name: "كتاب التفاضل والتكامل.pdf",
-      type: "file",
-      fileType: "document",
-      extension: "pdf",
-      size: 15728640, // 15 MB
-      url: "https://example.com/files/calculus-book.pdf",
-      parentId: 1,
-      path: "/مواد الرياضيات/كتاب التفاضل والتكامل.pdf",
-      isPublic: true,
-      isShared: true,
-      isFavorite: true,
-      description: "كتاب شامل في التفاضل والتكامل للمرحلة الثانوية",
-      tags: ["تفاضل", "تكامل", "كتاب", "pdf"],
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      uploadedBy: "د. أحمد محمد",
-      uploadedAt: "2024-01-15",
-      lastModified: "2024-01-18",
-      downloadCount: 156,
-      accessLevel: "students",
-      thumbnail:
-        "https://images.pexels.com/photos/159581/dictionary-reference-book-learning-meaning-159581.jpeg?auto=compress&cs=tinysrgb&w=200",
-      metadata: {
-        pages: 245,
-      },
-    },
-    {
-      id: 3,
-      name: "شرح المعادلات التفاضلية.mp4",
-      type: "file",
-      fileType: "video",
-      extension: "mp4",
-      size: 104857600, // 100 MB
-      url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-      parentId: 1,
-      path: "/مواد الرياضيات/شرح المعادلات التفاضلية.mp4",
-      isPublic: false,
-      isShared: false,
-      isFavorite: false,
-      description: "فيديو تعليمي يشرح المعادلات التفاضلية بطريقة مبسطة",
-      tags: ["فيديو", "معادلات", "تفاضلية", "شرح"],
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      uploadedBy: "د. أحمد محمد",
-      uploadedAt: "2024-01-16",
-      lastModified: "2024-01-16",
-      downloadCount: 89,
-      accessLevel: "students",
-      expiryDate: "2024-12-31",
-      thumbnail:
-        "https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=200",
-      metadata: {
-        duration: 1800, // 30 minutes
-        dimensions: { width: 1280, height: 720 },
-      },
-    },
-    {
-      id: 4,
-      name: "مواد الفيزياء",
-      type: "folder",
-      size: 0,
-      parentId: null,
-      path: "/مواد الفيزياء",
-      isPublic: true,
-      isShared: false,
-      isFavorite: false,
-      description: "مجلد يحتوي على جميع مواد الفيزياء",
-      tags: ["فيزياء", "تعليم"],
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      uploadedBy: "م. خالد سالم",
-      uploadedAt: "2024-01-12",
-      lastModified: "2024-01-19",
-      downloadCount: 0,
-      accessLevel: "students",
-    },
-    {
-      id: 5,
-      name: "تجارب الفيزياء.zip",
-      type: "file",
-      fileType: "archive",
-      extension: "zip",
-      size: 52428800, // 50 MB
-      url: "https://example.com/files/physics-experiments.zip",
-      parentId: 4,
-      path: "/مواد الفيزياء/تجارب الفيزياء.zip",
-      isPublic: true,
-      isShared: true,
-      isFavorite: false,
-      description: "مجموعة من التجارب العملية في الفيزياء",
-      tags: ["تجارب", "فيزياء", "عملي", "zip"],
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      uploadedBy: "م. خالد سالم",
-      uploadedAt: "2024-01-12",
-      lastModified: "2024-01-15",
-      downloadCount: 67,
-      accessLevel: "students",
-    },
-    {
-      id: 6,
-      name: "صورة الذرة.png",
-      type: "file",
-      fileType: "image",
-      extension: "png",
-      size: 2097152, // 2 MB
-      url: "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&w=800",
-      parentId: 4,
-      path: "/مواد الفيزياء/صورة الذرة.png",
-      isPublic: true,
-      isShared: false,
-      isFavorite: true,
-      description: "رسم توضيحي لتركيب الذرة",
-      tags: ["ذرة", "صورة", "توضيحي"],
-      targetedSections: [1],
-      targetedSubsections: [2, 3],
-      uploadedBy: "م. خالد سالم",
-      uploadedAt: "2024-01-14",
-      lastModified: "2024-01-14",
-      downloadCount: 234,
-      accessLevel: "public",
-      thumbnail:
-        "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&w=200",
-      metadata: {
-        dimensions: { width: 1920, height: 1080 },
-      },
-    },
-  ]);
 
+  const [files, setFiles] = useState<any>();
   const [newFolder, setNewFolder] = useState({
     name: "",
     description: "",
@@ -275,7 +125,7 @@ const FilesPage = () => {
   });
 
   const [uploadFiles, setUploadFiles] = useState({
-    files: [] as File[],
+    files: [] as any,
     description: "",
     accessLevel: "students" as FileItem["accessLevel"],
     targetedSections: [] as number[],
@@ -285,15 +135,17 @@ const FilesPage = () => {
   });
 
   // Get current folder files
-  const currentFiles = files.filter((file) => file.parentId === currentPath);
+  const currentFiles = files?.filter(
+    (file: any) => file.parentId === currentPath
+  );
 
   // Filter and sort files
   const filteredFiles = currentFiles
-    .filter((file) => {
+    ?.filter((file: any) => {
       const matchesSearch =
         file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         file.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        file.tags.some((tag) =>
+        file.tags.some((tag: any) =>
           tag.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
@@ -307,7 +159,7 @@ const FilesPage = () => {
 
       return matchesSearch && matchesType && matchesAccess;
     })
-    .sort((a, b) => {
+    .sort((a: any, b: any) => {
       let comparison = 0;
 
       // Folders first
@@ -336,16 +188,19 @@ const FilesPage = () => {
 
   // Calculate stats
   const stats: FileStats = {
-    totalFiles: files.filter((f) => f.type === "file").length,
-    totalSize: files.reduce((sum, f) => sum + f.size, 0),
-    totalDownloads: files.reduce((sum, f) => sum + f.downloadCount, 0),
+    totalFiles: files?.filter((f: any) => f.type === "file").length,
+    totalSize: files?.reduce((sum: any, f: any) => sum + f.size, 0),
+    totalDownloads: files?.reduce(
+      (sum: any, f: any) => sum + f.downloadCount,
+      0
+    ),
     fileTypes: {
-      documents: files.filter((f) => f.fileType === "document").length,
-      images: files.filter((f) => f.fileType === "image").length,
-      videos: files.filter((f) => f.fileType === "video").length,
-      audio: files.filter((f) => f.fileType === "audio").length,
-      archives: files.filter((f) => f.fileType === "archive").length,
-      others: files.filter((f) => f.fileType === "other").length,
+      documents: files?.filter((f: any) => f.fileType === "document").length,
+      images: files?.filter((f: any) => f.fileType === "image").length,
+      videos: files?.filter((f: any) => f.fileType === "video").length,
+      audio: files?.filter((f: any) => f.fileType === "audio").length,
+      archives: files?.filter((f: any) => f.fileType === "archive").length,
+      others: files?.filter((f: any) => f.fileType === "other").length,
     },
   };
 
@@ -423,7 +278,9 @@ const FilesPage = () => {
         size: 0,
         parentId: currentPath,
         path: currentPath
-          ? `${files.find((f) => f.id === currentPath)?.path}/${newFolder.name}`
+          ? `${files.find((f: any) => f.id === currentPath)?.path}/${
+              newFolder.name
+            }`
           : `/${newFolder.name}`,
         isPublic: newFolder.accessLevel === "public",
         isShared: false,
@@ -453,7 +310,7 @@ const FilesPage = () => {
 
   const handleFileUpload = () => {
     // Simulate file upload
-    uploadFiles.files.forEach((file, index) => {
+    uploadFiles.files.forEach((file: any, index: any) => {
       const fileItem: FileItem = {
         id: Date.now() + index,
         name: file.name,
@@ -464,7 +321,7 @@ const FilesPage = () => {
         url: URL.createObjectURL(file),
         parentId: currentPath,
         path: currentPath
-          ? `${files.find((f) => f.id === currentPath)?.path}/${file.name}`
+          ? `${files.find((f: any) => f.id === currentPath)?.path}/${file.name}`
           : `/${file.name}`,
         isPublic: uploadFiles.accessLevel === "public",
         isShared: false,
@@ -481,7 +338,7 @@ const FilesPage = () => {
         expiryDate: uploadFiles.expiryDate || undefined,
       };
 
-      setFiles((prev) => [...prev, fileItem]);
+      setFiles((prev: any) => [...prev, fileItem]);
     });
 
     setUploadFiles({
@@ -516,9 +373,9 @@ const FilesPage = () => {
     if (confirm("هل أنت متأكد من حذف هذا العنصر؟")) {
       // Delete file and all its children if it's a folder
       const deleteRecursively = (targetId: number) => {
-        const children = files.filter((f) => f.parentId === targetId);
-        children.forEach((child) => deleteRecursively(child.id));
-        setFiles((prev) => prev.filter((f) => f.id !== targetId));
+        const children = files.filter((f: any) => f.parentId === targetId);
+        children.forEach((child: any) => deleteRecursively(child.id));
+        setFiles((prev: any) => prev.filter((f: any) => f.id !== targetId));
       };
 
       deleteRecursively(id);
@@ -527,7 +384,7 @@ const FilesPage = () => {
 
   const toggleFileFavorite = (id: number) => {
     setFiles(
-      files.map((file) =>
+      files.map((file: any) =>
         file.id === id ? { ...file, isFavorite: !file.isFavorite } : file
       )
     );
@@ -535,7 +392,7 @@ const FilesPage = () => {
 
   const navigateToFolder = (folderId: number | null) => {
     setCurrentPath(folderId);
-    setSelectedFiles([]);
+    // setSelectedFiles([]);
   };
 
   const getBreadcrumbs = () => {
@@ -543,7 +400,7 @@ const FilesPage = () => {
     let currentId = currentPath;
 
     while (currentId !== null) {
-      const folder = files.find((f) => f.id === currentId);
+      const folder = files.find((f: any) => f.id === currentId);
       if (folder) {
         breadcrumbs.unshift(folder);
         currentId = folder.parentId;
@@ -756,7 +613,7 @@ const FilesPage = () => {
                 الملفات المحددة ({uploadFiles.files.length})
               </h3>
               <div className="space-y-2 max-h-32 overflow-y-auto">
-                {uploadFiles.files.map((file, index) => (
+                {uploadFiles.files.map((file: any, index: any) => (
                   <div
                     key={index}
                     className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
@@ -771,7 +628,7 @@ const FilesPage = () => {
                     <button
                       onClick={() => {
                         const newFiles = uploadFiles.files.filter(
-                          (_, i) => i !== index
+                          (_:any, i:any) => i !== index
                         );
                         setUploadFiles({ ...uploadFiles, files: newFiles });
                       }}
@@ -1022,7 +879,7 @@ const FilesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">المجلدات</p>
               <p className="text-3xl font-bold text-purple-600">
-                {files.filter((f) => f.type === "folder").length}
+                {files?.filter((f: any) => f.type === "folder").length}
               </p>
             </div>
             <Folder className="w-12 h-12 text-purple-500" />
@@ -1040,7 +897,7 @@ const FilesPage = () => {
             >
               الرئيسية
             </button>
-            {getBreadcrumbs().map((folder, index) => (
+            {getBreadcrumbs().map((folder) => (
               <React.Fragment key={folder.id}>
                 <span className="text-gray-400">/</span>
                 <button
@@ -1146,11 +1003,11 @@ const FilesPage = () => {
       {/* Files Grid/List */}
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredFiles.map((file) => (
+          {filteredFiles?.map((file: any) => (
             <FileCard key={file.id} file={file} />
           ))}
 
-          {filteredFiles.length === 0 && (
+          {filteredFiles?.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
               <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
@@ -1221,7 +1078,7 @@ const FilesPage = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredFiles.map((file) => {
+                {filteredFiles.map((file: any) => {
                   const IconComponent = getFileIcon(file);
                   const iconColor = getFileTypeColor(file);
 

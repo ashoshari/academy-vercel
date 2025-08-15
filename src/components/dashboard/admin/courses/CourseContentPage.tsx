@@ -777,9 +777,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   لا يوجد محتوى
                 </h3>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">
-                  {contentTree?.length > 0 ? "لا يوجد محتوى" : "ل يوجد محتوى"}
-                </h3>
                 <p className="text-gray-500 mb-6">
                   ابدأ بإضافة فصول ووحدات ودروس للدورة
                 </p>

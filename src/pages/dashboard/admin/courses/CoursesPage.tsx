@@ -25,11 +25,13 @@ import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
 import Loader from "@/components/core/Loader";
+import { useQueryClient } from "@tanstack/react-query";
 const CoursesPage = () => {
   const [currentView, setCurrentView] = useState<
     "list" | "create" | "edit" | "content"
   >("list");
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  console.log("selectedCourse", selectedCourse);
   const [searchTerm, setSearchTerm] = useState("");
   const [teacherFilter, setTeacherFilter] = useState<any>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>("");
@@ -42,11 +44,11 @@ const CoursesPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
   const [courseId, setCourseId] = useState<any>(null);
   const [page, setPage] = useState(1);
-  const numberOfCourses = 9;
+  const queryClient = useQueryClient();
 
   // GET courses
   const { data, isLoading } = useCustomQuery(
-    `/training/admin/courses/?page_size=${numberOfCourses}&page=${page}`,
+    `/training/admin/courses/?page=${page}`,
     ["courses", page]
   );
   const courseData = data?.data;
@@ -70,6 +72,9 @@ const CoursesPage = () => {
     ["specializations"]
   );
 
+  // GET Codes
+  const { data: cars } = useCustomQuery("/cards/", ["cards"]);
+
   // GET Specializations_material
   const { data: specialization_material } = useCustomQuery(
     "/training/admin/specialization-materials/",
@@ -78,7 +83,7 @@ const CoursesPage = () => {
 
   const specializationData = specializations?.data;
   const specialization_materialData = specialization_material?.data;
-  console.log("specialization_materialData", specialization_materialData);
+  const cardsData = cars?.data;
 
   const [courses, setCourses] = useState<any>(courseData?.data);
   useEffect(() => {
@@ -133,10 +138,47 @@ const CoursesPage = () => {
     ["postCourses"]
   );
   const handleCreateCourse = async () => {
+    const formData = new FormData();
+    newCourse.name && formData.append("name", newCourse.name);
+    newCourse.short_description &&
+      formData.append("short_description", newCourse.short_description);
+    newCourse.long_description &&
+      formData.append("long_description", newCourse.long_description);
+    newCourse.teacher && formData.append("teacher", newCourse.teacher);
+    newCourse.time_in_hours &&
+      formData.append("time_in_hours", newCourse.time_in_hours);
+    newCourse.specialization &&
+      formData.append("specialization", newCourse.specialization);
+    newCourse.specialization_material &&
+      formData.append(
+        "specialization_material",
+        newCourse.specialization_material
+      );
+    newCourse.maximum_number_of_students &&
+      formData.append(
+        "maximum_number_of_students",
+        newCourse.maximum_number_of_students
+      );
+
+    newCourse.card && formData.append("card_price", newCourse.card || null);
+    newCourse.is_free && formData.append("is_free", newCourse.is_free || false);
+    newCourse.is_published &&
+      formData.append("is_published", newCourse.is_published || false);
+    newCourse.is_special &&
+      formData.append("is_special", newCourse.is_special || false);
+    newCourse.level && formData.append("level", newCourse?.level);
+    newCourse.start_date && formData.append("start_date", newCourse.start_date);
+    newCourse.end_date && formData.append("end_date", newCourse.end_date);
+    if (newCourse.image instanceof File && newCourse.image) {
+      formData.append("image", newCourse.image);
+    }
     try {
-      const res = await createCourse(newCourse);
+      const res = await createCourse(formData);
       toast.success(res.message ?? "تم الحفظ بنجاح");
+      setNewCourse({});
       setCurrentView("list");
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      queryClient.invalidateQueries({ queryKey: ["courses-stats"] });
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
     }
@@ -167,6 +209,7 @@ const CoursesPage = () => {
         });
         const res = await editCourse(formData);
         toast.success(res.message ?? "تم الحفظ بنجاح");
+        queryClient.invalidateQueries({ queryKey: ["courses"] });
         setCurrentView("list");
       }
     } catch (err: any) {
@@ -357,7 +400,9 @@ const CoursesPage = () => {
           </div> */}
           <div className="text-center col-span-2">
             <div className="text-lg font-bold text-green-600">
-              {course.is_free ? "مجاني" : `${course?.price} د.أ`}
+              {course.is_free
+                ? "مجاني"
+                : `${course?.card_price?.price || 0} د.أ`}
             </div>
             <div className="text-xs text-gray-500">السعر</div>
           </div>
@@ -569,7 +614,7 @@ const CoursesPage = () => {
 
               {/* Teacher and specialization */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     المعلم *
                   </label>
@@ -591,21 +636,31 @@ const CoursesPage = () => {
                     ))}
                   </select>
                 </div>
-
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    التصنيف
+                    التخصص *
                   </label>
-                  <input
-                    type="text"
-                    value={newCourse?.category || ""}
+                  <select
+                    value={newCourse?.specialization || ""}
                     onChange={(e) =>
-                      setNewCourse({ ...newCourse, category: e.target.value })
+                      setNewCourse({
+                        ...newCourse,
+                        specialization: e.target.value,
+                      })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="مثل: علمي ، ادبي"
-                  />
-                </div>
+                  >
+                    <option value="">جميع التخصصات</option>
+                    {specializationData?.map((specialization: any) => (
+                      <option
+                        key={specialization?.id}
+                        value={specialization?.name}
+                      >
+                        {specialization?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div> */}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -650,7 +705,7 @@ const CoursesPage = () => {
                         time_in_hours: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="40"
                     min="0"
                   />
@@ -659,21 +714,21 @@ const CoursesPage = () => {
 
               <div className="flex flex-col gap-2">
                 <label
-                  htmlFor="fileUpload"
+                  htmlFor="imageUpload"
                   className="block text-sm font-medium text-gray-700"
                 >
                   الصورة المصغرة
                 </label>
                 <div className="flex items-center gap-2">
                   <label
-                    htmlFor="fileUpload"
+                    htmlFor="imageUpload"
                     className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
                   >
                     اختر الصورة المصغرة
                   </label>
 
                   <input
-                    id="fileUpload"
+                    id="imageUpload"
                     type="file"
                     className="invisible w-0 h-0"
                     onChange={(e) => {
@@ -724,7 +779,11 @@ const CoursesPage = () => {
                       name="pricing"
                       checked={newCourse.is_free === true}
                       onChange={() =>
-                        setNewCourse({ ...newCourse, is_free: true, price: 0 })
+                        setNewCourse({
+                          ...newCourse,
+                          is_free: true,
+                          card_price: 0,
+                        })
                       }
                       className="text-orange-600 focus:ring-orange-500"
                     />
@@ -734,7 +793,7 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={newCourse.is_free === false}
+                      checked={newCourse?.is_free === false}
                       onChange={() =>
                         setNewCourse({ ...newCourse, is_free: false })
                       }
@@ -745,7 +804,7 @@ const CoursesPage = () => {
                 </div>
                 {newCourse?.is_free === false && (
                   <div className="mt-3">
-                    <input
+                    {/* <input
                       type="number"
                       value={newCourse?.price || ""}
                       onChange={(e) =>
@@ -758,7 +817,36 @@ const CoursesPage = () => {
                       placeholder="السعر بالدينار الأردني"
                       min="0"
                       step="0.01"
-                    />
+                    /> */}
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      {cardsData?.map((card: any) => {
+                        return (
+                          card?.is_active && (
+                            <label
+                              key={card?.id}
+                              className="flex items-center gap-2"
+                            >
+                              <input
+                                type="radio"
+                                name="card"
+                                value={card?.id}
+                                checked={newCourse.card === card?.id}
+                                onChange={(e) => {
+                                  setNewCourse({
+                                    ...newCourse,
+                                    card: e.target.value,
+                                  });
+                                }}
+                                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                              />
+                              <span className="text-sm">
+                                {card?.price} د.ا.
+                              </span>
+                            </label>
+                          )
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
@@ -794,25 +882,25 @@ const CoursesPage = () => {
                 </div>
               </div>
 
-              {/* Max Students */}
-              {/* <div>
+              {/* Maximum Students */}
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الحد الأقصى للطلاب
                 </label>
                 <input
                   type="number"
-                  value={newCourse.maxStudents || ""}
+                  value={newCourse?.maximum_number_of_students || 0}
                   onChange={(e) =>
                     setNewCourse({
                       ...newCourse,
-                      maxStudents: parseInt(e.target.value) || 0,
+                      maximum_number_of_students: parseInt(e.target.value) || 0,
                     })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="100"
                   min="1"
                 />
-              </div> */}
+              </div>
 
               {/* Targeted Sections */}
               <div>
@@ -826,32 +914,17 @@ const CoursesPage = () => {
                       className="flex items-center gap-2"
                     >
                       <input
-                        type="checkbox"
+                        type="radio"
+                        name="specialization" // Same name for all radio buttons
+                        value={specialization?.id}
                         checked={
-                          newCourse.specialization?.includes(
-                            specialization?.id
-                          ) || false
+                          newCourse.specialization === specialization?.id
                         }
                         onChange={(e) => {
-                          const currentcurrentSpecialization =
-                            newCourse.specialization || [];
-                          if (e.target.checked) {
-                            setNewCourse({
-                              ...newCourse,
-                              specialization: [
-                                ...currentcurrentSpecialization,
-                                specialization?.id,
-                              ],
-                            });
-                          } else {
-                            setNewCourse({
-                              ...newCourse,
-                              specialization:
-                                currentcurrentSpecialization.filter(
-                                  (id: any) => id !== specialization?.id
-                                ),
-                            });
-                          }
+                          setNewCourse({
+                            ...newCourse,
+                            specialization: e.target.value,
+                          });
                         }}
                         className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                       />
@@ -874,33 +947,18 @@ const CoursesPage = () => {
                         className="flex items-center gap-2"
                       >
                         <input
-                          type="checkbox"
+                          type="radio"
+                          name="specialization_material" // Same name for all radio buttons
+                          value={specialization_material?.id}
                           checked={
-                            newCourse.specialization_material?.includes(
-                              specialization_material?.id
-                            ) || false
+                            newCourse.specialization_material ===
+                            specialization_material?.id
                           }
                           onChange={(e) => {
-                            const currentSpecialization_material =
-                              newCourse.specialization_material || [];
-                            if (e.target.checked) {
-                              setNewCourse({
-                                ...newCourse,
-                                specialization_material: [
-                                  ...currentSpecialization_material,
-                                  specialization_material?.id,
-                                ],
-                              });
-                            } else {
-                              setNewCourse({
-                                ...newCourse,
-                                specialization_material:
-                                  currentSpecialization_material.filter(
-                                    (id: any) =>
-                                      id !== specialization_material?.id
-                                  ),
-                              });
-                            }
+                            setNewCourse({
+                              ...newCourse,
+                              specialization_material: e.target.value,
+                            });
                           }}
                           className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                         />
@@ -1079,12 +1137,12 @@ const CoursesPage = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     المعلم *
                   </label>
                   <select
-                    value={selectedCourse?.teacher}
+                    value={selectedCourse?.teacher.id}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
@@ -1104,13 +1162,13 @@ const CoursesPage = () => {
                   </select>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     التصنيف
                   </label>
                   <input
                     type="text"
-                    value={selectedCourse?.specialization.name}
+                    value={selectedCourse?.specialization}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
@@ -1120,7 +1178,7 @@ const CoursesPage = () => {
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="مثل:  علمي ، أدبي"
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -1129,7 +1187,7 @@ const CoursesPage = () => {
                     المستوى
                   </label>
                   <select
-                    value={selectedCourse?.level}
+                    value={selectedCourse?.level?.id}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
@@ -1138,6 +1196,7 @@ const CoursesPage = () => {
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
+                    <option value="">اختر المستوى</option>
                     <option value="d72e95dd-dc4c-4495-8ec5-cea7e7c5a0c3">
                       مبتدئ
                     </option>
@@ -1163,7 +1222,7 @@ const CoursesPage = () => {
                         time_in_hours: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="40"
                     min="0"
                   />
@@ -1351,6 +1410,75 @@ const CoursesPage = () => {
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   />
+                </div>
+              </div>
+
+              {/* Targeted Sections */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  التخصصات المستهدفة
+                </label>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {specializationData?.map((specialization: any) => (
+                    <label
+                      key={specialization?.id}
+                      className="flex items-center gap-2"
+                    >
+                      <input
+                        type="radio"
+                        name="specialization" // Same name for all radio buttons
+                        value={specialization?.id}
+                        checked={
+                          selectedCourse?.specialization === specialization?.id
+                        }
+                        onChange={(e) => {
+                          setSelectedCourse({
+                            ...selectedCourse,
+                            specialization: e.target.value,
+                          });
+                        }}
+                        className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                      />
+                      <span className="text-sm">{specialization?.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Targeted Subsections */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  الأقسام الفرعية المستهدفة
+                </label>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {specialization_materialData?.map(
+                    (specialization_material: any) => (
+                      <label
+                        key={specialization_material?.id}
+                        className="flex items-center gap-2"
+                      >
+                        <input
+                          type="radio"
+                          name="specialization_material" // Same name for all radio buttons
+                          value={specialization_material?.id}
+                          checked={
+                            selectedCourse.specialization_material ===
+                            specialization_material?.id
+                          }
+                          onChange={(e) => {
+                            setSelectedCourse({
+                              ...selectedCourse,
+                              specialization_material: e.target.value,
+                            });
+                          }}
+                          className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                        />
+                        <span className="text-sm">
+                          {specialization_material?.name}
+                        </span>
+                      </label>
+                    )
+                  )}
                 </div>
               </div>
 

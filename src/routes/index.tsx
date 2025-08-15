@@ -43,7 +43,8 @@ import AddStudentPage from "@/pages/dashboard/admin/students/AddStudentPage";
 import EditStudentPage from "@/pages/dashboard/admin/students/EditStudentPage";
 import StudentDetailsPage from "@/pages/dashboard/admin/students/StudentDetailsPage";
 import ExamsPage from "@/pages/dashboard/admin/exams/ExamsPage";
-import FilesPage from "@/pages/dashboard/admin/FilesPage";
+import FilesPageOld from "@/pages/dashboard/admin/FilesPage";
+import FilesPage from "@/pages/dashboard/admin/files/filesPage"
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -91,6 +92,7 @@ export default function AppRoutes() {
             {/* exams */}
 
             {/* files */}
+            <Route path="filesOld" element={<FilesPageOld />} />
             <Route path="files" element={<FilesPage />} />
             {/* files */}
 

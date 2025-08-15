@@ -21,7 +21,7 @@ import {
   Archive,
   Book,
 } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import useTokenStore from "@/store/platform/useToken";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
@@ -32,6 +32,7 @@ import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 
 const TeacherProfile: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const [activeTab, setActiveTab] = useState("free_courses");
   const [showActivationModal, setShowActivationModal] = useState(false);
@@ -41,7 +42,7 @@ const TeacherProfile: React.FC = () => {
 
   // Get Teacher
   const { data, isLoading } = useCustomQuery(
-    "/training/students/teacher/0bc3c31f-f4c8-4cc9-8e6e-006707650544/",
+    `/training/students/teacher/${id}/`,
     ["teachers"]
   );
   // Handle Download
