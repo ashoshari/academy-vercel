@@ -1,5 +1,9 @@
 import { useParams } from "react-router";
-import { Shield, Award, User } from "lucide-react";
+import {
+  Shield,
+  //  Award
+  User,
+} from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 
@@ -47,7 +51,9 @@ export default function TeacherDetailsPage() {
                 {selectedTeacher?.name}
               </h2>
               <p className="text-gray-600">
-                {selectedTeacher.materials.map((el: any) => el?.name).join(", ")}
+                {selectedTeacher.materials
+                  .map((el: any) => el?.name)
+                  .join(", ")}
               </p>
             </div>
           </div>
@@ -215,9 +221,7 @@ const Section = ({
 }) => (
   <div className="mb-6">
     <h3 className="font-bold text-gray-800 mb-4">{title}</h3>
-    <div className="bg-white border border-gray-200 rounded-lg">
-      {children}
-    </div>
+    <div className="bg-white border border-gray-200 rounded-lg">{children}</div>
   </div>
 );
 

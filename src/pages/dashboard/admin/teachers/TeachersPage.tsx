@@ -3,15 +3,15 @@ import {
   Plus,
   Search,
   Edit,
-  Trash2,
+  // Trash2,
   Eye,
   Users,
   Phone,
   Mail,
   Download,
   UserCheck,
-  BarChart3,
-  PieChart,
+  // BarChart3,
+  // PieChart,
   CheckCircle,
   XCircle,
   RefreshCw,
@@ -19,7 +19,7 @@ import {
   Check,
   ClipboardCopy,
   X,
-  Table,
+  // Table,
   Grid,
   Rows,
 } from "lucide-react";
@@ -105,15 +105,15 @@ const TeachersPage = () => {
     `/account/admin/teachers/${selectedTeacher?.id}/reset-password/`
   );
 
-  const handleDeleteTeacher = () => {
-    if (
-      confirm(
-        "هل أنت متأكد من حذف هذا المعلم؟ سيتم حذف جميع الدورات المرتبطة به."
-      )
-    ) {
-      // setTeachers(teachers.filter((teacher) => teacher.id !== id));
-    }
-  };
+  // const handleDeleteTeacher = () => {
+  //   if (
+  //     confirm(
+  //       "هل أنت متأكد من حذف هذا المعلم؟ سيتم حذف جميع الدورات المرتبطة به."
+  //     )
+  //   ) {
+  //     // setTeachers(teachers.filter((teacher) => teacher.id !== id));
+  //   }
+  // };
 
   const toggleTeacherStatus = () => {
     teacherStatus
