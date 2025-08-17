@@ -1311,7 +1311,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={selectedItem?.is_free}
+                    checked={selectedItem?.is_free ?? false}
                     onChange={(e) =>
                       setSelectedItem({
                         ...selectedItem,

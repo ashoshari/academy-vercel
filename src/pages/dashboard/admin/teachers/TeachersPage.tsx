@@ -19,6 +19,9 @@ import {
   Check,
   ClipboardCopy,
   X,
+  Table,
+  Grid,
+  Rows,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -26,6 +29,7 @@ import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useNavigate } from "react-router";
 import Pagination from "@/components/dashboard/core/Pagination";
+import Spinner from "@/components/dashboard/Spinner";
 
 export interface Teacher {
   id: number;
@@ -65,7 +69,7 @@ const TeachersPage = () => {
     page: 1,
   });
 
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "table">("table");
 
   const [copied, setCopied] = useState(false);
 
@@ -154,7 +158,7 @@ const TeachersPage = () => {
         teacher.name,
         teacher.email,
         teacher.mobile_number,
-        teacher?.materials?.map((el: any) => el).join(", "),
+        teacher?.materials?.map((el: any) => el?.name).join(", "),
         teacher.is_active ? "نشط" : "غير نشط",
         teacher.number_of_students_enrolled,
         teacher.number_of_courses_has,
@@ -190,8 +194,8 @@ const TeachersPage = () => {
             <h3 className="font-bold text-lg mb-1">{teacher.name}</h3>
 
             <p className="text-orange-100 text-sm">
-              {[teacher?.materials]
-                ?.map((material: any) => material)
+              {teacher?.materials
+                ?.map((material: any) => material?.name)
                 .join(", ")}
             </p>
 
@@ -319,13 +323,14 @@ const TeachersPage = () => {
               <Edit size={16} />
             </button>
 
-            <button
+            {/* Delete Teacher */}
+            {/* <button
               onClick={() => handleDeleteTeacher()}
-              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+              className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
               title="حذف المعلم"
             >
               <Trash2 size={16} />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -345,14 +350,14 @@ const TeachersPage = () => {
         <div className="flex gap-3">
           <button
             onClick={exportToExcel}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Download size={16} />
             تصدير Excel
           </button>
           <button
             onClick={() => navigate("/dashboard/teachers/add")}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة معلم
@@ -457,24 +462,24 @@ const TeachersPage = () => {
             {/* View Mode */}
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === "grid"
-                    ? "bg-orange-100 text-orange-600"
-                    : "text-gray-400 hover:bg-gray-100"
-                }`}
-              >
-                <BarChart3 size={16} />
-              </button>
-              <button
                 onClick={() => setViewMode("table")}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "table"
                     ? "bg-orange-100 text-orange-600"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
-                <PieChart size={16} />
+                <Rows size={16} />
+              </button>
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                  viewMode === "grid"
+                    ? "bg-orange-100 text-orange-600"
+                    : "text-gray-400 hover:bg-gray-100"
+                }`}
+              >
+                <Grid size={16} />
               </button>
             </div>
 
@@ -489,7 +494,11 @@ const TeachersPage = () => {
       </div>
 
       {/* Teachers Grid/Table */}
-      {viewMode === "grid" ? (
+      {dataTeachers.isLoading ? (
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500"/>
+        </div>
+      ) : viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dataTeachers?.data?.data.map((teacher: any) => (
             <TeacherCard key={teacher.id} teacher={teacher} />
@@ -505,7 +514,7 @@ const TeachersPage = () => {
               {
                 <button
                   onClick={() => navigate("/dashboard/teachers/add")}
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة معلم جديد
@@ -515,136 +524,142 @@ const TeachersPage = () => {
           )}
         </div>
       ) : (
-        // Table View
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
-          <div className="overflow-x-auto w-full">
-            <table className="w-full overflow-x-auto">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    المعلم
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    التخصص
-                  </th>
+        <>
+          {/* Table View */}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+            <div className="overflow-x-auto w-full">
+              <table className="w-full overflow-x-auto">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      المعلم
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      التخصص
+                    </th>
 
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الطلاب
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الدورات
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الحالة
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الإجراءات
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {dataTeachers?.data?.data?.map((teacher: any) => (
-                  <tr key={teacher.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        {teacher.image ? (
-                          <img
-                            src={teacher.image}
-                            alt={teacher.name}
-                            className="w-16 h-16 rounded-full border-2 border-white/20"
-                          />
-                        ) : (
-                          <User className="w-16 h-16 rounded-full border-2 border-white/20 p-3" />
-                        )}
-                        <div>
-                          <div className="font-medium text-gray-900">
-                            {teacher.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {teacher.email}
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الطلاب
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الدورات
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الحالة
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الإجراءات
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {dataTeachers?.data?.data?.map((teacher: any) => (
+                    <tr key={teacher.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          {teacher.image ? (
+                            <img
+                              src={teacher.image}
+                              alt={teacher.name}
+                              className="w-16 h-16 rounded-full border-2 border-white/20"
+                            />
+                          ) : (
+                            <User className="w-16 h-16 rounded-full border-2 border-white/20 p-3" />
+                          )}
+                          <div>
+                            <div className="font-medium text-gray-900">
+                              {teacher.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {teacher.email}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {teacher?.materials?.map((el: any) => el)?.join(", ") ||
-                        "غير محدد"}
-                    </td>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {teacher?.materials
+                          ?.map((el: any) => el?.name)
+                          ?.join(", ") || "غير محدد"}
+                      </td>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {teacher.number_of_students_enrolled}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {teacher.number_of_courses_has}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex gap-2">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            teacher.is_active
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {teacher.is_active ? "نشط" : "غير نشط"}
-                        </span>
-                        {/* {teacher.isVerified && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {teacher.number_of_students_enrolled}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {teacher.number_of_courses_has}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex gap-2">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              teacher.is_active
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {teacher.is_active ? "نشط" : "غير نشط"}
+                          </span>
+                          {/* {teacher.isVerified && (
                           <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                             مؤكد
                           </span>
                         )} */}
-                        {/* ??? */}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => {
-                            navigate(`/dashboard/teachers/${teacher.id}`);
-                          }}
-                          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                          title="عرض التفاصيل"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigate(`/dashboard/teachers/edit/${teacher.id}`);
-                          }}
-                          className="p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                          title="تعديل"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
+                          {/* ??? */}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              navigate(`/dashboard/teachers/${teacher.id}`);
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            title="عرض التفاصيل"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigate(
+                                `/dashboard/teachers/edit/${teacher.id}`
+                              );
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            title="تعديل"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          {/* <button
                           onClick={() => handleDeleteTeacher()}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
                           title="حذف"
                         >
                           <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        </button> */}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+          {/* {dataTeachers?.data?.pagination?.count} */}
+          <Pagination
+            currentPage={filters.page}
+            onPageChange={(page: any) =>
+              setFilters((prev) => ({ ...prev, page }))
+            }
+            count={dataTeachers?.data?.pagination?.count}
+          />
+        </>
       )}
-      {/* {dataTeachers?.data?.pagination?.count} */}
-      <Pagination
-        currentPage={filters.page}
-        onPageChange={(page: any) => setFilters((prev) => ({ ...prev, page }))}
-        count={dataTeachers?.data?.pagination?.count}
-      />
-
       {showPasswordModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
             <button
               onClick={() => setShowPasswordModal(false)}
-              className="absolute top-4 left-4 text-gray-500 hover:text-gray-800"
+              className="cursor-pointer absolute top-4 left-4 text-gray-500 hover:text-gray-800"
             >
               <X size={20} />
             </button>
@@ -659,7 +674,7 @@ const TeachersPage = () => {
               </span>
               <button
                 onClick={handleCopy}
-                className="ml-2 p-2 rounded hover:bg-gray-200 transition"
+                className="cursor-pointer ml-2 p-2 rounded hover:bg-gray-200 transition"
                 title="نسخ"
               >
                 {copied ? (
@@ -672,7 +687,7 @@ const TeachersPage = () => {
 
             <button
               onClick={() => setShowPasswordModal(false)}
-              className="w-full py-2 px-4 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold"
+              className="cursor-pointer w-full py-2 px-4 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold"
             >
               إغلاق
             </button>
