@@ -17,6 +17,7 @@ import {
   Layers,
   FolderTree,
   Upload,
+  Image as ImageIcon,
 } from "lucide-react";
 import AnimatedBackground from "@/components/login/AnimatedBackground";
 
@@ -32,7 +33,7 @@ const Layout = () => {
     { id: "courses", label: "الدورات", icon: BookOpen },
     { id: "exams", label: "الامتحانات", icon: BookOpen },
     { id: "files", label: "الملفات", icon: Upload },
-    // { id: "slider", label: "السلايدر", icon: Image },
+    { id: "slider", label: "السلايدر", icon: ImageIcon },
     { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
     { id: "sub-sections", label: "الأقسام الفرعية", icon: FolderTree },
     { id: "card-pricing", label: "أسعار البطاقات", icon: CreditCard },
