@@ -1,5 +1,9 @@
 import { useParams } from "react-router";
-import { Shield, Award, User } from "lucide-react";
+import {
+  Shield,
+  //  Award
+  User,
+} from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 
@@ -19,7 +23,7 @@ export default function TeacherDetailsPage() {
       </div>
     );
   }
-
+  console.log(selectedTeacher?.materials);
   if (!selectedTeacher) {
     return (
       <div className="text-center mt-10 text-red-500">
@@ -33,7 +37,7 @@ export default function TeacherDetailsPage() {
       <div className="bg-white rounded-2xl shadow-2xl w-full p-6">
         <div className="flex items-center justify-between mb-6 border-b pb-4 border-gray-200">
           <div className="flex items-center gap-4">
-            {selectedTeacher.image ? (
+            {selectedTeacher?.image ? (
               <img
                 src={selectedTeacher.image}
                 alt={selectedTeacher.name}
@@ -44,19 +48,21 @@ export default function TeacherDetailsPage() {
             )}
             <div>
               <h2 className="text-2xl font-bold text-gray-800">
-                {selectedTeacher.name}
+                {selectedTeacher?.name}
               </h2>
               <p className="text-gray-600">
-                {selectedTeacher.materials.map((el: any) => el).join(", ")}
+                {selectedTeacher.materials
+                  .map((el: any) => el?.name)
+                  .join(", ")}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="space-y-[30px]">
           {/* Personal Info */}
-          <div className="lg:col-span-1">
-            <div className="bg-gray-50 rounded-xl p-6 mb-6">
+          <div className="grid grid-col-1 lg:grid-cols-3 gap-x-[10px] gap-y-[10px]">
+            <div className="bg-gray-50 rounded-xl p-6 mb-6 h-full">
               <h3 className="font-bold text-gray-800 mb-4">
                 المعلومات الشخصية
               </h3>
@@ -67,13 +73,13 @@ export default function TeacherDetailsPage() {
                   value={selectedTeacher.mobile_number || "غير متوفر"}
                 />
                 <Info
-                  label="المؤهل العلمي"
+                  label="التخصص"
                   value={selectedTeacher.academic_qualification}
                 />
               </div>
             </div>
 
-            <div className="bg-blue-50 rounded-xl p-6 mb-6">
+            <div className="bg-blue-50 rounded-xl p-6 mb-6 h-full">
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <Shield size={20} />
                 معلومات الأمان
@@ -108,7 +114,7 @@ export default function TeacherDetailsPage() {
               </div>
             </div>
 
-            <div className="bg-orange-50 rounded-xl p-6">
+            <div className="bg-orange-50 rounded-xl p-6 h-full">
               <h3 className="font-bold text-gray-800 mb-4">الإحصائيات</h3>
               <div className="space-y-4">
                 <Stat
@@ -124,25 +130,25 @@ export default function TeacherDetailsPage() {
           </div>
 
           {/* Right Section */}
-          <div className="lg:col-span-2">
-            <Section title="المواد التي يدرسها">
+          <div className="">
+            {/* <Section title="المواد التي يدرسها">
               <div className="flex flex-wrap gap-2">
-                {selectedTeacher.materials?.length ? (
-                  selectedTeacher.materials.map((subject: string) => (
+                {selectedTeacher?.materials?.length ? (
+                  selectedTeacher?.materials.map((subject: any) => (
                     <span
-                      key={subject}
+                      key={subject?.id}
                       className="px-3 py-2 bg-blue-100 text-blue-800 rounded-lg font-medium"
                     >
-                      {subject}
+                      {subject?.name}
                     </span>
                   ))
                 ) : (
                   <p className="text-gray-500">لم يتم تحديد مواد بعد.</p>
                 )}
               </div>
-            </Section>
+            </Section> */}
 
-            <Section title="الشهادات والدورات">
+            {/* <Section title="الشهادات والدورات">
               {selectedTeacher.academic_qualification?.length ? (
                 selectedTeacher.academic_qualification.map(
                   (cert: string, index: number) => (
@@ -158,10 +164,10 @@ export default function TeacherDetailsPage() {
               ) : (
                 <p className="text-gray-500">لم يتم إضافة شهادات بعد.</p>
               )}
-            </Section>
+            </Section> */}
 
             <Section title="الحالة">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="">
                 <StatusCard
                   title="حالة الحساب"
                   description={
@@ -215,9 +221,7 @@ const Section = ({
 }) => (
   <div className="mb-6">
     <h3 className="font-bold text-gray-800 mb-4">{title}</h3>
-    <div className="bg-white border border-gray-200 rounded-lg p-4">
-      {children}
-    </div>
+    <div className="bg-white border border-gray-200 rounded-lg">{children}</div>
   </div>
 );
 

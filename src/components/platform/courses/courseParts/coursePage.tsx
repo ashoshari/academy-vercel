@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import CourseContent from "./courseContent";
 import { useLesson } from "@/store/platform/useLesson";
-import errorIllustation from "@/assets/illustration/Error_illustration.svg"
+import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 const CoursePage = () => {
   const [allLessons, setAllLessons] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -16,12 +16,12 @@ const CoursePage = () => {
   );
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
-  const currentLesson = useLesson((state) => state.currentLesson);
+  // const currentLesson = useLesson((state) => state.currentLesson);
   const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
   const { data, error } = useCustomQuery(
     `/training/students/course/${courseId}/`,
-    ["courses"],
+    ["courses", courseId],
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -54,7 +54,11 @@ const CoursePage = () => {
 
   useEffect(() => {
     const activeLesson = allLessons[currentLessonIndex];
+    console.log("allLessons", allLessons);
+    console.log("[currentLessonIndex]", currentLessonIndex);
     if (activeLesson) {
+      console.log(courseData);
+      console.log(activeLesson);
       setCurrentLesson(activeLesson);
     }
   }, [currentLessonIndex, allLessons]);
@@ -68,6 +72,7 @@ const CoursePage = () => {
         });
       });
     });
+    console.log(courseData);
     setAllLessons(lessons);
   }, [courseData]);
   // const markLessonComplete = () => {
@@ -97,21 +102,42 @@ const CoursePage = () => {
   //     }))
   //   );
   // };
-  if (!currentLesson && !error) {
+  console.log("error", error);
+  // if (!!error === null) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+  //         <p className="text-gray-600">جاري تحميل الدورة...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // } else
+  if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">جاري تحميل الدورة...</p>
+          <img
+          loading="lazy"
+            src={errorIllustation}
+            alt="404"
+            className="w-[200px] h-[200px] mx-auto mb-4"
+          />
+          <p className="text-gray-600">ليس لديك الصلاحيات لمشاهدة الدورة</p>
         </div>
       </div>
     );
-  } else if (error) {
+  } else if (allLessons.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
-          <img src={errorIllustation} alt="404" className="w-[200px] h-[200px] mx-auto mb-4" />
-          <p className="text-gray-600">ليس لديك الصلاحيات لمشاهدة الدورة</p>
+          <img
+          loading="lazy"
+            src={errorIllustation}
+            alt="404"
+            className="w-[200px] h-[200px] mx-auto mb-4"
+          />
+          <p className="text-gray-600">لا يوجد محتوى لهذه الدورة</p>
         </div>
       </div>
     );

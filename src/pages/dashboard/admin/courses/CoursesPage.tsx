@@ -23,142 +23,9 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
-
-// export interface Course {
-//   id: number;
-//   title: string;
-//   description: string;
-//   shortDescription: string;
-//   teacherId: number;
-//   teacherName: string;
-//   teacherAvatar?: string;
-//   price: number;
-//   isFree: boolean;
-//   isPublished: boolean;
-//   isActive: boolean;
-//   isFeatured: boolean;
-//   category: string;
-//   level: "beginner" | "intermediate" | "advanced";
-//   language: string;
-//   duration: number; // in hours
-//   studentsCount: number;
-//   rating: number;
-//   reviewsCount: number;
-//   thumbnail: string;
-//   previewVideo?: string;
-//   targetedSections: number[];
-//   targetedSubsections: number[];
-//   tags: string[];
-//   requirements: string[];
-//   whatYouWillLearn: string[];
-//   createdAt: string;
-//   updatedAt: string;
-//   publishedAt?: string;
-//   startDate?: string;
-//   endDate?: string;
-//   maxStudents?: number;
-//   chapters: Chapter[];
-//   files: CourseFile[];
-//   exams: CourseExam[];
-//   enrollments: CourseEnrollment[];
-//   reviews: CourseReview[];
-// }
-
-export interface Chapter {
-  id: number;
-  courseId: number;
-  title: string;
-  description: string;
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  units: Unit[];
-  files: CourseFile[];
-  exams: CourseExam[];
-}
-
-export interface Unit {
-  id: number;
-  chapterId: number;
-  title: string;
-  description: string;
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  lessons: Lesson[];
-  files: CourseFile[];
-  exams: CourseExam[];
-}
-
-export interface Lesson {
-  id: number;
-  unitId: number;
-  title: string;
-  description: string;
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  sessions: Session[];
-  files: CourseFile[];
-  exams: CourseExam[];
-}
-
-export interface Session {
-  id: number;
-  lessonId: number;
-  title: string;
-  description: string;
-  type: "video" | "text" | "interactive" | "assignment" | "exam";
-  content: string; // URL for video, text content, or exam ID
-  order: number;
-  isPublished: boolean;
-  isFree: boolean;
-  estimatedDuration: number;
-  files: CourseFile[];
-  exams: CourseExam[];
-}
-
-export interface CourseFile {
-  id: number;
-  name: string;
-  type: string;
-  size: number;
-  url: string;
-  uploadedAt: string;
-}
-
-export interface CourseExam {
-  id: number;
-  title: string;
-  description: string;
-  examId: number; // Reference to exam in ExamsPage
-  isRequired: boolean;
-  passingScore: number;
-  maxAttempts: number;
-}
-
-export interface CourseEnrollment {
-  id: number;
-  studentId: number;
-  studentName: string;
-  enrolledAt: string;
-  completedAt?: string;
-  progress: number;
-  status: "active" | "completed" | "dropped" | "paused";
-}
-
-export interface CourseReview {
-  id: number;
-  studentId: number;
-  studentName: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-}
-
+import Pagination from "@/components/dashboard/core/Pagination";
+import Loader from "@/components/core/Loader";
+import { useQueryClient } from "@tanstack/react-query";
 const CoursesPage = () => {
   const [currentView, setCurrentView] = useState<
     "list" | "create" | "edit" | "content"
@@ -175,228 +42,16 @@ const CoursesPage = () => {
   >("all");
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
   const [courseId, setCourseId] = useState<any>(null);
-
-  // Sample courses data
-  // const [courses, setCourses] = useState<Course[]>([
-  //   {
-  //     id: 1,
-  //     title: "دورة الرياضيات المتقدمة",
-  //     description:
-  //       "دورة شاملة في الرياضيات المتقدمة تغطي التفاضل والتكامل والجبر الخطي مع تطبيقات عملية وأمثلة متنوعة لطلاب التوجيهي العلمي.",
-  //     shortDescription: "دورة شاملة في الرياضيات المتقدمة للتوجيهي العلمي",
-  //     teacherId: 1,
-  //     teacherName: "د. أحمد محمد",
-  //     teacherAvatar:
-  //       "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //     price: 150.0,
-  //     isFree: false,
-  //     isPublished: true,
-  //     isActive: true,
-  //     isFeatured: true,
-  //     category: "الرياضيات",
-  //     level: "advanced",
-  //     language: "العربية",
-  //     duration: 40,
-  //     studentsCount: 156,
-  //     rating: 4.8,
-  //     reviewsCount: 89,
-  //     thumbnail:
-  //       "https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800",
-  //     previewVideo:
-  //       "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-  //     targetedSections: [1],
-  //     targetedSubsections: [2, 3],
-  //     tags: ["رياضيات", "تفاضل", "تكامل", "توجيهي"],
-  //     requirements: ["معرفة أساسيات الجبر", "إتقان العمليات الحسابية الأساسية"],
-  //     whatYouWillLearn: [
-  //       "إتقان مفاهيم التفاضل والتكامل",
-  //       "حل المسائل المعقدة في الرياضيات",
-  //       "تطبيق المفاهيم الرياضية في الحياة العملية",
-  //       "الاستعداد لامتحانات التوجيهي",
-  //     ],
-  //     createdAt: "2024-01-15",
-  //     updatedAt: "2024-01-20",
-  //     publishedAt: "2024-01-18",
-  //     startDate: "2024-02-01",
-  //     endDate: "2024-05-30",
-  //     maxStudents: 200,
-  //     chapters: [
-  //       {
-  //         id: 1,
-  //         courseId: 1,
-  //         title: "مقدمة في التفاضل",
-  //         description: "أساسيات التفاضل والمشتقات",
-  //         order: 1,
-  //         isPublished: true,
-  //         isFree: true,
-  //         estimatedDuration: 120,
-  //         units: [
-  //           {
-  //             id: 1,
-  //             chapterId: 1,
-  //             title: "تعريف المشتقة",
-  //             description: "مفهوم المشتقة وتطبيقاتها",
-  //             order: 1,
-  //             isPublished: true,
-  //             isFree: true,
-  //             estimatedDuration: 60,
-  //             lessons: [
-  //               {
-  //                 id: 1,
-  //                 unitId: 1,
-  //                 title: "المشتقة الأولى",
-  //                 description: "تعلم كيفية حساب المشتقة الأولى",
-  //                 order: 1,
-  //                 isPublished: true,
-  //                 isFree: true,
-  //                 estimatedDuration: 30,
-  //                 sessions: [
-  //                   {
-  //                     id: 1,
-  //                     lessonId: 1,
-  //                     title: "شرح المشتقة الأولى",
-  //                     description: "فيديو تعليمي عن المشتقة الأولى",
-  //                     type: "video",
-  //                     content:
-  //                       "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-  //                     order: 1,
-  //                     isPublished: true,
-  //                     isFree: true,
-  //                     estimatedDuration: 25,
-  //                     files: [],
-  //                     exams: [],
-  //                   },
-  //                   {
-  //                     id: 2,
-  //                     lessonId: 1,
-  //                     title: "اختبار المشتقة الأولى",
-  //                     description: "اختبار تقييمي على المشتقة الأولى",
-  //                     type: "exam",
-  //                     content: "1", // exam ID
-  //                     order: 2,
-  //                     isPublished: true,
-  //                     isFree: false,
-  //                     estimatedDuration: 5,
-  //                     files: [],
-  //                     exams: [],
-  //                   },
-  //                 ],
-  //                 files: [],
-  //                 exams: [],
-  //               },
-  //             ],
-  //             files: [],
-  //             exams: [],
-  //           },
-  //         ],
-  //         files: [],
-  //         exams: [],
-  //       },
-  //     ],
-  //     files: [],
-  //     exams: [],
-  //     enrollments: [],
-  //     reviews: [],
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "أساسيات الفيزياء",
-  //     description:
-  //       "دورة تأسيسية في الفيزياء تغطي الميكانيكا والكهرباء والمغناطيسية مع تجارب عملية وحلول مفصلة للمسائل.",
-  //     shortDescription: "دورة تأسيسية شاملة في الفيزياء",
-  //     teacherId: 3,
-  //     teacherName: "م. خالد سالم",
-  //     teacherAvatar:
-  //       "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //     price: 120.0,
-  //     isFree: false,
-  //     isPublished: true,
-  //     isActive: true,
-  //     isFeatured: false,
-  //     category: "الفيزياء",
-  //     level: "intermediate",
-  //     language: "العربية",
-  //     duration: 35,
-  //     studentsCount: 89,
-  //     rating: 4.6,
-  //     reviewsCount: 67,
-  //     thumbnail:
-  //       "https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&w=800",
-  //     targetedSections: [1],
-  //     targetedSubsections: [2, 3],
-  //     tags: ["فيزياء", "ميكانيكا", "كهرباء", "توجيهي"],
-  //     requirements: [
-  //       "معرفة أساسيات الرياضيات",
-  //       "فهم المفاهيم العلمية الأساسية",
-  //     ],
-  //     whatYouWillLearn: [
-  //       "فهم قوانين الفيزياء الأساسية",
-  //       "حل مسائل الميكانيكا والكهرباء",
-  //       "تطبيق المفاهيم الفيزيائية عملياً",
-  //       "الاستعداد للامتحانات النهائية",
-  //     ],
-  //     createdAt: "2024-01-12",
-  //     updatedAt: "2024-01-19",
-  //     publishedAt: "2024-01-16",
-  //     startDate: "2024-02-15",
-  //     endDate: "2024-06-15",
-  //     maxStudents: 150,
-  //     chapters: [],
-  //     files: [],
-  //     exams: [],
-  //     enrollments: [],
-  //     reviews: [],
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "اللغة العربية والأدب",
-  //     description:
-  //       "دورة متخصصة في اللغة العربية والأدب تشمل النحو والصرف والبلاغة مع دراسة النصوص الأدبية الكلاسيكية والحديثة.",
-  //     shortDescription: "دورة متخصصة في اللغة العربية والأدب",
-  //     teacherId: 2,
-  //     teacherName: "أ. فاطمة أحمد",
-  //     teacherAvatar:
-  //       "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150",
-  //     price: 0,
-  //     isFree: true,
-  //     isPublished: false,
-  //     isActive: false,
-  //     isFeatured: false,
-  //     category: "اللغة العربية",
-  //     level: "intermediate",
-  //     language: "العربية",
-  //     duration: 30,
-  //     studentsCount: 0,
-  //     rating: 0,
-  //     reviewsCount: 0,
-  //     thumbnail:
-  //       "https://images.pexels.com/photos/159581/dictionary-reference-book-learning-meaning-159581.jpeg?auto=compress&cs=tinysrgb&w=800",
-  //     targetedSections: [1],
-  //     targetedSubsections: [2, 3],
-  //     tags: ["عربي", "نحو", "أدب", "بلاغة"],
-  //     requirements: ["إتقان القراءة والكتابة", "معرفة أساسيات النحو"],
-  //     whatYouWillLearn: [
-  //       "إتقان قواعد النحو والصرف",
-  //       "فهم وتحليل النصوص الأدبية",
-  //       "تطوير مهارات الكتابة والتعبير",
-  //       "الاستعداد لامتحانات اللغة العربية",
-  //     ],
-  //     createdAt: "2024-01-10",
-  //     updatedAt: "2024-01-17",
-  //     startDate: "2024-03-01",
-  //     endDate: "2024-07-01",
-  //     maxStudents: 100,
-  //     chapters: [],
-  //     files: [],
-  //     exams: [],
-  //     enrollments: [],
-  //     reviews: [],
-  //   },
-  // ]);
+  const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
 
   // GET courses
-  const { data } = useCustomQuery("/training/admin/courses/", ["courses"]);
+  const { data, isLoading } = useCustomQuery(
+    `/training/admin/courses/?page=${page}`,
+    ["courses", page]
+  );
   const courseData = data?.data;
+  const paginationData = data?.data?.pagination;
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
@@ -416,14 +71,18 @@ const CoursesPage = () => {
     ["specializations"]
   );
 
+  // GET Codes
+  const { data: cars } = useCustomQuery("/cards/", ["cards"]);
+
   // GET Specializations_material
-  const { data: specializations_material } = useCustomQuery(
+  const { data: specialization_material } = useCustomQuery(
     "/training/admin/specialization-materials/",
     ["specializations_material"]
   );
 
   const specializationData = specializations?.data;
-  const specialization_materialData = specializations_material?.data;
+  const specialization_materialData = specialization_material?.data;
+  const cardsData = cars?.data;
 
   const [courses, setCourses] = useState<any>(courseData?.data);
   useEffect(() => {
@@ -432,6 +91,7 @@ const CoursesPage = () => {
   const courseStatsData = coursesStats?.data;
 
   const [newCourse, setNewCourse] = useState<any>({});
+  // const [editCourseData, setEditCourseData] = useState<any>({});
 
   // PUT Course
   const { mutateAsync: editCourse } = useCustomUpdate(
@@ -477,19 +137,80 @@ const CoursesPage = () => {
     ["postCourses"]
   );
   const handleCreateCourse = async () => {
+    const formData = new FormData();
+    newCourse.name && formData.append("name", newCourse.name);
+    newCourse.short_description &&
+      formData.append("short_description", newCourse.short_description);
+    newCourse.long_description &&
+      formData.append("long_description", newCourse.long_description);
+    newCourse.teacher && formData.append("teacher", newCourse.teacher);
+    newCourse.time_in_hours &&
+      formData.append("time_in_hours", newCourse.time_in_hours);
+    newCourse.specialization &&
+      formData.append("specialization", newCourse.specialization);
+    newCourse.specialization_material &&
+      formData.append(
+        "specialization_material",
+        newCourse.specialization_material
+      );
+    newCourse.maximum_number_of_students &&
+      formData.append(
+        "maximum_number_of_students",
+        newCourse.maximum_number_of_students
+      );
+
+    newCourse.card && formData.append("card_price", newCourse.card || null);
+    newCourse.is_free && formData.append("is_free", newCourse.is_free || false);
+    newCourse.is_published &&
+      formData.append("is_published", newCourse.is_published || false);
+    newCourse.is_special &&
+      formData.append("is_special", newCourse.is_special || false);
+    newCourse.level && formData.append("level", newCourse?.level);
+    newCourse.start_date && formData.append("start_date", newCourse.start_date);
+    newCourse.end_date && formData.append("end_date", newCourse.end_date);
+    if (newCourse.image instanceof File && newCourse.image) {
+      formData.append("image", newCourse.image);
+    }
     try {
-      const res = await createCourse(newCourse);
+      const res = await createCourse(formData);
       toast.success(res.message ?? "تم الحفظ بنجاح");
+      setNewCourse({});
       setCurrentView("list");
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      queryClient.invalidateQueries({ queryKey: ["courses-stats"] });
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
     }
   };
   const handleEditCourse = async () => {
+    const currentCourse = courseData?.data.find(
+      (course: any) => course?.id === selectedCourse?.id
+    );
+    const changedData = Object.keys(selectedCourse)
+      .filter(
+        (key) =>
+          selectedCourse[key as keyof typeof selectedCourse] !==
+          currentCourse[key as keyof typeof currentCourse]
+      )
+      .reduce((acc, key) => {
+        acc[key] = selectedCourse[key as keyof typeof selectedCourse];
+        return acc;
+      }, {} as Record<string, any>);
     try {
-      const res = await editCourse(newCourse);
-      toast.success(res.message ?? "تم الحفظ بنجاح");
-      setCurrentView("list");
+      if (selectedCourse?.id == currentCourse?.id) {
+        const formData = new FormData();
+        Object.entries(changedData).forEach(([key, value]) => {
+          if (value instanceof File) {
+            formData.append(key, value); // send file as file
+          } else {
+            formData.append(key, String(value));
+          }
+        });
+        const res = await editCourse(formData);
+        toast.success(res.message ?? "تم الحفظ بنجاح");
+        queryClient.invalidateQueries({ queryKey: ["courses"] });
+        setCurrentView("list");
+      }
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
     }
@@ -562,6 +283,7 @@ const CoursesPage = () => {
       {/* Thumbnail */}
       <div className="relative h-48 overflow-hidden">
         <img
+          loading="lazy"
           src={
             course?.image ||
             "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
@@ -630,6 +352,7 @@ const CoursesPage = () => {
         {/* Teacher */}
         <div className="flex items-center gap-3 mb-4">
           <img
+            loading="lazy"
             src={
               course?.teacher?.image ||
               "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
@@ -678,7 +401,9 @@ const CoursesPage = () => {
           </div> */}
           <div className="text-center col-span-2">
             <div className="text-lg font-bold text-green-600">
-              {course.is_free ? "مجاني" : `${course?.price} د.أ`}
+              {course.is_free
+                ? "مجاني"
+                : `${course?.card_price?.price || 0} د.أ`}
             </div>
             <div className="text-xs text-gray-500">السعر</div>
           </div>
@@ -714,7 +439,7 @@ const CoursesPage = () => {
                 setSelectedCourse(course);
                 setCurrentView("content");
               }}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               title="إدارة المحتوى"
             >
               <Folder size={16} />
@@ -722,7 +447,7 @@ const CoursesPage = () => {
 
             {/* <button
               onClick={() => toggleCourseStatus(course?.id, "isActive")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 course?.is_active
                   ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -736,7 +461,7 @@ const CoursesPage = () => {
               onClick={() => {
                 toggleCourseStatus(course?.id);
               }}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 course?.is_Published
                   ? "text-green-600 bg-green-50 hover:bg-green-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -749,7 +474,7 @@ const CoursesPage = () => {
             {/* Raiting */}
             {/* <button
               onClick={() => toggleCourseStatus(course.id, "isFeatured")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 course.isFeatured
                   ? "text-yellow-600 bg-yellow-50 hover:bg-yellow-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -766,7 +491,7 @@ const CoursesPage = () => {
                 setSelectedCourse(course);
                 setCurrentView("edit");
               }}
-              className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               title="تعديل الدورة"
             >
               <Edit size={16} />
@@ -774,7 +499,7 @@ const CoursesPage = () => {
 
             {/* <button
               onClick={() => handleDeleteCourse(course.id)}
-              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               title="حذف الدورة"
             >
               <Trash2 size={16} />
@@ -814,7 +539,7 @@ const CoursesPage = () => {
               setNewCourse({});
               setCurrentView("list");
             }}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowRight size={20} />
           </button>
@@ -890,7 +615,7 @@ const CoursesPage = () => {
 
               {/* Teacher and specialization */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     المعلم *
                   </label>
@@ -912,21 +637,31 @@ const CoursesPage = () => {
                     ))}
                   </select>
                 </div>
-
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    التصنيف
+                    التخصص *
                   </label>
-                  <input
-                    type="text"
-                    value={newCourse?.category || ""}
+                  <select
+                    value={newCourse?.specialization || ""}
                     onChange={(e) =>
-                      setNewCourse({ ...newCourse, category: e.target.value })
+                      setNewCourse({
+                        ...newCourse,
+                        specialization: e.target.value,
+                      })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="مثل: علمي ، ادبي"
-                  />
-                </div>
+                  >
+                    <option value="">جميع التخصصات</option>
+                    {specializationData?.map((specialization: any) => (
+                      <option
+                        key={specialization?.id}
+                        value={specialization?.name}
+                      >
+                        {specialization?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div> */}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -971,7 +706,7 @@ const CoursesPage = () => {
                         time_in_hours: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="40"
                     min="0"
                   />
@@ -980,21 +715,21 @@ const CoursesPage = () => {
 
               <div className="flex flex-col gap-2">
                 <label
-                  htmlFor="fileUpload"
+                  htmlFor="imageUpload"
                   className="block text-sm font-medium text-gray-700"
                 >
                   الصورة المصغرة
                 </label>
                 <div className="flex items-center gap-2">
                   <label
-                    htmlFor="fileUpload"
+                    htmlFor="imageUpload"
                     className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
                   >
                     اختر الصورة المصغرة
                   </label>
 
                   <input
-                    id="fileUpload"
+                    id="imageUpload"
                     type="file"
                     className="invisible w-0 h-0"
                     onChange={(e) => {
@@ -1014,6 +749,7 @@ const CoursesPage = () => {
                   {(typeof newCourse?.image === "string" ||
                     newCourse?.image instanceof File) && (
                     <img
+                      loading="lazy"
                       src={
                         newCourse?.image instanceof File
                           ? URL.createObjectURL(newCourse.image)
@@ -1045,7 +781,11 @@ const CoursesPage = () => {
                       name="pricing"
                       checked={newCourse.is_free === true}
                       onChange={() =>
-                        setNewCourse({ ...newCourse, is_free: true, price: 0 })
+                        setNewCourse({
+                          ...newCourse,
+                          is_free: true,
+                          card_price: 0,
+                        })
                       }
                       className="text-orange-600 focus:ring-orange-500"
                     />
@@ -1055,7 +795,7 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={newCourse.is_free === false}
+                      checked={newCourse?.is_free === false}
                       onChange={() =>
                         setNewCourse({ ...newCourse, is_free: false })
                       }
@@ -1066,7 +806,7 @@ const CoursesPage = () => {
                 </div>
                 {newCourse?.is_free === false && (
                   <div className="mt-3">
-                    <input
+                    {/* <input
                       type="number"
                       value={newCourse?.price || ""}
                       onChange={(e) =>
@@ -1079,7 +819,36 @@ const CoursesPage = () => {
                       placeholder="السعر بالدينار الأردني"
                       min="0"
                       step="0.01"
-                    />
+                    /> */}
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      {cardsData?.map((card: any) => {
+                        return (
+                          card?.is_active && (
+                            <label
+                              key={card?.id}
+                              className="flex items-center gap-2"
+                            >
+                              <input
+                                type="radio"
+                                name="card"
+                                value={card?.id}
+                                checked={newCourse.card === card?.id}
+                                onChange={(e) => {
+                                  setNewCourse({
+                                    ...newCourse,
+                                    card: e.target.value,
+                                  });
+                                }}
+                                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                              />
+                              <span className="text-sm">
+                                {card?.price} د.ا.
+                              </span>
+                            </label>
+                          )
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
@@ -1115,25 +884,25 @@ const CoursesPage = () => {
                 </div>
               </div>
 
-              {/* Max Students */}
-              {/* <div>
+              {/* Maximum Students */}
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الحد الأقصى للطلاب
                 </label>
                 <input
                   type="number"
-                  value={newCourse.maxStudents || ""}
+                  value={newCourse?.maximum_number_of_students || 0}
                   onChange={(e) =>
                     setNewCourse({
                       ...newCourse,
-                      maxStudents: parseInt(e.target.value) || 0,
+                      maximum_number_of_students: parseInt(e.target.value) || 0,
                     })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="100"
                   min="1"
                 />
-              </div> */}
+              </div>
 
               {/* Targeted Sections */}
               <div>
@@ -1147,32 +916,17 @@ const CoursesPage = () => {
                       className="flex items-center gap-2"
                     >
                       <input
-                        type="checkbox"
+                        type="radio"
+                        name="specialization" // Same name for all radio buttons
+                        value={specialization?.id}
                         checked={
-                          newCourse.specialization?.includes(
-                            specialization?.id
-                          ) || false
+                          newCourse.specialization === specialization?.id
                         }
                         onChange={(e) => {
-                          const currentcurrentSpecialization =
-                            newCourse.specialization || [];
-                          if (e.target.checked) {
-                            setNewCourse({
-                              ...newCourse,
-                              specialization: [
-                                ...currentcurrentSpecialization,
-                                specialization?.id,
-                              ],
-                            });
-                          } else {
-                            setNewCourse({
-                              ...newCourse,
-                              specialization:
-                                currentcurrentSpecialization.filter(
-                                  (id: any) => id !== specialization?.id
-                                ),
-                            });
-                          }
+                          setNewCourse({
+                            ...newCourse,
+                            specialization: e.target.value,
+                          });
                         }}
                         className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                       />
@@ -1195,33 +949,18 @@ const CoursesPage = () => {
                         className="flex items-center gap-2"
                       >
                         <input
-                          type="checkbox"
+                          type="radio"
+                          name="specialization_material" // Same name for all radio buttons
+                          value={specialization_material?.id}
                           checked={
-                            newCourse.specialization?.includes(
-                              specialization_material?.id
-                            ) || false
+                            newCourse.specialization_material ===
+                            specialization_material?.id
                           }
                           onChange={(e) => {
-                            const currentSpecialization_material =
-                              newCourse.specialization_material || [];
-                            if (e.target.checked) {
-                              setNewCourse({
-                                ...newCourse,
-                                specialization_material: [
-                                  ...currentSpecialization_material,
-                                  specialization_material?.id,
-                                ],
-                              });
-                            } else {
-                              setNewCourse({
-                                ...newCourse,
-                                specialization:
-                                  currentSpecialization_material.filter(
-                                    (id: any) =>
-                                      id !== specialization_material?.id
-                                  ),
-                              });
-                            }
+                            setNewCourse({
+                              ...newCourse,
+                              specialization_material: e.target.value,
+                            });
                           }}
                           className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                         />
@@ -1295,7 +1034,7 @@ const CoursesPage = () => {
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
               onClick={() => setCurrentView("list")}
-              className="px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
@@ -1307,7 +1046,7 @@ const CoursesPage = () => {
                 !newCourse.long_description ||
                 !newCourse.teacher
               }
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الدورة
@@ -1326,7 +1065,7 @@ const CoursesPage = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setCurrentView("list")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowRight size={20} />
           </button>
@@ -1400,12 +1139,12 @@ const CoursesPage = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     المعلم *
                   </label>
                   <select
-                    value={selectedCourse?.teacher}
+                    value={selectedCourse?.teacher.id}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
@@ -1425,7 +1164,7 @@ const CoursesPage = () => {
                   </select>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     التصنيف
                   </label>
@@ -1441,7 +1180,7 @@ const CoursesPage = () => {
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="مثل:  علمي ، أدبي"
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -1450,7 +1189,7 @@ const CoursesPage = () => {
                     المستوى
                   </label>
                   <select
-                    value={selectedCourse?.level}
+                    value={selectedCourse?.level?.id}
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
@@ -1459,6 +1198,7 @@ const CoursesPage = () => {
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
+                    <option value="">اختر المستوى</option>
                     <option value="d72e95dd-dc4c-4495-8ec5-cea7e7c5a0c3">
                       مبتدئ
                     </option>
@@ -1484,7 +1224,7 @@ const CoursesPage = () => {
                         time_in_hours: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="40"
                     min="0"
                   />
@@ -1528,6 +1268,7 @@ const CoursesPage = () => {
                   {(typeof selectedCourse?.image === "string" ||
                     selectedCourse?.image instanceof File) && (
                     <img
+                      loading="lazy"
                       src={
                         selectedCourse?.image instanceof File
                           ? URL.createObjectURL(selectedCourse.image)
@@ -1675,6 +1416,75 @@ const CoursesPage = () => {
                 </div>
               </div>
 
+              {/* Targeted Sections */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  التخصصات المستهدفة
+                </label>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {specializationData?.map((specialization: any) => (
+                    <label
+                      key={specialization?.id}
+                      className="flex items-center gap-2"
+                    >
+                      <input
+                        type="radio"
+                        name="specialization" // Same name for all radio buttons
+                        value={specialization?.id}
+                        checked={
+                          selectedCourse?.specialization === specialization?.id
+                        }
+                        onChange={(e) => {
+                          setSelectedCourse({
+                            ...selectedCourse,
+                            specialization: e.target.value,
+                          });
+                        }}
+                        className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                      />
+                      <span className="text-sm">{specialization?.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Targeted Subsections */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  الأقسام الفرعية المستهدفة
+                </label>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {specialization_materialData?.map(
+                    (specialization_material: any) => (
+                      <label
+                        key={specialization_material?.id}
+                        className="flex items-center gap-2"
+                      >
+                        <input
+                          type="radio"
+                          name="specialization_material" // Same name for all radio buttons
+                          value={specialization_material?.id}
+                          checked={
+                            selectedCourse.specialization_material ===
+                            specialization_material?.id
+                          }
+                          onChange={(e) => {
+                            setSelectedCourse({
+                              ...selectedCourse,
+                              specialization_material: e.target.value,
+                            });
+                          }}
+                          className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                        />
+                        <span className="text-sm">
+                          {specialization_material?.name}
+                        </span>
+                      </label>
+                    )
+                  )}
+                </div>
+              </div>
+
               {/* Maximum Students */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1758,19 +1568,22 @@ const CoursesPage = () => {
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
               onClick={() => setCurrentView("list")}
-              className="px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
             <button
-              onClick={handleEditCourse}
+              onClick={() => {
+                setCourseId(selectedCourse?.id);
+                handleEditCourse();
+              }}
               disabled={
                 !selectedCourse?.name ||
                 !selectedCourse?.short_description ||
                 !selectedCourse?.long_description ||
                 !selectedCourse?.teacher
               }
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات
@@ -1794,7 +1607,7 @@ const CoursesPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء دورة جديدة
@@ -1914,7 +1727,7 @@ const CoursesPage = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
                   ? "bg-orange-100 text-orange-600"
                   : "text-gray-400 hover:bg-gray-100"
@@ -1924,7 +1737,7 @@ const CoursesPage = () => {
             </button>
             <button
               onClick={() => setViewMode("table")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
                   ? "bg-orange-100 text-orange-600"
                   : "text-gray-400 hover:bg-gray-100"
@@ -1938,45 +1751,56 @@ const CoursesPage = () => {
 
       {/* Courses Grid/Table */}
       {viewMode === "grid" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses?.map((course: any) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
+        !isLoading ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredCourses?.map((course: any) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
 
-          {courseData?.length === 0 && (
-            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-              <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-800 mb-2">
-                {searchTerm ||
-                teacherFilter ||
-                categoryFilter ||
-                statusFilter !== "all"
-                  ? "لا توجد نتائج"
-                  : "لا توجد دورات"}
-              </h3>
-              <p className="text-gray-500 mb-6">
-                {searchTerm ||
-                teacherFilter ||
-                categoryFilter ||
-                statusFilter !== "all"
-                  ? "لم يتم العثور على دورات تطابق المعايير المحددة"
-                  : "ابدأ بإنشاء دورة تعليمية جديدة"}
-              </p>
-              {!searchTerm &&
-                !teacherFilter &&
-                !categoryFilter &&
-                statusFilter === "all" && (
-                  <button
-                    onClick={() => setCurrentView("create")}
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-                  >
-                    <Plus size={16} />
-                    إنشاء دورة جديدة
-                  </button>
-                )}
+              {filteredCourses?.length === 0 && (
+                <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+                  <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">
+                    {searchTerm ||
+                    teacherFilter ||
+                    categoryFilter ||
+                    statusFilter !== "all"
+                      ? "لا توجد نتائج"
+                      : "لا توجد دورات"}
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    {searchTerm ||
+                    teacherFilter ||
+                    categoryFilter ||
+                    statusFilter !== "all"
+                      ? "لم يتم العثور على دورات تطابق المعايير المحددة"
+                      : "ابدأ بإنشاء دورة تعليمية جديدة"}
+                  </p>
+                  {!searchTerm &&
+                    !teacherFilter &&
+                    !categoryFilter &&
+                    statusFilter === "all" && (
+                      <button
+                        onClick={() => setCurrentView("create")}
+                        className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                      >
+                        <Plus size={16} />
+                        إنشاء دورة جديدة
+                      </button>
+                    )}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+            <Pagination
+              currentPage={page}
+              count={paginationData?.count}
+              onPageChange={setPage}
+            />
+          </>
+        ) : (
+          <Loader />
+        )
       ) : (
         // Table View
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
@@ -2016,6 +1840,7 @@ const CoursesPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         <img
+                          loading="lazy"
                           src={
                             course?.image ||
                             "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
@@ -2036,6 +1861,7 @@ const CoursesPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <img
+                          loading="lazy"
                           src={
                             course?.teacher?.image ||
                             "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
@@ -2092,7 +1918,7 @@ const CoursesPage = () => {
                             setSelectedCourse(course);
                             setCurrentView("content");
                           }}
-                          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
                           title="إدارة المحتوى"
                         >
                           <Folder size={16} />
@@ -2101,7 +1927,7 @@ const CoursesPage = () => {
                           onClick={() => {
                             toggleCourseStatus(course?.id);
                           }}
-                          className={`p-2 rounded-lg transition-colors ${
+                          className={`cursor-pointer p-2 rounded-lg transition-colors ${
                             course?.is_Published
                               ? "text-green-600 bg-green-50 hover:bg-green-100"
                               : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -2122,14 +1948,14 @@ const CoursesPage = () => {
                             setSelectedCourse(course);
                             setCurrentView("edit");
                           }}
-                          className="p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
                           title="تعديل"
                         >
                           <Edit size={16} />
                         </button>
                         {/* <button
                           onClick={() => handleDeleteCourse(course.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
                           title="حذف"
                         >
                           <Trash2 size={16} />

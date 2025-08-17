@@ -153,7 +153,6 @@ const Sidebar = ({
       } else {
         setIsExamMode(true);
         setStartExam(true);
-        console.log("clicked");
       }
     } else {
       toast.error("يجب استكمال الدروس السابق");

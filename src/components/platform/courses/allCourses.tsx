@@ -16,29 +16,26 @@ import {
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
+import Pagination from "@/components/dashboard/core/Pagination";
 
 const AllCourses = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  // const [filterSubject, setFilterSubject] = useState<string>("all");
-  // const [sortBy, setSortBy] = useState<string>("progress");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const navigate = useNavigate();
-  const numberOfCourses = 3;
+  const [page, setPage] = useState(1);
 
   // GET MY COURSES
   const { data } = useCustomQuery(
-    `/training/students/my-courses/?page_size=${numberOfCourses}&page=3`,
-    ["myAllCourses", numberOfCourses]
+    `/training/students/my-courses/?page=${page}`,
+    ["myAllCourses", page]
   );
-
+  const paginationData = data?.my_courses?.pagination;
   const myCoursesData = data?.my_courses?.data;
   const myCoursesStats = data?.statistics;
   // Extended enrolled courses data
   // Filter and sort courses
-  const filteredCourses = myCoursesData?.filter((course:any) => {
+  const filteredCourses = myCoursesData?.filter((course: any) => {
     // Filter By Subject
-    // const matchesSubject =
-    //   filterSubject === "all" || course.subject === filterSubject;
     const matchesSearch =
       course?.course_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       course?.teacher.toLowerCase().includes(searchTerm.toLowerCase());
@@ -115,7 +112,7 @@ const AllCourses = () => {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-sm font-bold text-blue-600">
+                  <span className="text-xs font-bold text-blue-600">
                     {course?.progress}%
                   </span>
                 </div>
@@ -183,9 +180,7 @@ const AllCourses = () => {
   );
 
   const renderCourseList = () => (
-    <div
-      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group"
-    >
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group">
       {filteredCourses?.map((course: any) => (
         <div className="p-6">
           <div className="flex items-center space-x-6">
@@ -219,7 +214,7 @@ const AllCourses = () => {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-sm font-bold text-blue-600">
+                <span className="text-xs font-bold text-blue-600">
                   {course?.progress}%
                 </span>
               </div>
@@ -319,9 +314,9 @@ const AllCourses = () => {
               </div>
               <div>
                 <div className="text-3xl font-bold mb-1">
-                  {
-                    myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses
-                  }
+                  {myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(
+                    2
+                  )}
                   %
                 </div>
                 <div className="text-blue-100 text-sm">متوسط التقدم</div>
@@ -424,6 +419,11 @@ const AllCourses = () => {
         ) : (
           <div className="space-y-6">{renderCourseList()}</div>
         )}
+        <Pagination
+          currentPage={page}
+          count={paginationData?.count}
+          onPageChange={setPage}
+        />
 
         {/* Empty State */}
         {filteredCourses?.length === 0 && (

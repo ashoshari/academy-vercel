@@ -11,7 +11,7 @@ const EnrolledCourses: React.FC = () => {
   const numberOfCourses = 3;
 
   // GET MY COURSES
-  const { data, isLoading, error } = useCustomQuery(
+  const { data, error } = useCustomQuery(
     `/training/students/my-courses/?page_size=${numberOfCourses}`,
     ["myCourses", numberOfCourses]
   );
@@ -20,11 +20,6 @@ const EnrolledCourses: React.FC = () => {
   }
   const myCoursesData = data?.my_courses?.data;
   const myCoursesStats = data?.statistics;
-  if (isLoading) {
-    console.log("loading");
-  } else {
-    console.log(myCoursesData);
-  }
 
   return (
     <>
@@ -75,7 +70,7 @@ const EnrolledCourses: React.FC = () => {
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
                 <div className="text-2xl font-bold text-purple-600 mb-1">
                   {
-                    myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses
+                    myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(2)
                   }
                   %
                 </div>
@@ -145,7 +140,7 @@ const EnrolledCourses: React.FC = () => {
                           />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-sm font-bold text-blue-600">
+                          <span className="text-xs font-bold text-blue-600">
                             {course?.progress}%
                           </span>
                         </div>

@@ -110,6 +110,7 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <img
+                loading="lazy"
                 src={footerData?.logo}
                 alt="Logo"
                 className="rounded-xl w-12 h-12 text-white"

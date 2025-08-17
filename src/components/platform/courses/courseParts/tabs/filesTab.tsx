@@ -10,6 +10,7 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import { useParams } from "react-router";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
+import toast from "react-hot-toast";
 const FilesTab = () => {
   const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
@@ -29,11 +30,12 @@ const FilesTab = () => {
   );
   const handleDownload = async (resourceId: any) => {
     try {
-      await downloadFiles({
+      const response = await downloadFiles({
         resource_id: resourceId,
       });
-    } catch (error) {
-      console.log(error);
+      toast.success(response?.message ?? "تم تحميل الملف بنجاح");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error);
     }
   };
   return (

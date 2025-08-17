@@ -92,7 +92,6 @@ const Exam = () => {
   };
   const handleAnswerSelect = (questionId: any, answerId: any) => {
     setSelectedAnswers((prev: any) => {
-      console.log("selectedAnswers", selectedAnswers);
       const exists = prev?.some((ans: any) => ans.question_id === questionId);
 
       if (exists) {
@@ -139,6 +138,7 @@ const Exam = () => {
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
           <div className="text-center">
             <img
+            loading="lazy"
               src={errorIllustation}
               alt="404"
               className="w-[200px] h-[200px] mx-auto mb-4"
@@ -318,8 +318,6 @@ const Exam = () => {
             ) : (
               <button
                 onClick={() => {
-                  console.log("currentQuestionIndex", currentQuestionIndex);
-                  console.log("selectedAnswers", selectedAnswers.length);
                   currentQuestionIndex !== selectedAnswers.length
                     ? setCurrentQuestionIndex(
                         Math.min(

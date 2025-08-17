@@ -38,7 +38,7 @@ export default function AddTeacherPage() {
     try {
       const res = await addTeacher.mutateAsync({
         ...data,
-        material: [data.material],
+        material: data?.material,
       });
       if (res?.status) {
         toast.success("تم إضافة المعلم بنجاح");
@@ -76,14 +76,14 @@ export default function AddTeacherPage() {
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
         {/* الاسم */}
-        <div>
+        <div className="">
           <label className="block mb-2 font-medium text-sm text-gray-700">
             الاسم الكامل *
           </label>
           <input
             type="text"
             {...register("name", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
             placeholder="أدخل الاسم الكامل"
           />
           {errors.name && (
@@ -92,14 +92,14 @@ export default function AddTeacherPage() {
         </div>
 
         {/* البريد الإلكتروني */}
-        <div>
+        <div className="">
           <label className="block mb-2 font-medium text-sm text-gray-700">
-            البريد الإلكتروني *
+            البريد الإلكتروني
           </label>
           <input
             type="email"
-            {...register("email", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            {...register("email", { required: false })}
+            className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
             placeholder="example@domain.com"
           />
           {errors.email && (
@@ -110,23 +110,41 @@ export default function AddTeacherPage() {
         </div>
 
         {/* الهاتف */}
-        <div>
+        <div className="">
           <label className="block mb-2 font-medium text-sm text-gray-700">
             رقم الهاتف *
           </label>
+
           <input
             type="tel"
-            {...register("mobile_number", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            {...register("mobile_number", {
+              required: "رقم الهاتف مطلوب",
+              pattern: {
+                value: /^07[0-9]{8}$/,
+                message: "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
+              },
+            })}
+            maxLength={10}
+            minLength={10}
+            onInput={(e) => {
+              e.currentTarget.value = e.currentTarget.value.replace(
+                /[^0-9]/g,
+                ""
+              );
+            }}
+            className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-orange-500 
+    ${errors.mobile_number ? "border-red-500" : "border-gray-200"}`}
             placeholder="07XXXXXXXX"
           />
           {errors.mobile_number && (
-            <span className="text-sm text-red-500">رقم الهاتف مطلوب</span>
+            <span className="text-sm text-red-500 mt-1 block">
+              {errors.mobile_number.message}
+            </span>
           )}
         </div>
 
         {/* التخصص */}
-        <div>
+        <div className="">
           <label className="block mb-2 font-medium text-sm text-gray-700">
             التخصص *
           </label>
@@ -136,8 +154,8 @@ export default function AddTeacherPage() {
           >
             <option value="">اختر التخصص</option>
             {dataMaterials?.data?.map((mat: any) => (
-              <option key={mat.id} value={mat.id}>
-                {mat.name}
+              <option key={mat?.id} value={mat?.id}>
+                {mat?.name}
               </option>
             ))}
           </select>
@@ -147,7 +165,7 @@ export default function AddTeacherPage() {
         </div>
 
         {/* كلمة المرور */}
-        <div className="md:col-span-2">
+        <div className="col-span-2">
           <label className="block mb-2 font-medium text-sm text-gray-700">
             كلمة المرور
           </label>
@@ -155,13 +173,13 @@ export default function AddTeacherPage() {
             <input
               type="text"
               {...register("password", { required: true })}
-              className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="flex-1 px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
               placeholder="أدخل كلمة المرور"
             />
             <button
               type="button"
               onClick={handleGeneratePassword}
-              className="px-4 py-3 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+              className="px-5 py-4 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
               title="توليد كلمة مرور"
             >
               <RefreshCw size={16} />
@@ -170,7 +188,7 @@ export default function AddTeacherPage() {
         </div>
 
         {/* مؤكد */}
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <input
             id="is_active"
             type="checkbox"
@@ -183,10 +201,22 @@ export default function AddTeacherPage() {
           >
             نشط؟
           </label>
+        </div> */}
+        <div className="col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div>
+            <p className="font-medium text-gray-800">منشور</p>
+            <p className="text-sm text-gray-500">متاح للطلاب</p>
+          </div>
+          <input
+            defaultChecked={true}
+            type="checkbox"
+            {...register("is_active")}
+            className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-[20px] h-[20px]"
+          />
         </div>
 
         {/* زر الحفظ */}
-        <div className="md:col-span-2 flex justify-end">
+        <div className="col-span-2 flex justify-end">
           <button
             type="submit"
             disabled={isSubmitting}

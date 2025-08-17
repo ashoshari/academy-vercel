@@ -8,10 +8,9 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 const Discover: React.FC = () => {
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const { data: sections } = useCustomQuery(
-    "/training/students/sections/",
-    ["sections"]
-  );
+  const { data: sections } = useCustomQuery("/training/students/sections/", [
+    "sections",
+  ]);
   const handleLogin = () => {
     setShowAuthModal(false);
   };
@@ -84,6 +83,7 @@ const Discover: React.FC = () => {
                       className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${section.color?.color} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
                     >
                       <img
+                        loading="lazy"
                         className="w-8 h-8 text-white"
                         src={
                           section.icon.icon ||

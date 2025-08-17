@@ -112,11 +112,11 @@ export default function EditTeacherPage() {
           {/* البريد الإلكتروني */}
           <div>
             <label className="block mb-2 font-medium text-sm text-gray-700">
-              البريد الإلكتروني *
+              البريد الإلكتروني
             </label>
             <input
               type="email"
-              {...register("email", { required: true })}
+              {...register("email", { required: false })}
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
               placeholder="example@domain.com"
             />
@@ -134,8 +134,23 @@ export default function EditTeacherPage() {
             </label>
             <input
               type="tel"
-              {...register("mobile_number", { required: true })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+              {...register("mobile_number", {
+                required: "رقم الهاتف مطلوب",
+                pattern: {
+                  value: /^07[0-9]{8}$/,
+                  message: "رقم الهاتف يجب أن يتكون من 10 أرقام فقط",
+                },
+              })}
+              maxLength={10}
+              minLength={10}
+              onInput={(e) => {
+                e.currentTarget.value = e.currentTarget.value.replace(
+                  /^07[0-9]/g,
+                  ""
+                );
+              }}
+              className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-orange-500 
+      ${errors.mobile_number ? "border-red-500" : "border-gray-200"}`}
               placeholder="07XXXXXXXX"
             />
             {errors.mobile_number && (
@@ -165,7 +180,7 @@ export default function EditTeacherPage() {
           </div>
 
           {/* مؤكد */}
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <input
               id="is_active"
               type="checkbox"
@@ -178,6 +193,18 @@ export default function EditTeacherPage() {
             >
               نشط؟
             </label>
+          </div> */}
+          <div className="col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <p className="font-medium text-gray-800">منشور</p>
+              <p className="text-sm text-gray-500">متاح للطلاب</p>
+            </div>
+            <input
+              defaultChecked={true}
+              type="checkbox"
+              {...register("is_active")}
+              className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-[20px] h-[20px]"
+            />
           </div>
 
           {/* زر الحفظ */}

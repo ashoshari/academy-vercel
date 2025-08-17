@@ -18,10 +18,10 @@ import {
   FileText,
   Download,
   FileArchive,
-  Folder,
   Archive,
+  Book,
 } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import useTokenStore from "@/store/platform/useToken";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
@@ -29,9 +29,11 @@ import AuthModal from "@/layout/platform/navbar/authModal";
 import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TeacherProfile: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const [activeTab, setActiveTab] = useState("free_courses");
   const [showActivationModal, setShowActivationModal] = useState(false);
@@ -41,21 +43,23 @@ const TeacherProfile: React.FC = () => {
 
   // Get Teacher
   const { data, isLoading } = useCustomQuery(
-    "/training/students/teacher/0bc3c31f-f4c8-4cc9-8e6e-006707650544/",
-    ["teachers"]
+    `/training/students/teacher/${id}/`,
+    ["teachers", id]
   );
+  const queryClient = useQueryClient();
   // Handle Download
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
-    ["downloadFiles"]
+    ["downloadResources"]
   );
   const handleDownload = async (resourceId: any) => {
     try {
-      await downloadFiles({
+      const response = await downloadFiles({
         resource_id: resourceId,
       });
-    } catch (error) {
-      console.log(error);
+      toast.success(response?.message ?? "تم تحميل الملف بنجاح");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error || "حدث خطأ");
     }
   };
   const handleLogin = () => {
@@ -68,8 +72,8 @@ const TeacherProfile: React.FC = () => {
   const freeCoursesData = data?.data?.free_courses;
   const coursesData = data?.data?.courses;
   const filesData = data?.data?.resources;
-  const dossiersData = data?.data?.resources;
-  const ministry_questions = data?.data?.resources;
+  const booksesData = data?.data?.bookses;
+  const ministerial_questions = data?.data?.ministerial_questions;
   const freeExamsData = data?.data?.free_exams;
 
   const isMoblieOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(
@@ -96,16 +100,16 @@ const TeacherProfile: React.FC = () => {
       count: filesData?.length || 0,
     },
     {
-      id: "dossiers",
+      id: "bookses",
       title: "الدوسيهات",
-      icon: Archive,
-      count: dossiersData?.length || 0,
+      icon: Book,
+      count: booksesData?.length || 0,
     },
     {
-      id: "ministry_questions",
+      id: "ministerial_questions",
       title: "الأسئلة الوزارية",
-      icon: Folder,
-      count: ministry_questions?.length || 0,
+      icon: Archive,
+      count: ministerial_questions?.length || 0,
     },
     {
       id: "free_exams",
@@ -117,7 +121,7 @@ const TeacherProfile: React.FC = () => {
 
   // POST ACTIVATION
   const { mutateAsync: postActivation } = useCustomPost(
-    "/training/students/activate-course/",
+    "/training/students/course/enroll/",
     ["postActivation"]
   );
   const handleCourseActivation = (course: any) => {
@@ -125,17 +129,24 @@ const TeacherProfile: React.FC = () => {
     setShowActivationModal(true);
   };
   const handleActivationSubmit = async () => {
+    const addCourse = {
+      course_id: selectedCourse?.id,
+      generated_code: activationCode,
+    };
+
     try {
-      await postActivation(activationCode);
+      const response = await postActivation(addCourse);
+      console.log("response", response);
       setShowActivationModal(false);
       setActivationCode("");
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
       toast.success("تم تفعيل الدورة بنجاح! 🎉");
     } catch (error: any) {
       toast.error(error?.response?.data?.error);
     }
   };
   const handleCourseClick = (course: any) => {
-    if (course?.is_enrolled || course?.is_free) {
+    if (course?.is_enrolled) {
       if (!isMoblieOrTablet) {
         if (isLoggedIn) {
           navigate(`/coursePage/${course?.id}`);
@@ -207,6 +218,7 @@ const TeacherProfile: React.FC = () => {
     >
       <div className="relative">
         <img
+          loading="lazy"
           src={
             course?.image ||
             "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -270,10 +282,23 @@ const TeacherProfile: React.FC = () => {
 
         <button
           onClick={() => handleCourseClick(course)}
-          className="w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+          className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
+            course?.is_enrolled
+              ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+              : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
+          }`}
         >
-          <Play className="w-5 h-5" />
-          <span>دخول الدورة</span>
+          {course?.is_enrolled ? (
+            <>
+              <Play className="w-5 h-5" />
+              <span>دخول الدورة</span>
+            </>
+          ) : (
+            <>
+              <CreditCard className="w-5 h-5" />
+              <span>تفعيل الدورة</span>
+            </>
+          )}
         </button>
       </div>
     </div>
@@ -285,6 +310,7 @@ const TeacherProfile: React.FC = () => {
     >
       <div className="relative">
         <img
+          loading="lazy"
           src={
             course?.image ||
             "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -306,7 +332,7 @@ const TeacherProfile: React.FC = () => {
           )}
         </div>
         <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-          {course?.price} دينار
+          {course?.card_price?.price} دينار
         </div>
       </div>
 
@@ -435,119 +461,149 @@ const TeacherProfile: React.FC = () => {
       </div>
     </div>
   );
-  const renderDosesCard = (file: any) => (
-    <div
-      key={file.id}
-      className="bg-white flex flex-col justify-between rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
-    >
-      <div>
-        <div className="flex items-center space-x-4 mb-4">
-          <File className="w-12 h-12 text-gray-500" />
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-gray-900">
-              {file?.title || "عنوان"}
-            </h3>
-            <p className="text-gray-600 text-sm">
-              {file?.description || "وصف"}
-            </p>
-          </div>
+  const renderBooksesCard = (book: any) => (
+    <>
+      <div
+        key={book?.name}
+        className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
+      >
+        <div className="relative">
+          <img
+            loading="lazy"
+            src={
+              book?.image ||
+              "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            }
+            alt={book?.name}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
         </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-          <div className="flex items-center space-x-2">
-            <FileText className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">
-              {(file?.file_size / 1024).toFixed(1) || 0} MB
-            </span>
+        <div className="p-6">
+          <div className="flex items-center space-x-4 mb-4">
+            {/* <Book className="w-12 h-12 text-gray-500" /> */}
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-gray-900">
+                {book?.title || "عنوان"}
+              </h3>
+              <p className="text-gray-600 text-sm">
+                {book?.description || "وصف"}
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Download className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+          <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+            <div className="flex items-center space-x-2">
+              <FileText className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {(book?.file_size / 1024).toFixed(1) || 0} MB
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Download className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {book?.downloads || 0} تحميل
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Clock className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {formatDateTimeSimple(book?.created_at) || "date"}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <FileArchive className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">{book?.file_type || "File"}</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">
-              {formatDateTimeSimple(file?.created_at) || "date"}
-            </span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <FileArchive className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">{file?.file_type || "File"}</span>
+          <div className="flex w-full items-center justify-start">
+            <a
+              href={book?.file}
+              target="_blank"
+              onClick={() => handleDownload(book?.id)}
+              download
+              className="bg-gradient-to-r w-full justify-center from-yellow-500 to-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+            >
+              <Download className="w-4 h-4" />
+              <p className="">تحميل</p>
+            </a>
           </div>
         </div>
       </div>
-
-      <div className="flex w-full items-center justify-start">
-        <a
-          href={file?.file}
-          target="_blank"
-          onClick={() => handleDownload(file?.id)}
-          download
-          className="bg-gradient-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
-        >
-          <Download className="w-4 h-4" />
-          <p className="">تحميل</p>
-        </a>
-      </div>
-    </div>
+    </>
   );
-  const renderFolderCard = (file: any) => (
-    <div
-      key={file.id}
-      className="bg-white flex flex-col justify-between rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 p-6 group"
-    >
-      <div>
-        <div className="flex items-center space-x-4 mb-4">
-          <File className="w-12 h-12 text-gray-500" />
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-gray-900">
-              {file?.title || "عنوان"}
-            </h3>
-            <p className="text-gray-600 text-sm">
-              {file?.description || "وصف"}
-            </p>
-          </div>
+  const renderMinisterialQuestionsCard = (question: any) => (
+    <>
+      <div
+        key={question?.id}
+        className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
+      >
+        <div className="relative">
+          <img
+            loading="lazy"
+            src={
+              question?.image ||
+              "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            }
+            alt={question?.name}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
         </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-          <div className="flex items-center space-x-2">
-            <FileText className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">
-              {(file?.file_size / 1024).toFixed(1) || 0} MB
-            </span>
+        <div className="p-6">
+          <div className="flex items-center space-x-4 mb-4">
+            {/* <Archive className="w-12 h-12 text-gray-500" /> */}
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-gray-900">
+                {question?.title || "عنوان"}
+              </h3>
+              <p className="text-gray-600 text-sm">
+                {question?.description || "وصف"}
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Download className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+          <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+            <div className="flex items-center space-x-2">
+              <FileText className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {(question?.file_size / 1024).toFixed(1) || 0} MB
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Download className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {question?.downloads || 0} تحميل
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Clock className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {formatDateTimeSimple(question?.created_at) || "date"}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <FileArchive className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {question?.file_type || "File"}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">
-              {formatDateTimeSimple(file?.created_at) || "date"}
-            </span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <FileArchive className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">{file?.file_type || "File"}</span>
+          <div className="flex w-full items-center justify-start">
+            <a
+              href={question?.file}
+              target="_blank"
+              onClick={() => handleDownload(question?.id)}
+              download
+              className="bg-gradient-to-r w-full justify-center from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+            >
+              <Download className="w-4 h-4" />
+              <p className="">تحميل</p>
+            </a>
           </div>
         </div>
       </div>
-
-      <div className="flex w-full items-center justify-start">
-        <a
-          href={file?.file}
-          target="_blank"
-          onClick={() => handleDownload(file?.id)}
-          download
-          className="bg-gradient-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
-        >
-          <Download className="w-4 h-4" />
-          <p className="">تحميل</p>
-        </a>
-      </div>
-    </div>
+    </>
   );
   const renderExamCard = (exam: any) => (
     <div
@@ -637,6 +693,7 @@ const TeacherProfile: React.FC = () => {
             <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
               <div className="relative">
                 <img
+                  loading="lazy"
                   src={
                     teacherData?.image ||
                     "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -727,6 +784,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -746,6 +804,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -765,6 +824,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -776,13 +836,14 @@ const TeacherProfile: React.FC = () => {
                 )}
               </div>
             )}
-            {activeTab === "dossiers" && (
+            {activeTab === "bookses" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {!isLoading && filesData?.length > 0 ? (
-                  filesData?.map(renderDosesCard)
+                  filesData?.map(renderBooksesCard)
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -794,13 +855,14 @@ const TeacherProfile: React.FC = () => {
                 )}
               </div>
             )}
-            {activeTab === "ministry_questions" && (
+            {activeTab === "ministerial_questions" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {!isLoading && filesData?.length > 0 ? (
-                  filesData?.map(renderFolderCard)
+                  ministerial_questions?.map(renderMinisterialQuestionsCard)
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -820,6 +882,7 @@ const TeacherProfile: React.FC = () => {
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
+                      loading="lazy"
                       className="absolute top-0 w-[400px] h-[350px] z-0"
                       src={errorIllustation}
                       alt="error"
@@ -851,35 +914,49 @@ const TeacherProfile: React.FC = () => {
               <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-700 font-medium">سعر الدورة:</span>
-                  <span className="text-2xl font-bold text-orange-600">
-                    {selectedCourse?.price} دينار
-                  </span>
+                  {selectedCourse?.card_price?.price ? (
+                    <span className="text-2xl font-bold text-orange-600">
+                      {selectedCourse?.card_price?.price} دينار
+                    </span>
+                  ) : (
+                    <span className="text-2xl font-bold text-orange-600">
+                      مجانا
+                    </span>
+                  )}
                 </div>
                 <div className="text-sm text-gray-600">
                   <p>• {selectedCourse?.lessons} درس تفاعلي</p>
-                  <p>• مدة الدورة: {selectedCourse?.duration}</p>
+                  <p>• مدة الدورة: {selectedCourse?.time_in_hours} ساعة</p>
                   <p>• دعم فني مستمر</p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    كود تفعيل البطاقة
-                  </label>
-                  <input
-                    type="text"
-                    value={activationCode}
-                    onChange={(e) => setActivationCode(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
-                    placeholder="أدخل كود التفعيل"
-                  />
+                  {!selectedCourse?.is_free && (
+                    <>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        كود تفعيل البطاقة
+                      </label>
+                      <input
+                        type="text"
+                        value={activationCode}
+                        onChange={(e) => {
+                          setActivationCode(e.target.value);
+                        }}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
+                        placeholder="أدخل كود التفعيل"
+                      />
+                    </>
+                  )}
                 </div>
 
                 <div className="flex space-x-3">
                   <button
                     onClick={handleActivationSubmit}
-                    disabled={!activationCode.trim()}
+                    disabled={
+                      !selectedCourse?.is_free && !activationCode.trim()
+                    }
                     className="cursor-pointer flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     تفعيل الدورة

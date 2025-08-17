@@ -9,7 +9,7 @@ import AppRoutes from "./routes";
 import "./i18n/config.ts";
 import { Toaster } from "react-hot-toast";
 import "leaflet/dist/leaflet.css";
-import GlobalLoading from "./components/platform/globalLoading.tsx";
+// import GlobalLoading from "./components/platform/globalLoading.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +20,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
 // import * as Sentry from "@sentry/react";
 
 // Sentry.init({
@@ -48,7 +47,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={<div>Loading...</div>}>
         <AppRoutes />
-        <GlobalLoading />
+        {/* <GlobalLoading /> */}
         <Toaster />
       </Suspense>
     </QueryClientProvider>

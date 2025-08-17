@@ -7,9 +7,7 @@ const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides, setSlides] = useState<any[]>([]);
   const [mounted, setMounted] = useState(false);
-  const { data } = useCustomQuery("training/students/sliders/", [
-    "sliders",
-  ]);
+  const { data } = useCustomQuery("training/students/sliders/", ["sliders"]);
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -55,6 +53,7 @@ const Hero: React.FC = () => {
             >
               <div className="absolute inset-0 bg-black/50 z-10"></div>
               <img
+                loading="lazy"
                 src={
                   slide?.image ||
                   "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
