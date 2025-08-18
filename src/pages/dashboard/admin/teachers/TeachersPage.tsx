@@ -95,6 +95,7 @@ const TeachersPage = () => {
     `account/admin/teachers/?${queryParams.toString()}`,
     ["teachers", filters]
   );
+  console.log("dataTeachers",dataTeachers?.data?.data);
   const dataMaterials = useCustomQuery("core/materials/", ["materials"]);
 
   const teacherStatus = useCustomPost(

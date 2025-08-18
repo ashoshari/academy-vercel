@@ -1,10 +1,14 @@
 import { useCustomQuery } from "@/hooks/useQuery";
+import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import {
   Award,
-  BookOpen,
-  FileText,
-  GraduationCap,
-  CreditCard,
+  // BookOpen,
+  // FileText,
+  // GraduationCap,
+  // CreditCard,
+  Phone,
+  User,
+  School,
 } from "lucide-react";
 import { useParams } from "react-router";
 
@@ -18,20 +22,20 @@ const StudentDetailsPage = () => {
 
   const selectedStudent = data?.data?.data;
 
-  const getCourseTypeIcon = (type: string) => {
-    switch (type) {
-      case "exam":
-        return BookOpen;
-      case "ministry":
-        return FileText;
-      case "course":
-        return GraduationCap;
-      case "cards":
-        return CreditCard;
-      default:
-        return BookOpen;
-    }
-  };
+  // const getCourseTypeIcon = (type: string) => {
+  //   switch (type) {
+  //     case "exam":
+  //       return BookOpen;
+  //     case "ministry":
+  //       return FileText;
+  //     case "course":
+  //       return GraduationCap;
+  //     case "cards":
+  //       return CreditCard;
+  //     default:
+  //       return BookOpen;
+  //   }
+  // };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -47,14 +51,14 @@ const StudentDetailsPage = () => {
         return "text-gray-600 bg-gray-100";
     }
   };
-
+  console.log("selectedStudent", selectedStudent);
   return (
     <div className="p-4 lg:p-8">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl mx-auto">
         <>
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 w-full">
                 <img
                   src={
                     selectedStudent?.image ||
@@ -65,11 +69,52 @@ const StudentDetailsPage = () => {
                   alt={selectedStudent?.name}
                   className="w-16 h-16 rounded-full"
                 />
-                <div>
+                <div className="w-full">
                   <h2 className="text-2xl font-bold text-gray-800">
                     {selectedStudent?.name}
                   </h2>
-                  <p className="text-gray-600">{selectedStudent?.grade}</p>
+                  <div className="flex justify-between">
+                    <div className="space-y-[10px]">
+                      <div className="flex items-center gap-x-[10px]">
+                        <Award
+                          size={16}
+                          className="text-gray-600 text-sm font-medium text-center"
+                        />
+                        <p className="text-gray-600 text-sm font-medium text-center">
+                          {selectedStudent?.grade?.name || "-"}{" "}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-x-[10px]">
+                        <School
+                          size={16}
+                          className="text-gray-600 text-sm font-medium text-center"
+                        />
+                        <p className="text-gray-600 text-sm font-medium text-center">
+                          {selectedStudent?.school_name || "-"}{" "}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="space-y-[10px]">
+                      <div className="flex items-center gap-x-[10px]">
+                        <User
+                          size={16}
+                          className="text-gray-600 text-sm font-medium text-center"
+                        />
+                        <p className="text-gray-600 text-sm font-medium text-center">
+                          {selectedStudent?.gender || "-"}{" "}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-x-[10px]">
+                        <Phone
+                          size={16}
+                          className="text-gray-600 font-medium text-center"
+                        />
+                        <p className="text-gray-600 text-sm font-medium text-center">
+                          {selectedStudent?.mobile_number || "-"}{" "}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -87,87 +132,81 @@ const StudentDetailsPage = () => {
                     الدورات المسجلة
                   </h3>
                   <div className="space-y-3">
-                    {selectedStudent?.current_courses?.map((course: any) => {
-                      const IconComponent = getCourseTypeIcon(
-                        course.courseType
-                      );
+                    {selectedStudent?.courses_enrolled?.map((course: any) => {
+                      // const IconComponent = getCourseTypeIcon(
+                      //   course?.courseType
+                      // );
+                      console.log("course", course);
                       return (
                         <div
-                          key={course.courseId}
+                          key={course?.course?.id}
                           className="bg-white border border-gray-200 rounded-lg p-4"
                         >
                           <div className="flex items-start gap-4">
-                            <IconComponent
+                            {/* <IconComponent
                               size={24}
                               className="text-orange-500 mt-1"
-                            />
+                            /> */}
                             <div className="flex-1">
                               <div className="flex items-start justify-between mb-2">
                                 <div>
                                   <h4 className="font-medium text-gray-800">
-                                    {course.courseName}
+                                    {course?.course?.name}
                                   </h4>
                                   <p className="text-sm text-gray-500">
-                                    المعلم: {course.teacherName}
+                                    المعلم: {course?.course?.teacher?.name}
                                   </p>
                                 </div>
-                                <div className="text-left">
-                                  <span
-                                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                                      course.status
-                                    )}`}
-                                  >
-                                    {course.status === "active"
-                                      ? "نشط"
-                                      : course.status === "completed"
-                                      ? "مكتمل"
-                                      : course.status === "paused"
-                                      ? "متوقف"
-                                      : "منسحب"}
-                                  </span>
-                                  <p className="text-sm text-gray-500 mt-1">
-                                    {course.price} د.أ
-                                  </p>
+                                <div className="text-left flex gap-x-[10px]">
+                                  {course?.course?.level && (
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                                        course?.course?.level?.name
+                                      )}`}
+                                    >
+                                      {course?.course?.level?.name}
+                                    </span>
+                                  )}
+                                  {course?.course?.is_free ? (
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-xs font-medium bg-green-600 text-white`}
+                                    >
+                                      مجانا
+                                    </span>
+                                  ) : (
+                                    <span
+                                      className={`px-2 py-1 rounded-full text-xs font-medium bg-green-600 text-white`}
+                                    >
+                                      {course?.course?.card_price?.price || "-"}{" "}
+                                      د.أ
+                                    </span>
+                                  )}
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                                <div>
+                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm items-center">
+                                <div className="lg:col-span-2">
                                   <span className="text-gray-500">التقدم</span>
                                   <div className="flex items-center gap-2 mt-1">
                                     <div className="flex-1 bg-gray-200 rounded-full h-2">
                                       <div
                                         className="bg-orange-500 h-2 rounded-full transition-all"
                                         style={{
-                                          width: `${course.progress}%`,
+                                          width: `${course?.course?.progress}%`,
                                         }}
                                       ></div>
                                     </div>
                                     <span className="font-medium">
-                                      {course.progress}%
+                                      {course?.course?.progress}%
                                     </span>
                                   </div>
                                 </div>
                                 <div>
-                                  <span className="text-gray-500">الدرجة</span>
-                                  <p className="font-medium">
-                                    {course.grade || "-"}%
-                                  </p>
-                                </div>
-                                <div>
-                                  <span className="text-gray-500">
+                                  <h4 className="text-gray-500 text-center">
                                     الوقت المستغرق
-                                  </span>
-                                  <p className="font-medium">
-                                    {course.timeSpent} ساعة
-                                  </p>
-                                </div>
-                                <div>
-                                  <span className="text-gray-500">
-                                    آخر وصول
-                                  </span>
-                                  <p className="font-medium">
-                                    {course.lastAccessed}
+                                  </h4>
+                                  <p className="font-medium text-center">
+                                    {course?.course?.time_in_hours} ساعة
                                   </p>
                                 </div>
                               </div>
@@ -180,7 +219,7 @@ const StudentDetailsPage = () => {
                 </div>
 
                 {/* Achievements */}
-                {selectedStudent?.achievements?.length > 0 && (
+                {/* {selectedStudent?.achievements?.length > 0 && (
                   <div className="mb-6">
                     <h3 className="font-bold text-gray-800 mb-4">الإنجازات</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -207,7 +246,7 @@ const StudentDetailsPage = () => {
                       ))}
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {/* Payment History */}
                 <div className="mb-6">
@@ -215,38 +254,28 @@ const StudentDetailsPage = () => {
                     سجل المدفوعات
                   </h3>
                   <div className="space-y-2">
-                    {selectedStudent?.paymentHistory?.map((payment: any) => (
+                    {selectedStudent?.payments?.map((payment: any) => (
                       <div
-                        key={payment.id}
+                        key={payment?.id}
                         className="bg-green-50 border border-green-200 rounded-lg p-3"
                       >
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-medium text-gray-800">
-                              {payment.description}
+                              {payment?.code_name}
                             </p>
                             <p className="text-sm text-gray-500">
-                              {payment.date}
+                              {formatDateTimeSimple(payment?.payment_date)}
                             </p>
                           </div>
-                          <div className="text-left">
+                          <div className="text-center flex gap-x-[10px]">
                             <p className="font-bold text-green-600">
-                              {payment.amount} د.أ
+                              {payment?.amount} د.أ
                             </p>
                             <span
-                              className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                payment.status === "completed"
-                                  ? "bg-green-100 text-green-800"
-                                  : payment.status === "pending"
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
+                              className={`px-2 py-1 rounded-full text-xs bg-gray-200 text-black`}
                             >
-                              {payment.status === "completed"
-                                ? "مكتمل"
-                                : payment.status === "pending"
-                                ? "معلق"
-                                : "فاشل"}
+                              {payment?.payment_method}
                             </span>
                           </div>
                         </div>
@@ -259,7 +288,23 @@ const StudentDetailsPage = () => {
                 <div>
                   <h3 className="font-bold text-gray-800 mb-4">سجل النشاط</h3>
                   <div className="space-y-2">
-                    {selectedStudent?.activityLog
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h2>تم انشاؤه في</h2>
+                          <p className="font-medium text-gray-800">
+                            {formatDateTimeSimple(selectedStudent?.created_at)}
+                          </p>
+                        </div>
+                        <div>
+                          <h2>اخر تسجيل دخول</h2>
+                          <p className="font-medium  text-gray-800">
+                            {formatDateTimeSimple(selectedStudent?.last_login)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* {selectedStudent?.activityLog
                       ?.slice(0, 5)
                       .map((activity: any) => (
                         <div
@@ -280,7 +325,7 @@ const StudentDetailsPage = () => {
                             </p>
                           </div>
                         </div>
-                      ))}
+                      ))} */}
                   </div>
                 </div>
               </div>

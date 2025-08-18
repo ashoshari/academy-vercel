@@ -85,7 +85,21 @@ const AddStudentPage = () => {
           </label>
           <input
             type="tel"
-            {...register("mobile_number", { required: true })}
+            {...register("mobile_number", {
+              required: "رقم الهاتف مطلوب",
+              pattern: {
+                value: /^07[0-9]{8}$/,
+                message: "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
+              },
+            })}
+            maxLength={10}
+            minLength={10}
+            onInput={(e) => {
+              e.currentTarget.value = e.currentTarget.value.replace(
+                /[^0-9]/g,
+                ""
+              );
+            }}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
             placeholder="07XXXXXXXX"
           />

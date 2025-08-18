@@ -44,7 +44,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   );
   // GET Exams
   const { data: exams } = useCustomQuery("/training/admin/exams/", ["exams"]);
-
+  console.log("courseContent", courseContent?.data);
   const examData = exams?.data;
   // GET courseContent Statistics
   const { data: contentStatistics } = useCustomQuery(
@@ -270,6 +270,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       description: newItem.description,
       time_in_minutes: newItem.estimatedDuration,
       is_published: newItem.isPublished,
+      // is_free: newItem.isFree,
       [newItem.type === "unit"
         ? "semester"
         : newItem.type === "topic"
@@ -282,13 +283,14 @@ const CourseContentPage = ({ course, onBack }: any) => {
       ...(newItem.order !== undefined && { order: newItem.order }),
     };
     try {
-      const response = newItem.type === "semester"
-        ? await postSemesters(addItem)
-        : newItem.type === "unit"
-        ? await postUnits(addItem)
-        : newItem.type === "topic"
-        ? await postTopics(addItem)
-        : await postLessons(addItem);
+      const response =
+        newItem.type === "semester"
+          ? await postSemesters(addItem)
+          : newItem.type === "unit"
+          ? await postUnits(addItem)
+          : newItem.type === "topic"
+          ? await postTopics(addItem)
+          : await postLessons(addItem);
 
       queryClient.invalidateQueries({
         queryKey: ["course-content"],
@@ -496,11 +498,11 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       >
                         {item?.is_published ? "منشور" : "مسودة"}
                       </span>
-                      {item.is_free && (
+                      {/* {item?.is_free && (
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                           مجاني
                         </span>
-                      )}
+                      )} */}
                     </div>
 
                     {/* Duration */}
@@ -1059,7 +1061,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               )}
 
               {/* Status Settings */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="">
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">منشور</p>
@@ -1067,28 +1069,28 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newItem.isPublished || false}
+                    checked={newItem?.isPublished || false}
                     onChange={(e) =>
                       setNewItem({ ...newItem, isPublished: e.target.checked })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-4 h-4"
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                {/* <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">مجاني</p>
                     <p className="text-sm text-gray-500">متاح بدون رسوم</p>
                   </div>
                   <input
                     type="checkbox"
-                    checked={newItem.isFree || false}
+                    checked={newItem?.isFree || false}
                     onChange={(e) =>
                       setNewItem({ ...newItem, isFree: e.target.checked })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
-                </div>
+                </div> */}
               </div>
 
               {/* Preview */}
@@ -1285,7 +1287,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               </h2>
 
               {/* Status Settings */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="">
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">منشور</p>
@@ -1300,10 +1302,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-4 h-4"
                   />
                 </div>
-
+                {/* 
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">مجاني</p>
@@ -1320,7 +1322,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
-                </div>
+                </div> */}
               </div>
 
               {/* Type Info */}

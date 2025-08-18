@@ -161,7 +161,7 @@ const ExamsPage = () => {
   const levels = useCustomQuery("core/exam-levels/", ["levels"]);
   const types = useCustomQuery("/core/exam-types/", ["exam-types"]);
   const teachers = useCustomQuery("account/admin/teachers/", ["teachers"]);
-
+  console.log(data?.data?.data);
   const addExam = useCustomPost("training/admin/exams/", [
     "exams",
     "exams-statistics",
@@ -1577,11 +1577,11 @@ const ExamsPage = () => {
       {/* Exams Grid/Table */}
       {true ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data?.data?.data.map((exam: any) => (
+          {data?.data?.data?.map((exam: any) => (
             <ExamCard key={exam.id} exam={exam} />
           ))}
 
-          {data?.data?.data.length === 0 && (
+          {data?.data?.data?.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
               <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
