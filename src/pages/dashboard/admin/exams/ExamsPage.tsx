@@ -1,3 +1,5 @@
+/* eslint-disable no-constant-condition */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import {
   Plus,
@@ -13,7 +15,6 @@ import {
   CheckCircle,
   FileText,
   Download,
-  Upload,
   BarChart3,
   Hash,
   Save,
@@ -24,6 +25,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
+import ExamQuestionsPage from "./questions/QuestionsPage";
 
 export interface Exam {
   id: number;
@@ -899,47 +901,12 @@ const ExamsPage = () => {
 
   if (currentView === "questions" && selectedExam) {
     return (
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setCurrentView("list")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              إدارة أسئلة الامتحان
-            </h1>
-            <p className="text-gray-600 text-sm">{selectedExam.title}</p>
-          </div>
-        </div>
-
-        {/* Questions Management */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-orange-100/50">
-          <div className="text-center py-12">
-            <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-800 mb-2">
-              إدارة الأسئلة
-            </h3>
-            <p className="text-gray-500 mb-6">
-              سيتم تطوير واجهة إدارة الأسئلة (إضافة، تعديل، حذف الأسئلة) في
-              التحديث القادم
-            </p>
-            <div className="flex gap-4 justify-center">
-              <button className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2">
-                <Plus size={16} />
-                إضافة سؤال جديد
-              </button>
-              <button className="border border-gray-200 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
-                <Upload size={16} />
-                استيراد أسئلة
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ExamQuestionsPage
+        exam={selectedExam}
+        onBack={() => {
+          setCurrentView("list");
+        }}
+      />
     );
   }
 
