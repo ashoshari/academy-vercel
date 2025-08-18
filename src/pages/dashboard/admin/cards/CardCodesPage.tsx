@@ -136,6 +136,7 @@ const CardCodesPage = () => {
   ]);
 
   const [generateForm, setGenerateForm] = useState({
+    name: "",
     priceId: 0,
     quantity: 0,
     prefix: "",
@@ -269,9 +270,9 @@ const CardCodesPage = () => {
     };
   };
 
-  console.log(getClientInfo(), "client info");
   const handleGenerateCodes = () => {
     const rawData = {
+      name: generateForm.name,
       card: generateForm.priceId,
       number_of_codes: generateForm.quantity,
       prefix: generateForm.prefix,
@@ -289,6 +290,7 @@ const CardCodesPage = () => {
       .then((res) => {
         if (res.status) {
           setGenerateForm({
+            name: "",
             priceId: 0,
             quantity: 0,
             prefix: "",
