@@ -33,6 +33,10 @@ const SliderPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const slidersData = useCustomQuery("/training/admin/sliders/", ["sliders"]);
+  const sliderStatisticsData = useCustomQuery(
+    "/training/admin/sliders-statistics/",
+    ["sliders-statistics"]
+  );
 
   const updateSlide = useCustomUpdate(
     `/training/admin/sliders/${selectedSlide?.id ?? "noop"}/`,
@@ -165,8 +169,8 @@ const SliderPage = () => {
       </div>
 
       {/* Search and Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -181,18 +185,27 @@ const SliderPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
-          <p className="text-2xl font-bold text-orange-600">
-            {sliderItems?.length}
-          </p>
-          <p className="text-sm text-gray-600">إجمالي السلايدات</p>
-        </div>
+        <div className="grid grid-cols-3 col-span-4 gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+            <p className="text-2xl font-bold text-orange-600">
+              {sliderStatisticsData?.data?.data?.total_sliders}
+            </p>
+            <p className="text-sm text-gray-600">إجمالي السلايدات</p>
+          </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
-          <p className="text-2xl font-bold text-green-600">
-            {sliderItems?.filter((s: Slider) => s.is_published).length}
-          </p>
-          <p className="text-sm text-gray-600">السلايدات النشطة</p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+            <p className="text-2xl font-bold text-green-600">
+              {sliderStatisticsData?.data?.data?.active_sliders}
+            </p>
+            <p className="text-sm text-gray-600">السلايدات النشطة</p>
+          </div>
+
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+            <p className="text-2xl font-bold text-gray-600">
+              {sliderStatisticsData?.data?.data?.inactive_sliders}
+            </p>
+            <p className="text-sm text-gray-600">السلايدات الغير النشطة</p>
+          </div>
         </div>
       </div>
 
@@ -242,7 +255,7 @@ const SliderPage = () => {
       </div>
 
       {/* Slider Settings */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
         <h2 className="text-lg font-bold text-gray-800 mb-4">
           إعدادات السلايدر
         </h2>
@@ -281,7 +294,7 @@ const SliderPage = () => {
             حفظ الإعدادات
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Modals */}
       {showEditModal && (
