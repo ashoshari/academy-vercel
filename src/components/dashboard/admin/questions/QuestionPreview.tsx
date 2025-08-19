@@ -1,18 +1,18 @@
-// src/components/exams/questions/QuestionPreview.tsx
-// import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { CheckCircle, Image as ImageIcon } from "lucide-react";
 import { DraftQuestion } from "@/pages/dashboard/admin/exams/questions/QuestionsPage";
-import img from "@/assets/illustration/Error_illustration.svg";
 
 type Props = {
   question: DraftQuestion;
 };
 
 const QuestionPreview: React.FC<Props> = ({ question }) => {
-  // const qImgUrl = useMemo(
-  //   () => (question.image ? URL.createObjectURL(question.image) : null),
-  //   [question.image]
-  // );
+  const qImgUrl = useMemo(
+    () => (question.image ? question.image : null),
+    [question.image]
+  );
+
+  console.log(question);
 
   return (
     <div className="bg-white rounded-xl border border-orange-100/50 p-4">
@@ -20,21 +20,20 @@ const QuestionPreview: React.FC<Props> = ({ question }) => {
         <h3 className="font-bold text-gray-800">معاينة السؤال</h3>
         <span className="text-sm text-gray-500">{question.marks} درجة</span>
       </div>
-
       <p className="text-gray-800 mb-3 whitespace-pre-wrap">
         {question.question_text || "—"}
       </p>
-
-      {/* {qImgUrl && ( */}
-      <div className="mb-3">
-        <img
-          src={img}
-          alt="Question"
-          className="w-full max-w-md h-40 object-cover rounded border"
-        />
-      </div>
-      {/* )} */}
-
+      {qImgUrl && (
+        <div className="mb-3 w-full flex items-center justify-center">
+          <img
+            src={
+              qImgUrl instanceof File ? URL.createObjectURL(qImgUrl) : qImgUrl
+            }
+            alt="Question"
+            className="w-full max-w-md h-auto rounded border"
+          />
+        </div>
+      )}
       <div className="space-y-2">
         {question.answers.map((a, idx) => (
           <div
@@ -47,21 +46,23 @@ const QuestionPreview: React.FC<Props> = ({ question }) => {
               {String.fromCharCode(65 + idx)}.
             </span>
             <span className="flex-1">{a.answer_text || "—"}</span>
-            {/* {a.image && ( */}
-            <img
-              src={img}
-              // src={URL.createObjectURL(a.image)}
-              alt="Answer"
-              className="w-10 h-10 object-cover rounded border"
-            />
-            {/* )} */}
+            {a.image && (
+              <img
+                src={
+                  a.image instanceof File
+                    ? URL.createObjectURL(a.image)
+                    : a.image
+                }
+                alt="Answer"
+                className="w-10 h-10 object-cover rounded border"
+              />
+            )}
             {a.is_correct && (
               <CheckCircle size={16} className="text-green-600" />
             )}
           </div>
         ))}
       </div>
-
       {(!question.answers || question.answers.length === 0) && (
         <div className="text-xs text-gray-500 flex items-center gap-1">
           <ImageIcon size={12} />

@@ -28,12 +28,12 @@ import handleErrorAlerts from "@/utils/showErrorMessages";
 import ExamQuestionsPage from "./questions/QuestionsPage";
 
 export interface Exam {
-  id: number;
+  id: string;
   title: string;
   description: string;
   material: string;
   level: string;
-  time_in_minutes: number; // in minutes
+  time_in_minutes: number;
   number_of_questions: number;
   total_marks: number;
   passing_marks: number;
@@ -154,28 +154,28 @@ const ExamsPage = () => {
     shuffle_answers: false,
   });
 
-  const dataStatistcs = useCustomQuery("training/admin/exams-statistics/", [
+  const dataStatistcs = useCustomQuery("/training/admin/exams-statistics/", [
     "exams-statistics",
   ]);
 
-  const data = useCustomQuery("training/admin/exams/", ["exams"]);
-  const materials = useCustomQuery("core/materials/", ["materials"]);
-  const levels = useCustomQuery("core/exam-levels/", ["levels"]);
+  const data = useCustomQuery("/training/admin/exams/", ["exams"]);
+  const materials = useCustomQuery("/core/materials/", ["materials"]);
+  const levels = useCustomQuery("/core/exam-levels/", ["levels"]);
   const types = useCustomQuery("/core/exam-types/", ["exam-types"]);
-  const teachers = useCustomQuery("account/admin/teachers/", ["teachers"]);
+  const teachers = useCustomQuery("/account/admin/teachers/", ["teachers"]);
 
-  const addExam = useCustomPost("training/admin/exams/", [
+  const addExam = useCustomPost("/training/admin/exams/", [
     "exams",
     "exams-statistics",
   ]);
 
   const updateExam = useCustomUpdate(
-    `training/admin/exams/${selectedExam?.id}/`,
+    `/training/admin/exams/${selectedExam?.id}/`,
     ["exams"]
   );
 
   const singleExam = useCustomQuery(
-    `training/admin/exams/${selectedExam?.id}/`,
+    `/training/admin/exams/${selectedExam?.id}/`,
     ["exam", selectedExam?.id],
     {},
     !!selectedExam

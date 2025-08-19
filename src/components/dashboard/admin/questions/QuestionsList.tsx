@@ -1,4 +1,3 @@
-// src/components/exams/questions/QuestionsList.tsx
 import React from "react";
 import { Eye, Edit } from "lucide-react";
 import { ExamQuestion } from "@/pages/dashboard/admin/exams/questions/QuestionsPage";

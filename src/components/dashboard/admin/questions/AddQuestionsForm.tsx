@@ -1,13 +1,6 @@
-// src/components/exams/questions/AddQuestionsForm.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useId, useMemo, useState } from "react";
-import {
-  Plus,
-  Save,
-  Trash2,
-  CheckCircle,
-  // Image as ImageIcon,
-} from "lucide-react";
+import { useId, useMemo, useState } from "react";
+import { Plus, Save, Trash2, CheckCircle } from "lucide-react";
 import { useCustomPost } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
@@ -15,10 +8,14 @@ import {
   DraftAnswer,
   DraftQuestion,
 } from "@/pages/dashboard/admin/exams/questions/QuestionsPage";
-import { buildQuestionsFormData } from "@/utils/buildQuestionsFormData";
+import { buildQuestionsJson } from "@/utils/buildQuestionsPayload";
 
 type Props = {
-  examId: string | number;
+  examId: string;
+  questionsCount: number;
+  totalMarks: number;
+  existingQuestionsCount: number;
+  existingMarksSum: number;
   onCancel: () => void;
   onSuccess?: () => void;
 };
@@ -37,13 +34,22 @@ const emptyQuestion = (): DraftQuestion => ({
   answers: [emptyAnswer(true), emptyAnswer(), emptyAnswer(), emptyAnswer()],
 });
 
-const AddQuestionsForm: React.FC<Props> = ({ examId, onCancel, onSuccess }) => {
+const AddQuestionsForm: React.FC<Props> = ({
+  examId,
+  questionsCount,
+  totalMarks,
+  existingQuestionsCount,
+  existingMarksSum,
+  onCancel,
+  onSuccess,
+}) => {
   const [draft, setDraft] = useState<DraftQuestion>(emptyQuestion());
   const radioGroupId = useId();
   const [pending, setPending] = useState<DraftQuestion[]>([]);
 
   const addQuestion = useCustomPost(`/training/admin/exam-questions/`, [
     "exam-questions",
+    examId,
   ]);
 
   const correctCount = useMemo(
@@ -89,9 +95,17 @@ const AddQuestionsForm: React.FC<Props> = ({ examId, onCancel, onSuccess }) => {
       return;
     }
 
-    const fd = buildQuestionsFormData(examId, payload);
+    for (const q of payload) {
+      const correct = q.answers.filter((a) => a.is_correct).length;
+      if (correct !== 1) {
+        toast.error("يجب اختيار إجابة صحيحة واحدة فقط لكل سؤال");
+        return;
+      }
+    }
+
+    const json = await buildQuestionsJson(examId, payload);
     try {
-      const res = await addQuestion.mutateAsync(fd as any);
+      const res = await addQuestion.mutateAsync(json as any);
       if (res?.status) {
         toast.success("تم حفظ الأسئلة بنجاح");
         setPending([]);
@@ -126,14 +140,40 @@ const AddQuestionsForm: React.FC<Props> = ({ examId, onCancel, onSuccess }) => {
     });
   };
 
+  const pendingMarks = useMemo(
+    () => pending.reduce((s, q) => s + (Number(q.marks) || 0), 0),
+    [pending]
+  );
+
+  const remainingQuestions = Math.max(
+    0,
+    (Number(questionsCount) || 0) -
+      (Number(existingQuestionsCount) || 0) -
+      pending.length
+  );
+
+  const remainingMarks = Math.max(
+    0,
+    (Number(totalMarks) || 0) - (Number(existingMarksSum) || 0) - pendingMarks
+  );
+
   return (
     <div className="space-y-6">
       {/* Current question form */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-        <h2 className="text-lg font-bold text-gray-800 mb-4">إضافة سؤال</h2>
-
+        <p>
+          إجمالي درجات الامتحان: <strong>{totalMarks}</strong> • المستخدم:{" "}
+          <strong>{existingMarksSum + pendingMarks}</strong> • المتبقي:{" "}
+          <strong>{remainingMarks}</strong> درجة
+        </p>
+        <p>
+          إجمالي عدد أسئلة الامتحان: <strong>{questionsCount}</strong> •
+          الموجودة: <strong>{existingQuestionsCount}</strong> • المضافة الآن
+          (دفعة): <strong>{pending.length}</strong> • المتبقي:{" "}
+          <strong>{remainingQuestions}</strong> سؤال
+        </p>
+        <h2 className="text-lg font-bold text-gray-800 my-4">إضافة سؤال</h2>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left: form */}
           <div className="lg:col-span-4 space-y-4">
             {/* Question text */}
             <div>
@@ -192,7 +232,11 @@ const AddQuestionsForm: React.FC<Props> = ({ examId, onCancel, onSuccess }) => {
                 {draft.image && (
                   <div className="mt-2">
                     <img
-                      src={URL.createObjectURL(draft.image)}
+                      src={
+                        draft.image instanceof File
+                          ? URL.createObjectURL(draft.image)
+                          : draft.image
+                      }
                       alt="preview"
                       className="w-40 h-28 object-cover rounded border"
                     />
@@ -264,7 +308,11 @@ const AddQuestionsForm: React.FC<Props> = ({ examId, onCancel, onSuccess }) => {
                         />
                         {a.image && (
                           <img
-                            src={URL.createObjectURL(a.image)}
+                            src={
+                              a.image instanceof File
+                                ? URL.createObjectURL(a.image)
+                                : a.image
+                            }
                             alt="ans"
                             className="w-12 h-12 object-cover rounded border"
                           />
@@ -312,7 +360,6 @@ const AddQuestionsForm: React.FC<Props> = ({ examId, onCancel, onSuccess }) => {
             </div>
           </div>
         </div>
-
         {/* Actions */}
         <div className="flex items-center justify-end gap-3 mt-6">
           <button
@@ -344,7 +391,7 @@ const AddQuestionsForm: React.FC<Props> = ({ examId, onCancel, onSuccess }) => {
         </div>
       </div>
 
-      {/* Pending (batch) preview */}
+      {/* Pending preview */}
       {pending.length > 0 && (
         <div className="bg-white rounded-xl border border-orange-100/50 p-4">
           <h3 className="font-bold text-gray-800 mb-3">الأسئلة في الدفعة</h3>
