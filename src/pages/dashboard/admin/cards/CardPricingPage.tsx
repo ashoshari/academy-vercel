@@ -251,7 +251,9 @@ const CardPricingPage = () => {
 
       {/* Cards Grid */}
       {cards?.isLoading ? (
-        <Spinner size={40} thickness={4} className="text-orange-500" />
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
           {cards?.data?.data.map((card: any) => (

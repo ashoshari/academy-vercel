@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   Plus,
   Edit,
+  Search,
   // Trash2,
   Eye,
   EyeOff,
@@ -18,6 +19,8 @@ import {
   BarChart3,
   Hash,
   Save,
+  Rows,
+  Grid,
   // Play,
   // Pause,
 } from "lucide-react";
@@ -26,6 +29,8 @@ import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import ExamQuestionsPage from "./questions/QuestionsPage";
+import Spinner from "@/components/dashboard/Spinner";
+import Pagination from "@/components/dashboard/core/Pagination";
 
 export interface Exam {
   id: string;
@@ -119,23 +124,15 @@ export interface QuestionStatistics {
 
 const ExamsPage = () => {
   const [currentView, setCurrentView] = useState<
-    "list" | "create" | "edit" | "questions" | "results"
-  >("list");
+    "table" | "grid" | "create" | "edit" | "questions" | "results"
+  >("table");
   const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
-  //   const [searchTerm, setSearchTerm] = useState("");
-  //   const [subjectFilter, setSubjectFilter] = useState<string>("");
-  //   const [difficultyFilter, setDifficultyFilter] = useState<
-  //     "all" | "easy" | "medium" | "hard"
-  //   >("all");
-  //   const [typeFilter, setTypeFilter] = useState<
-  //     "all" | "practice" | "assessment" | "final" | "quiz"
-  //   >("all");
-  //   const [statusFilter, setStatusFilter] = useState<
-  //     "all" | "published" | "draft" | "active" | "inactive"
-  //   >("all");
-  //   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
-
-  const [newExam, setNewExam] = useState<Partial<Exam>>({
+  const [searchTerm, setSearchTerm] = useState("");
+  const [materialFilter, setMaterialFilter] = useState<string>("");
+  const [levelFilter, setLevelFilter] = useState<string>("");
+  const [typeFilter, setTypeFilter] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [newExam, setNewExam] = useState<any>({
     title: "",
     description: "",
     material: "",
@@ -154,21 +151,40 @@ const ExamsPage = () => {
     shuffle_answers: false,
   });
 
+  const queryParams = new URLSearchParams();
+  if (searchTerm) queryParams.append("search", searchTerm);
+  if (materialFilter) queryParams.append("material", materialFilter);
+  if (levelFilter) queryParams.append("level", levelFilter);
+  if (typeFilter) queryParams.append("type", typeFilter);
+  if (page) queryParams.append("page", page.toString());
+  const queryString = queryParams.toString();
+  const data = useCustomQuery(`/training/admin/exams/?${queryString}`, [
+    "exams",
+    searchTerm,
+    materialFilter,
+    levelFilter,
+    typeFilter,
+  ]);
+  const paginationData = data?.data?.pagination;
   const dataStatistcs = useCustomQuery("/training/admin/exams-statistics/", [
     "exams-statistics",
   ]);
-
-  const data = useCustomQuery("/training/admin/exams/", ["exams"]);
   const materials = useCustomQuery("/core/materials/", ["materials"]);
   const levels = useCustomQuery("/core/exam-levels/", ["levels"]);
   const types = useCustomQuery("/core/exam-types/", ["exam-types"]);
 
+  const materialsData = materials?.data?.data;
+  const levelsData = levels?.data?.data;
+  const typesData = types?.data?.data;
   const teachers = useCustomQuery("account/admin/teachers/", ["teachers"]);
   const addExam = useCustomPost("training/admin/exams/", [
     "exams",
     "exams-statistics",
   ]);
-
+  console.log("newExam", newExam);
+  // GET Codes
+  const { data: cards } = useCustomQuery("/cards/", ["cards"]);
+  const cardsData = cards?.data;
   const updateExam = useCustomUpdate(
     `/training/admin/exams/${selectedExam?.id}/`,
     ["exams"]
@@ -215,7 +231,9 @@ const ExamsPage = () => {
         if (res?.status) {
           toast.success("تمإضافة الاختبار بنجاح");
           // navigate("/dashboard/admin/exams");
-          setCurrentView("list");
+          setCurrentView("table");
+          setSelectedExam(null);
+          setNewExam(null);
         } else {
           handleErrorAlerts(res?.error);
         }
@@ -247,7 +265,8 @@ const ExamsPage = () => {
         if (res?.status) {
           toast.success("تم تحديث حالة الاختبار بنجاح");
           // navigate("/dashboard/admin/exams");
-          // setCurrentView("list");
+          // setCurrentView("table");
+          setNewExam(null);
         } else {
           handleErrorAlerts(res?.error);
         }
@@ -390,7 +409,7 @@ const ExamsPage = () => {
                 setSelectedExam(exam);
                 setCurrentView("questions");
               }}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               title="إدارة الأسئلة"
             >
               <FileText size={16} />
@@ -424,7 +443,7 @@ const ExamsPage = () => {
                 setSelectedExam(exam);
                 toggleExamStatus(exam.is_published);
               }}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 exam.is_published
                   ? "text-green-600 bg-green-50 hover:bg-green-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -441,7 +460,7 @@ const ExamsPage = () => {
                 setSelectedExam(exam);
                 setCurrentView("edit");
               }}
-              className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               title="تعديل الامتحان"
             >
               <Edit size={16} />
@@ -467,8 +486,11 @@ const ExamsPage = () => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentView("list")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            onClick={() => {
+              setCurrentView("table");
+              setNewExam({});
+            }}
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft size={20} className="rtl:rotate-180" />
           </button>
@@ -495,7 +517,7 @@ const ExamsPage = () => {
                 </label>
                 <input
                   type="text"
-                  value={newExam.title || ""}
+                  value={newExam?.title || ""}
                   onChange={(e) =>
                     setNewExam({ ...newExam, title: e.target.value })
                   }
@@ -509,7 +531,7 @@ const ExamsPage = () => {
                   وصف الامتحان *
                 </label>
                 <textarea
-                  value={newExam.description || ""}
+                  value={newExam?.description || ""}
                   onChange={(e) =>
                     setNewExam({ ...newExam, description: e.target.value })
                   }
@@ -526,7 +548,7 @@ const ExamsPage = () => {
                   </label>
 
                   <select
-                    value={newExam.material}
+                    value={newExam?.material}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -545,10 +567,10 @@ const ExamsPage = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    مستوى الصعوبة
+                    مستوى الصعوبة *
                   </label>
                   <select
-                    value={newExam.level}
+                    value={newExam?.level}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -570,7 +592,7 @@ const ExamsPage = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    نوع الامتحان
+                    نوع الامتحان *
                   </label>
                   <select
                     value={newExam.type}
@@ -603,7 +625,7 @@ const ExamsPage = () => {
                         time_in_minutes: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="60"
                     min="1"
                   />
@@ -631,7 +653,7 @@ const ExamsPage = () => {
                         number_of_questions: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="10"
                     min="1"
                   />
@@ -649,7 +671,7 @@ const ExamsPage = () => {
                         total_marks: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="50"
                     min="1"
                   />
@@ -670,7 +692,7 @@ const ExamsPage = () => {
                         passing_marks: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="30"
                     min="1"
                   />
@@ -695,7 +717,7 @@ const ExamsPage = () => {
                 </div> */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    اختر استاذ
+                    اختر استاذ *
                   </label>
                   <select
                     value={newExam.teacher}
@@ -754,6 +776,36 @@ const ExamsPage = () => {
                 </div>
                 {newExam.is_free === false && (
                   <div className="mt-3">
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          البطاقة *
+                        </label>
+                        <select
+                          value={newExam?.price}
+                          onChange={(e) => {
+                            setNewExam({
+                              ...newExam,
+                              price: e.target.value,
+                            });
+                          }}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        >
+                          <option value="">اختر بطاقة</option>
+                          {cardsData
+                            ?.filter((card: any) => card?.is_active)
+                            .map((card: any) => (
+                              <option key={card.id} value={card.id}>
+                                {card?.price} د.ا
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {/* {newExam.is_free === false && (
+                  <div className="mt-3">
                     <input
                       type="number"
                       value={newExam.price || ""}
@@ -769,7 +821,7 @@ const ExamsPage = () => {
                       step="0.01"
                     />
                   </div>
-                )}
+                )} */}
               </div>
 
               {/* Advanced Settings */}
@@ -878,17 +930,25 @@ const ExamsPage = () => {
           {/* Action Buttons */}
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
-              onClick={() => setCurrentView("list")}
-              className="px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              onClick={() => {
+                setCurrentView("table");
+                setNewExam({});
+              }}
+              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
             <button
               onClick={handleCreateExam}
               disabled={
-                !newExam.title || !newExam.description || !newExam.material
+                !newExam.title ||
+                !newExam.description ||
+                !newExam.material ||
+                !newExam.level ||
+                !newExam.type ||
+                !newExam.teacher
               }
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الامتحان
@@ -904,7 +964,8 @@ const ExamsPage = () => {
       <ExamQuestionsPage
         exam={selectedExam}
         onBack={() => {
-          setCurrentView("list");
+          setCurrentView("table");
+          setNewExam({});
         }}
       />
     );
@@ -916,8 +977,8 @@ const ExamsPage = () => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentView("list")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            onClick={() => setCurrentView("table")}
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
@@ -941,11 +1002,11 @@ const ExamsPage = () => {
               القادم
             </p>
             <div className="flex gap-4 justify-center">
-              <button className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all flex items-center gap-2">
+              <button className="cursor-pointer bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all flex items-center gap-2">
                 <Download size={16} />
                 تصدير النتائج
               </button>
-              <button className="border border-gray-200 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+              <button className="cursor-pointer border border-gray-200 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
                 <BarChart3 size={16} />
                 عرض الإحصائيات
               </button>
@@ -963,8 +1024,8 @@ const ExamsPage = () => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentView("list")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            onClick={() => setCurrentView("table")}
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft size={20} className="rtl:rotate-180" />
           </button>
@@ -1066,7 +1127,7 @@ const ExamsPage = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    نوع الامتحان
+                    نوع الامتحان *
                   </label>
                   <select
                     value={newExam.type}
@@ -1099,7 +1160,7 @@ const ExamsPage = () => {
                         time_in_minutes: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="60"
                     min="1"
                   />
@@ -1127,7 +1188,7 @@ const ExamsPage = () => {
                         number_of_questions: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="10"
                     min="1"
                   />
@@ -1145,7 +1206,7 @@ const ExamsPage = () => {
                         total_marks: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="50"
                     min="1"
                   />
@@ -1166,7 +1227,7 @@ const ExamsPage = () => {
                         passing_marks: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="30"
                     min="1"
                   />
@@ -1191,7 +1252,7 @@ const ExamsPage = () => {
                 </div> */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    اختر استاذ
+                    اختر استاذ *
                   </label>
                   <select
                     value={newExam.teacher}
@@ -1206,7 +1267,7 @@ const ExamsPage = () => {
                     <option value="">اختر استاذ</option>
                     {teachers?.data?.data?.map((type: any) => (
                       <option key={type.id} value={type.id}>
-                        {type.name}
+                        {type?.name}
                       </option>
                     ))}
                   </select>
@@ -1250,20 +1311,32 @@ const ExamsPage = () => {
                 </div>
                 {newExam.is_free === false && (
                   <div className="mt-3">
-                    <input
-                      type="number"
-                      value={newExam.price || ""}
-                      onChange={(e) =>
-                        setNewExam({
-                          ...newExam,
-                          price: parseFloat(e.target.value) || 0,
-                        })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                      placeholder="السعر بالدينار الأردني"
-                      min="0"
-                      step="0.01"
-                    />
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          البطاقة *
+                        </label>
+                        <select
+                          value={newExam?.price}
+                          onChange={(e) => {
+                            setNewExam({
+                              ...newExam,
+                              price: e.target.value,
+                            });
+                          }}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        >
+                          <option value="">اختر بطاقة</option>
+                          {cardsData
+                            ?.filter((card: any) => card?.is_active)
+                            .map((card: any) => (
+                              <option key={card.id} value={card.id}>
+                                {card?.price} د.ا
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1374,17 +1447,22 @@ const ExamsPage = () => {
           {/* Action Buttons */}
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
-              onClick={() => setCurrentView("list")}
-              className="px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              onClick={() => setCurrentView("table")}
+              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
             <button
               onClick={handleCreateExam}
               disabled={
-                !newExam.title || !newExam.description || !newExam.material
+                !newExam.title ||
+                !newExam.description ||
+                !newExam.material ||
+                !newExam.level ||
+                !newExam.type ||
+                !newExam.teacher
               }
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               تعديل الامتحان
@@ -1395,7 +1473,7 @@ const ExamsPage = () => {
     );
   }
 
-  // Default List View
+  // Default grid View
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -1408,7 +1486,7 @@ const ExamsPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء امتحان جديد
@@ -1467,8 +1545,9 @@ const ExamsPage = () => {
       </div>
 
       {/* Filters */}
-      {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+          {/* Search */}
           <div className="md:col-span-2 relative">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -1476,77 +1555,93 @@ const ExamsPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الامتحانات..."
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
             />
           </div>
 
+          {/* Material */}
           <select
-            value={subjectFilter}
-            onChange={(e) => setSubjectFilter(e.target.value)}
+            value={materialFilter}
+            onChange={(e) => setMaterialFilter(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="">جميع المواد</option>
-            {uniqueSubjects.map((subject) => (
-              <option key={subject} value={subject}>
-                {subject}
+            {materialsData?.map((material: any) => (
+              <option key={material?.id} value={material?.id}>
+                {material?.name}
               </option>
             ))}
           </select>
 
+          {/* Level */}
           <select
-            value={difficultyFilter}
-            onChange={(e) => setDifficultyFilter(e.target.value as any)}
+            value={levelFilter}
+            onChange={(e) => setLevelFilter(e.target.value as any)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
-            <option value="all">جميع المستويات</option>
-            <option value="easy">سهل</option>
-            <option value="medium">متوسط</option>
-            <option value="hard">صعب</option>
+            <option value="">جميع المستويات</option>
+            {levelsData?.map((level: any) => (
+              <option key={level?.id} value={level?.id}>
+                {level?.name}
+              </option>
+            ))}
           </select>
 
+          {/* Type */}
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as any)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
-            <option value="all">جميع الأنواع</option>
-            <option value="practice">تدريب</option>
-            <option value="quiz">اختبار سريع</option>
-            <option value="assessment">تقييم</option>
-            <option value="final">نهائي</option>
+            <option value="">جميع الأنواع</option>
+            {typesData?.map((type: any) => (
+              <option key={type?.id} value={type?.id}>
+                {type?.name}
+              </option>
+            ))}
           </select>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setViewMode("grid")}
-              className={`p-2 rounded-lg transition-colors ${
-                viewMode === "grid"
+              onClick={() => setCurrentView("table")}
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                currentView === "table"
                   ? "bg-orange-100 text-orange-600"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
-              <BarChart3 size={16} />
+              <Rows size={16} />
             </button>
             <button
-              onClick={() => setViewMode("table")}
-              className={`p-2 rounded-lg transition-colors ${
-                viewMode === "table"
+              onClick={() => setCurrentView("grid")}
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                currentView === "grid"
                   ? "bg-orange-100 text-orange-600"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
-              <PieChart size={16} />
+              <Grid size={16} />
             </button>
           </div>
         </div>
-      </div> */}
+      </div>
 
-      {/* Exams Grid/Table */}
-      {true ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data?.data?.data?.map((exam: any) => (
-            <ExamCard key={exam.id} exam={exam} />
-          ))}
+      {data?.isLoading ? (
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
+      ) : currentView == "grid" ? (
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {data?.data?.data?.map((exam: any) => (
+              <ExamCard key={exam.id} exam={exam} />
+            ))}
+            <Pagination
+              currentPage={page}
+              count={paginationData?.count}
+              onPageChange={setPage}
+            />
+          </div>
 
           {data?.data?.data?.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
@@ -1557,7 +1652,7 @@ const ExamsPage = () => {
 
               <button
                 onClick={() => setCurrentView("create")}
-                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
               >
                 e <Plus size={16} />
                 إنشاء امتحان جديد
@@ -1582,13 +1677,16 @@ const ExamsPage = () => {
                     النوع
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    المحاولات
+                    مدة الامتحان
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    متوسط الدرجات
+                    عدد الأسئلة
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    معدل النجاح
+                    إجمالي الدرجات
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    درجات النجاح
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     الحالة
@@ -1599,64 +1697,58 @@ const ExamsPage = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {data?.data?.data.map((exam: any) => (
-                  <tr key={exam.id} className="hover:bg-gray-50">
+                {data?.data?.data?.map((exam: any) => (
+                  <tr key={exam?.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="font-medium text-gray-900 line-clamp-1">
-                          {exam.title}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {exam.totalQuestions} سؤال • {exam.duration} دقيقة
+                          {exam?.title}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam.subject}
+                      {exam?.material?.name || "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
-                          exam.examType
+                          exam?.type?.name
                         )}`}
                       >
-                        {exam.examType === "practice"
-                          ? "تدريب"
-                          : exam.examType === "assessment"
-                          ? "تقييم"
-                          : exam.examType === "final"
-                          ? "نهائي"
-                          : "اختبار"}
+                        {exam?.type?.name}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam.statistics.totalAttempts}
+                      {exam?.time_in_minutes} دقيقة
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam.statistics.averageScore.toFixed(1)}
+                      {exam?.number_of_questions}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam.statistics.passRate.toFixed(1)}%
+                      {exam?.total_marks}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {exam?.passing_marks}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex gap-2">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            exam.isPublished
+                            exam.is_published
                               ? "bg-green-100 text-green-800"
                               : "bg-gray-100 text-gray-800"
                           }`}
                         >
-                          {exam.isPublished ? "منشور" : "مسودة"}
+                          {exam.is_published ? "منشور" : "مسودة"}
                         </span>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            exam.isActive
+                            exam.is_free
                               ? "bg-blue-100 text-blue-800"
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {exam.isActive ? "نشط" : "معطل"}
+                          {exam.is_free ? "مجاني" : "مدفوع"}
                         </span>
                       </div>
                     </td>
@@ -1667,7 +1759,7 @@ const ExamsPage = () => {
                             setSelectedExam(exam);
                             setCurrentView("questions");
                           }}
-                          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
                           title="إدارة الأسئلة"
                         >
                           <FileText size={16} />
@@ -1677,7 +1769,7 @@ const ExamsPage = () => {
                             setSelectedExam(exam);
                             setCurrentView("results");
                           }}
-                          className="p-1 text-gray-400 hover:text-green-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-green-600 transition-colors"
                           title="النتائج"
                         >
                           <BarChart3 size={16} />
@@ -1687,7 +1779,7 @@ const ExamsPage = () => {
                             setSelectedExam(exam);
                             setCurrentView("edit");
                           }}
-                          className="p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                          className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
                           title="تعديل"
                         >
                           <Edit size={16} />
@@ -1706,6 +1798,11 @@ const ExamsPage = () => {
               </tbody>
             </table>
           </div>
+          <Pagination
+            currentPage={page}
+            count={paginationData?.count}
+            onPageChange={setPage}
+          />
         </div>
       )}
     </div>

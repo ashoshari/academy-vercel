@@ -97,8 +97,7 @@ const CardCodesPage = () => {
 
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
-  if (selectedPriceFilter)
-    queryParams.append("code_name", selectedPriceFilter);
+  if (selectedPriceFilter) queryParams.append("code_name", selectedPriceFilter);
   if (isUsed !== null && isUsed !== undefined)
     queryParams.append("is_used", isUsed);
   if (statusFilter) queryParams.append("is_active", statusFilter);
@@ -773,7 +772,9 @@ const CardCodesPage = () => {
 
       {/* Enhanced Codes Table */}
       {generateCodes?.isLoading ? (
-        <Spinner size={40} thickness={4} className="text-orange-500" />
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
       ) : (
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
           <div className="p-6 border-b border-gray-200">

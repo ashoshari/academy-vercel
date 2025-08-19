@@ -76,7 +76,7 @@ const CoursesPage = () => {
   // );
 
   // GET Codes
-  const { data: cars } = useCustomQuery("/cards/", ["cards"]);
+  const { data: cards } = useCustomQuery("/cards/", ["cards"]);
 
   // GET Specializations_material
   // const { data: specialization_material } = useCustomQuery(
@@ -92,7 +92,7 @@ const CoursesPage = () => {
   const subsectionData = subsections?.data;
   // const specializationData = specializations?.data;
   // const specialization_materialData = specialization_material?.data;
-  const cardsData = cars?.data;
+  const cardsData = cards?.data;
 
   const [selectedSubSection, setSelectedSubSection] = useState<string>("");
   const [selectedSubSub, setSelectedSubSub] = useState<string>("");

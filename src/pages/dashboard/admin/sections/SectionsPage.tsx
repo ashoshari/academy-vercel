@@ -16,6 +16,7 @@ import { formatDate } from "@/services/date";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
+import Spinner from "@/components/dashboard/Spinner";
 
 export interface MainSection {
   id: number;
@@ -571,7 +572,10 @@ const SectionsPage = () => {
         );
       });
   };
+  console.log("sections?.isLoading", sections?.isLoading);
+  // if(sections?.isLoading){
 
+  // }
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -590,7 +594,6 @@ const SectionsPage = () => {
           إضافة قسم جديد
         </button>
       </div>
-
       {/* Search and Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* <div className="lg:col-span-2">
@@ -627,6 +630,11 @@ const SectionsPage = () => {
         </div>
       </div>
 
+      {sections?.isLoading && (
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
+      )}
       {/* Sections Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sections?.data?.data?.map((section: any) => {
