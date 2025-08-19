@@ -43,7 +43,7 @@ import AddStudentPage from "@/pages/dashboard/admin/students/AddStudentPage";
 import EditStudentPage from "@/pages/dashboard/admin/students/EditStudentPage";
 import StudentDetailsPage from "@/pages/dashboard/admin/students/StudentDetailsPage";
 import ExamsPage from "@/pages/dashboard/admin/exams/ExamsPage";
-import FilesPage from "@/pages/dashboard/admin/FilesPage";
+import ResourcessPage from "@/pages/dashboard/admin/files/filesPage";
 import SliderPage from "@/pages/dashboard/admin/sliders/SliderPage";
 
 export default function AppRoutes() {
@@ -92,7 +92,7 @@ export default function AppRoutes() {
             {/* exams */}
 
             {/* files */}
-            <Route path="files" element={<FilesPage />} />
+            <Route path="files" element={<ResourcessPage />} />
             {/* files */}
 
             {/* slider */}

@@ -12,7 +12,7 @@ import {
   Upload,
   Files,
   Download,
-  ExternalLink,
+  // ExternalLink,
   Trash2,
   // Share,
   // Unlock,
@@ -34,6 +34,7 @@ import {
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
   useCustomPost,
+  useCustomRemove,
   // , useCustomUpdate
 } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
@@ -41,8 +42,10 @@ import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
 // import Loader from "@/components/core/Loader";
 import { useQueryClient } from "@tanstack/react-query";
+import { formatDateTimeSimple } from "@/utils/formatDateTime";
+import Loader from "@/components/core/Loader";
 
-const resourcessPage = () => {
+const ResourcessPage = () => {
   // const [currentView, setCurrentView] = useState<
   //   "list" | "create" | "edit" | "content"
   // >("list");
@@ -58,41 +61,55 @@ const resourcessPage = () => {
 
   // Filter
   const [searchTerm, setSearchTerm] = useState("");
-  const [teacherFilter, setTeacherFilter] = useState<any>(null);
-  const [lessonFilter, setLessonFilter] = useState<any>(null);
+  // const [teacherFilter, setTeacherFilter] = useState<any>(null);
+  // const [lessonFilter, setLessonFilter] = useState<any>(null);
   const [typeFilter, setTypeFilter] = useState<any>(null);
-  const [specializationFilter, setSpecializationFilter] = useState<string>("");
-  const [specializationMaterialFilter, setSpecializationMaterialFilter] =
-    useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "published" | "draft" | "active" | "inactive"
-  >("all");
-  const [levelFilter] = useState<
-    "all" | "beginner" | "intermediate" | "advanced"
-  >("all");
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  // const [specializationFilter, setSpecializationFilter] = useState<string>("");
+  // const [specializationMaterialFilter, setSpecializationMaterialFilter] =
+  //   useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<any>("all");
+  // const [levelFilter] = useState<
+  //   "all" | "beginner" | "intermediate" | "advanced"
+  // >("all");
+
+  const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const types = ["resources", "bookses", "ministerial_questions", "files"];
 
   const [uploadResources, setUploadResources] = useState<any>({});
+  const [resourseId, setResourceId] = useState<string>("");
 
   // const [resourcesId, setResourcesId] = useState<any>(null);
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
-
+  console.log("typeFilter", typeFilter);
+  const queryParams = new URLSearchParams();
+  if (searchTerm) queryParams.append("title", searchTerm);
+  if (typeFilter) queryParams.append("type", typeFilter);
+  // if (typeFilter) queryParams.append("type", typeFilter);
+  if (statusFilter) queryParams.append("is_published", statusFilter);
+  if (page) queryParams.append("page", page.toString());
+  const queryString = queryParams.toString();
+  console.log(queryString);
   // GET resourcess
-  const { data } = useCustomQuery(`/training/admin/resources/?page=${page}`, [
-    "resources",
-    page,
-  ]);
+  const { data, isLoading } = useCustomQuery(
+    `/training/admin/resources/?${queryString}`,
+    [
+      "resources",
+      searchTerm,
+      typeFilter,
+      // teacherFilter,
+      statusFilter,
+      page,
+    ]
+  );
   const resourcesData = data?.data;
-  const paginationData = data?.data?.pagination;
-  console.log("paginationData", paginationData);
+  const paginationData = data?.pagination;
   // GET resourcess stats
   const { data: resourcesStats } = useCustomQuery(
     "/training/admin/resource-statistics/",
     ["resources-stats"]
   );
-
+  console.log("resourcesData", resourcesData);
   // GET teachers
   const { data: teachers } = useCustomQuery("/account/admin/teachers/", [
     "teachers",
@@ -112,24 +129,21 @@ const resourcessPage = () => {
   );
 
   // GET Specializations_material
-  const { data: specialization_material } = useCustomQuery(
-    "/training/admin/specialization-materials/",
-    ["specializations_material"]
-  );
+  // const { data: specialization_material } = useCustomQuery(
+  //   "/training/admin/specialization-materials/",
+  //   ["specializations_material"]
+  // );
 
   const specializationData = specializations?.data;
-  const specialization_materialData = specialization_material?.data;
-  // console.log("specialization_materialData", specialization_materialData);
+  // const specialization_materialData = specialization_material?.data;
 
-  const [resources, setResources] = useState<any>(resourcesData?.data);
+  const [resources, setResources] = useState<any>();
   useEffect(() => {
-    setResources(resourcesData?.data);
+    setResources(resourcesData);
   }, [resourcesData]);
   const resourcesStatsData = resourcesStats?.data;
-
   // const [newresources, setNewresources] = useState<any>({});
   // const [editresourcesData, setEditresourcesData] = useState<any>({});
-
   // PUT resources
   // const { mutateAsync: putResources } = useCustomUpdate(
   //   `/training/admin/resources/${resourcesId}/`,
@@ -139,6 +153,12 @@ const resourcessPage = () => {
   const { mutateAsync: postResources } = useCustomPost(
     "/training/admin/resources/",
     ["postResources"]
+  );
+
+  // DELETE Resources
+  const { mutateAsync: deleteResources } = useCustomRemove(
+    `/training/admin/resources/${resourseId}/`,
+    ["deleteResources", resourseId]
   );
   // const getAccessLevelColor = (level: any) => {
   //   switch (level) {
@@ -161,16 +181,17 @@ const resourcessPage = () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
-  const handleDeleteFile = (id: any) => {
+  const handleDeleteFile = async (id: any) => {
+    setResourceId(id);
     if (confirm("هل أنت متأكد من حذف هذا العنصر؟")) {
       // Delete file and all its children if it's a folder
-      const deleteRecursively = (targetId: any) => {
-        const children = resources.filter((f: any) => f.parentId === targetId);
-        children.forEach((child: any) => deleteRecursively(child.id));
-        setResources((prev: any) => prev.filter((f: any) => f.id !== targetId));
-      };
-
-      deleteRecursively(id);
+      try {
+        const response = await deleteResources(id);
+        toast.success(response?.message);
+        queryClient.invalidateQueries({ queryKey: ["resources"] });
+      } catch (err: any) {
+        toast.error(err?.response?.data?.message);
+      }
     }
   };
   const toggleFileFavorite = (id: number) => {
@@ -180,40 +201,6 @@ const resourcessPage = () => {
       )
     );
   };
-  const filteredresources = resources?.filter((resource: any) => {
-    const matchesSearch =
-      resource?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      resource?.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      resource?.teacher?.name?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTeacher =
-      teacherFilter === null || resource?.teacher?.id === teacherFilter;
-    const matchesLesson =
-      lessonFilter === null || resource?.lesson === lessonFilter;
-    const matchesType = typeFilter === null || resource?.type === typeFilter;
-    const matchesSpecialization =
-      specializationFilter === "" ||
-      resource?.specialization?.name === specializationFilter;
-    const matchesSpecializationMaterial =
-      specializationMaterialFilter === "" ||
-      resource?.specialization_material?.name === specializationMaterialFilter;
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "published" && resource?.is_published) ||
-      (statusFilter === "draft" && !resource?.is_published);
-    const matchesLevel =
-      levelFilter === "all" || resource.level === levelFilter;
-
-    return (
-      matchesSearch &&
-      matchesTeacher &&
-      matchesLesson &&
-      matchesType &&
-      matchesSpecialization &&
-      matchesSpecializationMaterial &&
-      matchesStatus &&
-      matchesLevel
-    );
-  });
   const getFileTypeColor = (file: any) => {
     if (file.type === "folder") {
       return "text-orange-600";
@@ -350,7 +337,7 @@ const resourcessPage = () => {
 
           {/* Overlay Actions */}
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-            <a
+            {/* <a
               href={resource?.file}
               download
               target="_blank"
@@ -358,7 +345,7 @@ const resourcessPage = () => {
               title="عرض الملف"
             >
               <ExternalLink size={16} />
-            </a>
+            </a> */}
 
             <button
               onClick={() => toggleFileFavorite(resource?.id)}
@@ -421,7 +408,9 @@ const resourcessPage = () => {
             {resource?.expiry_date && (
               <div className="flex items-center justify-between">
                 <span>تاريخ الانشاء</span>
-                <span className="font-medium">{resource?.expiry_date}</span>
+                <span className="font-medium">
+                  {formatDateTimeSimple(resource?.expiry_date)}
+                </span>
               </div>
             )}
           </div>
@@ -624,7 +613,7 @@ const resourcessPage = () => {
               {/* Title */}
               <div className="lg:col-span-3">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  عنوان الملف
+                  عنوان الملف *
                 </label>
                 <textarea
                   value={uploadResources?.title}
@@ -642,7 +631,7 @@ const resourcessPage = () => {
               {/* Description */}
               <div className="lg:col-span-3">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  وصف الملف
+                  وصف الملف *
                 </label>
                 <textarea
                   value={uploadResources?.description}
@@ -660,7 +649,7 @@ const resourcessPage = () => {
               {/* File Type */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  نوع الملف
+                  نوع الملف *
                 </label>
                 <select
                   value={uploadResources?.type || ""}
@@ -704,7 +693,7 @@ const resourcessPage = () => {
               </div>
 
               {/* Specialization Material */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   مادة التخصص
                 </label>
@@ -730,11 +719,11 @@ const resourcessPage = () => {
                     )
                   )}
                 </select>
-              </div>
+              </div> */}
               {/* Teacher */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  المعلم
+                  المعلم *
                 </label>
                 <select
                   value={uploadResources?.teacher || ""}
@@ -757,7 +746,7 @@ const resourcessPage = () => {
               {/* Lesson */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الدرس
+                  الدرس *
                 </label>
                 <select
                   value={uploadResources?.lesson || ""}
@@ -809,7 +798,11 @@ const resourcessPage = () => {
                     type="checkbox"
                     id="isFree"
                     disabled={uploadResources?.type === "resources"}
-                    checked={uploadResources?.is_free || false}
+                    checked={
+                      uploadResources?.type == "resources"
+                        ? true
+                        : uploadResources?.is_free || false
+                    }
                     onChange={(e) =>
                       setUploadResources({
                         ...uploadResources,
@@ -858,7 +851,7 @@ const resourcessPage = () => {
                 !uploadResources?.file ||
                 !uploadResources?.teacher ||
                 !uploadResources?.specialization ||
-                !uploadResources?.specialization_material ||
+                // !uploadResources?.specialization_material ||
                 !uploadResources?.type ||
                 !uploadResources?.image
               }
@@ -953,12 +946,12 @@ const resourcessPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الملفات..."
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
             />
           </div>
 
           {/* Teacher Filter */}
-          <select
+          {/* <select
             value={teacherFilter || ""}
             onChange={(e) =>
               setTeacherFilter(e.target.value ? e.target.value : null)
@@ -971,9 +964,9 @@ const resourcessPage = () => {
                 {teacher.name}
               </option>
             ))}
-          </select>
+          </select> */}
           {/* Lesson Filter */}
-          <select
+          {/* <select
             value={lessonFilter || ""}
             onChange={(e) =>
               setLessonFilter(e.target.value ? e.target.value : null)
@@ -986,14 +979,12 @@ const resourcessPage = () => {
                 {lesson?.title}
               </option>
             ))}
-          </select>
+          </select> */}
 
           {/* Type Filter */}
           <select
             value={typeFilter || ""}
-            onChange={(e) =>
-              setTypeFilter(e.target.value ? e.target.value : null)
-            }
+            onChange={(e) => setTypeFilter(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="">جميع الأنواع</option>
@@ -1005,7 +996,7 @@ const resourcessPage = () => {
           </select>
 
           {/* specialization Filter */}
-          <select
+          {/* <select
             value={specializationFilter}
             onChange={(e) => setSpecializationFilter(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
@@ -1016,10 +1007,10 @@ const resourcessPage = () => {
                 {specialization?.name}
               </option>
             ))}
-          </select>
+          </select> */}
 
           {/* specialization_material Filter */}
-          <select
+          {/* <select
             value={specializationMaterialFilter}
             onChange={(e) => setSpecializationMaterialFilter(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
@@ -1035,7 +1026,7 @@ const resourcessPage = () => {
                 </option>
               )
             )}
-          </select>
+          </select> */}
 
           {/* Status Filter */}
           <select
@@ -1044,24 +1035,12 @@ const resourcessPage = () => {
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="all">جميع الحالات</option>
-            <option value="published">منشور</option>
-            <option value="draft">مسودة</option>
-            {/* <option value="active">نشط</option>
-            <option value="inactive">معطل</option> */}
+            <option value="true">منشور</option>
+            <option value="false">غير منشور</option>
           </select>
 
           {/* View Mode */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                viewMode === "grid"
-                  ? "bg-orange-100 text-orange-600"
-                  : "text-gray-400 hover:bg-gray-100"
-              }`}
-            >
-              <Grid size={16} />
-            </button>
             <button
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
@@ -1072,6 +1051,16 @@ const resourcessPage = () => {
             >
               <Rows size={16} />
             </button>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                viewMode === "grid"
+                  ? "bg-orange-100 text-orange-600"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+            >
+              <Grid size={16} />
+            </button>
           </div>
         </div>
       </div>
@@ -1079,7 +1068,7 @@ const resourcessPage = () => {
       {/* resourcess Grid/Table */}
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredresources?.map((resource: any) => (
+          {resourcesData?.map((resource: any) => (
             <ResourseCard key={resource.id} resource={resource} />
           ))}
 
@@ -1116,115 +1105,120 @@ const resourcessPage = () => {
             </div>
           )} */}
         </div>
+      ) : isLoading ? (
+        <Loader />
       ) : (
-        // List View
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الاسم
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    النوع
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الحجم
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    التحميلات
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    تاريخ الانتهاء
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الشارات
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    حالة النشر
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    التحكم
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredresources?.map((resource: any) => {
-                  return (
-                    <tr key={resource?.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div>
-                            <div className="font-medium text-gray-900">
-                              {resource?.title || "اسم الملف"}
-                            </div>
-                            {resource.description && (
-                              <div className="text-sm text-gray-500">
-                                {resource.description}
+        <>
+          {/* List View */}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الاسم
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      النوع
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الحجم
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      التحميلات
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      تاريخ الانتهاء
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الشارات
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      حالة النشر
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      التحكم
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {resourcesData?.map((resource: any) => {
+                    return (
+                      <tr key={resource?.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <div className="font-medium text-gray-900">
+                                {resource?.title || "اسم الملف"}
                               </div>
-                            )}
+                              {resource.description && (
+                                <div className="text-sm text-gray-500">
+                                  {resource.description}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {resource?.type}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {formatFileSize(resource?.file_size)}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {resource?.number_of_downloads || 0}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {formatDate(resource?.expiry_date) || "لا يوجد"}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {resource?.tags
-                          .map((tag: any) => tag?.name)
-                          .join(", ") || "-"}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {resource?.is_published ? "منشور" : "غير منشور"}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <button
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {resource?.type}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {formatFileSize(resource?.file_size)}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {resource?.number_of_downloads || 0}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {formatDate(resource?.expiry_date) || "لا يوجد"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {resource?.tags
+                            .map((tag: any) => tag?.name)
+                            .join(", ") || "-"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {resource?.is_published ? "منشور" : "غير منشور"}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            {/* <a
+                            href={resource?.url}
                             onClick={() => window.open(resource.url, "_blank")}
                             className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
                             title="عرض الملف"
                           >
                             <ExternalLink size={16} />
-                          </button>
+                          </a> */}
 
-                          <button
-                            onClick={() => toggleFileFavorite(resource.id)}
-                            className={`p-1 transition-colors ${
-                              resource.isFavorite
-                                ? "text-blue-500"
-                                : "text-gray-400 hover:text-blue-500"
-                            }`}
-                            title="تعديل الملف"
-                          >
-                            <Pen size={16} />
-                          </button>
+                            <button
+                              // onClick={() => toggleEditFile(resource.id)}
+                              className={`p-1 transition-colors ${
+                                resource.isFavorite
+                                  ? "text-blue-500"
+                                  : "text-gray-400 hover:text-blue-500"
+                              }`}
+                              title="تعديل الملف"
+                            >
+                              <Pen size={16} />
+                            </button>
 
-                          <button
-                            onClick={() => handleDeleteFile(resource.id)}
-                            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                            title="حذف الملف"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                            <button
+                              onClick={() => handleDeleteFile(resource.id)}
+                              className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                              title="حذف الملف"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </>
       )}
       <Pagination
         currentPage={page}
@@ -1237,4 +1231,4 @@ const resourcessPage = () => {
     </div>
   );
 };
-export default resourcessPage;
+export default ResourcessPage;

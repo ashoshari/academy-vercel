@@ -39,8 +39,8 @@ export default function TeacherDetailsPage() {
           <div className="flex items-center gap-4">
             {selectedTeacher?.image ? (
               <img
-                src={selectedTeacher.image}
-                alt={selectedTeacher.name}
+                src={selectedTeacher?.image}
+                alt={selectedTeacher?.name}
                 className="w-16 h-16 rounded-full border-2 border-white/20"
               />
             ) : (
@@ -51,9 +51,7 @@ export default function TeacherDetailsPage() {
                 {selectedTeacher?.name}
               </h2>
               <p className="text-gray-600">
-                {selectedTeacher.materials
-                  .map((el: any) => el?.name)
-                  .join(", ")}
+                {selectedTeacher?.material?.name || "-"}
               </p>
             </div>
           </div>

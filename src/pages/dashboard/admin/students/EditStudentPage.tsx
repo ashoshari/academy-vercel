@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Save } from "lucide-react";
-import { useCustomPost } from "@/hooks/useMutation";
+import { 
+  // useCustomPost,
+   useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useCustomQuery } from "@/hooks/useQuery";
 
@@ -29,7 +31,7 @@ const EditStudentPage = () => {
     id,
   ]);
 
-  const updateStudent = useCustomPost(`account/admin/students/${id}/`, [
+  const updateStudent = useCustomUpdate(`account/admin/students/${id}/`, [
     "students",
   ]);
 
@@ -41,7 +43,7 @@ const EditStudentPage = () => {
         password: "",
       });
     }
-  }, [studentData.data, reset]);
+  }, [studentData?.data, reset]);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -91,7 +93,21 @@ const EditStudentPage = () => {
           </label>
           <input
             type="tel"
-            {...register("mobile_number", { required: true })}
+            {...register("mobile_number", {
+              required: "رقم الهاتف مطلوب",
+              pattern: {
+                value: /^07[0-9]{8}$/,
+                message: "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
+              },
+            })}
+            maxLength={10}
+            minLength={10}
+            onInput={(e) => {
+              e.currentTarget.value = e.currentTarget.value.replace(
+                /[^0-9]/g,
+                ""
+              );
+            }}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
             placeholder="07XXXXXXXX"
           />
@@ -103,7 +119,7 @@ const EditStudentPage = () => {
         {/* كلمة المرور */}
         <div>
           <label className="block mb-2 font-medium text-sm text-gray-700">
-            كلمة المرور (اتركه فارغ لو مش هتغيره)
+            كلمة المرور ( اتركه فارغ اذا لم ترد تغييرها )
           </label>
           <input
             type="text"

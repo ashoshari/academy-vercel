@@ -5,18 +5,15 @@ import {
   Edit,
   Eye,
   EyeOff,
-  // ArrowLeft,
   BookOpen,
   Users,
   CheckCircle,
-  BarChart3,
-  PieChart,
-  // Star,
   Save,
-  // Play,
-  // Pause,
   Folder,
   ArrowRight,
+  Rows,
+  Grid,
+  User,
 } from "lucide-react";
 import CourseContentPage from "@/components/dashboard/admin/courses/CourseContentPage";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -33,60 +30,91 @@ const CoursesPage = () => {
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [teacherFilter, setTeacherFilter] = useState<any>(null);
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "published" | "draft" | "active" | "inactive"
-  >("all");
-  const [levelFilter] = useState<
-    "all" | "beginner" | "intermediate" | "advanced"
-  >("all");
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  // const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [freeFilter, setFreeFilter] = useState<any>();
+  const [statusFilter, setStatusFilter] = useState<any>();
+  // const [levelFilter] = useState<
+  //   "all" | "beginner" | "intermediate" | "advanced"
+  // >("all");
+  const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const [courseId, setCourseId] = useState<any>(null);
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
 
+  const queryParams = new URLSearchParams();
+  if (searchTerm) queryParams.append("name", searchTerm);
+  if (teacherFilter) queryParams.append("teacher", teacherFilter);
+  // if (categoryFilter) queryParams.append("material", categoryFilter);
+  if (freeFilter !== null && freeFilter !== undefined)
+    queryParams.append("is_free", freeFilter);
+  if (statusFilter) queryParams.append("is_published", statusFilter);
+  if (page) queryParams.append("page", page.toString());
+  console.log(statusFilter);
+  const queryString = queryParams.toString();
   // GET courses
   const { data, isLoading } = useCustomQuery(
-    `/training/admin/courses/?page=${page}`,
-    ["courses", page]
+    `/training/admin/courses/?${queryString}`,
+    ["courses", page, searchTerm, teacherFilter, freeFilter, statusFilter]
   );
+
   const courseData = data?.data;
-  const paginationData = data?.data?.pagination;
+  const paginationData = data?.pagination;
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
     ["coursesStats"]
   );
-
   // GET teachers
   const { data: teachers } = useCustomQuery("/account/admin/teachers/", [
     "teachers",
   ]);
 
   const teacherData = teachers?.data;
-
   // GET Specializations
-  const { data: specializations } = useCustomQuery(
-    "/training/admin/specializations/",
-    ["specializations"]
-  );
+  // const { data: specializations } = useCustomQuery(
+  //   "/training/admin/specializations/",
+  //   ["specializations"]
+  // );
 
   // GET Codes
   const { data: cars } = useCustomQuery("/cards/", ["cards"]);
 
   // GET Specializations_material
-  const { data: specialization_material } = useCustomQuery(
-    "/training/admin/specialization-materials/",
-    ["specializations_material"]
-  );
+  // const { data: specialization_material } = useCustomQuery(
+  //   "/training/admin/specialization-materials/",
+  //   ["specializations_material"]
+  // );
 
-  const specializationData = specializations?.data;
-  const specialization_materialData = specialization_material?.data;
+  // GET SubSection
+  const { data: subsections } = useCustomQuery(
+    "/training/admin/subsections-ids/",
+    ["subsections"]
+  );
+  const subsectionData = subsections?.data;
+  // const specializationData = specializations?.data;
+  // const specialization_materialData = specialization_material?.data;
   const cardsData = cars?.data;
 
-  const [courses, setCourses] = useState<any>(courseData?.data);
+  const [selectedSubSection, setSelectedSubSection] = useState<string>("");
+  const [selectedSubSub, setSelectedSubSub] = useState<string>("");
+  const [selectedSpec, setSelectedSpec] = useState<string>("");
+  const subSection = subsectionData?.find(
+    (s: any) => s.id === selectedSubSection
+  );
+  const subsub = subSection?.subsubsections?.find(
+    (ss: any) => ss.id === selectedSubSub
+  );
+  const spec = subsub?.specializations?.find(
+    (sp: any) => sp.id === selectedSpec
+  );
+
+  console.log("subSection", subSection);
+  console.log("subsub", subsub);
+  console.log("spec", spec);
+
+  const [courses, setCourses] = useState<any>();
   useEffect(() => {
-    setCourses(courseData?.data);
+    setCourses(courseData);
   }, [courseData]);
   const courseStatsData = coursesStats?.data;
 
@@ -98,38 +126,6 @@ const CoursesPage = () => {
     `/training/admin/courses/${courseId}/`,
     ["editcourses", courseId]
   );
-  // Filter courses
-  const filteredCourses = courses?.filter((course: any) => {
-    const matchesSearch =
-      course?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course?.short_description
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      course?.teacher?.name?.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesTeacher =
-      teacherFilter === null || course?.teacher?.id === teacherFilter;
-    const matchesCategory =
-      categoryFilter === "" || course?.specialization?.name === categoryFilter;
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "published" && course?.is_published) ||
-      (statusFilter === "draft" && !course?.is_published);
-    // (statusFilter === "active" && course.isActive) ||
-    // (statusFilter === "inactive" && !course.isActive);
-    const matchesLevel = levelFilter === "all" || course.level === levelFilter;
-
-    return (
-      matchesSearch &&
-      matchesTeacher &&
-      matchesCategory &&
-      matchesStatus &&
-      matchesLevel
-    );
-  });
-  // const uniqueCategories = [
-  //   ...new Set(courses?.data?.map((c: any) => c.category)),
-  // ];
 
   // POST New Course
   const { mutateAsync: createCourse } = useCustomPost(
@@ -137,6 +133,7 @@ const CoursesPage = () => {
     ["postCourses"]
   );
   const handleCreateCourse = async () => {
+    console.log("newCourse", newCourse);
     const formData = new FormData();
     newCourse.name && formData.append("name", newCourse.name);
     newCourse.short_description &&
@@ -144,8 +141,17 @@ const CoursesPage = () => {
     newCourse.long_description &&
       formData.append("long_description", newCourse.long_description);
     newCourse.teacher && formData.append("teacher", newCourse.teacher);
+    newCourse.level && formData.append("level", newCourse?.level);
     newCourse.time_in_hours &&
       formData.append("time_in_hours", newCourse.time_in_hours);
+    newCourse.is_free && formData.append("is_free", newCourse.is_free || false);
+    newCourse.card_price &&
+      formData.append("card_price", newCourse.card_price || null);
+    newCourse.start_date && formData.append("start_date", newCourse.start_date);
+    newCourse.end_date && formData.append("end_date", newCourse.end_date);
+    newCourse.subsection && formData.append("subsection", newCourse.subsection);
+    newCourse.subsubsection &&
+      formData.append("subsubsection", newCourse.subsubsection);
     newCourse.specialization &&
       formData.append("specialization", newCourse.specialization);
     newCourse.specialization_material &&
@@ -153,21 +159,10 @@ const CoursesPage = () => {
         "specialization_material",
         newCourse.specialization_material
       );
-    newCourse.maximum_number_of_students &&
-      formData.append(
-        "maximum_number_of_students",
-        newCourse.maximum_number_of_students
-      );
-
-    newCourse.card && formData.append("card_price", newCourse.card || null);
-    newCourse.is_free && formData.append("is_free", newCourse.is_free || false);
     newCourse.is_published &&
       formData.append("is_published", newCourse.is_published || false);
     newCourse.is_special &&
       formData.append("is_special", newCourse.is_special || false);
-    newCourse.level && formData.append("level", newCourse?.level);
-    newCourse.start_date && formData.append("start_date", newCourse.start_date);
-    newCourse.end_date && formData.append("end_date", newCourse.end_date);
     if (newCourse.image instanceof File && newCourse.image) {
       formData.append("image", newCourse.image);
     }
@@ -175,6 +170,9 @@ const CoursesPage = () => {
       const res = await createCourse(formData);
       toast.success(res.message ?? "تم الحفظ بنجاح");
       setNewCourse({});
+      setSelectedSubSection("");
+      setSelectedSubSub("");
+      setSelectedSpec("");
       setCurrentView("list");
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       queryClient.invalidateQueries({ queryKey: ["courses-stats"] });
@@ -182,10 +180,20 @@ const CoursesPage = () => {
       toast.error(err?.response?.data?.error);
     }
   };
+  console.log("selectedCourse", selectedCourse);
   const handleEditCourse = async () => {
-    const currentCourse = courseData?.data.find(
+    if (!selectedCourse?.id) {
+      toast.error("لم يتم تحديد كورس للتعديل");
+      return;
+    }
+    const currentCourse = courseData?.find(
       (course: any) => course?.id === selectedCourse?.id
     );
+    if (!currentCourse) {
+      toast.error("هذا الكورس غير موجود");
+      return;
+    }
+
     const changedData = Object.keys(selectedCourse)
       .filter(
         (key) =>
@@ -196,21 +204,21 @@ const CoursesPage = () => {
         acc[key] = selectedCourse[key as keyof typeof selectedCourse];
         return acc;
       }, {} as Record<string, any>);
+
     try {
-      if (selectedCourse?.id == currentCourse?.id) {
-        const formData = new FormData();
-        Object.entries(changedData).forEach(([key, value]) => {
-          if (value instanceof File) {
-            formData.append(key, value); // send file as file
-          } else {
-            formData.append(key, String(value));
-          }
-        });
-        const res = await editCourse(formData);
-        toast.success(res.message ?? "تم الحفظ بنجاح");
-        queryClient.invalidateQueries({ queryKey: ["courses"] });
-        setCurrentView("list");
-      }
+      const formData = new FormData();
+      Object.entries(changedData).forEach(([key, value]) => {
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else {
+          formData.append(key, String(value));
+        }
+      });
+
+      const res = await editCourse(formData);
+      toast.success(res.message ?? "تم الحفظ بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      setCurrentView("list");
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
     }
@@ -306,18 +314,20 @@ const CoursesPage = () => {
             </span>
           )}
         </div>
-        <div className="absolute top-4 left-4 flex gap-2">
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelColor(
-              course?.level?.name
-            )}`}
-          >
-            {course?.level?.name || "غير محدد"}
-          </span>
-        </div>
+        {course?.level?.name && (
+          <div className="absolute top-4 left-4 flex gap-2">
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelColor(
+                course?.level?.name
+              )}`}
+            >
+              {course?.level?.name}
+            </span>
+          </div>
+        )}
 
         {/* Level Badge */}
-        <div className="absolute bottom-4 right-4">
+        {/* <div className="absolute bottom-4 right-4">
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelColor(
               course.level
@@ -332,63 +342,64 @@ const CoursesPage = () => {
               course.level
             )}`}
           >
-            {course?.specialization?.name || "غير محدد"}
+            {course?.specialization?.name}
           </span>
-        </div>
+        </div> */}
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-6 flex flex-col">
         {/* Header */}
-        <div className="mb-4">
+        <div className="mb-4 h-20">
           <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-2">
             {course?.name}
           </h3>
           <p className="text-gray-600 text-sm line-clamp-2">
-            {course.short_description}
+            {course?.short_description}
           </p>
         </div>
 
-        {/* Teacher */}
-        <div className="flex items-center gap-3 mb-4">
-          <img
-            loading="lazy"
-            src={
-              course?.teacher?.image ||
-              "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
-            }
-            alt={course?.teacher?.name}
-            className="w-8 h-8 rounded-full"
-          />
-          <div>
-            <p className="font-medium text-gray-800 text-sm">
-              {course?.teacher?.name}
-            </p>
-            <p className="text-gray-500 text-xs">
-              {course?.teacher?.materials?.map(
-                (material: any) => `${material.name} `
-              )}
-            </p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="text-center">
-            <div className="text-lg font-bold text-gray-800">
-              {course?.maximum_number_of_students}
+        <div>
+          {/* Teacher */}
+          <div className="flex items-center gap-3 mb-4">
+            {course?.teacher?.image ? (
+              <img
+                loading="lazy"
+                src={course?.teacher?.image}
+                alt={course?.teacher?.name}
+                className="w-8 h-8 rounded-full"
+              />
+            ) : (
+              <User size={24} className="text-gray-500" />
+            )}
+            <div>
+              <p className="font-medium text-gray-800 text-sm">
+                {course?.teacher?.name}
+              </p>
+              <p className="text-gray-500 text-xs">
+                {course?.teacher?.materials?.map(
+                  (material: any) => `${material.name} `
+                )}
+              </p>
             </div>
-            <div className="text-xs text-gray-500">طالب</div>
           </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-blue-600">
-              {course?.time_in_hours}h
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="text-center">
+              <div className="text-lg font-bold text-gray-800">
+                {course?.specialization_material?.name || "-"}
+              </div>
+              <div className="text-xs text-gray-500">مادة التخصص</div>
             </div>
-            <div className="text-xs text-gray-500">ساعة</div>
-          </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-blue-600">
+                {course?.time_in_hours ? course?.time_in_hours + "h" : "-"}
+              </div>
+              <div className="text-xs text-gray-500">ساعة</div>
+            </div>
 
-          {/* Rating */}
-          {/* <div className="text-center">
+            {/* Rating */}
+            {/* <div className="text-center">
             <div className="flex items-center justify-center gap-1">
               <Star size={14} className="text-yellow-500 fill-current" />
               <span className="text-lg font-bold text-gray-800">
@@ -399,28 +410,32 @@ const CoursesPage = () => {
               {course.reviewsCount} تقييم
             </div>
           </div> */}
-          <div className="text-center col-span-2">
-            <div className="text-lg font-bold text-green-600">
-              {course.is_free
-                ? "مجاني"
-                : `${course?.card_price?.price || 0} د.أ`}
+            <div className="text-center col-span-2">
+              <div className="text-lg font-bold text-green-600">
+                {course.is_free
+                  ? "مجاني"
+                  : `${
+                      course?.card_price?.price
+                        ? course?.card_price?.price + " د.أ"
+                        : "-"
+                    }`}
+              </div>
+              <div className="text-xs text-gray-500">السعر</div>
             </div>
-            <div className="text-xs text-gray-500">السعر</div>
           </div>
-        </div>
 
-        {/* Status */}
-        <div className="flex gap-2 mb-4">
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${
-              course?.is_published
-                ? "bg-green-100 text-green-800"
-                : "bg-gray-100 text-gray-800"
-            }`}
-          >
-            {course?.is_published ? "منشور" : "مسودة"}
-          </span>
-          {/* <span
+          {/* Status */}
+          <div className="flex gap-2 mb-4">
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                course?.is_published
+                  ? "bg-green-100 text-green-800"
+                  : "bg-gray-100 text-gray-800"
+              }`}
+            >
+              {course?.is_published ? "منشور" : "مسودة"}
+            </span>
+            {/* <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${
               course?.is_active
                 ? "bg-blue-100 text-blue-800"
@@ -429,6 +444,7 @@ const CoursesPage = () => {
           >
             {course?.is_active ? "نشط" : "معطل"}
           </span> */}
+          </div>
         </div>
 
         {/* Actions */}
@@ -537,6 +553,9 @@ const CoursesPage = () => {
           <button
             onClick={() => {
               setNewCourse({});
+              setSelectedSubSection("");
+              setSelectedSubSub("");
+              setSelectedSpec("");
               setCurrentView("list");
             }}
             className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -579,7 +598,7 @@ const CoursesPage = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  وصف مختصر *
+                  وصف مختصر
                 </label>
                 <input
                   type="text"
@@ -597,7 +616,7 @@ const CoursesPage = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الوصف التفصيلي *
+                  الوصف التفصيلي
                 </label>
                 <textarea
                   value={newCourse?.long_description || ""}
@@ -670,9 +689,7 @@ const CoursesPage = () => {
                     المستوى
                   </label>
                   <select
-                    value={
-                      newCourse?.level || "d72e95dd-dc4c-4495-8ec5-cea7e7c5a0c3"
-                    }
+                    value={newCourse?.level}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
@@ -681,6 +698,7 @@ const CoursesPage = () => {
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
+                    <option value="">اختر المستوى</option>
                     <option value="d72e95dd-dc4c-4495-8ec5-cea7e7c5a0c3">
                       مبتدئ
                     </option>
@@ -699,11 +717,11 @@ const CoursesPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newCourse.time_in_hours || ""}
+                    value={newCourse.time_in_hours}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
-                        time_in_hours: parseInt(e.target.value) || 0,
+                        time_in_hours: parseInt(e.target.value),
                       })
                     }
                     className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -772,7 +790,7 @@ const CoursesPage = () => {
               {/* Pricing */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  التسعير
+                  التسعير *
                 </label>
                 <div className="space-y-3">
                   <label className="flex items-center gap-3">
@@ -784,7 +802,7 @@ const CoursesPage = () => {
                         setNewCourse({
                           ...newCourse,
                           is_free: true,
-                          card_price: 0,
+                          card: 0,
                         })
                       }
                       className="text-orange-600 focus:ring-orange-500"
@@ -806,48 +824,31 @@ const CoursesPage = () => {
                 </div>
                 {newCourse?.is_free === false && (
                   <div className="mt-3">
-                    {/* <input
-                      type="number"
-                      value={newCourse?.price || ""}
-                      onChange={(e) =>
-                        setNewCourse({
-                          ...newCourse,
-                          price: parseFloat(e.target.value) || 0,
-                        })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                      placeholder="السعر بالدينار الأردني"
-                      min="0"
-                      step="0.01"
-                    /> */}
                     <div className="space-y-2 max-h-32 overflow-y-auto">
-                      {cardsData?.map((card: any) => {
-                        return (
-                          card?.is_active && (
-                            <label
-                              key={card?.id}
-                              className="flex items-center gap-2"
-                            >
-                              <input
-                                type="radio"
-                                name="card"
-                                value={card?.id}
-                                checked={newCourse.card === card?.id}
-                                onChange={(e) => {
-                                  setNewCourse({
-                                    ...newCourse,
-                                    card: e.target.value,
-                                  });
-                                }}
-                                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                              />
-                              <span className="text-sm">
-                                {card?.price} د.ا.
-                              </span>
-                            </label>
-                          )
-                        );
-                      })}
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          البطاقة *
+                        </label>
+                        <select
+                          value={newCourse?.card_price}
+                          onChange={(e) => {
+                            setNewCourse({
+                              ...newCourse,
+                              card_price: e.target.value,
+                            });
+                          }}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        >
+                          <option value="">اختر بطاقة</option>
+                          {cardsData
+                            ?.filter((card: any) => card?.is_active)
+                            .map((card: any) => (
+                              <option key={card.id} value={card.id}>
+                                {card?.price} د.ا
+                              </option>
+                            ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -857,7 +858,7 @@ const CoursesPage = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    تاريخ البداية
+                    تاريخ البداية *
                   </label>
                   <input
                     type="date"
@@ -871,11 +872,11 @@ const CoursesPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    تاريخ النهاية
+                    تاريخ النهاية *
                   </label>
                   <input
                     type="date"
-                    value={newCourse.end_date || ""}
+                    value={newCourse?.end_date || ""}
                     onChange={(e) =>
                       setNewCourse({ ...newCourse, end_date: e.target.value })
                     }
@@ -885,7 +886,7 @@ const CoursesPage = () => {
               </div>
 
               {/* Maximum Students */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الحد الأقصى للطلاب
                 </label>
@@ -902,76 +903,133 @@ const CoursesPage = () => {
                   placeholder="100"
                   min="1"
                 />
-              </div>
+              </div> */}
 
-              {/* Targeted Sections */}
+              {/* SubSection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  التخصصات المستهدفة
-                </label>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {specializationData?.map((specialization: any) => (
-                    <label
-                      key={specialization?.id}
-                      className="flex items-center gap-2"
-                    >
-                      <input
-                        type="radio"
-                        name="specialization" // Same name for all radio buttons
-                        value={specialization?.id}
-                        checked={
-                          newCourse.specialization === specialization?.id
-                        }
-                        onChange={(e) => {
-                          setNewCourse({
-                            ...newCourse,
-                            specialization: e.target.value,
-                          });
-                        }}
-                        className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                      />
-                      <span className="text-sm">{specialization?.name}</span>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    القسم
+                  </label>
+                  <select
+                    value={selectedSubSection}
+                    onChange={(e) => {
+                      setSelectedSubSection(e.target.value);
+                      setSelectedSubSub("");
+                      setSelectedSpec("");
+                      setNewCourse({
+                        ...newCourse,
+                        subsection: e.target.value,
+                      });
+                    }}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  >
+                    <option value="">اختر القسم</option>
+                    {subsectionData?.map((subSection: any) => (
+                      <option key={subSection.id} value={subSection.id}>
+                        {subSection?.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {/* SubSubSection */}
+              {subSection?.subsubsections.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      الصف
                     </label>
-                  ))}
+                    <select
+                      value={selectedSubSub}
+                      onChange={(e) => {
+                        setSelectedSubSub(e.target.value);
+                        setSelectedSpec("");
+                        setNewCourse({
+                          ...newCourse,
+                          subsubsection: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر الصف</option>
+                      {subSection?.subsubsections?.map((subSubSection: any) => (
+                        <option key={subSubSection.id} value={subSubSection.id}>
+                          {subSubSection?.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Targeted Subsections */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  الأقسام الفرعية المستهدفة
-                </label>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {specialization_materialData?.map(
-                    (specialization_material: any) => (
-                      <label
-                        key={specialization_material?.id}
-                        className="flex items-center gap-2"
-                      >
-                        <input
-                          type="radio"
-                          name="specialization_material" // Same name for all radio buttons
-                          value={specialization_material?.id}
-                          checked={
-                            newCourse.specialization_material ===
-                            specialization_material?.id
-                          }
-                          onChange={(e) => {
-                            setNewCourse({
-                              ...newCourse,
-                              specialization_material: e.target.value,
-                            });
-                          }}
-                          className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                        />
-                        <span className="text-sm">
-                          {specialization_material?.name}
-                        </span>
-                      </label>
-                    )
-                  )}
+              {/* Specialization */}
+              {subsub?.specializations.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      التخصص
+                    </label>
+                    <select
+                      value={selectedSpec}
+                      onChange={(e) => {
+                        setSelectedSpec(e.target.value);
+                        setNewCourse({
+                          ...newCourse,
+                          specialization: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر قسم فرعي</option>
+                      {subsub?.specializations?.map((specialization: any) => (
+                        <option
+                          key={specialization.id}
+                          value={specialization.id}
+                        >
+                          {specialization?.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Specialization Material */}
+              {(spec?.length > 0 ||
+                (subsub?.specializations?.length == 0 &&
+                  subsub?.specialization_materials?.length > 0)) && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      مادة التخصص
+                    </label>
+                    <select
+                      value={newCourse?.specialization_material}
+                      onChange={(e) => {
+                        setNewCourse({
+                          ...newCourse,
+                          specialization_material: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر مادة التخصص</option>
+                      {(spec?.specialization_materials.length > 0
+                        ? spec?.specialization_materials
+                        : subsub?.specialization_materials
+                      ).map((specialization_material: any) => (
+                        <option
+                          key={specialization_material.id}
+                          value={specialization_material.id}
+                        >
+                          {specialization_material?.material}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
 
               {/* Status Settings */}
               <div className="grid grid-cols-2 gap-4">
@@ -982,7 +1040,7 @@ const CoursesPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newCourse.is_published || false}
+                    checked={newCourse?.is_published || true}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
@@ -1042,8 +1100,9 @@ const CoursesPage = () => {
               onClick={handleCreateCourse}
               disabled={
                 !newCourse.name ||
-                !newCourse.short_description ||
-                !newCourse.long_description ||
+                !newCourse.start_date ||
+                !newCourse.end_date ||
+                (!newCourse.is_free && !newCourse.card_price) ||
                 !newCourse.teacher
               }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -1104,11 +1163,11 @@ const CoursesPage = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  وصف مختصر *
+                  وصف مختصر
                 </label>
                 <input
                   type="text"
-                  value={selectedCourse?.short_description}
+                  value={selectedCourse?.short_description || ""}
                   onChange={(e) =>
                     setSelectedCourse({
                       ...selectedCourse,
@@ -1125,7 +1184,7 @@ const CoursesPage = () => {
                   الوصف التفصيلي *
                 </label>
                 <textarea
-                  value={selectedCourse?.long_description}
+                  value={selectedCourse?.long_description || ""}
                   onChange={(e) =>
                     setSelectedCourse({
                       ...selectedCourse,
@@ -1155,7 +1214,7 @@ const CoursesPage = () => {
                   >
                     <option value="">اختر المعلم</option>
                     {teacherData
-                      ?.filter((t: any) => t.is_active)
+                      ?.filter((t: any) => t?.is_active)
                       .map((teacher: any) => (
                         <option key={teacher.id} value={teacher.id}>
                           {teacher.name}
@@ -1221,7 +1280,7 @@ const CoursesPage = () => {
                     onChange={(e) =>
                       setSelectedCourse({
                         ...selectedCourse,
-                        time_in_hours: parseInt(e.target.value) || 0,
+                        time_in_hours: parseInt(e.target.value),
                       })
                     }
                     className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1280,42 +1339,6 @@ const CoursesPage = () => {
                   )}
                 </div>
               </div>
-
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  رابط الصورة المصغرة
-                </label>
-                <input
-                  type="url"
-                  value={selectedCourse.thumbnail}
-                  onChange={(e) =>
-                    setSelectedCourse({
-                      ...selectedCourse,
-                      thumbnail: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div> */}
-
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  رابط فيديو المعاينة
-                </label>
-                <input
-                  type="url"
-                  value={selectedCourse.previewVideo || ""}
-                  onChange={(e) =>
-                    setSelectedCourse({
-                      ...selectedCourse,
-                      previewVideo: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  placeholder="https://example.com/preview.mp4"
-                />
-              </div> */}
             </div>
 
             {/* Settings */}
@@ -1327,19 +1350,19 @@ const CoursesPage = () => {
               {/* Pricing */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  التسعير
+                  التسعير *
                 </label>
                 <div className="space-y-3">
                   <label className="flex items-center gap-3">
                     <input
                       type="radio"
                       name="pricing"
-                      checked={selectedCourse?.is_free === true}
+                      checked={selectedCourse.is_free === true}
                       onChange={() =>
                         setSelectedCourse({
                           ...selectedCourse,
                           is_free: true,
-                          price: 0,
+                          card_price: 0,
                         })
                       }
                       className="text-orange-600 focus:ring-orange-500"
@@ -1361,20 +1384,32 @@ const CoursesPage = () => {
                 </div>
                 {selectedCourse?.is_free === false && (
                   <div className="mt-3">
-                    <input
-                      type="number"
-                      value={selectedCourse?.price}
-                      onChange={(e) =>
-                        setSelectedCourse({
-                          ...selectedCourse,
-                          price: parseFloat(e.target.value) || 0,
-                        })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                      placeholder="السعر بالدينار الأردني"
-                      min="0"
-                      step="0.01"
-                    />
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          البطاقة *
+                        </label>
+                        <select
+                          value={selectedCourse?.card_price?.id}
+                          onChange={(e) => {
+                            setSelectedCourse({
+                              ...selectedCourse,
+                              card_price: e.target.value,
+                            });
+                          }}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        >
+                          <option value="">اختر بطاقة</option>
+                          {cardsData
+                            ?.filter((card: any) => card?.is_active)
+                            .map((card: any) => (
+                              <option key={card.id} value={card.id}>
+                                {card?.price} د.ا
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1417,7 +1452,7 @@ const CoursesPage = () => {
               </div>
 
               {/* Targeted Sections */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   التخصصات المستهدفة
                 </label>
@@ -1446,10 +1481,10 @@ const CoursesPage = () => {
                     </label>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               {/* Targeted Subsections */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   الأقسام الفرعية المستهدفة
                 </label>
@@ -1483,10 +1518,139 @@ const CoursesPage = () => {
                     )
                   )}
                 </div>
+              </div> */}
+
+              {/* SubSection */}
+              <div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    القسم
+                  </label>
+                  <select
+                    value={selectedSubSection}
+                    onChange={(e) => {
+                      setSelectedSubSection(e.target.value);
+                      setSelectedSubSub("");
+                      setSelectedSpec("");
+                      setSelectedCourse({
+                        ...selectedCourse,
+                        subsection: e.target.value,
+                        subsubsection: "",
+                        specialization: "",
+                        specialization_material: "",
+                      });
+                    }}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  >
+                    <option value="">اختر القسم</option>
+                    {subsectionData?.map((subSection: any) => (
+                      <option key={subSection.id} value={subSection.id}>
+                        {subSection?.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
+              {/* SubSubSection */}
+              {subSection?.subsubsections.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      الصف
+                    </label>
+                    <select
+                      value={selectedSubSub}
+                      onChange={(e) => {
+                        setSelectedSubSub(e.target.value);
+                        setSelectedSpec("");
+                        setSelectedCourse({
+                          ...selectedCourse,
+                          subsubsection: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر الصف</option>
+                      {subSection?.subsubsections?.map((subSubSection: any) => (
+                        <option key={subSubSection.id} value={subSubSection.id}>
+                          {subSubSection?.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specialization */}
+              {subsub?.specializations.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      التخصص
+                    </label>
+                    <select
+                      value={selectedSpec}
+                      onChange={(e) => {
+                        setSelectedSpec(e.target.value);
+                        setSelectedCourse({
+                          ...selectedCourse,
+                          specialization: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر قسم فرعي</option>
+                      {subsub?.specializations?.map((specialization: any) => (
+                        <option
+                          key={specialization.id}
+                          value={specialization.id}
+                        >
+                          {specialization?.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specialization Material */}
+              {(spec?.length > 0 ||
+                (subsub?.specializations?.length == 0 &&
+                  subsub?.specialization_materials?.length > 0)) && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      مادة التخصص
+                    </label>
+                    <select
+                      value={selectedCourse?.specialization_material}
+                      onChange={(e) => {
+                        setSelectedCourse({
+                          ...selectedCourse,
+                          specialization_material: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر مادة التخصص</option>
+                      {(spec?.specialization_materials.length > 0
+                        ? spec?.specialization_materials
+                        : subsub?.specialization_materials
+                      ).map((specialization_material: any) => (
+                        <option
+                          key={specialization_material.id}
+                          value={specialization_material.id}
+                        >
+                          {specialization_material?.material}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
 
               {/* Maximum Students */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الحد الأقصى للطلاب
                 </label>
@@ -1503,7 +1667,7 @@ const CoursesPage = () => {
                   placeholder="100"
                   min="1"
                 />
-              </div>
+              </div> */}
 
               {/* Status Settings */}
               <div className="grid grid-cols-2 gap-4">
@@ -1578,10 +1742,11 @@ const CoursesPage = () => {
                 handleEditCourse();
               }}
               disabled={
-                !selectedCourse?.name ||
-                !selectedCourse?.short_description ||
-                !selectedCourse?.long_description ||
-                !selectedCourse?.teacher
+                !selectedCourse.name ||
+                !selectedCourse.start_date ||
+                !selectedCourse.end_date ||
+                (!selectedCourse.is_free && !selectedCourse.card_price) ||
+                !selectedCourse.teacher
               }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1676,7 +1841,7 @@ const CoursesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الدورات..."
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
             />
           </div>
 
@@ -1697,7 +1862,7 @@ const CoursesPage = () => {
           </select>
 
           {/* Category Filter */}
-          <select
+          {/* <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
@@ -1708,7 +1873,7 @@ const CoursesPage = () => {
                 {category?.name}
               </option>
             ))}
-          </select>
+          </select> */}
 
           {/* Status Filter */}
           <select
@@ -1716,25 +1881,24 @@ const CoursesPage = () => {
             onChange={(e) => setStatusFilter(e.target.value as any)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
-            <option value="all">جميع الحالات</option>
-            <option value="published">منشور</option>
-            <option value="draft">مسودة</option>
-            {/* <option value="active">نشط</option>
-            <option value="inactive">معطل</option> */}
+            <option value="">جميع الحالات</option>
+            <option value="true">منشور</option>
+            <option value="false">مسودة</option>
+          </select>
+
+          {/* Free Filter */}
+          <select
+            value={freeFilter}
+            onChange={(e) => setFreeFilter(e.target.value as any)}
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+          >
+            <option value="all">جميع الأسعار</option>
+            <option value="true">مجاني</option>
+            <option value="false">مدفوع</option>
           </select>
 
           {/* View Mode */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                viewMode === "grid"
-                  ? "bg-orange-100 text-orange-600"
-                  : "text-gray-400 hover:bg-gray-100"
-              }`}
-            >
-              <BarChart3 size={16} />
-            </button>
             <button
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
@@ -1743,164 +1907,179 @@ const CoursesPage = () => {
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
-              <PieChart size={16} />
+              <Rows size={16} />
+            </button>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                viewMode === "grid"
+                  ? "bg-orange-100 text-orange-600"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+            >
+              <Grid size={16} />
             </button>
           </div>
         </div>
       </div>
-
       {/* Courses Grid/Table */}
-      {viewMode === "grid" ? (
-        !isLoading ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCourses?.map((course: any) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
+      {isLoading ? (
+        <Loader />
+      ) : viewMode === "grid" ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {courseData?.map((course: any) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
 
-              {filteredCourses?.length === 0 && (
-                <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-                  <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-800 mb-2">
-                    {searchTerm ||
-                    teacherFilter ||
-                    categoryFilter ||
-                    statusFilter !== "all"
-                      ? "لا توجد نتائج"
-                      : "لا توجد دورات"}
-                  </h3>
-                  <p className="text-gray-500 mb-6">
-                    {searchTerm ||
-                    teacherFilter ||
-                    categoryFilter ||
-                    statusFilter !== "all"
-                      ? "لم يتم العثور على دورات تطابق المعايير المحددة"
-                      : "ابدأ بإنشاء دورة تعليمية جديدة"}
-                  </p>
-                  {!searchTerm &&
-                    !teacherFilter &&
-                    !categoryFilter &&
-                    statusFilter === "all" && (
-                      <button
-                        onClick={() => setCurrentView("create")}
-                        className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-                      >
-                        <Plus size={16} />
-                        إنشاء دورة جديدة
-                      </button>
-                    )}
-                </div>
-              )}
-            </div>
-            <Pagination
-              currentPage={page}
-              count={paginationData?.count}
-              onPageChange={setPage}
-            />
-          </>
-        ) : (
-          <Loader />
-        )
+            {courseData?.length === 0 && (
+              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+                <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  {searchTerm ||
+                  teacherFilter ||
+                  statusFilter !== "all"
+                    ? "لا توجد نتائج"
+                    : "لا توجد دورات"}
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  {searchTerm ||
+                  teacherFilter ||
+                  statusFilter !== "all"
+                    ? "لم يتم العثور على دورات تطابق المعايير المحددة"
+                    : "ابدأ بإنشاء دورة تعليمية جديدة"}
+                </p>
+                {!searchTerm &&
+                  !teacherFilter &&
+                  statusFilter === "all" && (
+                    <button
+                      onClick={() => setCurrentView("create")}
+                      className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    >
+                      <Plus size={16} />
+                      إنشاء دورة جديدة
+                    </button>
+                  )}
+              </div>
+            )}
+          </div>
+          <Pagination
+            currentPage={page}
+            count={paginationData?.count}
+            onPageChange={setPage}
+          />
+        </>
       ) : (
-        // Table View
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الدورة
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    المعلم
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    التصنيف
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الطلاب
-                  </th>
-                  {/* <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    التقييم
-                  </th> */}
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    السعر
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الحالة
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الإجراءات
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredCourses?.map((course: any) => (
-                  <tr key={course?.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <img
-                          loading="lazy"
-                          src={
-                            course?.image ||
-                            "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
-                          }
-                          alt={course?.name}
-                          className="w-12 h-12 rounded-lg object-cover"
-                        />
-                        <div>
-                          <div className="font-medium text-gray-900 line-clamp-1">
-                            {course?.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {course?.time_in_hours}h • {course?.level?.name}
+        <>
+          {/* Table View */}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الدورة
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      المعلم
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      القسم
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الصف
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      التخصص
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      مادة التخصص
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      السعر
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الحالة
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الإجراءات
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200 overflow-x-auto">
+                  {courseData?.map((course: any) => (
+                    <tr key={course?.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          {/* {course?.image && (
+                          <img
+                            loading="lazy"
+                            src={course?.image}
+                            alt={course?.name}
+                            className="w-12 h-12 rounded-lg object-cover"
+                          />
+                        )} */}
+                          <div>
+                            <div className="font-medium text-gray-900 line-clamp-1">
+                              {course?.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {course?.time_in_hours}h{" "}
+                              {course?.level?.name && "•" + course?.level?.name}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <img
-                          loading="lazy"
-                          src={
-                            course?.teacher?.image ||
-                            "https://www.malvernbh.com/wp-content/uploads/2023/02/shutterstock_1079701271-1-min-1010x673.jpg"
-                          }
-                          alt={course?.teacher?.name}
-                          className="w-8 h-8 rounded-full"
-                        />
-                        <span className="text-sm text-gray-900">
-                          {course?.teacher?.name}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {course?.specialization?.name || "غير محدد"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {course?.maximum_number_of_students}
-                    </td>
-                    {/* <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-1">
-                        <Star size={14} className="text-yellow-500" />
-                        <span className="text-sm font-medium">2</span>
-                      </div>
-                    </td> */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {course?.is_free ? "مجاني" : `${course?.price} د.أ`}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex gap-2">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            course?.is_published
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {course?.is_published ? "منشور" : "مسودة"}
-                        </span>
-                        {/* <span
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          {/* {course?.teacher?.image ? (
+                          <img
+                            loading="lazy"
+                            src={course?.teacher?.image}
+                            alt={course?.teacher?.name}
+                            className="w-8 h-8 rounded-full"
+                          />
+                        ) : (
+                          <User size={24} className="text-gray-500" />
+                        )} */}
+                          <span className="text-sm text-gray-900">
+                            {course?.teacher?.name}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        {course?.subsection?.title || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        {course?.subsubsection?.title || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        {course?.specialization?.name || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        {course?.specialization_material?.name || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        {course?.is_free
+                          ? "مجاني"
+                          : `${
+                              course?.card_price?.price
+                                ? course?.card_price?.price + " د.أ"
+                                : "-"
+                            }`}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              course?.is_published
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {course?.is_published ? "منشور" : "مسودة"}
+                          </span>
+                          {/* <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             course.isActive
                               ? "bg-blue-100 text-blue-800"
@@ -1909,65 +2088,73 @@ const CoursesPage = () => {
                         >
                           {course.isActive ? "نشط" : "معطل"}
                         </span> */}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedCourse(course);
-                            setCurrentView("content");
-                          }}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                          title="إدارة المحتوى"
-                        >
-                          <Folder size={16} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            toggleCourseStatus(course?.id);
-                          }}
-                          className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                            course?.is_Published
-                              ? "text-green-600 bg-green-50 hover:bg-green-100"
-                              : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-                          }`}
-                          title={
-                            course?.is_Published ? "إلغاء النشر" : "نشر الدورة"
-                          }
-                        >
-                          {course?.is_published ? (
-                            <Eye size={16} />
-                          ) : (
-                            <EyeOff size={16} />
-                          )}
-                        </button>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedCourse(course);
+                              setCurrentView("content");
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            title="إدارة المحتوى"
+                          >
+                            <Folder size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              toggleCourseStatus(course?.id);
+                            }}
+                            className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                              course?.is_Published
+                                ? "text-green-600 bg-green-50 hover:bg-green-100"
+                                : "text-gray-400 bg-gray-50 hover:bg-gray-100"
+                            }`}
+                            title={
+                              course?.is_Published
+                                ? "إلغاء النشر"
+                                : "نشر الدورة"
+                            }
+                          >
+                            {course?.is_published ? (
+                              <Eye size={16} />
+                            ) : (
+                              <EyeOff size={16} />
+                            )}
+                          </button>
 
-                        <button
-                          onClick={() => {
-                            setSelectedCourse(course);
-                            setCurrentView("edit");
-                          }}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                          title="تعديل"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        {/* <button
+                          <button
+                            onClick={() => {
+                              setSelectedCourse(course);
+                              setCurrentView("edit");
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            title="تعديل"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          {/* <button
                           onClick={() => handleDeleteCourse(course.id)}
                           className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
                           title="حذف"
                         >
                           <Trash2 size={16} />
                         </button> */}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+          <Pagination
+            currentPage={page}
+            count={paginationData?.count}
+            onPageChange={setPage}
+          />
+        </>
       )}
     </div>
   );
