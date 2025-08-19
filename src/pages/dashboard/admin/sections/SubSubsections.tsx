@@ -414,14 +414,14 @@ const SubsectionsPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة قسم فرعي
         </button>
       </div>
       {/* Search and Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* <div className="lg:col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
             <div className="relative">
@@ -600,7 +600,7 @@ const SubsectionsPage = () => {
             {data?.data?.data?.lenght === 0 && (
               <button
                 onClick={() => setShowAddModal(true)}
-                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
               >
                 <Plus size={16} />
                 إضافة قسم فرعي

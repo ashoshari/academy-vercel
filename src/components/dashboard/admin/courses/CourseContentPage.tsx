@@ -34,6 +34,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [showUnpublished, setShowUnpublished] = useState(true);
   // const [layer, setLayer] = useState();
   const [filteredContent, setFilteredContent] = useState<any>([]);
+
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
     "tree"
   );
@@ -44,7 +45,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
   );
   // GET Exams
   const { data: exams } = useCustomQuery("/training/admin/exams/", ["exams"]);
-  console.log("courseContent", courseContent?.data);
   const examData = exams?.data;
   // GET courseContent Statistics
   const { data: contentStatistics } = useCustomQuery(
@@ -680,8 +680,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex justify-between  gap-4">
             {/* Search */}
-            <div className="flex items-center gap-x-[20px]">
-              <div className="relative">
+            <div className="flex items-center gap-x-[20px] w-[50%]">
+              <div className="relative w-full">
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
@@ -1244,7 +1244,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       onChange={(e) =>
                         setSelectedItem({
                           ...selectedItem,
-                          videoUrl: e.target.value,
+                          link: e.target.value,
                         })
                       }
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"

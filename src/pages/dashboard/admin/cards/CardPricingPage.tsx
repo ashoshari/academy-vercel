@@ -14,7 +14,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import toast from "react-hot-toast";
-import Loader from "@/components/core/Loader";
+import Spinner from "@/components/dashboard/Spinner";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 
 export interface CardPricing {
@@ -214,7 +214,7 @@ const CardPricingPage = () => {
       </div>
 
       {/* Search and Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* <div className="lg:col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
             <div className="relative">
@@ -251,9 +251,9 @@ const CardPricingPage = () => {
 
       {/* Cards Grid */}
       {cards?.isLoading ? (
-        <Loader />
+        <Spinner size={40} thickness={4} className="text-orange-500" />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
           {cards?.data?.data.map((card: any) => (
             <div
               key={card.id}

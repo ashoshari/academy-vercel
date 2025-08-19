@@ -20,6 +20,7 @@ import {
   Globe,
   Folder,
   FolderTree,
+  ChevronDown,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
@@ -28,7 +29,8 @@ import toast from "react-hot-toast";
 import GenerateModal from "@/components/card-codes/GenerateModal";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import Pagination from "@/components/dashboard/core/Pagination";
-import Loader from "@/components/core/Loader";
+// import Loader from "@/components/core/Loader";
+import Spinner from "@/components/dashboard/Spinner";
 
 export interface CardCode {
   id: number;
@@ -77,6 +79,7 @@ const CardCodesPage = () => {
   const [selectedPriceFilter, setSelectedPriceFilter] = useState<string | null>(
     null
   );
+  const [isExpanded, setIsExpanded] = useState(true);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
     "all"
@@ -93,7 +96,7 @@ const CardCodesPage = () => {
   ]);
 
   const queryParams = new URLSearchParams();
-  if (searchTerm) queryParams.append("card_name", searchTerm);
+  if (searchTerm) queryParams.append("code_name", searchTerm);
   if (selectedPriceFilter)
     queryParams.append("code_string", selectedPriceFilter);
   if (isUsed !== null && isUsed !== undefined)
@@ -428,7 +431,7 @@ const CardCodesPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex items-center justify-between">
             <div>
@@ -468,13 +471,17 @@ const CardCodesPage = () => {
 
       {/* Enhanced Batches Section with Targeting Info */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
-        <div className="p-6 border-b border-gray-200">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="cursor-pointer p-6 border-b border-gray-200 w-full flex justify-between"
+        >
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
             <FolderTree className="w-5 h-5 text-orange-600" />
             مجموعات الكودات مع الاستهداف ومعلومات الأمان
           </h2>
-        </div>
-        <div className="p-6">
+          <ChevronDown />
+        </button>
+        <div className={`${isExpanded ? "block" : "hidden"} p-6`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {cardCodes?.data?.data?.map((batch: any) => {
               const targeting = getTargetingDisplay(
@@ -711,7 +718,7 @@ const CardCodesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الكودات..."
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
             />
           </div>
 
@@ -766,7 +773,7 @@ const CardCodesPage = () => {
 
       {/* Enhanced Codes Table */}
       {generateCodes?.isLoading ? (
-        <Loader />
+        <Spinner size={40} thickness={4} className="text-orange-500" />
       ) : (
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
           <div className="p-6 border-b border-gray-200">

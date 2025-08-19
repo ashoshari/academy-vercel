@@ -21,7 +21,7 @@ import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
-import Loader from "@/components/core/Loader";
+import Spinner from "@/components/dashboard/Spinner";
 import { useQueryClient } from "@tanstack/react-query";
 const CoursesPage = () => {
   const [currentView, setCurrentView] = useState<
@@ -49,7 +49,6 @@ const CoursesPage = () => {
     queryParams.append("is_free", freeFilter);
   if (statusFilter) queryParams.append("is_published", statusFilter);
   if (page) queryParams.append("page", page.toString());
-  console.log(statusFilter);
   const queryString = queryParams.toString();
   // GET courses
   const { data, isLoading } = useCustomQuery(
@@ -108,10 +107,6 @@ const CoursesPage = () => {
     (sp: any) => sp.id === selectedSpec
   );
 
-  console.log("subSection", subSection);
-  console.log("subsub", subsub);
-  console.log("spec", spec);
-
   const [courses, setCourses] = useState<any>();
   useEffect(() => {
     setCourses(courseData);
@@ -133,7 +128,6 @@ const CoursesPage = () => {
     ["postCourses"]
   );
   const handleCreateCourse = async () => {
-    console.log("newCourse", newCourse);
     const formData = new FormData();
     newCourse.name && formData.append("name", newCourse.name);
     newCourse.short_description &&
@@ -180,7 +174,6 @@ const CoursesPage = () => {
       toast.error(err?.response?.data?.error);
     }
   };
-  console.log("selectedCourse", selectedCourse);
   const handleEditCourse = async () => {
     if (!selectedCourse?.id) {
       toast.error("لم يتم تحديد كورس للتعديل");
@@ -247,6 +240,8 @@ const CoursesPage = () => {
     const newStatus = !updateCourse?.is_published;
     try {
       await editCourse({ is_published: newStatus });
+      toast.success("تم تعديل حالة الدورة بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
     } catch (error) {
       toast.error("حدث خطاء في تعديل حالة الدورة");
       setCourses((prevCourses: any) =>
@@ -1924,7 +1919,9 @@ const CoursesPage = () => {
       </div>
       {/* Courses Grid/Table */}
       {isLoading ? (
-        <Loader />
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
       ) : viewMode === "grid" ? (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1936,30 +1933,24 @@ const CoursesPage = () => {
               <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
                 <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
-                  {searchTerm ||
-                  teacherFilter ||
-                  statusFilter !== "all"
+                  {searchTerm || teacherFilter || statusFilter !== "all"
                     ? "لا توجد نتائج"
                     : "لا توجد دورات"}
                 </h3>
                 <p className="text-gray-500 mb-6">
-                  {searchTerm ||
-                  teacherFilter ||
-                  statusFilter !== "all"
+                  {searchTerm || statusFilter !== "all"
                     ? "لم يتم العثور على دورات تطابق المعايير المحددة"
                     : "ابدأ بإنشاء دورة تعليمية جديدة"}
                 </p>
-                {!searchTerm &&
-                  !teacherFilter &&
-                  statusFilter === "all" && (
-                    <button
-                      onClick={() => setCurrentView("create")}
-                      className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-                    >
-                      <Plus size={16} />
-                      إنشاء دورة جديدة
-                    </button>
-                  )}
+                {!searchTerm && statusFilter === "all" && (
+                  <button
+                    onClick={() => setCurrentView("create")}
+                    className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  >
+                    <Plus size={16} />
+                    إنشاء دورة جديدة
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -2107,12 +2098,12 @@ const CoursesPage = () => {
                               toggleCourseStatus(course?.id);
                             }}
                             className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                              course?.is_Published
+                              course?.is_published
                                 ? "text-green-600 bg-green-50 hover:bg-green-100"
                                 : "text-gray-400 bg-gray-50 hover:bg-gray-100"
                             }`}
                             title={
-                              course?.is_Published
+                              course?.is_published
                                 ? "إلغاء النشر"
                                 : "نشر الدورة"
                             }

@@ -11,16 +11,16 @@ import {
   School,
 } from "lucide-react";
 import { useParams } from "react-router";
-
+import Spinner from "@/components/dashboard/Spinner";
 const StudentDetailsPage = () => {
   const { id } = useParams();
 
-  const data = useCustomQuery(`/account/admin/students/${id}/`, [
+  const { data, isLoading } = useCustomQuery(`/account/admin/students/${id}/`, [
     "student-details",
     id,
   ]);
 
-  const selectedStudent = data?.data?.data;
+  const selectedStudent = data?.data;
 
   // const getCourseTypeIcon = (type: string) => {
   //   switch (type) {
@@ -51,7 +51,12 @@ const StudentDetailsPage = () => {
         return "text-gray-600 bg-gray-100";
     }
   };
-  console.log("selectedStudent", selectedStudent);
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner size={40} thickness={4} className="text-orange-500" />
+      </div>
+    );
   return (
     <div className="p-4 lg:p-8">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl mx-auto">
@@ -136,7 +141,6 @@ const StudentDetailsPage = () => {
                       // const IconComponent = getCourseTypeIcon(
                       //   course?.courseType
                       // );
-                      console.log("course", course);
                       return (
                         <div
                           key={course?.course?.id}

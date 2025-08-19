@@ -23,7 +23,6 @@ export default function TeacherDetailsPage() {
       </div>
     );
   }
-  console.log(selectedTeacher?.materials);
   if (!selectedTeacher) {
     return (
       <div className="text-center mt-10 text-red-500">

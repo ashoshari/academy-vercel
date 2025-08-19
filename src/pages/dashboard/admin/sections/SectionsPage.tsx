@@ -592,7 +592,7 @@ const SectionsPage = () => {
       </div>
 
       {/* Search and Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* <div className="lg:col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
             <div className="relative">
@@ -635,16 +635,16 @@ const SectionsPage = () => {
           return (
             <div
               key={section.id}
-              className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
+              className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
             >
               {/* Header */}
               <div
                 style={{ backgroundColor: section.color.color }}
-                className={`p-6 text-white relative overflow-hidden`}
+                className={`h-[60%] p-6 text-white relative overflow-hidden`}
               >
                 <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
                 <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8"></div>
-                <div className="relative z-10">
+                <div className="relative z-10 h-[60%]">
                   <div className="flex items-center justify-between mb-4">
                     {section.icon.icon ? (
                       <img
@@ -671,7 +671,7 @@ const SectionsPage = () => {
                   </div>
                   <h3 className="text-xl font-bold mb-2">{section.title}</h3>
                   <p className="text-white/80 text-sm line-clamp-2">
-                    {section.description}
+                    {section.description || "-"}
                   </p>
                 </div>
               </div>
@@ -740,16 +740,16 @@ const SectionsPage = () => {
 
                         setConfirmToggleModal(true);
                       }}
-                      className={`p-2 rounded-lg transition-colors ${
-                        !section.is_published
+                      className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                        section.is_published
                           ? "text-green-600 bg-green-50 hover:bg-green-100"
                           : "text-gray-400 bg-gray-50 hover:bg-gray-100"
                       }`}
                       title={
-                        section.is_published ? "تعطيل القسم" : "تفعيل القسم"
+                        section.is_published ? "تفعيل القسم" : "تعطيل القسم"
                       }
                     >
-                      {!section.is_published ? (
+                      {section.is_published ? (
                         <Eye size={16} />
                       ) : (
                         <EyeOff size={16} />
@@ -775,7 +775,7 @@ const SectionsPage = () => {
                         });
                         setShowEditModal(true);
                       }}
-                      className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                       title="تعديل القسم"
                     >
                       <Edit size={16} />

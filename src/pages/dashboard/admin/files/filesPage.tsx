@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import {
+  // useEffect,
+  useState,
+} from "react";
 import {
   Search,
   Eye,
@@ -35,7 +38,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import {
   useCustomPost,
   useCustomRemove,
-  // , useCustomUpdate
+  useCustomUpdate,
 } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
@@ -43,15 +46,14 @@ import Pagination from "@/components/dashboard/core/Pagination";
 // import Loader from "@/components/core/Loader";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
-import Loader from "@/components/core/Loader";
-
+import Spinner from "@/components/dashboard/Spinner";
 const ResourcessPage = () => {
   // const [currentView, setCurrentView] = useState<
   //   "list" | "create" | "edit" | "content"
   // >("list");
   // const [currentPath, setCurrentPath] = useState<any>(null);
-  // const [selectedresources, setSelectedresources] = useState<any>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   // const [resourcesTypeFilter, setResourcesTypeFilter] = useState<
   //   "all" | "folder" | "document" | "image" | "video" | "audio" | "archive"
   // >("all");
@@ -76,9 +78,8 @@ const ResourcessPage = () => {
   const types = ["resources", "bookses", "ministerial_questions", "files"];
 
   const [uploadResources, setUploadResources] = useState<any>({});
-  const [resourseId, setResourceId] = useState<string>("");
-
-  // const [resourcesId, setResourcesId] = useState<any>(null);
+  const [selectedResources, setSelectedResources] = useState<any>({});
+  const [resourceId, setResourceId] = useState<string>("");
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
   console.log("typeFilter", typeFilter);
@@ -137,10 +138,10 @@ const ResourcessPage = () => {
   const specializationData = specializations?.data;
   // const specialization_materialData = specialization_material?.data;
 
-  const [resources, setResources] = useState<any>();
-  useEffect(() => {
-    setResources(resourcesData);
-  }, [resourcesData]);
+  // const [resources, setResources] = useState<any>();
+  // useEffect(() => {
+  //   setResources(resourcesData);
+  // }, [resourcesData]);
   const resourcesStatsData = resourcesStats?.data;
   // const [newresources, setNewresources] = useState<any>({});
   // const [editresourcesData, setEditresourcesData] = useState<any>({});
@@ -155,11 +156,17 @@ const ResourcessPage = () => {
     ["postResources"]
   );
 
+  // PUT Resources
+  const { mutateAsync: putResources } = useCustomUpdate(
+    `/training/admin/resources/${resourceId}/`,
+    ["putResources", resourceId]
+  );
   // DELETE Resources
   const { mutateAsync: deleteResources } = useCustomRemove(
-    `/training/admin/resources/${resourseId}/`,
-    ["deleteResources", resourseId]
+    `/training/admin/resources/${resourceId}/`,
+    ["deleteResources", resourceId]
   );
+  console.log("resourceId", resourceId);
   // const getAccessLevelColor = (level: any) => {
   //   switch (level) {
   //     case "public":
@@ -194,12 +201,69 @@ const ResourcessPage = () => {
       }
     }
   };
-  const toggleFileFavorite = (id: number) => {
-    setResources(
-      resources.map((file: any) =>
-        file.id === id ? { ...file, isFavorite: !file.isFavorite } : file
-      )
-    );
+  const handleEditFile = async (id: any) => {
+    setResourceId(id);
+    // const initialResource = resourcesData?.find((resource: any) => {
+    //   resource?.id === id;
+    // });
+    const formData = new FormData();
+    selectedResources.title &&
+      formData.append("title", selectedResources.title);
+    selectedResources.description &&
+      formData.append("description", selectedResources.description);
+    selectedResources.teacher &&
+      formData.append(
+        "teacher",
+        selectedResources.teacher.id
+          ? selectedResources.teacher.id
+          : selectedResources.teacher
+      );
+    selectedResources.expiry_date &&
+      formData.append("expiry_date", selectedResources.expiry_date);
+    selectedResources.specialization &&
+      formData.append("specialization", selectedResources.specialization);
+    selectedResources.specialization_material &&
+      formData.append(
+        "specialization_material",
+        selectedResources.specialization_material
+      );
+    selectedResources.lesson &&
+      formData.append("lesson", selectedResources.lesson);
+    selectedResources.type &&
+      formData.append("type", selectedResources.type || null);
+    selectedResources.is_free &&
+      formData.append("is_free", selectedResources.is_free || false);
+    selectedResources.is_published &&
+      formData.append("is_published", selectedResources.is_published || false);
+    if (
+      selectedResources.image &&
+      typeof (selectedResources.image as any).name === "string" &&
+      typeof (selectedResources.image as any).size === "number"
+    ) {
+      formData.append("image", selectedResources.image as File);
+    }
+    if (
+      selectedResources.file &&
+      typeof (selectedResources.file as any).name === "string" &&
+      typeof (selectedResources.file as any).size === "number"
+    ) {
+      formData.append("file", selectedResources.file as File);
+    }
+    console.log(selectedResources);
+    try {
+      const response = await putResources(formData);
+      toast.success(response?.message ?? "تم تعديل المحتوى بنجاح");
+      queryClient.invalidateQueries({
+        queryKey: ["resources"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["resources-stats"],
+      });
+      setSelectedResources({});
+      setShowEditModal(false);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+    }
   };
   const getFileTypeColor = (file: any) => {
     if (file.type === "folder") {
@@ -221,10 +285,6 @@ const ResourcessPage = () => {
         return "text-gray-600";
     }
   };
-  // const navigateToFolder = (folderId: any) => {
-  //   setCurrentPath(folderId);
-  //   setSelectedresources([]);
-  // };
   const getFileIcon = (file: any) => {
     if (file.type === "folder") {
       return file.isShared ? FolderOpen : Folder;
@@ -317,6 +377,7 @@ const ResourcessPage = () => {
     // });
     // setShowCreateModal(false);
   };
+  console.log("selectedResources", selectedResources);
   const ResourseCard = ({ resource }: { resource: any }) => {
     const IconComponent = getFileIcon(resource);
     const iconColor = getFileTypeColor(resource);
@@ -348,7 +409,10 @@ const ResourcessPage = () => {
             </a> */}
 
             <button
-              onClick={() => toggleFileFavorite(resource?.id)}
+              onClick={() => {
+                setSelectedResources(resource);
+                setShowEditModal(true);
+              }}
               className={`p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-blue-500/80 transition-colors`}
               title={"تعديل الملف"}
             >
@@ -358,7 +422,7 @@ const ResourcessPage = () => {
             <button
               onClick={() => handleDeleteFile(resource?.id)}
               className="p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-red-500/80 transition-colors"
-              title="حذف"
+              title="حذف الملف"
             >
               <Trash2 size={16} />
             </button>
@@ -851,14 +915,421 @@ const ResourcessPage = () => {
                 !uploadResources?.file ||
                 !uploadResources?.teacher ||
                 !uploadResources?.specialization ||
-                // !uploadResources?.specialization_material ||
                 !uploadResources?.type ||
                 !uploadResources?.image
               }
-              className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Upload size={16} />
-              رفع الملفات
+              رفع الملف
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  const EditModal = () => {
+    return (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-800">تعديل الملف</h2>
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+
+          <div className="p-6 space-y-6">
+            {/* File Upload Area */}
+            <div className="lg:flex gap-4">
+              {/* Upload File */}
+              <div className="w-full">
+                <div className="relative flex flex-col justify-center items-center h-full">
+                  <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                    {!selectedResources?.file ? "رفع الملف" : "تم رفع الملف"}
+                  </h2>
+                  <div
+                    className={`border-2 border-dashed w-full ${
+                      selectedResources?.file && "hidden"
+                    } border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors`}
+                  >
+                    <UploadCloud
+                      size={48}
+                      className="text-gray-400 mx-auto mb-4"
+                    />
+                    <p className="text-gray-600 mb-4">
+                      اسحب الملف هنا أو انقر للاختيار
+                    </p>
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setSelectedResources({
+                            ...selectedResources,
+                            file: e.target.files[0],
+                          });
+                        }
+                      }}
+                      className="hidden"
+                      id="file-upload"
+                    />
+                    <label
+                      htmlFor="file-upload"
+                      className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
+                    >
+                      اختيار الملف
+                    </label>
+                  </div>
+                </div>
+              </div>
+              {/* Upload Image */}
+              <div className="w-full">
+                {selectedResources?.image ? (
+                  <div className="relative flex flex-col justify-center items-center h-full">
+                    <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                      صورة الملف
+                    </h2>
+                    <XSquare
+                      size={20}
+                      className="absolute top-6 left-14 cursor-pointer text-red-500"
+                      onClick={() => {
+                        setSelectedResources({
+                          ...selectedResources,
+                          image: null,
+                        });
+                      }}
+                    />
+                    <img
+                      loading="lazy"
+                      src={selectedResources?.image}
+                      className="h-[200px] w-[250px] object-cover rounded-lg"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                      رفع صورة الملف
+                    </h2>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors">
+                      <UploadCloud
+                        size={48}
+                        className="text-gray-400 mx-auto mb-4"
+                      />
+                      <p className="text-gray-600 mb-4">
+                        اسحب صورة هنا أو انقر للاختيار
+                      </p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        // multiple
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            setSelectedResources({
+                              ...selectedResources,
+                              image: e.target.files?.[0],
+                            });
+                          }
+                        }}
+                        className="hidden"
+                        id="image-upload"
+                      />
+
+                      <label
+                        htmlFor="image-upload"
+                        className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
+                      >
+                        اختيار صورة الملف
+                      </label>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+            {/* Selected Files */}
+            <div>
+              <div className="space-y-2 max-h-32 overflow-y-auto">
+                {selectedResources?.file && (
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <File size={16} className="text-gray-400" />
+                      <span className="text-sm text-gray-800">
+                        {selectedResources?.title}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        ({formatFileSize(selectedResources?.file_size)})
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedResources({
+                          ...selectedResources,
+                          file: null, // Clear the single file
+                        });
+                      }}
+                      className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* File Details */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Title */}
+              <div className="lg:col-span-3">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  عنوان الملف *
+                </label>
+                <textarea
+                  value={selectedResources?.title}
+                  onChange={(e) =>
+                    setSelectedResources({
+                      ...selectedResources,
+                      title: e.target.value,
+                    })
+                  }
+                  rows={1}
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                  placeholder="عنوان الملف..."
+                />
+              </div>
+              {/* Description */}
+              <div className="lg:col-span-3">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  وصف الملف *
+                </label>
+                <textarea
+                  value={selectedResources?.description}
+                  onChange={(e) =>
+                    setSelectedResources({
+                      ...selectedResources,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                  placeholder="وصف مختصر للملف..."
+                />
+              </div>
+              {/* File Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  نوع الملف *
+                </label>
+                <select
+                  value={selectedResources?.type || ""}
+                  onChange={(e) =>
+                    setSelectedResources({
+                      ...selectedResources,
+                      type: e.target.value as any,
+                    })
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                >
+                  <option value="">اختر نوع الملف</option>
+                  <option value="resources">مصادر</option>
+                  <option value="files">ملفات</option>
+                  <option value="bookses">دوسيهات</option>
+                  <option value="ministerial_questions">أسئلة وزارية</option>
+                </select>
+              </div>
+              {/* Specialization */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  التخصص
+                </label>
+                <select
+                  value={selectedResources?.specialization || ""}
+                  onChange={(e) =>
+                    setSelectedResources({
+                      ...selectedResources,
+                      specialization: e.target.value as any,
+                    })
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                >
+                  <option value="">اختر التخصص</option>
+                  {specializationData?.map((specialization: any) => (
+                    <option key={specialization?.id} value={specialization?.id}>
+                      {specialization?.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Specialization Material */}
+              {/* <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  مادة التخصص
+                </label>
+                <select
+                  value={uploadResources?.specialization_material || ""}
+                  onChange={(e) =>
+                    setUploadResources({
+                      ...uploadResources,
+                      specialization_material: e.target.value as any,
+                    })
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                >
+                  <option value="">اختر مادة التخصص</option>
+                  {specialization_materialData?.map(
+                    (specialization_material: any) => (
+                      <option
+                        key={specialization_material?.id}
+                        value={specialization_material?.id}
+                      >
+                        {specialization_material?.name}
+                      </option>
+                    )
+                  )}
+                </select>
+              </div> */}
+              {/* Teacher */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  المعلم *
+                </label>
+                <select
+                  value={selectedResources?.teacher.id || ""}
+                  onChange={(e) =>
+                    setSelectedResources({
+                      ...selectedResources,
+                      teacher: e.target.value as any,
+                    })
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                >
+                  <option value="">اختر معلم</option>
+                  {teacherData?.map((teacher: any) => (
+                    <option key={teacher?.id} value={teacher?.id}>
+                      {teacher?.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {/* Lesson */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  الدرس *
+                </label>
+                <select
+                  value={selectedResources?.lesson || ""}
+                  onChange={(e) =>
+                    setSelectedResources({
+                      ...selectedResources,
+                      lesson: e.target.value as any,
+                    })
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                >
+                  <option value="">اختر الدرس</option>
+                  {lessonData?.map((lesson: any) => (
+                    <option
+                      className="text-black"
+                      key={lesson?.id}
+                      value={lesson?.id}
+                    >
+                      {lesson?.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col justify-end gap-4">
+                {/* Published */}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="isPublished"
+                    checked={selectedResources?.is_published || false}
+                    onChange={(e) =>
+                      setSelectedResources({
+                        ...selectedResources,
+                        is_published: e.target.checked as any,
+                      })
+                    }
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                  <label
+                    htmlFor="isPublished"
+                    className="text-sm text-gray-700"
+                  >
+                    منشور
+                  </label>
+                </div>
+                {/* Free */}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="isFree"
+                    disabled={selectedResources?.type === "resources"}
+                    checked={
+                      selectedResources?.type == "resources"
+                        ? true
+                        : selectedResources?.is_free || false
+                    }
+                    onChange={(e) =>
+                      setSelectedResources({
+                        ...selectedResources,
+                        is_free: e.target.checked as any,
+                      })
+                    }
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                  <label htmlFor="isFree" className="text-sm text-gray-700">
+                    مجانا
+                  </label>
+                </div>
+              </div>
+            </div>
+            {/* Expiry Date */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                تاريخ انتهاء الصلاحية (اختياري)
+              </label>
+              <input
+                type="date"
+                value={formatDate(selectedResources?.expiry_date) || ""}
+                onChange={(e) =>
+                  setSelectedResources({
+                    ...selectedResources,
+                    expiry_date: e.target.value,
+                  })
+                }
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              />
+            </div>
+          </div>
+
+          <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              إلغاء
+            </button>
+            <button
+              onClick={() => handleEditFile(selectedResources?.id)}
+              disabled={
+                !selectedResources?.title ||
+                !selectedResources?.description ||
+                !selectedResources?.file ||
+                !selectedResources?.teacher ||
+                !selectedResources?.specialization ||
+                // !uploadResources?.specialization_material ||
+                !selectedResources?.type ||
+                !selectedResources?.image
+              }
+              className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Upload size={16} />
+              تعديل الملف
             </button>
           </div>
         </div>
@@ -880,7 +1351,7 @@ const ResourcessPage = () => {
           className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Upload size={16} />
-          رفع ملفات{" "}
+          رفع ملف{" "}
         </button>
       </div>
 
@@ -937,7 +1408,7 @@ const ResourcessPage = () => {
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-        <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
           {/* Search */}
           <div className="lg:col-span-2 relative">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -1066,47 +1537,48 @@ const ResourcessPage = () => {
       </div>
 
       {/* resourcess Grid/Table */}
-      {viewMode === "grid" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {resourcesData?.map((resource: any) => (
-            <ResourseCard key={resource.id} resource={resource} />
-          ))}
-
-          {/* {filteredresources?.length === 0 && (
-            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-              <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-800 mb-2">
-                {searchTerm ||
-                resourcesTypeFilter !== "all" ||
-                accessFilter !== "all"
-                  ? "لا توجد نتائج"
-                  : "المجلد فارغ"}
-              </h3>
-              <p className="text-gray-500 mb-6">
-                {searchTerm ||
-                resourcesTypeFilter !== "all" ||
-                accessFilter !== "all"
-                  ? "لم يتم العثور على ملفات تطابق المعايير المحددة"
-                  : "ابدأ برفع ملفات أو إنشاء مجلدات جديدة"}
-              </p>
-              {!searchTerm &&
-                resourcesTypeFilter === "all" &&
-                accessFilter === "all" && (
-                  <div className="flex gap-4 justify-center">
-                    <button
-                      onClick={() => setShowCreateModal(true)}
-                      className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2"
-                    >
-                      <Upload size={16} />
-                      رفع ملفات
-                    </button>
-                  </div>
-                )}
-            </div>
-          )} */}
+      {isLoading ? (
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
-      ) : isLoading ? (
-        <Loader />
+      ) : resourcesData?.length === 0 ? (
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+          <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-800 mb-2">
+            {searchTerm || typeFilter !== "" || statusFilter !== "all"
+              ? "لا توجد نتائج"
+              : "المجلد فارغ"}
+          </h3>
+          <p className="text-gray-500 mb-6">
+            {searchTerm || typeFilter !== "" || statusFilter !== "all"
+              ? "لم يتم العثور على ملفات تطابق المعايير المحددة"
+              : "ابدأ برفع ملفات أو إنشاء مجلدات جديدة"}
+          </p>
+          {!searchTerm && typeFilter === "" && statusFilter === "all" && (
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2"
+              >
+                <Upload size={16} />
+                رفع ملفات
+              </button>
+            </div>
+          )}
+        </div>
+      ) : viewMode === "grid" ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {resourcesData?.map((resource: any) => (
+              <ResourseCard key={resource.id} resource={resource} />
+            ))}
+          </div>
+          <Pagination
+            currentPage={page}
+            count={paginationData?.count}
+            onPageChange={setPage}
+          />
+        </>
       ) : (
         <>
           {/* List View */}
@@ -1191,20 +1663,19 @@ const ResourcessPage = () => {
                           </a> */}
 
                             <button
-                              // onClick={() => toggleEditFile(resource.id)}
-                              className={`p-1 transition-colors ${
-                                resource.isFavorite
-                                  ? "text-blue-500"
-                                  : "text-gray-400 hover:text-blue-500"
-                              }`}
+                              onClick={() => {
+                                setShowEditModal(true);
+                                setSelectedResources(resource);
+                              }}
+                              className={`cursor-pointer p-1 transition-colors text-gray-400 hover:text-blue-500`}
                               title="تعديل الملف"
                             >
                               <Pen size={16} />
                             </button>
 
                             <button
-                              onClick={() => handleDeleteFile(resource.id)}
-                              className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                              onClick={() => handleDeleteFile(resource?.id)}
+                              className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
                               title="حذف الملف"
                             >
                               <Trash2 size={16} />
@@ -1218,16 +1689,16 @@ const ResourcessPage = () => {
               </table>
             </div>
           </div>
+          <Pagination
+            currentPage={page}
+            count={paginationData?.count}
+            onPageChange={setPage}
+          />
         </>
       )}
-      <Pagination
-        currentPage={page}
-        count={paginationData?.count}
-        onPageChange={setPage}
-      />
       {/* Modals */}
       {showCreateModal && CreateModal()}
-      {/* {showCreateFolderModal && <CreateFolderModal />} */}
+      {showEditModal && EditModal()}
     </div>
   );
 };
