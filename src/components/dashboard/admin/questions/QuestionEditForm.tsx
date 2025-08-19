@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import { Save, Trash2, CheckCircle } from "lucide-react";
 import toast from "react-hot-toast";
@@ -8,15 +8,17 @@ import {
   DraftAnswer,
   DraftQuestion,
 } from "@/pages/dashboard/admin/exams/questions/QuestionsPage";
-import { buildSingleQuestionFormData } from "@/utils/buildQuestionsFormData";
+import { buildSingleQuestionJson } from "@/utils/buildQuestionsPayload";
 
 type Props = {
+  examId: string;
   question: DraftQuestion;
   onCancel: () => void;
   onSuccess?: () => void;
 };
 
 const QuestionEditForm: React.FC<Props> = ({
+  examId,
   question,
   onCancel,
   onSuccess,
@@ -25,7 +27,7 @@ const QuestionEditForm: React.FC<Props> = ({
 
   const updateQuestion = useCustomUpdate(
     `/training/admin/exams-questions/${form.id}/`,
-    ["exam-questions"]
+    ["exam-questions", examId]
   );
 
   const setAnswer = (idx: number, patch: Partial<DraftAnswer>) => {
@@ -47,9 +49,9 @@ const QuestionEditForm: React.FC<Props> = ({
     const correct = form.answers.filter((a) => a.is_correct).length;
     if (correct !== 1) return toast.error("يجب اختيار إجابة صحيحة واحدة فقط");
 
-    const fd = buildSingleQuestionFormData(form);
+    const body = await buildSingleQuestionJson(form);
     try {
-      const res = await updateQuestion.mutateAsync(fd as any);
+      const res = await updateQuestion.mutateAsync(body as any);
       if (res?.status) {
         toast.success("تم تحديث السؤال");
         onSuccess?.();
@@ -141,7 +143,11 @@ const QuestionEditForm: React.FC<Props> = ({
                 {form.image && (
                   <div className="mt-2">
                     <img
-                      src={URL.createObjectURL(form.image)}
+                      src={
+                        form.image instanceof File
+                          ? URL.createObjectURL(form.image)
+                          : form.image
+                      }
                       alt="preview"
                       className="w-40 h-28 object-cover rounded border"
                     />
@@ -214,7 +220,11 @@ const QuestionEditForm: React.FC<Props> = ({
 
                         {a.image && (
                           <img
-                            src={URL.createObjectURL(a.image)}
+                            src={
+                              a.image instanceof File
+                                ? URL.createObjectURL(a.image)
+                                : a.image
+                            }
                             alt="ans"
                             className="w-12 h-12 object-cover rounded border"
                           />
