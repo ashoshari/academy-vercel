@@ -35,13 +35,6 @@ axiosInstance.interceptors.response.use(
       window.location.href = "/login";
     }
 
-    // if (error?.response?.status === 404) {
-    //   toast.error("Page not found");
-    //   localStorage.removeItem("auth_tokens");
-    //   localStorage.removeItem("company_domain");
-    //   window.location.href = "/login";
-    // }
-
     console.error("Response Error:", error);
     return Promise.reject(error);
   }
