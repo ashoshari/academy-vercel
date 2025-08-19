@@ -96,9 +96,9 @@ const CardCodesPage = () => {
   ]);
 
   const queryParams = new URLSearchParams();
-  if (searchTerm) queryParams.append("code_name", searchTerm);
+  if (searchTerm) queryParams.append("code_string", searchTerm);
   if (selectedPriceFilter)
-    queryParams.append("code_string", selectedPriceFilter);
+    queryParams.append("code_name", selectedPriceFilter);
   if (isUsed !== null && isUsed !== undefined)
     queryParams.append("is_used", isUsed);
   if (statusFilter) queryParams.append("is_active", statusFilter);
