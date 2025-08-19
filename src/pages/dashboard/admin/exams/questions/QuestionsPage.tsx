@@ -10,7 +10,7 @@ import QuestionEditForm from "@/components/dashboard/admin/questions/QuestionEdi
 export interface Answers {
   id: string;
   answer_text: string;
-  image: File | null;
+  image: string | null | File;
   is_correct: boolean;
   explanation: string | null;
 }
@@ -18,7 +18,7 @@ export interface Answers {
 export interface ExamQuestion {
   id: string;
   question_text: string;
-  image: File | null;
+  image: string | null | File;
   marks: number;
   answers: Answers[];
 }
@@ -45,7 +45,7 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
 
   const questionsData = useCustomQuery(
     `/training/admin/exams/${exam.id}/questions/`,
-    ["exam-questions"]
+    ["exam-questions", exam.id]
   );
 
   const questions: ExamQuestion[] = questionsData?.data?.data ?? [];
@@ -53,12 +53,12 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
   const toDraft = (q: ExamQuestion): DraftQuestion => ({
     id: q.id,
     question_text: q.question_text,
-    image: null,
+    image: q.image,
     marks: q.marks,
     answers: (q.answers || []).map((a) => ({
       id: a.id,
       answer_text: a.answer_text,
-      image: null,
+      image: a.image,
       is_correct: a.is_correct,
       explanation: a.explanation,
     })),
@@ -67,6 +67,12 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
   const selectedDraft: DraftQuestion | null = useMemo(
     () => (selected ? toDraft(selected) : null),
     [selected]
+  );
+
+  const existingQuestionsCount = questions.length;
+  const existingMarksSum = questions.reduce(
+    (sum, q) => sum + (Number(q.marks) || 0),
+    0
   );
 
   return (
@@ -119,10 +125,12 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
       {view === "add" && (
         <AddQuestionsForm
           examId={exam.id}
+          questionsCount={exam.number_of_questions}
+          totalMarks={exam.total_marks}
+          existingQuestionsCount={existingQuestionsCount}
+          existingMarksSum={existingMarksSum}
           onCancel={() => setView("list")}
-          onSuccess={() => {
-            setView("list");
-          }}
+          onSuccess={() => setView("list")}
         />
       )}
 
@@ -142,6 +150,7 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
 
       {view === "edit" && selectedDraft && (
         <QuestionEditForm
+          examId={exam.id}
           question={selectedDraft}
           onCancel={() => setView("list")}
           onSuccess={() => setView("list")}
