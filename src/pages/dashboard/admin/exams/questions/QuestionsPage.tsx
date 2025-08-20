@@ -1,5 +1,8 @@
 import React, { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  // ArrowLeft,
+  ArrowRight,
+} from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { Exam } from "../ExamsPage";
 import QuestionsList from "@/components/dashboard/admin/questions/QuestionsList";

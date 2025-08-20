@@ -135,7 +135,7 @@ const TeacherProfile: React.FC = () => {
     };
 
     try {
-      const response = await postActivation(addCourse);
+      await postActivation(addCourse);
       setShowActivationModal(false);
       setActivationCode("");
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
