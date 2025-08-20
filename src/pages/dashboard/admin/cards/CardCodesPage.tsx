@@ -21,6 +21,7 @@ import {
   Folder,
   FolderTree,
   ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
@@ -407,21 +408,21 @@ const CardCodesPage = () => {
         <div className="flex gap-3">
           {/* <button
             onClick={exportToExcel}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <FileSpreadsheet size={16} />
             تصدير Excel
           </button>
           <button
             onClick={exportToPDF}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <FileText size={16} />
             تصدير PDF
           </button> */}
           <button
             onClick={() => setShowGenerateModal(true)}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إنشاء كودات
@@ -472,17 +473,18 @@ const CardCodesPage = () => {
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="cursor-pointer p-6 border-b border-gray-200 w-full flex justify-between"
+          className="cursor-pointer p-6 hover:bg-gray-50 w-full flex justify-between"
         >
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
             <FolderTree className="w-5 h-5 text-orange-600" />
             مجموعات الكودات مع الاستهداف ومعلومات الأمان
           </h2>
-          <ChevronDown />
+          {isExpanded ? <ChevronDown /> : <ChevronUp />}
         </button>
         <div className={`${isExpanded ? "block" : "hidden"} p-6`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {cardCodes?.data?.data?.map((batch: any) => {
+              console.log("batch", batch);
               const targeting = getTargetingDisplay(
                 batch.subsubsections,
                 "specific"
@@ -497,7 +499,9 @@ const CardCodesPage = () => {
                   {/* Header */}
                   <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4 text-white">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-lg">{batch.name}</h3>
+                      <h3 className="font-bold text-lg">
+                        {batch?.name || "-"}
+                      </h3>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           batch.card.is_active
@@ -514,7 +518,7 @@ const CardCodesPage = () => {
                   </div>
 
                   {/* Targeting Info */}
-                  <div className="p-4 bg-gradient-to-r from-blue-50 to-orange-50">
+                  <div className="flex flex-col justify-center items-center p-4 bg-gradient-to-r from-blue-50 to-orange-50 h-22">
                     <div className="flex items-center gap-2 text-sm">
                       <targeting.icon size={16} className={targeting.color} />
                       <span className={`font-medium ${targeting.color}`}>
@@ -591,14 +595,14 @@ const CardCodesPage = () => {
                     <div className="flex items-center gap-2 text-sm">
                       <MapPin className="w-4 h-4 text-gray-400" />
                       <span className="text-gray-600 font-mono text-xs">
-                        {batch?.security_information?.ip}
+                        {batch?.security_information?.ip || "-"}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 text-sm">
                       <Smartphone className="w-4 h-4 text-gray-400" />
                       <span className="text-gray-600 text-xs">
-                        {batch?.security_information?.device_name}
+                        {batch?.security_information?.device_name || "-"}
                       </span>
                     </div>
 
@@ -620,62 +624,64 @@ const CardCodesPage = () => {
                         </div>
                       </div>
                     )}
-
-                    {batch.note && (
-                      <div className="bg-blue-50 p-3 rounded-lg">
-                        <div className="text-xs text-blue-600 font-medium mb-1">
-                          ملاحظات:
-                        </div>
-                        <div className="text-sm text-blue-800 mb-4">
-                          {batch.note}
-                        </div>
-                      </div>
-                    )}
-
-                    {batch.security_information && (
-                      <div className="bg-blue-50 p-3 rounded-lg">
-                        <div className="text-xs text-blue-600 font-medium mb-1">
-                          معلومات الأمان :
-                        </div>
-                        <div className="text-xs text-blue-700 space-y-1">
-                          <div className="flex items-center gap-2">
-                            <User size={12} />
-                            <span>
-                              المنشئ: {batch?.generated_by?.name}
-                              {" - "}
-                              {batch?.generated_by?.type?.name}
-                            </span>
+                    <div className="flex flex-col gap-y-[10px] h-52 overflow-y-auto">
+                      {batch.note && (
+                        <div className="bg-blue-50 p-3 rounded-lg">
+                          <div className="text-xs text-blue-600 font-medium mb-1">
+                            ملاحظات:
                           </div>
-
-                          <div className="flex items-center gap-2">
-                            <Smartphone size={12} />
-                            <span>
-                              الجهاز:{" "}
-                              {batch?.security_information?.device?.vendor}
-                              {" - "}
-                              {batch?.security_information?.device?.model}
-                              {" - "}
-                              {batch?.security_information?.device?.type}
-                              {" - "}
-                              {batch?.security_information?.browser?.name}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Clock size={12} />
-                            <span>
-                              التاريخ: {formatDateTimeSimple(batch.created_at)}
-                            </span>
+                          <div className="text-sm text-blue-800 mb-4 break-words">
+                            {batch.note}
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+
+                      {batch.security_information && (
+                        <div className="bg-blue-50 p-3 rounded-lg">
+                          <div className="text-xs text-blue-600 font-medium mb-1">
+                            معلومات الأمان :
+                          </div>
+                          <div className="text-xs text-blue-700 space-y-1">
+                            <div className="flex items-center gap-2">
+                              <User size={12} />
+                              <span>
+                                المنشئ: {batch?.generated_by?.name}
+                                {" - "}
+                                {batch?.generated_by?.type?.name}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <Smartphone size={12} />
+                              <span>
+                                الجهاز:{" "}
+                                {batch?.security_information?.device?.vendor}
+                                {" - "}
+                                {batch?.security_information?.device?.model}
+                                {" - "}
+                                {batch?.security_information?.device?.type}
+                                {" - "}
+                                {batch?.security_information?.browser?.name}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Clock size={12} />
+                              <span>
+                                التاريخ:{" "}
+                                {formatDateTimeSimple(batch.created_at)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Actions */}
                   <div className="p-4 border-t border-gray-200 flex items-center justify-between">
                     <button
                       onClick={() => toggleBatchStatus(batch.id)}
-                      className={`p-2 rounded-lg transition-colors ${
+                      className={`cursor-pointer p-2 rounded-lg transition-colors ${
                         batch.is_active
                           ? "text-green-600 bg-green-50 hover:bg-green-100"
                           : "text-gray-400 bg-gray-50 hover:bg-gray-100"
@@ -693,7 +699,7 @@ const CardCodesPage = () => {
 
                     {/* <button
                       onClick={() => deleteBatch(batch.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="حذف المجموعة"
                     >
                       <Trash2 size={16} />
@@ -722,7 +728,7 @@ const CardCodesPage = () => {
           </div>
 
           {/* Price Filter */}
-          <select
+          {/* <select
             value={selectedPriceFilter || ""}
             onChange={(e) =>
               setSelectedPriceFilter(e.target.value ? e.target.value : null)
@@ -735,7 +741,7 @@ const CardCodesPage = () => {
                 {price.price} د.أ
               </option>
             ))}
-          </select>
+          </select> */}
 
           {/* Batch Filter */}
           <select
@@ -743,9 +749,9 @@ const CardCodesPage = () => {
             onChange={(e) => setIsUsed(e.target.value as any)}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
-            <option value="all">جميع الحالات</option>
+            <option value="all">جميع حالات الاستخدام</option>
+            <option value="false">متاح</option>
             <option value="true">مستخدم</option>
-            <option value="false">غير مستخدم</option>
           </select>
 
           {/* Status Filter */}
@@ -754,7 +760,7 @@ const CardCodesPage = () => {
             onChange={(e) => setStatusFilter(e.target.value as any)}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
-            <option value="all">جميع الحالات</option>
+            <option value="all">جميع حالات التفعيل</option>
             <option value="true">مفعل</option>
             <option value="false">غير مفعل</option>
             {/* <option value="active">مفعل</option>
@@ -823,7 +829,7 @@ const CardCodesPage = () => {
                           </span>
                           <button
                             onClick={() => copyToClipboard(code.code_string)}
-                            className="p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
                             title="نسخ الكود"
                           >
                             <Copy size={14} />
@@ -885,7 +891,7 @@ const CardCodesPage = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => toggleCodeStatus(code.id)}
-                            className={`p-1 rounded transition-colors ${
+                            className={`cursor-pointer p-1 rounded transition-colors ${
                               code.is_active
                                 ? "text-green-600 hover:bg-green-50"
                                 : "text-gray-400 hover:bg-gray-50"

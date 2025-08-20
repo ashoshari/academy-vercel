@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCustomUpdate } from "@/hooks/useMutation";
 import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
+import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import {
   ArrowDown,
   ArrowUp,
   Edit,
   Eye,
+  Image,
   ToggleLeft,
   ToggleRight,
   Trash2,
@@ -109,11 +111,17 @@ export default function SliderCard({
           {/* Media Thumbnail */}
           <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-gray-100 shrink-0">
             {slide.type === "image" ? (
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover"
-              />
+              slide.image ? (
+                <img
+                  src={slide?.image}
+                  alt={slide?.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <Image className="w-8 h-8 text-gray-400" />
+                </div>  
+              )
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                 <Video className="w-8 h-8 text-gray-400" />
@@ -177,7 +185,7 @@ export default function SliderCard({
                   </span>
                 </div>
                 <span className="text-xs text-gray-500">
-                  {new Date().toISOString()}
+                  {formatDateTimeSimple(new Date().toISOString())}
                   {/* {slide.createdAt} */}
                 </span>
               </div>
@@ -187,14 +195,14 @@ export default function SliderCard({
                 <button
                   onClick={() => moveSlide("up")}
                   disabled={!prevId || !!isMoving}
-                  className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ArrowUp size={16} />
                 </button>
                 <button
                   onClick={() => moveSlide("down")}
                   disabled={!nextId || !!isMoving}
-                  className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ArrowDown size={16} />
                 </button>
@@ -203,7 +211,7 @@ export default function SliderCard({
 
                 <button
                   onClick={toggleSlideStatus}
-                  className={`p-1 rounded-full transition-colors ${
+                  className={`cursor-pointer p-1 rounded-full transition-colors ${
                     slide?.is_published ? "text-green-600" : "text-gray-400"
                   }`}
                 >
@@ -220,7 +228,7 @@ export default function SliderCard({
                     setSelectedSlide(slide);
                     setShowDetailsModal(true);
                   }}
-                  className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 >
                   <Eye size={16} />
                 </button>
@@ -231,7 +239,7 @@ export default function SliderCard({
                     setSelectedSlide(slide);
                     setShowEditModal(true);
                   }}
-                  className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                 >
                   <Edit size={16} />
                 </button>
@@ -239,7 +247,7 @@ export default function SliderCard({
                 {/* Delete */}
                 <button
                   // onClick={() => handleDeleteSlide(slide.id)}
-                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 >
                   <Trash2 size={16} />
                 </button>

@@ -41,7 +41,7 @@ export default function AddSliderModal({
             </h2>
             <button
               onClick={() => setShowAddModal(false)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <X size={20} />
             </button>
@@ -57,7 +57,7 @@ export default function AddSliderModal({
             <div className="flex gap-4">
               <button
                 onClick={() => setNewSlide({ ...newSlide, type: "image" })}
-                className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
+                className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
                   newSlide.type === "image"
                     ? "border-orange-500 bg-orange-50 text-orange-700"
                     : "border-gray-200 hover:border-gray-300"
@@ -227,7 +227,7 @@ export default function AddSliderModal({
                     is_published: !newSlide.is_published,
                   })
                 }
-                className={`p-1 rounded-full transition-colors ${
+                className={`cursor-pointer p-1 rounded-full transition-colors ${
                   newSlide.is_published ? "text-green-600" : "text-gray-400"
                 }`}
               >
@@ -244,13 +244,13 @@ export default function AddSliderModal({
         <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
           <button
             onClick={() => setShowAddModal(false)}
-            className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+            className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
           >
             إلغاء
           </button>
           <button
             onClick={handleAddSlide}
-            className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
           >
             <Save size={16} />
             حفظ السلايد

@@ -26,7 +26,7 @@ const QuestionsList: React.FC<Props> = ({
         </div>
         <button
           onClick={onAdd}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:from-orange-600 hover:to-orange-700"
+          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:from-orange-600 hover:to-orange-700"
         >
           إضافة أسئلة
         </button>
@@ -74,14 +74,14 @@ const QuestionsList: React.FC<Props> = ({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onPreview(q)}
-                        className="p-1 text-gray-400 hover:text-blue-600"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-blue-600"
                         title="معاينة"
                       >
                         <Eye size={16} />
                       </button>
                       <button
                         onClick={() => onEdit(q)}
-                        className="p-1 text-gray-400 hover:text-orange-600"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-orange-600"
                         title="تعديل"
                       >
                         <Edit size={16} />

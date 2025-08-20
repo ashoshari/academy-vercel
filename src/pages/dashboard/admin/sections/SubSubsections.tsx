@@ -8,6 +8,7 @@ import {
   FileText,
   GraduationCap,
   CreditCard,
+  Search,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import TreeItem from "@/components/dashboard/admin/subsections/TreeItem";
@@ -17,6 +18,7 @@ import { useCustomPost } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import EditModal from "@/components/dashboard/admin/subsections/EditSubsectionModal";
+import Spinner from "@/components/dashboard/Spinner";
 
 export interface SubSection {
   id: number;
@@ -66,8 +68,6 @@ const SubsectionsPage = () => {
   const [selectedSpecialization, setSelectedSpecialization] = useState<any>();
   const [selectedMaterial, setSelectedMaterial] = useState<any>();
 
-  // const [searchTerm, setSearchTerm] = useState("");
-
   const [newSubsection, setNewSubsection] = useState<any>({
     title: "",
     description: "",
@@ -104,12 +104,19 @@ const SubsectionsPage = () => {
     is_published: true,
     subsubsections: "",
   });
+  const [searchTerm, setSearchTerm] = useState("");
+  const queryParams = new URLSearchParams();
+  queryParams.append("title", searchTerm);
+  const queryString = queryParams.toString();
 
+  const data = useCustomQuery(`/training/admin/subsections/?${queryString}`, [
+    "subsections",
+    searchTerm,
+  ]);
   const dataStatistics = useCustomQuery(
     "/training/admin/subsections-statistics/",
     ["subsections-statistics"]
   );
-  const data = useCustomQuery("/training/admin/subsections/", ["subsections"]);
   const sectionsData = useCustomQuery("/training/admin/sections/", [
     "sections",
   ]);
@@ -421,6 +428,18 @@ const SubsectionsPage = () => {
         </button>
       </div>
       {/* Search and Stats */}
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+        <div className="w-full relative">
+          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="البحث في الأقسام..."
+            className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+          />
+        </div>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* <div className="lg:col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
@@ -458,156 +477,162 @@ const SubsectionsPage = () => {
           <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
         </div>
       </div>
+      {data?.isLoading && (
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
+      )}
       {/* Tree View */}
       <div className="space-y-4">
-        {data?.data?.data?.length > 0 ? (
-          data?.data?.data?.map((item: any) => {
-            const isExpanded = expandedItems[item.id];
-            return (
-              <div key={item.id} className="space-y-2">
-                <TreeItem
-                  getMainSectionColor={getMainSectionColor}
-                  getMainSectionIcon={getMainSectionIcon}
-                  index={1}
-                  item={item}
-                  toggleExpanded={toggleExpanded}
-                  isExpanded={isExpanded}
-                  type="subsections"
-                  setShowAddSubSubsectionModal={setShowAddSubSubsectionModal}
-                  setShowEditModal={setShowEditModal}
-                  setSelectedSubsection={setSelectedSubsection}
-                  setShowLinkModal={setShowLinkModal}
-                />
-                {isExpanded &&
-                  item?.subsubsections?.length > 0 &&
-                  item?.subsubsections?.map((s: any) => {
-                    const isSubExpanded = expandedItems[s.id];
-                    return (
-                      <React.Fragment key={s.id}>
-                        <TreeItem
-                          getMainSectionColor={getMainSectionColor}
-                          getMainSectionIcon={getMainSectionIcon}
-                          index={2}
-                          item={s}
-                          subSectionId={item.id}
-                          setShowEditSubSubsectionModal={
-                            setShowEditSubSubsectionModal
-                          }
-                          setShowAddSpecializationsModal={
-                            setShowAddSpecializationsModal
-                          }
-                          setSelectedSubSubsection={setSelectedSubSubsection}
-                          setShowAddMaterialModal={
-                            setShowAddMaterialSubSubModal
-                          }
-                          isExpanded={isSubExpanded}
-                          key={s.id}
-                          toggleExpanded={toggleExpanded}
-                          type="subsubsections"
-                        />
-                        {isSubExpanded &&
-                          s?.specializations?.length > 0 &&
-                          s?.specializations?.map((spec: any) => {
-                            const isSpecExpanded = expandedItems[spec.id];
-                            return (
-                              <React.Fragment key={spec.id}>
+        {data?.data?.data?.length > 0
+          ? data?.data?.data?.map((item: any) => {
+              const isExpanded = expandedItems[item.id];
+              return (
+                <div key={item.id} className="space-y-2">
+                  <TreeItem
+                    getMainSectionColor={getMainSectionColor}
+                    getMainSectionIcon={getMainSectionIcon}
+                    index={1}
+                    item={item}
+                    toggleExpanded={toggleExpanded}
+                    isExpanded={isExpanded}
+                    type="subsections"
+                    setShowAddSubSubsectionModal={setShowAddSubSubsectionModal}
+                    setShowEditModal={setShowEditModal}
+                    setSelectedSubsection={setSelectedSubsection}
+                    setShowLinkModal={setShowLinkModal}
+                  />
+                  {isExpanded &&
+                    item?.subsubsections?.length > 0 &&
+                    item?.subsubsections?.map((s: any) => {
+                      const isSubExpanded = expandedItems[s.id];
+                      return (
+                        <React.Fragment key={s.id}>
+                          <TreeItem
+                            getMainSectionColor={getMainSectionColor}
+                            getMainSectionIcon={getMainSectionIcon}
+                            index={2}
+                            item={s}
+                            subSectionId={item.id}
+                            setShowEditSubSubsectionModal={
+                              setShowEditSubSubsectionModal
+                            }
+                            setShowAddSpecializationsModal={
+                              setShowAddSpecializationsModal
+                            }
+                            setSelectedSubSubsection={setSelectedSubSubsection}
+                            setShowAddMaterialModal={
+                              setShowAddMaterialSubSubModal
+                            }
+                            isExpanded={isSubExpanded}
+                            key={s.id}
+                            toggleExpanded={toggleExpanded}
+                            type="subsubsections"
+                          />
+                          {isSubExpanded &&
+                            s?.specializations?.length > 0 &&
+                            s?.specializations?.map((spec: any) => {
+                              const isSpecExpanded = expandedItems[spec.id];
+                              return (
+                                <React.Fragment key={spec.id}>
+                                  <TreeItem
+                                    getMainSectionColor={getMainSectionColor}
+                                    getMainSectionIcon={getMainSectionIcon}
+                                    index={3}
+                                    item={spec}
+                                    setShowEditSpecializationsModal={
+                                      setShowEditSpecializationsModal
+                                    }
+                                    setSelectedSpecialization={
+                                      setSelectedSpecialization
+                                    }
+                                    setShowAddMaterialModal={
+                                      setShowAddMaterialModal
+                                    }
+                                    subsubSectionId={s.id}
+                                    key={spec.id}
+                                    isExpanded={isSpecExpanded}
+                                    toggleExpanded={toggleExpanded}
+                                    type="specializations"
+                                  />
+                                  {isSpecExpanded &&
+                                    spec?.specialization_materials?.length >
+                                      0 &&
+                                    spec?.specialization_materials?.map(
+                                      (mat: any) => {
+                                        return (
+                                          <TreeItem
+                                            getMainSectionColor={
+                                              getMainSectionColor
+                                            }
+                                            getMainSectionIcon={
+                                              getMainSectionIcon
+                                            }
+                                            setShowEditMaterialModal={
+                                              setShowEditMaterialModal
+                                            }
+                                            setSelectedMaterial={
+                                              setSelectedMaterial
+                                            }
+                                            specialization={spec.id}
+                                            index={4}
+                                            item={mat}
+                                            key={mat.id}
+                                            type="materials"
+                                          />
+                                        );
+                                      }
+                                    )}
+                                </React.Fragment>
+                              );
+                            })}
+
+                          {s.specialization_materials &&
+                            s.specialization_materials.map((mat: any) => {
+                              return (
                                 <TreeItem
                                   getMainSectionColor={getMainSectionColor}
                                   getMainSectionIcon={getMainSectionIcon}
-                                  index={3}
-                                  item={spec}
-                                  setShowEditSpecializationsModal={
-                                    setShowEditSpecializationsModal
+                                  setShowEditMaterialModal={
+                                    setShowEditMaterialModal
                                   }
-                                  setSelectedSpecialization={
-                                    setSelectedSpecialization
-                                  }
-                                  setShowAddMaterialModal={
-                                    setShowAddMaterialModal
-                                  }
-                                  subsubSectionId={s.id}
-                                  key={spec.id}
-                                  isExpanded={isSpecExpanded}
-                                  toggleExpanded={toggleExpanded}
-                                  type="specializations"
+                                  setSelectedMaterial={setSelectedMaterial}
+                                  specialization={s.id}
+                                  index={2}
+                                  item={mat}
+                                  key={mat.id}
+                                  type="materials"
                                 />
-                                {isSpecExpanded &&
-                                  spec?.specialization_materials?.length > 0 &&
-                                  spec?.specialization_materials?.map(
-                                    (mat: any) => {
-                                      return (
-                                        <TreeItem
-                                          getMainSectionColor={
-                                            getMainSectionColor
-                                          }
-                                          getMainSectionIcon={
-                                            getMainSectionIcon
-                                          }
-                                          setShowEditMaterialModal={
-                                            setShowEditMaterialModal
-                                          }
-                                          setSelectedMaterial={
-                                            setSelectedMaterial
-                                          }
-                                          specialization={spec.id}
-                                          index={4}
-                                          item={mat}
-                                          key={mat.id}
-                                          type="materials"
-                                        />
-                                      );
-                                    }
-                                  )}
-                              </React.Fragment>
-                            );
-                          })}
-
-                        {s.specialization_materials &&
-                          s.specialization_materials.map((mat: any) => {
-                            return (
-                              <TreeItem
-                                getMainSectionColor={getMainSectionColor}
-                                getMainSectionIcon={getMainSectionIcon}
-                                setShowEditMaterialModal={
-                                  setShowEditMaterialModal
-                                }
-                                setSelectedMaterial={setSelectedMaterial}
-                                specialization={s.id}
-                                index={2}
-                                item={mat}
-                                key={mat.id}
-                                type="materials"
-                              />
-                            );
-                          })}
-                      </React.Fragment>
-                    );
-                  })}
+                              );
+                            })}
+                        </React.Fragment>
+                      );
+                    })}
+                </div>
+              );
+            })
+          : data?.data?.data?.length === 0 && (
+              <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+                <>
+                  <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">
+                    {searchTerm ? "لا توجد نتائج" : "لا توجد أقسام فرعية"}
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    "لم يتم العثور على أقسام تطابق البحث"
+                  </p>
+                </>
+                {data?.data?.data?.length === 0 && (
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  >
+                    <Plus size={16} />
+                    إضافة قسم فرعي
+                  </button>
+                )}
               </div>
-            );
-          })
-        ) : (
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-            <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            {/* <h3 className="text-lg font-medium text-gray-800 mb-2">
-              {searchTerm ? "لا توجد نتائج" : "لا توجد أقسام فرعية"}
-            </h3> */}
-            <p className="text-gray-500 mb-6">
-              {data?.data?.data?.length === 0
-                ? "لم يتم العثور على أقسام تطابق البحث"
-                : "ابدأ بإضافة قسم فرعي جديد لتنظيم المحتوى"}
-            </p>
-            {data?.data?.data?.lenght === 0 && (
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-              >
-                <Plus size={16} />
-                إضافة قسم فرعي
-              </button>
             )}
-          </div>
-        )}
       </div>
 
       {/* Modals */}

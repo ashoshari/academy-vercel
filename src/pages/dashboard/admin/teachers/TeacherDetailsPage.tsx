@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
+import Spinner from "@/components/dashboard/Spinner";
 
 export default function TeacherDetailsPage() {
   const { id } = useParams();
@@ -18,9 +19,9 @@ export default function TeacherDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="text-center mt-10 text-gray-500">
-        جاري تحميل البيانات...
-      </div>
+    <div className="flex justify-center items-center h-screen">
+      <Spinner size={40} thickness={4} className="text-orange-500" />
+    </div>
     );
   }
   if (!selectedTeacher) {
@@ -30,7 +31,6 @@ export default function TeacherDetailsPage() {
       </div>
     );
   }
-
   return (
     <div className="max-w-6xl mx-auto py-10 px-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full p-6">

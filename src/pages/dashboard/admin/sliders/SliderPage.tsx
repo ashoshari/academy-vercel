@@ -9,6 +9,8 @@ import EditSliderModal from "@/components/dashboard/admin/sliders/EditSliderModa
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import AddSliderModal from "@/components/dashboard/admin/sliders/AddSliderModal";
 import ShowSliderModal from "@/components/dashboard/admin/sliders/ShowSliderModal";
+import Spinner from "@/components/dashboard/Spinner";
+import Pagination from "@/components/dashboard/core/Pagination";
 
 export type SlideType = "image" | "video";
 
@@ -31,8 +33,18 @@ const SliderPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState<any>(null);
 
-  const slidersData = useCustomQuery("/training/admin/sliders/", ["sliders"]);
+  const queryParams = new URLSearchParams();
+  if (searchTerm) queryParams.append("title", searchTerm);
+  if (page) queryParams.append("page", page.toString());
+  const queryString = queryParams.toString();
+
+  const slidersData = useCustomQuery(
+    `/training/admin/sliders/?${queryString}`,
+    ["sliders", searchTerm, page]
+  );
+  const paginationData = slidersData?.data?.pagination;
   const sliderStatisticsData = useCustomQuery(
     "/training/admin/sliders-statistics/",
     ["sliders-statistics"]
@@ -161,7 +173,7 @@ const SliderPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة سلايد جديد
@@ -170,7 +182,7 @@ const SliderPage = () => {
 
       {/* Search and Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2">
+        <div className="col-span-3">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -185,7 +197,7 @@ const SliderPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 col-span-4 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 col-span-4 gap-4">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
             <p className="text-2xl font-bold text-orange-600">
               {sliderStatisticsData?.data?.data?.total_sliders}
@@ -210,49 +222,62 @@ const SliderPage = () => {
       </div>
 
       {/* Slider Items List */}
-      <div className="space-y-4">
-        {sorted.map((slide: Slider, idx: number) => {
-          const prev = idx > 0 ? sorted[idx - 1] : null;
-          const next = idx < sorted.length - 1 ? sorted[idx + 1] : null;
-          return (
-            <SliderCard
-              key={slide.id}
-              slide={slide}
-              prevId={prev?.id ?? null}
-              nextId={next?.id ?? null}
-              prevOrder={prev?.order}
-              nextOrder={next?.order}
-              onSwap={swapById}
-              setSelectedSlide={setSelectedSlide}
-              setShowEditModal={setShowEditModal}
-              setShowDetailsModal={setShowDetailsModal}
-            />
-          );
-        })}
+      {slidersData?.isLoading ? (
+        <div className="flex justify-center">
+          <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
+      ) : (
+        <>
+          <div className="space-y-4">
+            {sorted.map((slide: Slider, idx: number) => {
+              const prev = idx > 0 ? sorted[idx - 1] : null;
+              const next = idx < sorted.length - 1 ? sorted[idx + 1] : null;
+              return (
+                <SliderCard
+                  key={slide.id}
+                  slide={slide}
+                  prevId={prev?.id ?? null}
+                  nextId={next?.id ?? null}
+                  prevOrder={prev?.order}
+                  nextOrder={next?.order}
+                  onSwap={swapById}
+                  setSelectedSlide={setSelectedSlide}
+                  setShowEditModal={setShowEditModal}
+                  setShowDetailsModal={setShowDetailsModal}
+                />
+              );
+            })}
 
-        {sorted?.length === 0 && (
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-            <ImageIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-800 mb-2">
-              {searchTerm ? "لا توجد نتائج" : "لا توجد سلايدات"}
-            </h3>
-            <p className="text-gray-500 mb-6">
-              {searchTerm
-                ? "لم يتم العثور على سلايدات تطابق البحث"
-                : "ابدأ بإضافة سلايد جديد للصفحة الرئيسية"}
-            </p>
-            {!searchTerm && (
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-              >
-                <Plus size={16} />
-                إضافة سلايد جديد
-              </button>
+            {sorted?.length === 0 && (
+              <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+                <ImageIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-800 mb-2">
+                  {searchTerm ? "لا توجد نتائج" : "لا توجد سلايدات"}
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  {searchTerm
+                    ? "لم يتم العثور على سلايدات تطابق البحث"
+                    : "ابدأ بإضافة سلايد جديد للصفحة الرئيسية"}
+                </p>
+                {!searchTerm && (
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  >
+                    <Plus size={16} />
+                    إضافة سلايد جديد
+                  </button>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
+          <Pagination
+            currentPage={page}
+            count={paginationData?.count}
+            onPageChange={setPage}
+          />
+        </>
+      )}
 
       {/* Slider Settings */}
       {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">

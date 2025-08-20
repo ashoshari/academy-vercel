@@ -479,7 +479,11 @@ const CoursesPage = () => {
               }`}
               title={course?.is_Published ? "إلغاء النشر" : "نشر الدورة"}
             >
-              {course?.is_published ? <Eye size={16} /> : <EyeOff size={16} />}
+              {course?.is_published ? (
+                <Eye className="text-green-600" size={16} />
+              ) : (
+                <EyeOff size={16} />
+              )}
             </button>
 
             {/* Raiting */}
@@ -2099,8 +2103,8 @@ const CoursesPage = () => {
                             }}
                             className={`cursor-pointer p-2 rounded-lg transition-colors ${
                               course?.is_published
-                                ? "text-green-600 bg-green-50 hover:bg-green-100"
-                                : "text-gray-400 bg-gray-50 hover:bg-gray-100"
+                                ? "text-green-600"
+                                : "text-gray-400"
                             }`}
                             title={
                               course?.is_published

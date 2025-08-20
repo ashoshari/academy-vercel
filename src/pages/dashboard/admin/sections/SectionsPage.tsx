@@ -10,6 +10,9 @@ import {
   ToggleRight,
   Eye,
   EyeOff,
+  Search,
+  Rows,
+  Grid,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDate } from "@/services/date";
@@ -17,6 +20,8 @@ import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import Spinner from "@/components/dashboard/Spinner";
+import { formatDateTimeSimple } from "@/utils/formatDateTime";
+// import Pagination from "@/components/dashboard/core/Pagination";
 
 export interface MainSection {
   id: number;
@@ -46,7 +51,6 @@ const AddSectionModal = ({
   colors: any;
   handleAddSection: any;
 }) => {
-  console.log("icons", icons);
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -57,7 +61,7 @@ const AddSectionModal = ({
             </h2>
             <button
               onClick={() => setShowAddModal(false)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <X size={20} />
             </button>
@@ -109,7 +113,7 @@ const AddSectionModal = ({
                   onClick={() =>
                     setNewSection({ ...newSection, icon: option.id })
                   }
-                  className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                  className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     newSection.icon === option.id
                       ? "border-orange-500 bg-orange-50 text-orange-700"
                       : "border-gray-200 hover:border-gray-300"
@@ -134,7 +138,7 @@ const AddSectionModal = ({
                   onClick={() =>
                     setNewSection({ ...newSection, color: option.id })
                   }
-                  className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                  className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     newSection.color === option.id
                       ? "border-orange-500 bg-orange-50"
                       : "border-gray-200 hover:border-gray-300"
@@ -164,7 +168,7 @@ const AddSectionModal = ({
                     isEnabled: !newSection.isEnabled,
                   })
                 }
-                className={`p-1 rounded-full transition-colors ${
+                className={`cursor-pointer p-1 rounded-full transition-colors ${
                   newSection.isEnabled ? "text-green-600" : "text-gray-400"
                 }`}
               >
@@ -181,13 +185,13 @@ const AddSectionModal = ({
         <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
           <button
             onClick={() => setShowAddModal(false)}
-            className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+            className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
           >
             إلغاء
           </button>
           <button
             onClick={handleAddSection}
-            className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
           >
             <Save size={16} />
             حفظ القسم
@@ -220,7 +224,7 @@ const EditSectionModal = ({
           <h2 className="text-xl font-bold text-gray-800">تعديل القسم</h2>
           <button
             onClick={() => setShowEditModal(false)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <X size={20} />
           </button>
@@ -282,7 +286,7 @@ const EditSectionModal = ({
                       icon: option.id,
                     })
                   }
-                  className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                  className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     selectedSection.icon === option.id
                       ? "border-orange-500 bg-orange-50 text-orange-700"
                       : "border-gray-200 hover:border-gray-300"
@@ -314,7 +318,7 @@ const EditSectionModal = ({
                       color: option.id,
                     })
                   }
-                  className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                  className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     selectedSection.color === option.id
                       ? "border-orange-500 bg-orange-50"
                       : "border-gray-200 hover:border-gray-300"
@@ -344,7 +348,7 @@ const EditSectionModal = ({
                     isEnabled: !selectedSection.isEnabled,
                   })
                 }
-                className={`p-1 rounded-full transition-colors ${
+                className={`cursor-pointer p-1 rounded-full transition-colors ${
                   selectedSection.isEnabled ? "text-green-600" : "text-gray-400"
                 }`}
               >
@@ -362,13 +366,13 @@ const EditSectionModal = ({
       <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
         <button
           onClick={() => setShowEditModal(false)}
-          className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+          className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
         >
           إلغاء
         </button>
         <button
           onClick={handleEditSection}
-          className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+          className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
         >
           <Save size={16} />
           حفظ التغييرات
@@ -397,7 +401,7 @@ const ConfirmToggleModal = ({
           <h2 className="text-lg font-bold text-gray-800">تأكيد الإجراء</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <X size={20} />
           </button>
@@ -415,13 +419,13 @@ const ConfirmToggleModal = ({
         <div className="p-4 border-t border-gray-200 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-5 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition"
+            className="cursor-pointer px-5 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition"
           >
             إلغاء
           </button>
           <button
             onClick={onConfirm}
-            className={`px-5 py-2 rounded-lg text-white transition ${
+            className={`cursor-pointer px-5 py-2 rounded-lg text-white transition ${
               isEnabled
                 ? "bg-red-500 hover:bg-red-600"
                 : "bg-green-500 hover:bg-green-600"
@@ -443,8 +447,9 @@ const SectionsPage = () => {
   );
   const [confirmToggleModal, setConfirmToggleModal] = useState(false);
 
-  // const [searchTerm, setSearchTerm] = useState("");
-
+  const [searchTerm, setSearchTerm] = useState("");
+  // const [page, setPage] = useState(1);
+  const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const [newSection, setNewSection] = useState<Partial<MainSection>>({
     name: "",
     description: "",
@@ -453,12 +458,22 @@ const SectionsPage = () => {
     isEnabled: true,
   });
 
+  const queryParams = new URLSearchParams();
+  if (searchTerm) queryParams.append("title", searchTerm);
+  // if (page) queryParams.append("page", page.toString());
+
+  const queryString = queryParams.toString();
+  const sections = useCustomQuery(`/training/admin/sections/?${queryString}`, [
+    "sections",
+    searchTerm,
+    // page,
+  ]);
   const statistics = useCustomQuery("/training/admin/sections-statistics/", [
     "sections-statistics",
   ]);
 
-  const sections = useCustomQuery("/training/admin/sections/", ["sections"]);
-
+  // const paginationData = sections.data?.pagination;
+  // console.log("paginationData", paginationData);
   const icons = useCustomQuery("/core/icons/", ["icons"]);
   const colors = useCustomQuery("/core/colors/", ["colors"]);
 
@@ -473,8 +488,6 @@ const SectionsPage = () => {
   );
 
   const handleAddSection = () => {
-    console.log("add section", newSection);
-
     addSection
       .mutateAsync({
         title: newSection.name,
@@ -546,7 +559,6 @@ const SectionsPage = () => {
   //     //   setSections(sections.filter((section) => section.id !== id));
   //   }
   // };
-  console.log("first", selectedSection?.isEnabled);
 
   const toggleSectionStatus = () => {
     if (!selectedSection) {
@@ -572,10 +584,6 @@ const SectionsPage = () => {
         );
       });
   };
-  console.log("sections?.isLoading", sections?.isLoading);
-  // if(sections?.isLoading){
-
-  // }
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -588,17 +596,17 @@ const SectionsPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة قسم جديد
         </button>
       </div>
-      {/* Search and Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* <div className="lg:col-span-2">
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
-            <div className="relative">
+      <div className="flex gap-x-[10px]">
+        {/* Search and Stats */}
+        <div className="w-full">
+          <div className="flex gap-x-[10px] bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+            <div className="w-full relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
@@ -608,8 +616,33 @@ const SectionsPage = () => {
                 className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
               />
             </div>
+            {/* View Mode */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setViewMode("table")}
+                className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                  viewMode === "table"
+                    ? "bg-orange-100 text-orange-600"
+                    : "text-gray-400 hover:bg-gray-100"
+                }`}
+              >
+                <Rows size={16} />
+              </button>
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                  viewMode === "grid"
+                    ? "bg-orange-100 text-orange-600"
+                    : "text-gray-400 hover:bg-gray-100"
+                }`}
+              >
+                <Grid size={16} />
+              </button>
+            </div>
           </div>
-        </div> */}
+        </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-orange-600">
             {statistics?.data?.data?.total_sections}
@@ -630,40 +663,39 @@ const SectionsPage = () => {
         </div>
       </div>
 
-      {sections?.isLoading && (
+      {sections?.isLoading ? (
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
-      )}
-      {/* Sections Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sections?.data?.data?.map((section: any) => {
-          // const colorClass = getColorClass(section.color.color);
-
-          return (
-            <div
-              key={section.id}
-              className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
-            >
-              {/* Header */}
+      ) : // Sections Grid
+      viewMode === "grid" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sections?.data?.data?.map((section: any) => {
+            // const colorClass = getColorClass(section.color.color);
+            return (
               <div
-                style={{ backgroundColor: section.color.color }}
-                className={`h-[60%] p-6 text-white relative overflow-hidden`}
+                key={section.id}
+                className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
               >
-                <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
-                <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8"></div>
-                <div className="relative z-10 h-[60%]">
-                  <div className="flex items-center justify-between mb-4">
-                    {section.icon.icon ? (
-                      <img
-                        src={section.icon.icon}
-                        alt={section.icon.name}
-                        className="w-8 h-8"
-                      />
-                    ) : (
-                      ""
-                    )}
-                    {/* <div className="flex gap-2">
+                {/* Header */}
+                <div
+                  style={{ backgroundColor: section.color.color }}
+                  className={`h-[60%] p-6 text-white relative overflow-hidden`}
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
+                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8"></div>
+                  <div className="relative z-10 h-[60%]">
+                    <div className="flex items-center justify-between mb-4">
+                      {section.icon.icon ? (
+                        <img
+                          src={section.icon.icon}
+                          alt={section.icon.name}
+                          className="w-8 h-8"
+                        />
+                      ) : (
+                        ""
+                      )}
+                      {/* <div className="flex gap-2">
                       {section.isFree && (
                         <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium">
                           مجاني
@@ -676,18 +708,18 @@ const SectionsPage = () => {
                         </span>
                       )}
                     </div> */}
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{section?.title}</h3>
+                    <p className="text-white/80 text-sm line-clamp-2">
+                      {section?.description || "-"}
+                    </p>
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{section.title}</h3>
-                  <p className="text-white/80 text-sm line-clamp-2">
-                    {section.description || "-"}
-                  </p>
                 </div>
-              </div>
 
-              {/* Content */}
-              <div className="p-6">
-                {/* Stats */}
-                {/* <div className="grid grid-cols-2 gap-4 mb-6">
+                {/* Content */}
+                <div className="p-6">
+                  {/* Stats */}
+                  {/* <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 text-gray-600 mb-1">
                       <Users size={14} />
@@ -708,127 +740,264 @@ const SectionsPage = () => {
                   </div>
                 </div> */}
 
-                {/* Status */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        section.is_published
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {section.is_published ? "مفعل" : "معطل"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <Calendar size={12} />
-                    <span>{formatDate(section.created_at)}</span>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <div className="flex items-center gap-1">
-                    {/* Toggle Status */}
-                    <button
-                      onClick={() => {
-                        setSelectedSection({
-                          id: section.id,
-                          name: section.title,
-                          description: section.description,
-                          icon: section.icon.id,
-                          color: section.color.id,
-                          isFree: section.isFree ?? false,
-                          isEnabled: section.is_published,
-                          studentsCount: section.studentsCount ?? 0,
-                          itemsCount: section.itemsCount ?? 0,
-                          createdAt: section.created_at,
-                        });
-
-                        setConfirmToggleModal(true);
-                      }}
-                      className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                        section.is_published
-                          ? "text-green-600 bg-green-50 hover:bg-green-100"
-                          : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-                      }`}
-                      title={
-                        section.is_published ? "تفعيل القسم" : "تعطيل القسم"
-                      }
-                    >
-                      {section.is_published ? (
-                        <Eye size={16} />
-                      ) : (
-                        <EyeOff size={16} />
-                      )}
-                    </button>
+                  {/* Status */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          section.is_published
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {section.is_published ? "مفعل" : "معطل"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <Calendar size={12} />
+                      <span>{formatDate(section.created_at)}</span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-1">
-                    {/* Edit */}
-                    <button
-                      onClick={() => {
-                        setSelectedSection({
-                          id: section.id,
-                          name: section.title,
-                          description: section.description,
-                          icon: section.icon.id,
-                          color: section.color.id,
-                          isFree: section.isFree ?? false,
-                          isEnabled: section.is_published,
-                          studentsCount: section.studentsCount ?? 0,
-                          itemsCount: section.itemsCount ?? 0,
-                          createdAt: section.created_at,
-                        });
-                        setShowEditModal(true);
-                      }}
-                      className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                      title="تعديل القسم"
-                    >
-                      <Edit size={16} />
-                    </button>
+                  {/* Actions */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center gap-1">
+                      {/* Toggle Status */}
+                      <button
+                        onClick={() => {
+                          setSelectedSection({
+                            id: section.id,
+                            name: section.title,
+                            description: section.description,
+                            icon: section.icon.id,
+                            color: section.color.id,
+                            isFree: section.isFree ?? false,
+                            isEnabled: section.is_published,
+                            studentsCount: section.studentsCount ?? 0,
+                            itemsCount: section.itemsCount ?? 0,
+                            createdAt: section.created_at,
+                          });
 
-                    {/* Delete */}
-                    {/* <button
+                          setConfirmToggleModal(true);
+                        }}
+                        className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                          section.is_published
+                            ? "text-green-600 bg-green-50 hover:bg-green-100"
+                            : "text-gray-400 bg-gray-50 hover:bg-gray-100"
+                        }`}
+                        title={
+                          section.is_published ? "تفعيل القسم" : "تعطيل القسم"
+                        }
+                      >
+                        {section.is_published ? (
+                          <Eye size={16} />
+                        ) : (
+                          <EyeOff size={16} />
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      {/* Edit */}
+                      <button
+                        onClick={() => {
+                          setSelectedSection({
+                            id: section.id,
+                            name: section.title,
+                            description: section.description,
+                            icon: section.icon.id,
+                            color: section.color.id,
+                            isFree: section.isFree ?? false,
+                            isEnabled: section.is_published,
+                            studentsCount: section.studentsCount ?? 0,
+                            itemsCount: section.itemsCount ?? 0,
+                            createdAt: section.created_at,
+                          });
+                          setShowEditModal(true);
+                        }}
+                        className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                        title="تعديل القسم"
+                      >
+                        <Edit size={16} />
+                      </button>
+
+                      {/* Delete */}
+                      {/* <button
                       onClick={() => handleDeleteSection()}
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="حذف القسم"
                     >
                       <Trash2 size={16} />
                     </button> */}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
 
-        {sections?.data?.data.length === 0 && (
-          <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            {/* <h3 className="text-lg font-medium text-gray-800 mb-2">
+          {sections?.data?.data.length === 0 && (
+            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              {/* <h3 className="text-lg font-medium text-gray-800 mb-2">
               {searchTerm ? "لا توجد نتائج" : "لا توجد أقسام"}
             </h3> */}
-            <p className="text-gray-500 mb-6">
-              {/* {searchTerm
+              <p className="text-gray-500 mb-6">
+                {/* {searchTerm
                 ? "لم يتم العثور على أقسام تطابق البحث"
                 :  */}
-              "ابدأ بإضافة قسم رئيسي جديد للمنصة"
-              {/*      } */}
-            </p>
-            {/* {!searchTerm && ( */}
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-            >
-              <Plus size={16} />
-              إضافة قسم جديد
-            </button>
-            {/* )} */}
+                "ابدأ بإضافة قسم رئيسي جديد للمنصة"
+                {/*      } */}
+              </p>
+              {/* {!searchTerm && ( */}
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+              >
+                <Plus size={16} />
+                إضافة قسم جديد
+              </button>
+              {/* )} */}
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Table View */}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الأيقونة
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      العنوان
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الوصف
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      تاريخ الإنشاء
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الحالة
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الإجراءات
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200 overflow-x-auto">
+                  {sections?.data?.data?.map((section: any) => (
+                    <tr key={section?.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          {section?.icon && (
+                            <img
+                              loading="lazy"
+                              src={section?.icon?.icon}
+                              alt={section?.icon?.name}
+                              className="w-8 h-8 rounded-lg object-cover"
+                            />
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                        {section?.title}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        {section?.description || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                        {formatDate(section?.created_at) || "-"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              section?.is_published
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {section?.is_published ? "منشور" : "مسودة"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-[20px]">
+                          <button
+                            onClick={() => {
+                              setSelectedSection({
+                                id: section.id,
+                                name: section.title,
+                                description: section.description,
+                                icon: section.icon.id,
+                                color: section.color.id,
+                                isFree: section.isFree ?? false,
+                                isEnabled: section.is_published,
+                                studentsCount: section.studentsCount ?? 0,
+                                itemsCount: section.itemsCount ?? 0,
+                                createdAt: section.created_at,
+                              });
+
+                              setConfirmToggleModal(true);
+                            }}
+                            className={`rounded-lg transition-colors cursor-pointer ${
+                              section.is_published
+                                ? "text-green-600"
+                                : "text-gray-400"
+                            }`}
+                            title={
+                              section.is_published
+                                ? "تفعيل القسم"
+                                : "تعطيل القسم"
+                            }
+                          >
+                            {section.is_published ? (
+                              <Eye size={16} />
+                            ) : (
+                              <EyeOff size={16} />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedSection({
+                                id: section.id,
+                                name: section.title,
+                                description: section.description,
+                                icon: section.icon.id,
+                                color: section.color.id,
+                                isFree: section.isFree ?? false,
+                                isEnabled: section.is_published,
+                                studentsCount: section.studentsCount ?? 0,
+                                itemsCount: section.itemsCount ?? 0,
+                                createdAt: section.created_at,
+                              });
+                              setShowEditModal(true);
+                            }}
+                            className="cursor-pointer text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                            title="تعديل القسم"
+                          >
+                            <Edit size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        )}
-      </div>
+          {/* <Pagination
+            currentPage={page}
+            count={paginationData?.count}
+            onPageChange={setPage}
+          /> */}
+        </>
+      )}
 
       {/* Modals */}
       {showAddModal && (

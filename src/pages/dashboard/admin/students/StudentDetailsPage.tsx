@@ -126,11 +126,11 @@ const StudentDetailsPage = () => {
           </div>
 
           <div className="p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6">
               {/* Personal Info */}
 
               {/* Courses and Activity */}
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 w-full">
                 {/* Enrolled Courses */}
                 <div className="mb-6">
                   <h3 className="font-bold text-gray-800 mb-4">
@@ -152,8 +152,8 @@ const StudentDetailsPage = () => {
                               className="text-orange-500 mt-1"
                             /> */}
                             <div className="flex-1">
-                              <div className="flex items-start justify-between mb-2">
-                                <div>
+                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4  mb-2">
+                                <div className="col-span-2">
                                   <h4 className="font-medium text-gray-800">
                                     {course?.course?.name}
                                   </h4>
@@ -161,10 +161,10 @@ const StudentDetailsPage = () => {
                                     المعلم: {course?.course?.teacher?.name}
                                   </p>
                                 </div>
-                                <div className="text-left flex gap-x-[10px]">
+                                <div className="text-left flex items-center justify-center gap-x-[10px]">
                                   {course?.course?.level && (
                                     <span
-                                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                                      className={`px-2 py-2 rounded-full text-xs font-medium ${getStatusColor(
                                         course?.course?.level?.name
                                       )}`}
                                     >
@@ -173,13 +173,13 @@ const StudentDetailsPage = () => {
                                   )}
                                   {course?.course?.is_free ? (
                                     <span
-                                      className={`px-2 py-1 rounded-full text-xs font-medium bg-green-600 text-white`}
+                                      className={`px-2 py-2 rounded-full text-xs font-medium bg-green-600 text-white`}
                                     >
                                       مجانا
                                     </span>
                                   ) : (
                                     <span
-                                      className={`px-2 py-1 rounded-full text-xs font-medium bg-green-600 text-white`}
+                                      className={`px-2 py-2 rounded-full text-xs font-medium bg-green-600 text-white`}
                                     >
                                       {course?.course?.card_price?.price || "-"}{" "}
                                       د.أ
@@ -205,11 +205,11 @@ const StudentDetailsPage = () => {
                                     </span>
                                   </div>
                                 </div>
-                                <div>
-                                  <h4 className="text-gray-500 text-center">
+                                <div className="flex flex-col items-center text-end">
+                                  <h4 className="text-gray-500 text-center w-fit">
                                     الوقت المستغرق
                                   </h4>
-                                  <p className="font-medium text-center">
+                                  <p className="font-medium text-center w-fit">
                                     {course?.course?.time_in_hours} ساعة
                                   </p>
                                 </div>
@@ -261,7 +261,7 @@ const StudentDetailsPage = () => {
                     {selectedStudent?.payments?.map((payment: any) => (
                       <div
                         key={payment?.id}
-                        className="bg-green-50 border border-green-200 rounded-lg p-3"
+                        className="bg-green-50 border border-green-200 rounded-lg p-6"
                       >
                         <div className="flex items-center justify-between">
                           <div>
@@ -292,20 +292,18 @@ const StudentDetailsPage = () => {
                 <div>
                   <h3 className="font-bold text-gray-800 mb-4">سجل النشاط</h3>
                   <div className="space-y-2">
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="flex items-center justify-between">
-                        <div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div className="bg-gray-50 rounded-lg py-5 px-[10%] text-center">
                           <h2>تم انشاؤه في</h2>
                           <p className="font-medium text-gray-800">
                             {formatDateTimeSimple(selectedStudent?.created_at)}
                           </p>
                         </div>
-                        <div>
+                        <div className="bg-gray-50 rounded-lg py-5 px-[10%] text-center">
                           <h2>اخر تسجيل دخول</h2>
                           <p className="font-medium  text-gray-800">
                             {formatDateTimeSimple(selectedStudent?.last_login)}
                           </p>
-                        </div>
                       </div>
                     </div>
                     {/* {selectedStudent?.activityLog

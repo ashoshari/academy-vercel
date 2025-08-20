@@ -101,7 +101,7 @@ export default function RevenueChart() {
           <div ref={menuRef} className="relative">
             <button
               onClick={() => setOpen((v) => !v)}
-              className="px-3 py-1.5 rounded-md border border-gray-200 text-sm flex items-center gap-1 hover:bg-gray-50 focus:ring-2 focus:ring-orange-500"
+              className="cursor-poiner px-3 py-1.5 rounded-md border border-gray-200 text-sm flex items-center gap-1 hover:bg-gray-50 focus:ring-2 focus:ring-orange-500"
               aria-haspopup="listbox"
               aria-expanded={open}
             >
@@ -122,7 +122,7 @@ export default function RevenueChart() {
                       setYear(y);
                       setOpen(false);
                     }}
-                    className={`w-full text-right px-3 py-2 text-sm transition-colors
+                    className={`cursor-pointer w-full text-right px-3 py-2 text-sm transition-colors
               ${
                 y === year
                   ? "bg-orange-100 text-orange-700 font-semibold"
@@ -185,7 +185,7 @@ export default function RevenueChart() {
               <button
                 key={p.month_number}
                 onClick={() => setSelectedMonth(p.month_number)}
-                className="flex-1 flex flex-col items-center group focus:outline-none"
+                className="cursor-pointer flex-1 flex flex-col items-center group focus:outline-none"
                 title={`${p.month}: ${formatMoney(p.total_income)}`}
               >
                 <div
@@ -218,7 +218,7 @@ export default function RevenueChart() {
               <button
                 key={`lbl-${p.month_number}`}
                 onClick={() => setSelectedMonth(p.month_number)}
-                className={`text-[11px] py-1 rounded-md transition-colors ${
+                className={`cursor-pointer text-[11px] py-1 rounded-md transition-colors ${
                   active
                     ? "bg-orange-50 text-orange-700 font-semibold"
                     : "text-gray-400 hover:text-gray-600"
