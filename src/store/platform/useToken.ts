@@ -3,7 +3,7 @@ import { create } from "zustand";
 interface TokenState {
   accessToken: string | null;
   isLoggedIn: boolean;
-  setTokens: (access: string) => void;
+  setTokens: (access: string, user: any) => void;
   clearTokens: () => void;
 }
 
@@ -14,8 +14,10 @@ const useTokenStore = create<TokenState>((set) => ({
   accessToken: initialAccessToken,
   isLoggedIn: !!initialAccessToken,
 
-  setTokens: (access) => {
+  setTokens: (access:string, user:any) => {
     localStorage.setItem("platform_auth_tokens", access);
+    localStorage.setItem("platform_user", JSON.stringify(user));
+    localStorage.setItem("user_type", JSON.stringify(user.type.id));
     set({
       accessToken: access,
       isLoggedIn: true,
@@ -24,6 +26,8 @@ const useTokenStore = create<TokenState>((set) => ({
 
   clearTokens: () => {
     localStorage.removeItem("platform_auth_tokens");
+    localStorage.removeItem("platform_user");
+    localStorage.removeItem("user_type");
     set({
       accessToken: null,
       isLoggedIn: false,

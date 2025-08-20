@@ -106,6 +106,7 @@ const CoursesPage = () => {
   const spec = subsub?.specializations?.find(
     (sp: any) => sp.id === selectedSpec
   );
+  console.log("spec",spec)
 
   const [courses, setCourses] = useState<any>();
   useEffect(() => {
@@ -995,7 +996,7 @@ const CoursesPage = () => {
               )}
 
               {/* Specialization Material */}
-              {(spec?.length > 0 ||
+              {(spec?.specialization_materials.length > 0 ||
                 (subsub?.specializations?.length == 0 &&
                   subsub?.specialization_materials?.length > 0)) && (
                 <div>
@@ -1613,7 +1614,7 @@ const CoursesPage = () => {
               )}
 
               {/* Specialization Material */}
-              {(spec?.length > 0 ||
+              {(spec?.specialization_materials?.length > 0 ||
                 (subsub?.specializations?.length == 0 &&
                   subsub?.specialization_materials?.length > 0)) && (
                 <div>
@@ -2123,6 +2124,7 @@ const CoursesPage = () => {
                             onClick={() => {
                               setSelectedCourse(course);
                               setCurrentView("edit");
+                              console.log("Editing course:", course);
                             }}
                             className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
                             title="تعديل"

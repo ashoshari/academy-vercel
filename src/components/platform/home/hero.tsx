@@ -7,6 +7,7 @@ const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides, setSlides] = useState<any[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [stopSlider, setStopSlider] = useState(false);
   const { data } = useCustomQuery("training/students/sliders/", ["sliders"]);
   useEffect(() => {
     setMounted(true);
@@ -35,7 +36,7 @@ const Hero: React.FC = () => {
 
   useEffect(() => {
     if (slides?.length === 0) return;
-
+    if (stopSlider) return;
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, [nextSlide, slides.length]);
@@ -140,19 +141,42 @@ const Hero: React.FC = () => {
                   {slides[currentSlide]?.link && (
                     <>
                       {/* Video Player */}
-                      <video
+                      {/* <video
                         className="w-full h-80 md:h-96 object-cover"
                         controls
                       >
                         <source
                           src={
-                            slides[currentSlide]?.link ||
+                            "https://www.youtube.com/embed/" +
+                              slides[currentSlide]?.link ||
                             "https://www.w3schools.com/html/mov_bbb.mp4"
                           }
                           type="video/mp4"
                         />
                         Your browser does not support the video tag.
-                      </video>
+                      </video> */}
+                      <iframe
+                        className="aspect-video h-full"
+                        width="100%"
+                        height="100%"
+                        src={
+                          "https://www.youtube.com/embed/" +
+                            slides[currentSlide]?.link || "?si=3uTi5rBiWUGXQ8gT"
+                        }
+                        title={slides[currentSlide]?.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                      ></iframe>
+                      <button
+                        onClick={() => {
+                          console.log("Play video clicked");
+                          setStopSlider(true)}}
+                        className="cursor-pointer absolute bottom-4 right-4 bg-white text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm"
+                      >
+                        شاهد الفيديو
+                      </button>
                     </>
                   )}
                   {/* <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div> */}

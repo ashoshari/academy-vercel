@@ -181,7 +181,6 @@ const ExamsPage = () => {
     "exams",
     "exams-statistics",
   ]);
-  console.log("newExam", newExam);
   // GET Codes
   const { data: cards } = useCustomQuery("/cards/", ["cards"]);
   const cardsData = cards?.data;
@@ -222,12 +221,10 @@ const ExamsPage = () => {
   }, [singleExam?.data?.data]);
 
   const handleCreateExam = () => {
-    console.log("first", newExam);
 
     addExam
       .mutateAsync(newExam)
       .then((res) => {
-        console.log("res", res);
         if (res?.status) {
           toast.success("تمإضافة الاختبار بنجاح");
           // navigate("/dashboard/admin/exams");
@@ -261,7 +258,6 @@ const ExamsPage = () => {
         is_published: !status,
       })
       .then((res) => {
-        console.log("res", res);
         if (res?.status) {
           toast.success("تم تحديث حالة الاختبار بنجاح");
           // navigate("/dashboard/admin/exams");

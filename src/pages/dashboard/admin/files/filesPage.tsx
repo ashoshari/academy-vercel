@@ -82,7 +82,6 @@ const ResourcessPage = () => {
   const [resourceId, setResourceId] = useState<string>("");
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
-  console.log("typeFilter", typeFilter);
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("title", searchTerm);
   if (typeFilter) queryParams.append("type", typeFilter);
@@ -90,7 +89,6 @@ const ResourcessPage = () => {
   if (statusFilter) queryParams.append("is_published", statusFilter);
   if (page) queryParams.append("page", page.toString());
   const queryString = queryParams.toString();
-  console.log(queryString);
   // GET resourcess
   const { data, isLoading } = useCustomQuery(
     `/training/admin/resources/?${queryString}`,
@@ -110,7 +108,6 @@ const ResourcessPage = () => {
     "/training/admin/resource-statistics/",
     ["resources-stats"]
   );
-  console.log("resourcesData", resourcesData);
   // GET teachers
   const { data: teachers } = useCustomQuery("/account/admin/teachers/", [
     "teachers",
@@ -166,7 +163,6 @@ const ResourcessPage = () => {
     `/training/admin/resources/${resourceId}/`,
     ["deleteResources", resourceId]
   );
-  console.log("resourceId", resourceId);
   // const getAccessLevelColor = (level: any) => {
   //   switch (level) {
   //     case "public":
@@ -249,7 +245,6 @@ const ResourcessPage = () => {
     ) {
       formData.append("file", selectedResources.file as File);
     }
-    console.log(selectedResources);
     try {
       const response = await putResources(formData);
       toast.success(response?.message ?? "تم تعديل المحتوى بنجاح");
@@ -306,7 +301,6 @@ const ResourcessPage = () => {
     }
   };
   const handleResourseUpload = async () => {
-    console.log("uploadResources", uploadResources);
     const formData = new FormData();
     uploadResources.title && formData.append("title", uploadResources.title);
     uploadResources.description &&
@@ -365,7 +359,6 @@ const ResourcessPage = () => {
     } catch (error: any) {
       toast.error(error?.response?.data?.error);
     }
-    // console.log("addResource", addResource);
     // setuploadResources({
     //   files: [],
     //   description: "",
@@ -377,7 +370,6 @@ const ResourcessPage = () => {
     // });
     // setShowCreateModal(false);
   };
-  console.log("selectedResources", selectedResources);
   const ResourseCard = ({ resource }: { resource: any }) => {
     const IconComponent = getFileIcon(resource);
     const iconColor = getFileTypeColor(resource);

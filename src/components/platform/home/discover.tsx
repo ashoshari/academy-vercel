@@ -23,7 +23,7 @@ const Discover: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+    <section id="discover" className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
       {/* Auth Modal */}
       <AuthModal
         isOpen={showAuthModal}

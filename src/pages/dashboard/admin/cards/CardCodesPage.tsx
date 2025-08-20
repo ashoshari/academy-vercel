@@ -77,7 +77,9 @@ const CardCodesPage = () => {
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [selectedPriceFilter, setSelectedPriceFilter] = useState<string | null>(
+  const [selectedPriceFilter
+    // , setSelectedPriceFilter
+  ] = useState<string | null>(
     null
   );
   const [isExpanded, setIsExpanded] = useState(true);
@@ -155,7 +157,6 @@ const CardCodesPage = () => {
     items: any[],
     parentId: number | null = null
   ): any[] => {
-    console.log("items", items);
     return items
       ?.filter((item) => item.order === parentId)
       .sort((a, b) => a.title.localeCompare(b.title))
@@ -332,7 +333,6 @@ const CardCodesPage = () => {
     setCodeBatches(batchId);
 
     toggleCodeState.mutateAsync({}).then((res) => {
-      console.log("res", res);
       if (res) {
         toast.success("تم تحديث حالة البطاقة بنجاح");
       } else {
@@ -484,7 +484,6 @@ const CardCodesPage = () => {
         <div className={`${isExpanded ? "block" : "hidden"} p-6`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {cardCodes?.data?.data?.map((batch: any) => {
-              console.log("batch", batch);
               const targeting = getTargetingDisplay(
                 batch.subsubsections,
                 "specific"

@@ -54,11 +54,7 @@ const CoursePage = () => {
 
   useEffect(() => {
     const activeLesson = allLessons[currentLessonIndex];
-    console.log("allLessons", allLessons);
-    console.log("[currentLessonIndex]", currentLessonIndex);
     if (activeLesson) {
-      console.log(courseData);
-      console.log(activeLesson);
       setCurrentLesson(activeLesson);
     }
   }, [currentLessonIndex, allLessons]);
@@ -72,7 +68,6 @@ const CoursePage = () => {
         });
       });
     });
-    console.log(courseData);
     setAllLessons(lessons);
   }, [courseData]);
   // const markLessonComplete = () => {
@@ -102,7 +97,6 @@ const CoursePage = () => {
   //     }))
   //   );
   // };
-  console.log("error", error);
   // if (!!error === null) {
   //   return (
   //     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">

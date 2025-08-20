@@ -129,7 +129,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         ? await loginMutateAsync(formdata)
         : await RegisterMutateAsync(formdata);
       if (res.status) {
-        setTokens(`"${res.data.tokens.access}"`);
+        setTokens(`"${res.data.tokens.access}"`,res.data?.user);
         setFormData({ mobile: "", password: "", fullName: "", otp: "" });
         toast.success(
           isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"

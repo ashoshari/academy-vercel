@@ -88,7 +88,6 @@ const CardPricingPage = () => {
 
   const toggleCardStatus = (id: number) => {
     setSelectedCard(id);
-    console.log("id", id);
     const is_active = cards?.data?.data.filter(
       (card: any) => card.id === id
     )[0];
