@@ -202,7 +202,7 @@ export default function AddTeacherPage() {
             نشط؟
           </label>
         </div> */}
-        <div className="col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+        {/* <div className="col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
           <div>
             <p className="font-medium text-gray-800">منشور</p>
             <p className="text-sm text-gray-500">متاح للطلاب</p>
@@ -213,7 +213,7 @@ export default function AddTeacherPage() {
             {...register("is_active")}
             className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-[20px] h-[20px]"
           />
-        </div>
+        </div> */}
 
         {/* زر الحفظ */}
         <div className="col-span-2 flex justify-end">

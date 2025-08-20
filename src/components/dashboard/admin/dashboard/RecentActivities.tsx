@@ -113,7 +113,7 @@ export default function RecentActivities() {
       {isError && (
         <div className="bg-red-50 text-red-700 p-3 rounded-lg">
           حدث خطأ أثناء جلب البيانات.
-          <button onClick={() => refetch?.()} className="ml-2 underline">
+          <button onClick={() => refetch?.()} className="cursor-poiner ml-2 underline">
             إعادة المحاولة
           </button>
         </div>
@@ -150,7 +150,7 @@ export default function RecentActivities() {
         <button
           onClick={handlePrev}
           disabled={!canPrev}
-          className={`px-3 py-1.5 rounded-lg border text-sm ${
+          className={`cursor-pointer px-3 py-1.5 rounded-lg border text-sm ${
             canPrev
               ? "border-gray-200 text-gray-700 hover:bg-gray-50"
               : "border-gray-100 text-gray-300 cursor-not-allowed"
@@ -167,7 +167,7 @@ export default function RecentActivities() {
         <button
           onClick={handleNext}
           disabled={!canNext}
-          className={`px-3 py-1.5 rounded-lg text-sm ${
+          className={`cursor-pointer px-3 py-1.5 rounded-lg text-sm ${
             canNext
               ? "bg-orange-600 text-white hover:bg-orange-700"
               : "bg-gray-100 text-gray-300 cursor-not-allowed"

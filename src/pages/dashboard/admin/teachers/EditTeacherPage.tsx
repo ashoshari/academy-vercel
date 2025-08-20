@@ -6,6 +6,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useCustomUpdate } from "@/hooks/useMutation";
+import Spinner from "@/components/dashboard/Spinner";
 
 interface FormValues {
   name: string;
@@ -44,7 +45,6 @@ export default function EditTeacherPage() {
   useEffect(() => {
     if (teacherData?.data) {
       const t = teacherData.data;
-      console.log("t", t);
       setValue("name", t.name);
       setValue("email", t.email);
       setValue("mobile_number", t.mobile_number);
@@ -60,7 +60,7 @@ export default function EditTeacherPage() {
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("mobile_number", data.mobile_number);
-      formData.append("materials", data.material);
+      formData.append("material", data.material);
 
       formData.append("is_active", data.is_active ? "true" : "false");
 
@@ -78,109 +78,115 @@ export default function EditTeacherPage() {
       );
     }
   };
-
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner size={40} thickness={4} className="text-orange-500" />
+      </div>
+    );
+  }
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         تعديل بيانات المعلم
       </h2>
-      {isLoading ? (
-        <p className="text-center text-gray-500">جارٍ تحميل البيانات...</p>
-      ) : (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          {/* نفس الحقول كما في إضافة المعلم */}
-          {/* الاسم، البريد، الهاتف، التخصص، الخبرة، الموقع، is_active */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+      >
+        {/* نفس الحقول كما في إضافة المعلم */}
+        {/* الاسم، البريد، الهاتف، التخصص، الخبرة، الموقع، is_active */}
 
-          {/* الاسم */}
-          <div>
-            <label className="block mb-2 font-medium text-sm text-gray-700">
-              الاسم الكامل *
-            </label>
-            <input
-              type="text"
-              {...register("name", { required: true })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-            />
-            {errors.name && (
-              <span className="text-sm text-red-500">الاسم مطلوب</span>
-            )}
-          </div>
+        {/* الاسم */}
+        <div>
+          <label className="block mb-2 font-medium text-sm text-gray-700">
+            الاسم الكامل *
+          </label>
+          <input
+            type="text"
+            {...register("name", { required: true })}
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+          />
+          {errors.name && (
+            <span className="text-sm text-red-500">الاسم مطلوب</span>
+          )}
+        </div>
 
-          {/* البريد الإلكتروني */}
-          <div>
-            <label className="block mb-2 font-medium text-sm text-gray-700">
-              البريد الإلكتروني
-            </label>
-            <input
-              type="email"
-              {...register("email", { required: false })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-              placeholder="example@domain.com"
-            />
-            {errors.email && (
-              <span className="text-sm text-red-500">
-                البريد الإلكتروني مطلوب
-              </span>
-            )}
-          </div>
+        {/* البريد الإلكتروني */}
+        <div>
+          <label className="block mb-2 font-medium text-sm text-gray-700">
+            البريد الإلكتروني
+          </label>
+          <input
+            type="email"
+            {...register("email", { required: false })}
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            placeholder="example@domain.com"
+          />
+          {errors.email && (
+            <span className="text-sm text-red-500">
+              البريد الإلكتروني مطلوب
+            </span>
+          )}
+        </div>
 
-          {/* الهاتف */}
-          <div>
-            <label className="block mb-2 font-medium text-sm text-gray-700">
-              رقم الهاتف *
-            </label>
-            <input
-              type="tel"
-              {...register("mobile_number", {
-                required: "رقم الهاتف مطلوب",
-                pattern: {
-                  value: /^07[0-9]{8}$/,
-                  message: "رقم الهاتف يجب أن يتكون من 10 أرقام فقط",
-                },
-              })}
-              maxLength={10}
-              minLength={10}
-              onInput={(e) => {
-                e.currentTarget.value = e.currentTarget.value.replace(
-                  /^07[0-9]/g,
-                  ""
-                );
-              }}
-              className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-orange-500 
-      ${errors.mobile_number ? "border-red-500" : "border-gray-200"}`}
-              placeholder="07XXXXXXXX"
-            />
-            {errors.mobile_number && (
-              <span className="text-sm text-red-500">رقم الهاتف مطلوب</span>
-            )}
-          </div>
+        {/* الهاتف */}
+        <div className="">
+          <label className="block mb-2 font-medium text-sm text-gray-700">
+            رقم الهاتف *
+          </label>
 
-          {/* التخصص */}
-          <div>
-            <label className="block mb-2 font-medium text-sm text-gray-700">
-              التخصص *
-            </label>
-            <select
-              {...register("material", { required: true })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-            >
-              <option value="">اختر التخصص</option>
-              {dataMaterials?.data?.map((mat: any) => (
-                <option key={mat.id} value={mat.id}>
-                  {mat.name}
-                </option>
-              ))}
-            </select>
-            {errors.material && (
-              <span className="text-sm text-red-500">اختر التخصص</span>
-            )}
-          </div>
+          <input
+            type="tel"
+            {...register("mobile_number", {
+              required: "رقم الهاتف مطلوب",
+              pattern: {
+                value: /^07[0-9]{8}$/,
+                message: "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
+              },
+            })}
+            maxLength={10}
+            minLength={10}
+            onInput={(e) => {
+              e.currentTarget.value = e.currentTarget.value.replace(
+                /[^0-9]/g,
+                ""
+              );
+            }}
+            className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-orange-500 
+    ${errors.mobile_number ? "border-red-500" : "border-gray-200"}`}
+            placeholder="07XXXXXXXX"
+          />
+          {errors.mobile_number && (
+            <span className="text-sm text-red-500 mt-1 block">
+              {errors.mobile_number.message}
+            </span>
+          )}
+        </div>
 
-          {/* مؤكد */}
-          {/* <div className="flex items-center gap-2">
+        {/* التخصص */}
+        <div>
+          <label className="block mb-2 font-medium text-sm text-gray-700">
+            التخصص *
+          </label>
+          <select
+            {...register("material", { required: true })}
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+          >
+            <option value="">اختر التخصص</option>
+            {dataMaterials?.data?.map((mat: any) => (
+              <option key={mat.id} value={mat.id}>
+                {mat.name}
+              </option>
+            ))}
+          </select>
+          {errors.material && (
+            <span className="text-sm text-red-500">اختر التخصص</span>
+          )}
+        </div>
+
+        {/* مؤكد */}
+        {/* <div className="flex items-center gap-2">
             <input
               id="is_active"
               type="checkbox"
@@ -194,7 +200,7 @@ export default function EditTeacherPage() {
               نشط؟
             </label>
           </div> */}
-          <div className="col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+        {/* <div className="col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div>
               <p className="font-medium text-gray-800">منشور</p>
               <p className="text-sm text-gray-500">متاح للطلاب</p>
@@ -205,21 +211,20 @@ export default function EditTeacherPage() {
               {...register("is_active")}
               className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-[20px] h-[20px]"
             />
-          </div>
+          </div> */}
 
-          {/* زر الحفظ */}
-          <div className="md:col-span-2 flex justify-end">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
-            >
-              <Save size={16} />
-              حفظ التعديلات
-            </button>
-          </div>
-        </form>
-      )}
+        {/* زر الحفظ */}
+        <div className="md:col-span-2 flex justify-end">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
+          >
+            <Save size={16} />
+            حفظ التعديلات
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

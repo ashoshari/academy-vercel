@@ -54,7 +54,6 @@ const AddStudentPage = () => {
     const generated = generatePassword();
     setValue("password", generated);
   };
-
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">إضافة طالب جديد</h2>
@@ -104,31 +103,46 @@ const AddStudentPage = () => {
             placeholder="07XXXXXXXX"
           />
           {errors.mobile_number && (
-            <span className="text-sm text-red-500">رقم الهاتف مطلوب</span>
+            <span className="text-sm text-red-500">
+              {errors.mobile_number.message}
+            </span>
           )}
         </div>
 
         {/* كلمة المرور */}
         <div className="md:col-span-2">
           <label className="block mb-2 font-medium text-sm text-gray-700">
-            كلمة المرور
+            كلمة المرور *
           </label>
           <div className="flex gap-2">
             <input
               type="text"
-              {...register("password", { required: true })}
+              {...register("password", {
+                required: "كلمة المرور مطلوبة",
+                minLength: {
+                  value: 6,
+                  message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                },
+              })}
+              minLength={6}
               className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
               placeholder="أدخل كلمة المرور"
             />
+
             <button
               type="button"
               onClick={handleGeneratePassword}
-              className="px-4 py-3 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+              className="cursor-pointer px-4 py-3 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
               title="توليد كلمة مرور"
             >
               <RefreshCw size={16} />
             </button>
           </div>
+          {errors.password && (
+            <span className="text-sm text-red-500">
+              {errors.password.message}
+            </span>
+          )}
         </div>
 
         {/* زر الحفظ */}

@@ -24,7 +24,7 @@ export default function ShowSliderModal({
                 </h2>
                 <button
                   onClick={() => setShowDetailsModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -152,7 +152,7 @@ export default function ShowSliderModal({
                   setShowDetailsModal(false);
                   setShowEditModal(true);
                 }}
-                className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
               >
                 <Edit size={16} />
                 تعديل السلايد

@@ -135,8 +135,7 @@ const TeacherProfile: React.FC = () => {
     };
 
     try {
-      const response = await postActivation(addCourse);
-      console.log("response", response);
+      await postActivation(addCourse);
       setShowActivationModal(false);
       setActivationCode("");
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
@@ -151,7 +150,6 @@ const TeacherProfile: React.FC = () => {
         if (isLoggedIn) {
           navigate(`/coursePage/${course?.id}`);
         } else {
-          toast.error("لعرض المحتوى قم بتسجيل الدخول");
           handleLoginClick();
         }
       } else {
@@ -165,7 +163,6 @@ const TeacherProfile: React.FC = () => {
     if (isLoggedIn) {
       navigate(`/exam/${exam?.id}`);
     } else {
-      toast.error("لعرض المحتوى قم بتسجيل الدخول");
       handleLoginClick();
     }
   };

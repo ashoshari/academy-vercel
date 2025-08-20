@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { ArrowLeft, Edit } from "lucide-react";
+import { ArrowRight, Edit } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { Exam } from "../ExamsPage";
 import QuestionsList from "@/components/dashboard/admin/questions/QuestionsList";
@@ -108,9 +108,9 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
               setView("list");
             }
           }}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
         >
-          <ArrowLeft size={20} />
+          <ArrowRight size={20} />
         </button>
         <div className="flex items-center justify-between w-full">
           <div>
@@ -185,7 +185,7 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
           <div className="flex items-center justify-end">
             <button
               onClick={() => setView("list")}
-              className="px-5 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
+              className="cursor-pointer px-5 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
             >
               إغلاق
             </button>

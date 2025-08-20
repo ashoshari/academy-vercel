@@ -36,7 +36,7 @@ const AddSubsectionModal = ({
           </h2>
           <button
             onClick={() => onClose(false)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <X size={20} />
           </button>

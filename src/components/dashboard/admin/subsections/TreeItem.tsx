@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { formatDate } from "@/services/date";
 import {
   Calendar,
   ChevronDown,
@@ -79,7 +80,7 @@ export default function TreeItem({
                 onClick={() => {
                   toggleExpanded?.(item.id);
                 }}
-                className="p-1 hover:bg-orange-50 rounded transition-colors"
+                className="cursor-pointer p-1 hover:bg-orange-50 rounded transition-colors"
               >
                 {isExpanded ? (
                   <ChevronDown size={16} className="text-orange-600" />
@@ -173,7 +174,7 @@ export default function TreeItem({
                       setShowAddMaterialModal?.(true);
                     }
                   }}
-                  className="mr-auto p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
+                  className="cursor-pointer mr-auto p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
                 >
                   <Plus size={16} />
                   {type === "subsections"
@@ -227,8 +228,8 @@ export default function TreeItem({
                   <Calendar size={14} />
                   <span>
                     {item?.created_at
-                      ? item.created_at
-                      : new Date().toLocaleDateString()}
+                      ? formatDate(item.created_at)
+                      : formatDate(new Date().toLocaleDateString())}
                   </span>
                 </div>
               </div>
@@ -240,7 +241,7 @@ export default function TreeItem({
                       setSelectedSubsection?.(item);
                       setShowLinkModal?.(true);
                     }}
-                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                     title="ربط بالأقسام الرئيسية"
                   >
                     <Link size={16} />
@@ -272,7 +273,7 @@ export default function TreeItem({
                       setShowEditMaterialModal?.(true);
                     }
                   }}
-                  className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                   title="تعديل القسم"
                 >
                   <Edit size={16} />

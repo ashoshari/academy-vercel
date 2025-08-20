@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
 
 import { removeTokens } from "@/services/auth";
@@ -25,7 +25,16 @@ const Layout = () => {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
+  const [smallScreen, setSmallScreen] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setSmallScreen(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const menuItems = [
     { id: "", label: "الرئيسية", icon: Home },
     { id: "students", label: "الطلاب", icon: GraduationCap },
@@ -45,7 +54,7 @@ const Layout = () => {
     <div className="min-h-screen flex" dir="rtl">
       {/* Sidebar */}
       <div
-        className={`${
+        className={`${smallScreen && sidebarOpen ? "fixed z-100 h-full" : ""} ${
           sidebarOpen ? "min-w-64" : "min-w-16"
         } transition-all duration-300 bg-white/95 backdrop-blur-xl shadow-lg border-l border-orange-100/50`}
       >
@@ -67,7 +76,7 @@ const Layout = () => {
             )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg hover:bg-orange-50 transition-colors"
+              className="cursor-pointer p-2 rounded-lg hover:bg-orange-50 transition-colors"
             >
               {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
             </button>

@@ -163,7 +163,8 @@ const Exam = () =>
                 <span>التقدم</span>
                 <span>
                   {Math.round(
-                    ((currentQuestionIndex + 1) / examData?.questions?.length) *
+                    (Object.keys(selectedAnswers).length /
+                      examData?.questions?.length) *
                       100
                   )}
                   %
@@ -174,7 +175,7 @@ const Exam = () =>
                   className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
                   style={{
                     width: `${
-                      ((currentQuestionIndex + 1) /
+                      (Object.keys(selectedAnswers).length /
                         examData?.questions?.length) *
                       100
                     }%`,
@@ -186,7 +187,18 @@ const Exam = () =>
             {/* Question */}
             <div className="mb-8">
               <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                {examData?.questions?.[currentQuestionIndex].question_text}
+                {examData?.questions?.[currentQuestionIndex]
+                  ?.question_image && (
+                  <img
+                    src={
+                      examData?.questions?.[currentQuestionIndex]
+                        ?.question_image
+                    }
+                    alt="Question"
+                    className="mb-4 rounded-lg w-120 h-120"
+                  />
+                )}
+                {examData?.questions?.[currentQuestionIndex]?.question_text}
               </h3>
               <div className="space-y-3">
                 {examData?.questions?.[currentQuestionIndex].answers?.map(
@@ -199,7 +211,7 @@ const Exam = () =>
                           answer?.id
                         )
                       }
-                      className={`w-full p-4 text-right rounded-xl border-2 transition-all duration-200 ${
+                      className={`cursor-pointer w-full p-4 text-right rounded-xl border-2 transition-all duration-200 ${
                         selectedAnswers[currentQuestionIndex]?.answer_id ===
                         answer?.id
                           ? "border-blue-500 bg-blue-50 text-blue-900"
@@ -221,6 +233,13 @@ const Exam = () =>
                           )}
                         </div>
                         <span className="flex-1 font-medium">
+                          {answer?.answer_image && (
+                            <img
+                              src={answer?.answer_image}
+                              alt="Answer"
+                              className="mb-2 rounded-lg w-24 h-24"
+                            />
+                          )}
                           {answer?.answer_text}
                         </span>
                       </div>
@@ -237,7 +256,7 @@ const Exam = () =>
                   setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))
                 }
                 disabled={currentQuestionIndex === 0}
-                className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="cursor-pointer px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 <ChevronRight className="w-5 h-5" />
                 <span>السابق</span>
@@ -259,7 +278,7 @@ const Exam = () =>
                           "يرجى اجابة عن السؤال قبل الانتقال للسؤال التالي"
                         );
                   }}
-                  className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
+                  className="cursor-pointer px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
                 >
                   <CheckCircle className="w-5 h-5" />
                   <span>تسليم الامتحان</span>
@@ -278,7 +297,7 @@ const Exam = () =>
                           "يرجى اجابة عن السؤال قبل الانتقال للسؤال التالي"
                         );
                   }}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
+                  className="cursor-pointer px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
                 >
                   <span>التالي</span>
                   <ChevronLeft className="w-5 h-5" />
@@ -398,14 +417,14 @@ const Exam = () =>
               {!isPassed && (
                 <button
                   onClick={retryExam}
-                  className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
+                  className="cursor-pointer px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
                 >
                   إعادة المحاولة
                 </button>
               )}
               {/* <button
                 onClick={exitExam}
-                className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
+                className="cursor-pointer px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300"
               >
                 {examData?.id_passed ? "متابعة" : "الخروج"}
               </button> */}

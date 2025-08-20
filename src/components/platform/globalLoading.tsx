@@ -21,8 +21,9 @@ const GlobalLoading = () => {
   if (!show) return null;
 
   return (
-    <div className="fixed overflow-hidden inset-0 bg-white z-50 flex items-center justify-center">
+    <div className="fixed overflow-hidden inset-0 bg-white z-100 flex items-center justify-center">
       <div className="text-center">
+        <h1 className="text-2xl mb-5">جاري التحميل</h1>
         <div className={`${newLoader.loader}`}></div>
       </div>
     </div>
