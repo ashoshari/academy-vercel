@@ -186,13 +186,13 @@ const AddQuestionsForm: React.FC<Props> = ({
                 onChange={(e) =>
                   setDraft((d) => ({ ...d, question_text: e.target.value }))
                 }
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
                 placeholder="اكتب نص السؤال..."
               />
             </div>
 
             {/* Marks + image */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex w-full justify-start items-center gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الدرجات *
@@ -207,28 +207,35 @@ const AddQuestionsForm: React.FC<Props> = ({
                       marks: parseInt(e.target.value) || 0,
                     }))
                   }
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full min-w-[250px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
                 />
               </div>
 
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  صورة السؤال (اختياري)
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setDraft((d) => ({
-                      ...d,
-                      image:
-                        e.target.files && e.target.files[0]
-                          ? e.target.files[0]
-                          : null,
-                    }))
-                  }
-                  className="block w-full text-sm text-gray-700"
-                />
+              <div className="flex w-full justify-start items-center gap-4">
+                <div className="h-[68px] flex items-center justify-center">
+                  <label
+                    htmlFor="question-img"
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 w-fit self-end hover:to-orange-700 transition-all block"
+                  >
+                    اضافة صورة
+                  </label>
+                  <input
+                    id="question-img"
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={(e) =>
+                      setDraft((d) => ({
+                        ...d,
+                        image:
+                          e.target.files && e.target.files[0]
+                            ? e.target.files[0]
+                            : null,
+                      }))
+                    }
+                    className="block w-full text-sm text-gray-700"
+                  />
+                </div>
                 {draft.image && (
                   <div className="mt-2">
                     <img
@@ -238,7 +245,7 @@ const AddQuestionsForm: React.FC<Props> = ({
                           : draft.image
                       }
                       alt="preview"
-                      className="w-40 h-28 object-cover rounded border"
+                      className="w-40 h-28 object-cover rounded-lg"
                     />
                   </div>
                 )}
@@ -260,10 +267,10 @@ const AddQuestionsForm: React.FC<Props> = ({
                 {draft.answers.map((a, idx) => (
                   <div
                     key={idx}
-                    className="w-full border rounded-lg p-3 bg-gray-50 flex flex-col md:flex-row gap-3"
+                    className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 flex flex-col md:flex-row gap-3"
                   >
                     <div className="flex lg:flex-row flex-col items-start justify-start gap-4 w-full">
-                      <div className="flex items-center justify-start gap-4">
+                      <div className="flex flex-1 items-center justify-start gap-4">
                         <div className="flex items-center gap-2">
                           <input
                             type="radio"
@@ -275,48 +282,56 @@ const AddQuestionsForm: React.FC<Props> = ({
                           />
 
                           <CheckCircle
-                            size={16}
+                            size={20}
                             className={
                               a.is_correct ? "text-green-600" : "text-gray-300"
                             }
                           />
-                          <span className="text-xs text-gray-500">
+                          <span className="text-sm text-gray-500">
                             {String.fromCharCode(65 + idx)}
                           </span>
                         </div>
                         <textarea
-                          rows={1}
+                          rows={3}
                           value={a.answer_text}
                           onChange={(e) =>
                             setAnswer(idx, { answer_text: e.target.value })
                           }
-                          className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+                          className="flex-1 w-full px-3 py-2 border border-gray-300 bg-white rounded-lg focus:ring-2 focus:ring-orange-500"
                           placeholder={`الخيار ${idx + 1}`}
                         />
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) =>
-                            setAnswer(idx, {
-                              image:
-                                e.target.files && e.target.files[0]
-                                  ? e.target.files[0]
-                                  : null,
-                            })
-                          }
-                          className="text-sm text-gray-700"
-                        />
-                        {a.image && (
-                          <img
-                            src={
-                              a.image instanceof File
-                                ? URL.createObjectURL(a.image)
-                                : a.image
-                            }
-                            alt="ans"
-                            className="w-12 h-12 object-cover rounded border"
-                          />
-                        )}
+                        <div className="flex flex-col items-center justify-start gap-2">
+                          <div>
+                            <label
+                              htmlFor={`answer_${idx}`}
+                              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all block"
+                            >
+                              اضافة صورة
+                            </label>
+                            <input
+                              id={`answer_${idx}`}
+                              type="file"
+                              accept="image/*"
+                              hidden
+                              onChange={(e) => {
+                                const file = e.target.files?.[0] ?? null;
+                                setAnswer(idx, { image: file });
+                                e.currentTarget.value = "";
+                              }}
+                            />
+                          </div>
+                          {a.image && (
+                            <img
+                              src={
+                                a.image instanceof File
+                                  ? URL.createObjectURL(a.image)
+                                  : a.image
+                              }
+                              alt="ans"
+                              className="w-20 h-20 object-cover rounded"
+                            />
+                          )}
+                        </div>
                       </div>
 
                       <textarea
@@ -326,7 +341,7 @@ const AddQuestionsForm: React.FC<Props> = ({
                           setAnswer(idx, { explanation: e.target.value })
                         }
                         placeholder="شرح (اختياري)"
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+                        className="max-w-xs px-3 py-2 self-center border border-gray-300 bg-white rounded-lg focus:ring-2 focus:ring-orange-500"
                       />
                     </div>
                   </div>
@@ -365,7 +380,7 @@ const AddQuestionsForm: React.FC<Props> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-5 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
+            className="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
           >
             إلغاء
           </button>

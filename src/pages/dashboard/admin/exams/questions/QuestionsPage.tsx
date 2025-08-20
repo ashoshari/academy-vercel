@@ -1,11 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Edit } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { Exam } from "../ExamsPage";
 import QuestionsList from "@/components/dashboard/admin/questions/QuestionsList";
 import AddQuestionsForm from "@/components/dashboard/admin/questions/AddQuestionsForm";
 import QuestionPreview from "@/components/dashboard/admin/questions/QuestionPreview";
 import QuestionEditForm from "@/components/dashboard/admin/questions/QuestionEditForm";
+import { useCustomRemove } from "@/hooks/useMutation";
+import toast from "react-hot-toast";
+import handleErrorAlerts from "@/utils/showErrorMessages";
 
 export interface Answers {
   id: string;
@@ -39,22 +42,40 @@ interface Props {
 
 type View = "list" | "add" | "preview" | "edit";
 
+type SelectedQuestion = ExamQuestion & { index: number };
+
 const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
   const [view, setView] = useState<View>("list");
-  const [selected, setSelected] = useState<ExamQuestion | null>(null);
+  const [selected, setSelected] = useState<SelectedQuestion | null>(null);
 
   const questionsData = useCustomQuery(
     `/training/admin/exams/${exam.id}/questions/`,
     ["exam-questions", exam.id]
   );
 
+  const deleteQuestion = useCustomRemove(
+    `/training/admin/exams-questions/${selected?.id}/`,
+    ["exam-questions", exam.id]
+  );
+  const handleDelete = async () => {
+    await deleteQuestion
+      .mutateAsync()
+      .then((res) => {
+        if (res.status) {
+          toast.success(res.message ?? "تم الحذف");
+        } else toast.error(res.message ?? "فشل الحذف");
+      })
+      .catch((e) => handleErrorAlerts(e?.response?.data?.error));
+  };
+
   const questions: ExamQuestion[] = questionsData?.data?.data ?? [];
 
-  const toDraft = (q: ExamQuestion): DraftQuestion => ({
+  const toDraft = (q: SelectedQuestion): DraftQuestion & { index: number } => ({
     id: q.id,
     question_text: q.question_text,
     image: q.image,
     marks: q.marks,
+    index: q.index,
     answers: (q.answers || []).map((a) => ({
       id: a.id,
       answer_text: a.answer_text,
@@ -64,7 +85,7 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
     })),
   });
 
-  const selectedDraft: DraftQuestion | null = useMemo(
+  const selectedDraft: (DraftQuestion & { index: number }) | null = useMemo(
     () => (selected ? toDraft(selected) : null),
     [selected]
   );
@@ -91,19 +112,39 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
         >
           <ArrowLeft size={20} />
         </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            {view === "list"
-              ? "إدارة أسئلة الامتحان"
-              : view === "add"
-              ? "اضافة سؤال جديد"
-              : view === "edit"
-              ? "تعديل السؤال"
-              : view === "preview"
-              ? "تفاصيل السؤال"
-              : ""}
-          </h1>
-          <p className="text-gray-600 text-sm">{exam.title}</p>
+        <div className="flex items-center justify-between w-full">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              {view === "list"
+                ? "إدارة أسئلة الامتحان"
+                : view === "add"
+                ? "اضافة سؤال جديد"
+                : view === "edit"
+                ? "تعديل السؤال"
+                : view === "preview"
+                ? "معاينة السؤال"
+                : ""}
+            </h1>
+            <p className="text-gray-600 text-sm">
+              {view === "list"
+                ? exam.title
+                : `السؤال رقم ${(selected?.index as number) + 1} - ${
+                    exam.title
+                  }`}
+            </p>
+          </div>
+          {view === "preview" && (
+            <button
+              onClick={() => {
+                // setSelectedQuestion(question);
+                setView("edit");
+              }}
+              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            >
+              <Edit size={16} />
+              تعديل السؤال
+            </button>
+          )}
         </div>
       </div>
 
@@ -111,13 +152,17 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
         <QuestionsList
           questions={questions}
           onAdd={() => setView("add")}
-          onPreview={(q) => {
-            setSelected(q);
+          onPreview={(q: ExamQuestion, idx: number) => {
+            setSelected({ ...q, index: idx });
             setView("preview");
           }}
-          onEdit={(q) => {
-            setSelected(q);
+          onEdit={(q: ExamQuestion, idx: number) => {
+            setSelected({ ...q, index: idx });
             setView("edit");
+          }}
+          onDelete={(q: ExamQuestion, idx: number) => {
+            setSelected({ ...q, index: idx });
+            handleDelete();
           }}
         />
       )}
