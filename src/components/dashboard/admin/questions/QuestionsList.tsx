@@ -5,8 +5,9 @@ import { ExamQuestion } from "@/pages/dashboard/admin/exams/questions/QuestionsP
 type Props = {
   questions: ExamQuestion[];
   onAdd: () => void;
-  onPreview: (q: ExamQuestion) => void;
-  onEdit: (q: ExamQuestion) => void;
+  onPreview: (q: ExamQuestion, index: number) => void;
+  onEdit: (q: ExamQuestion, index: number) => void;
+  onDelete: (q: ExamQuestion, index: number) => void;
 };
 
 const QuestionsList: React.FC<Props> = ({
@@ -14,6 +15,7 @@ const QuestionsList: React.FC<Props> = ({
   onAdd,
   onPreview,
   onEdit,
+  // onDelete,
 }) => {
   return (
     <div className="space-y-4">
@@ -73,19 +75,26 @@ const QuestionsList: React.FC<Props> = ({
                   <td className="px-6 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => onPreview(q)}
+                        onClick={() => onPreview(q, index)}
                         className="cursor-pointer p-1 text-gray-400 hover:text-blue-600"
                         title="معاينة"
                       >
                         <Eye size={16} />
                       </button>
                       <button
-                        onClick={() => onEdit(q)}
+                        onClick={() => onEdit(q, index)}
                         className="cursor-pointer p-1 text-gray-400 hover:text-orange-600"
                         title="تعديل"
                       >
                         <Edit size={16} />
                       </button>
+                      {/* <button
+                        onClick={() => onDelete(q, index)}
+                        className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                        title="حذف السؤال"
+                      >
+                        <Trash2 size={16} />
+                      </button> */}
                     </div>
                   </td>
                 </tr>
