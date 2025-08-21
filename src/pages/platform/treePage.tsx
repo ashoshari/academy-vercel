@@ -14,10 +14,9 @@ import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 const TreePage: React.FC = () => {
   const { navHeaderId } = useParams();
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
-  const { data: treeData } = useCustomQuery(
-    "/training/students/sections/",
-    ["sections"]
-  );
+  const { data: treeData } = useCustomQuery("/training/students/sections/", [
+    "sections",
+  ]);
   const navigate = useNavigate();
 
   const data = treeData?.data.find((node: any) => node.id === navHeaderId);
@@ -128,14 +127,22 @@ const TreePage: React.FC = () => {
               />
             </div>
           )}
-
-          <span
-            className={`font-semibold ${
-              level === 0 ? "text-lg text-gray-900" : "text-gray-700"
-            }`}
-          >
-            {node?.title || node?.name || node?.material?.name}
-          </span>
+          <div>
+            <p
+              className={`font-semibold ${
+                level === 0 ? "text-lg text-gray-900" : "text-gray-700"
+              }`}
+            >
+              {node?.title || node?.name || node?.material?.name}
+            </p>
+            <p
+              className={`font-semibold p-2 ${
+                level === 0 ? "text-sm text-gray-500" : "text-xs text-gray-500"
+              }`}
+            >
+              {node?.description}
+            </p>
+          </div>
 
           {hasTeachers && isExpanded && (
             <div className="mr-auto">
@@ -145,6 +152,7 @@ const TreePage: React.FC = () => {
             </div>
           )}
         </div>
+
         {isExpanded && (
           <div className="mt-4 space-y-4">
             {hasChildren &&
@@ -172,7 +180,9 @@ const TreePage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}
+                onClick={() =>
+                  window.history.length > 1 ? navigate(-1) : navigate("/")
+                }
                 className="w-12 h-12 cursor-pointer bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
                 <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
@@ -212,12 +222,14 @@ const TreePage: React.FC = () => {
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center space-x-2 text-gray-600">
-          <Home className="w-4 h-4" />
-          <a href="/" className="">
-            الرئيسية
+          <a href="/" className="flex items-center space-x-1 hover:text-gray-900">
+            <Home className="w-4 h-4" />
+            <p>الرئيسية</p>
           </a>
-          <span>/</span>
-          <span className="text-yellow-600 font-medium">{data?.title}</span>
+          <span className="cursor-default">/</span>
+          <span className="cursor-default text-yellow-600 font-medium">
+            {data?.title}
+          </span>
         </div>
       </div>
 

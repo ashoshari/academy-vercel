@@ -1,4 +1,4 @@
-import TreePage from "@/components/platform/courses/treePage";
+import TreePage from "@/pages/platform/treePage";
 const Courses = () => {
   return (
     <>

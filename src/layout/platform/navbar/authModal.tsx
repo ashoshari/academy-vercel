@@ -11,6 +11,7 @@ import useTokenStore from "@/store/platform/useToken";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 // import { storeTokens } from "@/services/platform/userAuth";
 import { toast } from "react-hot-toast";
+import { useForm } from "react-hook-form";
 
 interface FormData {
   fullName: string;
@@ -43,6 +44,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     "/account/register/",
     ["register"]
   );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue,
+    reset,
+  } = useForm<FormData>();
   const setTokens = useTokenStore((state) => state.setTokens);
   // eng: mahmoud code of auth
   //   const handleSubmit = async (e: React.FormEvent) => {
@@ -112,8 +120,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   //         setIsLoading(false);
   //       });
   //   };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: FormData) => {
+    // e.preventDefault();
     setIsLoading(true);
 
     const formdata = new FormData();
@@ -126,10 +134,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
     try {
       const res = isLogin
-        ? await loginMutateAsync(formdata)
-        : await RegisterMutateAsync(formdata);
-      if (res.status) {
-        setTokens(`"${res.data.tokens.access}"`,res.data?.user);
+        ? await loginMutateAsync(data)
+        : await RegisterMutateAsync(data);
+      if (res?.status) {
+        setTokens(`"${res.data.tokens.access}"`, res.data?.user);
         setFormData({ mobile: "", password: "", fullName: "", otp: "" });
         toast.success(
           isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
@@ -146,7 +154,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         toast.error(
           res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
         );
-
       }
     } catch (error: any) {
       const errorData = error.response?.data?.error;
@@ -190,6 +197,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   // };
 
   const resetForm = () => {
+
     setFormData({
       fullName: "",
       mobile: "",
@@ -201,7 +209,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
   const switchMode = () => {
     setIsLogin(!isLogin);
-    resetForm();
+    reset();
   };
 
   if (!isOpen) return null;
@@ -212,7 +220,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 left-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 z-10"
+          className="cursor-pointer absolute top-4 left-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 z-10"
         >
           <X className="w-5 h-5 text-gray-600" />
         </button>
@@ -252,7 +260,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* OTP Input */}
             {showOTP && (
               <div className="space-y-4">
@@ -262,6 +270,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                 <div className="flex gap-3 justify-center">
                   {[0, 1, 2, 3].map((index) => (
                     <input
+                      {...register("otp", { required: "الرمز مطلوب" })}
                       key={index}
                       type="text"
                       maxLength={1}
@@ -298,15 +307,23 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                       👤 الاسم الكامل
                     </label>
                     <input
+                      {...register("fullName", {
+                        required: "الاسم الكامل مطلوب",
+                      })}
                       type="text"
-                      value={formData.fullName}
-                      onChange={(e) =>
-                        handleInputChange("fullName", e.target.value)
-                      }
+                      // value={formData.fullName}
+                      // onChange={(e) =>
+                      //   handleInputChange("fullName", e.target.value)
+                      // }
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
                       placeholder="أدخل اسمك الكامل"
-                      required
+                      
                     />
+                    {errors.fullName && (
+                      <span className="text-sm text-red-500">
+                        {errors.fullName.message}
+                      </span>
+                    )}
                   </div>
                 )}
 
@@ -318,14 +335,30 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   <div className="relative">
                     <input
                       type="tel"
-                      value={formData.mobile}
-                      onChange={(e) =>
-                        handleInputChange("mobile", e.target.value)
-                      }
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
+                      {...register("mobile", {
+                        required: "رقم الهاتف مطلوب",
+                        pattern: {
+                          value: /^07[0-9]{8}$/,
+                          message:
+                            "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
+                        },
+                      })}
+                      maxLength={10}
+                      minLength={10}
+                      onInput={(e) => {
+                        e.currentTarget.value = e.currentTarget.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
                       placeholder="07XXXXXXXX"
-                      required
                     />
+                    {errors.mobile && (
+                      <span className="text-sm text-red-500">
+                        {errors.mobile.message}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -335,15 +368,23 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                     🔒 كلمة المرور
                   </label>
                   <input
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) =>
-                      handleInputChange("password", e.target.value)
-                    }
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
+                    type="text"
+                    {...register("password", {
+                      required: "كلمة المرور مطلوبة",
+                      minLength: {
+                        value: 6,
+                        message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                      },
+                    })}
+                    minLength={6}
+                    className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
                     placeholder="أدخل كلمة المرور"
-                    required
                   />
+                  {errors.password && (
+                    <span className="text-sm text-red-500">
+                      {errors.password.message}
+                    </span>
+                  )}
                 </div>
               </div>
             )}
@@ -351,10 +392,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
+              disabled={isSubmitting}
+              className="cursor-pointer w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
             >
-              {isLoading ? (
+              {isSubmitting ? (
                 <div className="flex items-center space-x-2">
                   <Loader2 className="w-5 h-5 animate-spin" />
                   <span>جاري المعالجة...</span>
@@ -375,7 +416,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             <div className="mt-6 text-center">
               <button
                 onClick={switchMode}
-                className="text-yellow-600 hover:text-yellow-700 text-sm font-semibold transition-all duration-300"
+                className="cursor-pointer text-yellow-600 hover:text-yellow-700 text-sm font-semibold transition-all duration-300"
               >
                 {isLogin
                   ? "🆕 لا تملك حساب؟ إنشاء حساب جديد"

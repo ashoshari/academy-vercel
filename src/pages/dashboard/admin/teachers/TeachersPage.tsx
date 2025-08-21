@@ -371,7 +371,7 @@ const TeachersPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي المعلمين</p>
               <p className="text-3xl font-bold text-gray-800">
-                {teachersStatistics?.data?.data?.total_teachers}
+                {teachersStatistics?.data?.data?.total_teachers || "-"}
               </p>
             </div>
             <Users className="w-12 h-12 text-orange-500" />
@@ -383,7 +383,7 @@ const TeachersPage = () => {
             <div>
               <p className="text-gray-500 text-sm">المعلمين النشطون</p>
               <p className="text-3xl font-bold text-green-600">
-                {teachersStatistics?.data?.data?.active_teachers}
+                {teachersStatistics?.data?.data?.active_teachers || "-"}
               </p>
             </div>
             <UserCheck className="w-12 h-12 text-green-500" />
@@ -395,7 +395,7 @@ const TeachersPage = () => {
             <div>
               <p className="text-gray-500 text-sm">المعلمين غير النشطين</p>
               <p className="text-3xl font-bold text-blue-600">
-                {teachersStatistics?.data?.data?.inactive_teachers}
+                {teachersStatistics?.data?.data?.inactive_teachers || "-"}
               </p>
             </div>
             <CircleX className="w-12 h-12 text-blue-500" />
@@ -493,9 +493,26 @@ const TeachersPage = () => {
       </div>
 
       {/* Teachers Grid/Table */}
-      {dataTeachers.isLoading ? (
+      {dataTeachers?.isLoading ? (
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
+      ) : !dataTeachers?.data?.data ||
+        dataTeachers?.data?.data?.length === 0 ? (
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-800 mb-2">
+            لا توجد نتائج
+          </h3>
+          <p className="text-gray-500 mb-6">ابدأ بإضافة معلمين جدد للمنصة</p>
+
+          <button
+            onClick={() => navigate("/dashboard/teachers/add")}
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+          >
+            <Plus size={16} />
+            إضافة معلم جديد
+          </button>
         </div>
       ) : viewMode === "grid" ? (
         <>

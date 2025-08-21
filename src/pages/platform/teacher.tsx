@@ -30,6 +30,7 @@ import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import { useQueryClient } from "@tanstack/react-query";
+import ErrorIllustration from "@/assets/illustration/Error_illustration.svg";
 
 const TeacherProfile: React.FC = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const TeacherProfile: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Get Teacher
-  const { data, isLoading } = useCustomQuery(
+  const { data, isLoading, error } = useCustomQuery(
     `/training/students/teacher/${id}/`,
     ["teachers", id]
   );
@@ -115,7 +116,7 @@ const TeacherProfile: React.FC = () => {
       id: "free_exams",
       title: "الامتحانات المجانية",
       icon: Monitor,
-      count: freeExamsData?.length,
+      count: freeExamsData?.length || 0,
     },
   ];
 
@@ -664,7 +665,18 @@ const TeacherProfile: React.FC = () => {
       </button>
     </div>
   );
-
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <img
+          className="absolute top-0 w-[300px] h-[650px] z-0"
+          src={ErrorIllustration}
+          alt="error"
+        />
+        <h1 className="text-2xl">لا يوجد بيانات لعرضها</h1>
+      </div>
+    );
+  }
   return (
     <section>
       <AuthModal
@@ -693,15 +705,19 @@ const TeacherProfile: React.FC = () => {
                   loading="lazy"
                   src={
                     teacherData?.image ||
-                    "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      teacherData?.name
+                    )}&background=ffffff&color=f97316&size=64`
                   }
-                  alt={teacherData?.name}
+                  alt={teacherData?.name || "اسم المعلم"}
                   className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
                 />
               </div>
 
               <div className="flex-1 text-center md:text-right text-white">
-                <h1 className="text-4xl font-bold mb-2">{teacherData?.name}</h1>
+                <h1 className="text-4xl font-bold mb-2">
+                  {teacherData?.name || "اسم المعلم"}
+                </h1>
                 {teacherData?.materials?.map(
                   (material: any, index: number, array: []) => (
                     <p key={index} className="text-xl text-blue-100 mb-4">
@@ -721,7 +737,7 @@ const TeacherProfile: React.FC = () => {
                   <div className="flex items-center justify-center space-x-1 mb-2">
                     <Users className="w-6 h-6 text-blue-300" />
                     <span className="text-3xl font-bold">
-                      {teacherData?.total_enrolled_students}
+                      {teacherData?.total_enrolled_students || "-"}
                     </span>
                   </div>
                   <p className="text-blue-100">طالب</p>
@@ -884,7 +900,7 @@ const TeacherProfile: React.FC = () => {
                       src={errorIllustation}
                       alt="error"
                     />
-                    <h1 className="pt-[50px] absolute text-[2rem] top-[200px] z-[1]">
+                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
                       لا يوجد محتوى لعرضه
                     </h1>
                   </div>

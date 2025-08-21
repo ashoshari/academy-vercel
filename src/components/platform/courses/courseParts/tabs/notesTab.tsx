@@ -90,6 +90,7 @@ const TextNotes = () => {
     }
   };
   const handleAddNote = async () => {
+    console.log(currentLesson)
     if (newNote.trim()) {
       const note: any = {
         note: newNote,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Image, Menu, X } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import useTokenStore from "@/store/platform/useToken";
 import useToken from "@/store/platform/useToken";
@@ -41,35 +41,41 @@ const Navbar: React.FC = () => {
         <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-full">
             {/* Logo */}
-            <a href="/" className="flex items-center space-x-2">
+            <button onClick={() => navigate("/")} className="cursor-pointer flex items-center space-x-2">
               <div className="flex items-center space-x-3">
-                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
-                  <img
-                    loading="lazy"
-                    className="rounded-xl w-10 h-10 text-white"
-                    src={headerData?.logo || null}
-                    alt="logo"
-                  />
-                </div>
+                {headerData?.logo ? (
+                  <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
+                    <img
+                      loading="lazy"
+                      className="rounded-xl w-10 h-10 text-white"
+                      src={headerData?.logo}
+                      alt="logo"
+                    />
+                  </div>
+                ) : (
+                  <Image className="rounded-xl w-10 h-10 text-gray-600" />
+                )}
                 <div className="text-right">
                   <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                    {headerData?.platform_name}
+                    {headerData?.platform_name || "اسم المنصة"}
                   </h1>
-                  <p className="text-xs text-gray-500">{headerData?.slogan}</p>
+                  <p className="text-xs text-gray-500">
+                    {headerData?.slogan || "شعار المنصة"}
+                  </p>
                 </div>
               </div>
-            </a>
+            </button>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               {footerData?.links?.slice(0, 3).map((item: any) => (
-                <a
+                <button
                   key={item.id}
                   onClick={() => navigate(`/sections/${item?.id}`)}
                   className="cursor-pointer text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
                 >
                   {item.title}
-                </a>
+                </button>
               ))}
               {footerData?.links?.length > 3 && (
                 <Link
@@ -108,50 +114,53 @@ const Navbar: React.FC = () => {
               )}
 
               {/* Mobile menu button */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
-              >
-                {isMenuOpen ? (
-                  <X className="w-5 h-5" />
-                ) : (
-                  <Menu className="w-5 h-5" />
-                )}
-              </button>
+              {footerData?.links && (
+                <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="cursor-pointer md:hidden p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
+                >
+                  {isMenuOpen ? (
+                    <X className="w-5 h-5" />
+                  ) : (
+                    <Menu className="w-5 h-5" />
+                  )}
+                </button>
+              )}
             </div>
           </div>
 
           {/* Mobile Navigation */}
-          {/* {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-gray-100">
+          {isMenuOpen && footerData?.links && (
+            <div className="md:hidden py-4 border-t border-gray-100 bg-gradient-to-b from-yellow-50 to-white">
               <div className="flex flex-col space-y-3">
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-yellow-600 font-medium py-2 px-4 rounded-lg hover:bg-yellow-50 transition-all duration-200"
-                >
-                  الرئيسية
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-yellow-600 font-medium py-2 px-4 rounded-lg hover:bg-yellow-50 transition-all duration-200"
-                >
-                  الدورات
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-yellow-600 font-medium py-2 px-4 rounded-lg hover:bg-yellow-50 transition-all duration-200"
-                >
-                  الامتحانات
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-yellow-600 font-medium py-2 px-4 rounded-lg hover:bg-yellow-50 transition-all duration-200"
-                >
-                  من نحن
-                </a>
+                {footerData?.links?.slice(0, 3).map((item: any) => (
+                  <button
+                    key={item.id}
+                    onClick={() => navigate(`/sections/${item?.id}`)}
+                    className="cursor-pointer text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+                {footerData?.links?.length > 3 && (
+                  <Link
+                    to="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/", { replace: false });
+                      setTimeout(() => {
+                        const el = document.getElementById("discover");
+                        if (el) el.scrollIntoView({ behavior: "smooth" });
+                      }, 100);
+                    }}
+                    className=" text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl px-4 py-2 font-medium transition-colors duration-200"
+                  >
+                    عرض الكل
+                  </Link>
+                )}
               </div>
             </div>
-          )} */}
+          )}
         </div>
       </nav>
       <AuthModal

@@ -13,6 +13,7 @@ import {
   Search,
   Rows,
   Grid,
+  Users,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDate } from "@/services/date";
@@ -20,6 +21,7 @@ import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import Spinner from "@/components/dashboard/Spinner";
+import { useNavigate } from "react-router";
 // import { formatDateTimeSimple } from "@/utils/formatDateTime";
 // import Pagination from "@/components/dashboard/core/Pagination";
 
@@ -440,6 +442,7 @@ const ConfirmToggleModal = ({
 };
 
 const SectionsPage = () => {
+  const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedSection, setSelectedSection] = useState<MainSection | null>(
@@ -599,7 +602,7 @@ const SectionsPage = () => {
           className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
-          إضافة قسم جديد
+          إضافة قسم رئيسي جديد
         </button>
       </div>
       <div className="flex gap-x-[10px]">
@@ -645,19 +648,19 @@ const SectionsPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-orange-600">
-            {statistics?.data?.data?.total_sections}
+            {statistics?.data?.data?.total_sections || "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأقسام</p>
         </div>
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-green-600">
-            {statistics?.data?.data?.active_sections}
+            {statistics?.data?.data?.active_sections || "-"}
           </p>
           <p className="text-sm text-gray-600">الأقسام المفعلة</p>
         </div>{" "}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-red-600">
-            {statistics?.data?.data?.inactive_sections}
+            {statistics?.data?.data?.inactive_sections || "-"}
           </p>
           <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
         </div>
@@ -666,6 +669,24 @@ const SectionsPage = () => {
       {sections?.isLoading ? (
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
+      ) : !sections?.data?.data || sections?.data?.data?.length === 0 ? (
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-800 mb-2">
+            لا توجد نتائج
+          </h3>
+          <p className="text-gray-500 mb-6">
+            ابدأ بإضافة أقسام رئيسية جديدة للمنصة
+          </p>
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+          >
+            <Plus size={16} />
+            إضافة قسم رئيسي جديد
+          </button>
         </div>
       ) : // Sections Grid
       viewMode === "grid" ? (

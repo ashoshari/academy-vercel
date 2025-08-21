@@ -337,7 +337,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
               <p className="text-3xl font-bold text-gray-800">
-                {dataStatistics?.data?.data?.total_students}
+                {dataStatistics?.data?.data?.total_students || "-"}
               </p>
             </div>
             <Users className="w-12 h-12 text-orange-500" />
@@ -349,7 +349,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الطلاب النشطون</p>
               <p className="text-3xl font-bold text-green-600">
-                {dataStatistics?.data?.data?.active_students}
+                {dataStatistics?.data?.data?.active_students || "-"}
               </p>
             </div>
             <UserCheck className="w-12 h-12 text-green-500" />
@@ -361,7 +361,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الطلاب الغير نشطون</p>
               <p className="text-3xl font-bold text-blue-600">
-                {dataStatistics?.data?.data?.inactive_students}
+                {dataStatistics?.data?.data?.inactive_students || "-"}
               </p>
             </div>
             <CircleX className="w-12 h-12 text-blue-500" />
@@ -373,7 +373,9 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الإيرادات</p>
               <p className="text-3xl font-bold text-orange-600">
-                {dataStatistics?.data?.data?.total_income} د.أ
+                {dataStatistics?.data?.data?.total_income
+                  ? dataStatistics?.data?.data?.total_income + " د.أ"
+                  : "-"}
               </p>
             </div>
             <DollarSign className="w-12 h-12 text-orange-500" />
@@ -470,7 +472,7 @@ const StudentsPage = () => {
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
-      ) : studentsData?.length === 0 ? (
+      ) : !studentsData || studentsData.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">

@@ -263,13 +263,15 @@ const CourseContentPage = ({ course, onBack }: any) => {
   };
 
   const handleAddItem = async () => {
-    if (!newItem.title || !newItem.description) return;
+    if (!newItem.title
+      //  || !newItem.description
+      ) return;
 
     const addItem = {
       title: newItem.title,
       description: newItem.description,
       time_in_minutes: newItem.estimatedDuration,
-      is_published: newItem.isPublished,
+      is_published: newItem.isPublished || true,
       // is_free: newItem.isFree,
       [newItem.type === "unit"
         ? "semester"
@@ -311,7 +313,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       is_published: selectedItem?.is_published,
       // is_free: selectedItem?.is_free,
       ...(selectedItem?.link && { link: selectedItem?.link }),
-      ...(selectedItem?.exam && { exam: selectedItem?.exam }),
+      ...(selectedItem?.exam && { exam: selectedItem?.exam.id }),
       ...(selectedItem?.order && { exam: selectedItem?.order }),
     };
     try {
@@ -929,7 +931,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الوصف *
+                  الوصف
                 </label>
                 <textarea
                   value={newItem.description || ""}
@@ -1069,7 +1071,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newItem?.isPublished || false}
+                    checked={newItem?.isPublished || true}
                     onChange={(e) =>
                       setNewItem({ ...newItem, isPublished: e.target.checked })
                     }
@@ -1129,7 +1131,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               onClick={() => handleAddItem()}
               disabled={
                 !newItem.title ||
-                !newItem.description ||
+                // !newItem.description ||
                 (newItem.type !== "semester" && !newItem.parentId) ||
                 (newItem.type === "lesson" &&
                   newItem.lessonType === "video" &&
@@ -1159,7 +1161,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
             onClick={() => setCurrentView("tree")}
             className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <ArrowLeft size={20} />
+            <ArrowRight size={20} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">تعديل المحتوى</h1>
@@ -1195,7 +1197,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الوصف *
+                  الوصف
                 </label>
                 <textarea
                   value={selectedItem?.description}
@@ -1387,7 +1389,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
                 handleEditItem();
               }}
-              disabled={!selectedItem.title || !selectedItem.description}
+              disabled={!selectedItem.title
+                //  || !selectedItem.description
+                }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
