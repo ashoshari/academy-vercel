@@ -129,8 +129,8 @@ const Footer: React.FC = () => {
             <h4 className="text-lg font-semibold text-yellow-400">
               روابط سريعة
             </h4>
-            {footerData?.links?.slice(0, 5) ? (
-              <ul className="space-y-2">
+            {footerData?.links ? (
+              <ul className="space-y-3">
                 {footerData?.links?.map(
                   ({ id, title }: { id: string; title: string }) => (
                     <li key={id}>
@@ -147,7 +147,7 @@ const Footer: React.FC = () => {
             ) : (
               <p className="text-gray-300">لا يوجد روابط سريعة</p>
             )}
-            {footerData?.links?.length > 3 && (
+            {/* {footerData?.links?.length > 3 && (
               <Link
                 to="/"
                 onClick={(e) => {
@@ -162,7 +162,7 @@ const Footer: React.FC = () => {
               >
                 عرض الكل
               </Link>
-            )}
+            )} */}
           </div>
 
           {/* Contact Info */}
