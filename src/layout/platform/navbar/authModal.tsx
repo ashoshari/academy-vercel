@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 
 interface FormData {
   fullName: string;
-  mobile: string;
+  mobile_number: string;
   password: string;
   otp: string;
 }
@@ -36,7 +36,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   ] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
-    mobile: "",
+    mobile_number: "",
     password: "",
     otp: "",
   });
@@ -129,7 +129,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     setIsLoading(true);
 
     const formdata = new FormData();
-    formdata.append("mobile_number", formData.mobile);
+    formdata.append("mobile_number", formData.mobile_number);
     formdata.append("password", formData.password);
 
     if (!isLogin) {
@@ -142,7 +142,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         : await RegisterMutateAsync(data);
       if (res?.status) {
         setTokens(`"${res.data.tokens.access}"`, res.data?.user);
-        setFormData({ mobile: "", password: "", fullName: "", otp: "" });
+        setFormData({ mobile_number: "", password: "", fullName: "", otp: "" });
         toast.success(
           isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
         );
@@ -204,7 +204,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
   //   setFormData({
   //     fullName: "",
-  //     mobile: "",
+  //     mobile_number: "",
   //     password: "",
   //     otp: "",
   //   });
@@ -245,7 +245,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             </h2>
             <p className="text-gray-600 text-sm">
               {showOTP
-                ? `تم إرسال رمز التحقق إلى ${formData.mobile} 📲`
+                ? `تم إرسال رمز التحقق إلى ${formData.mobile_number} 📲`
                 : isLogin
                 ? "أدخل بياناتك للوصول إلى دوراتك المفضلة 📚"
                 : "ابدأ رحلتك نحو التفوق في التوجيهي 🌟"}
@@ -338,7 +338,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   <div className="relative">
                     <input
                       type="tel"
-                      {...register("mobile", {
+                      {...register("mobile_number", {
                         required: "رقم الهاتف مطلوب",
                         pattern: {
                           value: /^07[0-9]{8}$/,
@@ -357,9 +357,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
                       placeholder="07XXXXXXXX"
                     />
-                    {errors.mobile && (
+                    {errors.mobile_number && (
                       <span className="text-sm text-red-500">
-                        {errors.mobile.message}
+                        {errors.mobile_number.message}
                       </span>
                     )}
                   </div>

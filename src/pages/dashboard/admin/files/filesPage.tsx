@@ -203,7 +203,7 @@ const ResourcesPage = () => {
     selectedResources.is_free &&
       formData.append("is_free", selectedResources.is_free || false);
     selectedResources.is_published &&
-      formData.append("is_published", selectedResources.is_published || false);
+      formData.append("is_published", selectedResources.is_published || true);
     if (
       selectedResources.image &&
       typeof (selectedResources.image as any).name === "string" &&
@@ -295,7 +295,7 @@ const ResourcesPage = () => {
     uploadResources.is_free &&
       formData.append("is_free", uploadResources.is_free || false);
     uploadResources.is_published &&
-      formData.append("is_published", uploadResources.is_published || false);
+      formData.append("is_published", uploadResources.is_published || true);
     if (
       uploadResources.image &&
       typeof (uploadResources.image as any).name === "string" &&
@@ -805,7 +805,7 @@ const ResourcesPage = () => {
                   <input
                     type="checkbox"
                     id="isPublished"
-                    checked={uploadResources?.is_published || false}
+                    checked={uploadResources?.is_published || true}
                     onChange={(e) =>
                       setUploadResources({
                         ...uploadResources,
@@ -1212,7 +1212,7 @@ const ResourcesPage = () => {
                   <input
                     type="checkbox"
                     id="isPublished"
-                    checked={selectedResources?.is_published || false}
+                    checked={selectedResources?.is_published || true}
                     onChange={(e) =>
                       setSelectedResources({
                         ...selectedResources,

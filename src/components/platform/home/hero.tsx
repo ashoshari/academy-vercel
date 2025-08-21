@@ -40,7 +40,7 @@ const Hero: React.FC = () => {
     if (stopSlider) return;
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, [nextSlide, slides.length]);
+  }, [nextSlide, slides.length, stopSlider]);
   return (
     <section className="relative h-[75vh] overflow-hidden bg-gray-900">
       <section className="relative h-full overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900">
@@ -176,8 +176,7 @@ const Hero: React.FC = () => {
                           ></iframe>
                           <button
                             onClick={() => {
-                              console.log("Play video clicked");
-                              setStopSlider(true);
+                              setStopSlider(!stopSlider);
                             }}
                             className="cursor-pointer absolute bottom-4 right-4 bg-white text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm"
                           >
@@ -243,11 +242,7 @@ const Hero: React.FC = () => {
           </>
         ) : (
           <div className="h-full flex flex-col justify-center items-center">
-            <img
-              src={ErrorIllustration}
-              className="h-80 w-80"
-              alt="Error"
-            />
+            <img src={ErrorIllustration} className="h-80 w-80" alt="Error" />
             <h2 className="text-white text-2xl">لا يوجد سلايدات لعرضها</h2>
           </div>
         )}
