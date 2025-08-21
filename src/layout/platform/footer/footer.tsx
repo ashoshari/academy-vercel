@@ -11,7 +11,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { PiTiktokLogoLight } from "react-icons/pi";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useNavigate } from "react-router";
-import { Link } from "react-router";
+// import { Link } from "react-router";
 
 const Footer: React.FC = () => {
   const { data } = useCustomQuery("/core/footer/", ["footer"]);
