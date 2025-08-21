@@ -126,7 +126,7 @@ const Layout = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-6">
-        <div className="min-h-screen relative overflow-hidden" dir="rtl">
+        <div className="min-h-screen relative overflow-auto" dir="rtl">
           <AnimatedBackground />
           <div className="relative z-10">{<Outlet />}</div>
         </div>

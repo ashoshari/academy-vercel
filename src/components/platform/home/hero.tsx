@@ -71,10 +71,16 @@ const Hero: React.FC = () => {
             {/* Content */}
             <div className="relative z-20 h-full flex items-center">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
+                    stopSlider ? "lg:grid-col-1" : ""
+                  }`}
+                >
                   {/* Text Content */}
                   <div
                     className={`text-white space-y-8 transform transition-all duration-1000 ${
+                      stopSlider ? "hidden" : "block"
+                    } ${
                       mounted
                         ? "translate-x-0 opacity-100"
                         : "translate-x-10 opacity-0"
@@ -135,7 +141,9 @@ const Hero: React.FC = () => {
 
                   {/* Video/Image Preview */}
                   <div
-                    className={`relative transform transition-all duration-1000 delay-300 ${
+                    className={`${
+                      stopSlider ? "lg:col-span-2" : ""
+                    } relative transform transition-all duration-1000 delay-300 ${
                       mounted
                         ? "translate-x-0 opacity-100"
                         : "-translate-x-10 opacity-0"
@@ -178,9 +186,9 @@ const Hero: React.FC = () => {
                             onClick={() => {
                               setStopSlider(!stopSlider);
                             }}
-                            className="cursor-pointer absolute bottom-4 right-4 bg-white text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm"
+                            className={`cursor-pointer absolute bottom-4 right-4 bg-white hover:bg-gradient-to-r hover:text-white hover:from-yellow-400 hover:to-orange-500 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm`}
                           >
-                            شاهد الفيديو
+                            {!stopSlider ? " ▶️ شاهد الفيديو" : "  ❌ أوقف الفيديو"}
                           </button>
                         </>
                       )}
@@ -213,20 +221,30 @@ const Hero: React.FC = () => {
 
             {/* Navigation Arrows */}
             <button
-              onClick={prevSlide}
+              onClick={() => {
+                setStopSlider(false);
+                prevSlide();
+              }}
               className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
             >
               <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
             </button>
             <button
-              onClick={nextSlide}
+              onClick={() => {
+                setStopSlider(false);
+                nextSlide();
+              }}
               className="cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
             >
               <ChevronRight className="cursor-pointer w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
             </button>
 
             {/* Slide Indicators */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
+            <div
+              className={`absolute ${
+                stopSlider ? "hidden" : "block"
+              } bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3`}
+            >
               {slides?.map((_: any, index: number) => (
                 <button
                   key={index}
