@@ -29,7 +29,11 @@ interface AuthModalProps {
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [showOTP, setShowOTP] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [
+    // isLoading,
+    _,
+    setIsLoading,
+  ] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     mobile: "",
@@ -48,7 +52,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue,
+    // setValue,
     reset,
   } = useForm<FormData>();
   const setTokens = useTokenStore((state) => state.setTokens);
@@ -196,16 +200,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   //   }, 1500);
   // };
 
-  const resetForm = () => {
+  // const resetForm = () => {
 
-    setFormData({
-      fullName: "",
-      mobile: "",
-      password: "",
-      otp: "",
-    });
-    setShowOTP(false);
-  };
+  //   setFormData({
+  //     fullName: "",
+  //     mobile: "",
+  //     password: "",
+  //     otp: "",
+  //   });
+  //   setShowOTP(false);
+  // };
 
   const switchMode = () => {
     setIsLogin(!isLogin);
@@ -317,7 +321,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                       // }
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
                       placeholder="أدخل اسمك الكامل"
-                      
                     />
                     {errors.fullName && (
                       <span className="text-sm text-red-500">

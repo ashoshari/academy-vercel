@@ -4,7 +4,6 @@ import {
   Search,
   Edit,
   // Trash2,
-  ArrowLeft,
   ArrowRight,
   ArrowUp,
   ArrowDown,

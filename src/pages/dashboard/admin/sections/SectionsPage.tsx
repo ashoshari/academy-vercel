@@ -21,7 +21,6 @@ import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import Spinner from "@/components/dashboard/Spinner";
-import { useNavigate } from "react-router";
 // import { formatDateTimeSimple } from "@/utils/formatDateTime";
 // import Pagination from "@/components/dashboard/core/Pagination";
 
@@ -442,7 +441,6 @@ const ConfirmToggleModal = ({
 };
 
 const SectionsPage = () => {
-  const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedSection, setSelectedSection] = useState<MainSection | null>(
