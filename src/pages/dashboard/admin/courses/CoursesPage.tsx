@@ -155,7 +155,7 @@ const CoursesPage = () => {
         newCourse.specialization_material
       );
     newCourse.is_published &&
-      formData.append("is_published", newCourse.is_published || true);
+      formData.append("is_published", newCourse.is_published ?? true);
     newCourse.is_special &&
       formData.append("is_special", newCourse.is_special || false);
     if (newCourse.image instanceof File && newCourse.image) {
