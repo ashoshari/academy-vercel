@@ -146,7 +146,7 @@ const Sidebar = ({
       )
     );
   };
-  const handleLessonClick = (lesson: any, lessonIndex: number) => {
+  const handleLessonClick = (lesson: any) => {
     if (lesson?.is_completed) {
       setCurrentLesson(lesson);
       // setActive(lessonIndex);
@@ -289,7 +289,7 @@ const Sidebar = ({
                                       (lesson: any, index: number) => (
                                         <button
                                           onClick={() =>
-                                            handleLessonClick(lesson, index)
+                                            handleLessonClick(lesson)
                                           }
                                           key={lesson?.id}
                                           className={`my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 

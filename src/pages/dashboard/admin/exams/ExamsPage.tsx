@@ -182,8 +182,8 @@ const ExamsPage = () => {
     "exams-statistics",
   ]);
   // GET Codes
-  const { data: cards } = useCustomQuery("/cards/", ["cards"]);
-  const cardsData = cards?.data;
+  // const { data: cards } = useCustomQuery("/cards/", ["cards"]);
+  // const cardsData = cards?.data;
   const updateExam = useCustomUpdate(
     `/training/admin/exams/${selectedExam?.id}/`,
     ["exams"]
