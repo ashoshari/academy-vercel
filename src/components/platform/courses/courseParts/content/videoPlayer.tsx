@@ -90,16 +90,16 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
         <div className="flex items-center justify-between">
           <button
             onClick={markLessonComplete}
-            disabled={currentLesson?.isCompleted}
+            disabled={currentLesson?.is_completed}
             className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
-              currentLesson?.isCompleted
+              currentLesson?.is_completed
                 ? "bg-green-100 text-green-800 cursor-not-allowed"
                 : "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
             }`}
           >
             <CheckCircle className="w-5 h-5" />
             <span>
-              {currentLesson?.isCompleted ? "مكتمل" : "وضع علامة مكتمل"}
+              {currentLesson?.is_completed ? "مكتمل" : "وضع علامة مكتمل"}
             </span>
           </button>
         </div>
