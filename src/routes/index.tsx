@@ -14,7 +14,7 @@ import ContactPage from "@/pages/Contact";
 // Platform
 import { PlatformLayout } from "@/layout/platform/layout";
 import Home from "@/pages/platform/Home";
-import Courses from "@/pages/platform/courses";
+import TreePage from "@/pages/platform/treePage";
 import TermsAndConditions from "@/pages/platform/termsAndConditions";
 import PrivacyPolicy from "@/pages/platform/privacyPolicy";
 import TeacherProfile from "@/pages/platform/teacher";
@@ -43,7 +43,7 @@ import AddStudentPage from "@/pages/dashboard/admin/students/AddStudentPage";
 import EditStudentPage from "@/pages/dashboard/admin/students/EditStudentPage";
 import StudentDetailsPage from "@/pages/dashboard/admin/students/StudentDetailsPage";
 import ExamsPage from "@/pages/dashboard/admin/exams/ExamsPage";
-import ResourcessPage from "@/pages/dashboard/admin/files/filesPage";
+import ResourcesPage from "@/pages/dashboard/admin/files/filesPage";
 import SliderPage from "@/pages/dashboard/admin/sliders/SliderPage";
 
 export default function AppRoutes() {
@@ -54,7 +54,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/" element={<PlatformLayout />}>
           <Route index element={<Home />} />
-          <Route path="sections/:navHeaderId" element={<Courses />} />
+          <Route path="sections/:navHeaderId" element={<TreePage />} />
           <Route path="all-courses" element={<AllCourses />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
           <Route path="coursePage/:courseId" element={<CoursePage />} />
@@ -92,7 +92,7 @@ export default function AppRoutes() {
             {/* exams */}
 
             {/* files */}
-            <Route path="files" element={<ResourcessPage />} />
+            <Route path="files" element={<ResourcesPage />} />
             {/* files */}
 
             {/* slider */}

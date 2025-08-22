@@ -1,25 +1,17 @@
-import {
-  // useEffect,
-  useState,
-} from "react";
+import { useState } from "react";
 import {
   Search,
   Eye,
   CheckCircle,
-  // BarChart3,
-  // PieChart,
-  // Star,
   X,
   UploadCloud,
   Folder,
   Upload,
   Files,
   Download,
-  // ExternalLink,
   Trash2,
-  // Share,
-  // Unlock,
-  // Lock,
+  Plus,
+  Users,
   FolderOpen,
   FileText,
   FileImage,
@@ -29,7 +21,6 @@ import {
   File,
   Pen,
   EyeOff,
-  // Table,
   Grid,
   Rows,
   XSquare,
@@ -43,36 +34,18 @@ import {
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
-// import Loader from "@/components/core/Loader";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import Spinner from "@/components/dashboard/Spinner";
-const ResourcessPage = () => {
-  // const [currentView, setCurrentView] = useState<
-  //   "list" | "create" | "edit" | "content"
-  // >("list");
-  // const [currentPath, setCurrentPath] = useState<any>(null);
+
+const ResourcesPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  // const [resourcesTypeFilter, setResourcesTypeFilter] = useState<
-  //   "all" | "folder" | "document" | "image" | "video" | "audio" | "archive"
-  // >("all");
-  // const [accessFilter, setAccessFilter] = useState<
-  //   "all" | "public" | "students" | "teachers" | "admin"
-  // >("all");
 
   // Filter
   const [searchTerm, setSearchTerm] = useState("");
-  // const [teacherFilter, setTeacherFilter] = useState<any>(null);
-  // const [lessonFilter, setLessonFilter] = useState<any>(null);
   const [typeFilter, setTypeFilter] = useState<any>(null);
-  // const [specializationFilter, setSpecializationFilter] = useState<string>("");
-  // const [specializationMaterialFilter, setSpecializationMaterialFilter] =
-  //   useState<string>("");
   const [statusFilter, setStatusFilter] = useState<any>("all");
-  // const [levelFilter] = useState<
-  //   "all" | "beginner" | "intermediate" | "advanced"
-  // >("all");
 
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const types = ["resources", "bookses", "ministerial_questions", "files"];
@@ -230,7 +203,7 @@ const ResourcessPage = () => {
     selectedResources.is_free &&
       formData.append("is_free", selectedResources.is_free || false);
     selectedResources.is_published &&
-      formData.append("is_published", selectedResources.is_published || false);
+      formData.append("is_published", selectedResources.is_published || true);
     if (
       selectedResources.image &&
       typeof (selectedResources.image as any).name === "string" &&
@@ -322,7 +295,7 @@ const ResourcessPage = () => {
     uploadResources.is_free &&
       formData.append("is_free", uploadResources.is_free || false);
     uploadResources.is_published &&
-      formData.append("is_published", uploadResources.is_published || false);
+      formData.append("is_published", uploadResources.is_published || true);
     if (
       uploadResources.image &&
       typeof (uploadResources.image as any).name === "string" &&
@@ -405,7 +378,7 @@ const ResourcessPage = () => {
                 setSelectedResources(resource);
                 setShowEditModal(true);
               }}
-              className={`p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-blue-500/80 transition-colors`}
+              className={`cursor-pointer p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-blue-500/80 transition-colors`}
               title={"تعديل الملف"}
             >
               <Pen size={16} />
@@ -413,7 +386,7 @@ const ResourcessPage = () => {
 
             <button
               onClick={() => handleDeleteFile(resource?.id)}
-              className="p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-red-500/80 transition-colors"
+              className="cursor-pointer p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-red-500/80 transition-colors"
               title="حذف الملف"
             >
               <Trash2 size={16} />
@@ -521,7 +494,7 @@ const ResourcessPage = () => {
               </h2>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <X size={20} />
               </button>
@@ -656,7 +629,7 @@ const ResourcessPage = () => {
                           file: null, // Clear the single file
                         });
                       }}
-                      className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                      className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
                     >
                       <X size={14} />
                     </button>
@@ -832,7 +805,7 @@ const ResourcessPage = () => {
                   <input
                     type="checkbox"
                     id="isPublished"
-                    checked={uploadResources?.is_published || false}
+                    checked={uploadResources?.is_published || true}
                     onChange={(e) =>
                       setUploadResources({
                         ...uploadResources,
@@ -895,7 +868,7 @@ const ResourcessPage = () => {
           <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
             <button
               onClick={() => setShowCreateModal(false)}
-              className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
@@ -1239,7 +1212,7 @@ const ResourcessPage = () => {
                   <input
                     type="checkbox"
                     id="isPublished"
-                    checked={selectedResources?.is_published || false}
+                    checked={selectedResources?.is_published || true}
                     onChange={(e) =>
                       setSelectedResources({
                         ...selectedResources,
@@ -1354,7 +1327,7 @@ const ResourcessPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الملفات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {resourcesStatsData?.total_resources || 0}
+                {resourcesStatsData?.total_resources || "-"}
               </p>
             </div>
             <Files className="w-12 h-12 text-orange-500" />
@@ -1366,7 +1339,7 @@ const ResourcessPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الملفات النشطة</p>
               <p className="text-3xl font-bold text-green-600">
-                {resourcesStatsData?.total_published || 0}
+                {resourcesStatsData?.total_published || "-"}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-green-500" />
@@ -1378,7 +1351,7 @@ const ResourcessPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي التحميلات</p>
               <p className="text-3xl font-bold text-blue-600">
-                {resourcesStatsData?.total_downloads || 0}
+                {resourcesStatsData?.total_downloads || "-"}
               </p>
             </div>
             <Download className="w-12 h-12 text-blue-500" />
@@ -1533,30 +1506,21 @@ const ResourcessPage = () => {
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
-      ) : resourcesData?.length === 0 ? (
+      ) : !resourcesData || resourcesData?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
-          <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
-            {searchTerm || typeFilter !== "" || statusFilter !== "all"
-              ? "لا توجد نتائج"
-              : "المجلد فارغ"}
+            لا توجد نتائج
           </h3>
-          <p className="text-gray-500 mb-6">
-            {searchTerm || typeFilter !== "" || statusFilter !== "all"
-              ? "لم يتم العثور على ملفات تطابق المعايير المحددة"
-              : "ابدأ برفع ملفات أو إنشاء مجلدات جديدة"}
-          </p>
-          {!searchTerm && typeFilter === "" && statusFilter === "all" && (
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2"
-              >
-                <Upload size={16} />
-                رفع ملفات
-              </button>
-            </div>
-          )}
+          <p className="text-gray-500 mb-6">ابدأ بإضافة ملفات جديدة للمنصة</p>
+
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+          >
+            <Plus size={16} />
+            إضافة ملف جديد
+          </button>
         </div>
       ) : viewMode === "grid" ? (
         <>
@@ -1694,4 +1658,4 @@ const ResourcessPage = () => {
     </div>
   );
 };
-export default ResourcessPage;
+export default ResourcesPage;

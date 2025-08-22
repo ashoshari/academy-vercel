@@ -99,7 +99,7 @@ const GenerateModal = ({
             </h2>
             <button
               onClick={() => setShowGenerateModal(false)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <X size={20} />
             </button>
@@ -343,7 +343,7 @@ const GenerateModal = ({
         <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
           <button
             onClick={() => setShowGenerateModal(false)}
-            className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+            className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
           >
             إلغاء
           </button>
@@ -357,7 +357,7 @@ const GenerateModal = ({
                   (generateForm.targetingType === "specific" &&
                     generateForm.targetedSubsections.length === 0)
             }
-            className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
             {loading ? "جارى التحميل..." : "     إنشاء الكودات"}

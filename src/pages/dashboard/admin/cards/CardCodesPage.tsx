@@ -22,6 +22,7 @@ import {
   FolderTree,
   ChevronDown,
   ChevronUp,
+  Users,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
@@ -77,11 +78,10 @@ const CardCodesPage = () => {
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [selectedPriceFilter
+  const [
+    selectedPriceFilter,
     // , setSelectedPriceFilter
-  ] = useState<string | null>(
-    null
-  );
+  ] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
@@ -425,7 +425,7 @@ const CardCodesPage = () => {
             className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
-            إنشاء كودات
+            إضافة كودات
           </button>
         </div>
       </div>
@@ -437,7 +437,7 @@ const CardCodesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الكودات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {cardCodesStatistics?.data?.data?.total_generated_codes}
+                {cardCodesStatistics?.data?.data?.total_generated_codes || "-"}
               </p>
             </div>
             <Hash className="w-12 h-12 text-orange-500" />
@@ -449,7 +449,7 @@ const CardCodesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الكودات المستخدمة</p>
               <p className="text-3xl font-bold text-red-600">
-                {cardCodesStatistics?.data?.data?.used_generated_codes}
+                {cardCodesStatistics?.data?.data?.used_generated_codes || "-"}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-red-500" />
@@ -461,7 +461,7 @@ const CardCodesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الكودات المتاحة</p>
               <p className="text-3xl font-bold text-green-600">
-                {cardCodesStatistics?.data?.data?.unused_generated_codes}
+                {cardCodesStatistics?.data?.data?.unused_generated_codes || "-"}
               </p>
             </div>
             <CreditCard className="w-12 h-12 text-green-500" />
@@ -481,7 +481,13 @@ const CardCodesPage = () => {
           </h2>
           {isExpanded ? <ChevronDown /> : <ChevronUp />}
         </button>
-        <div className={`${isExpanded ? "block" : "hidden"} p-6`}>
+        <div
+          className={`${
+            !cardCodes?.data?.data || cardCodes?.data?.data?.length === 0
+              ? "hidden"
+              : "block"
+          } ${isExpanded ? "block" : "hidden"} p-6`}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {cardCodes?.data?.data?.map((batch: any) => {
               const targeting = getTargetingDisplay(
@@ -715,7 +721,7 @@ const CardCodesPage = () => {
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-3">
           {/* Search */}
-          <div className="relative">
+          <div className="relative col-span-1 lg:col-span-2">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
@@ -780,158 +786,176 @@ const CardCodesPage = () => {
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
-      ) : (
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-bold text-gray-800">قائمة الكودات</h2>
-          </div>
-          {/* Responsive Table */}
-          <div className="w-full max-w-[300px] min-w-full overflow-scroll pb-6">
-            <table className="min-w-[1000px] text-sm bg-white">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                    الكود
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                    السعر
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                    المجموعة
-                  </th>
+      ) : !generateCodes?.data?.data ||
+        generateCodes?.data?.data?.length === 0 ? (
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-800 mb-2">
+            لا توجد نتائج
+          </h3>
+          <p className="text-gray-500 mb-6">ابدأ بإضافة كودات جديدة للمنصة</p>
 
-                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                    الحالة
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                    مستخدم بواسطة
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                    تاريخ الاستخدام
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                    تاريخ الإنشاء
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                    الإجراءات
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {generateCodes?.data?.data?.map((code: any) => {
-                  return (
-                    <tr key={code.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-medium text-gray-900 truncate max-w-[100px]">
-                            {code.code_string}
-                          </span>
-                          <button
-                            onClick={() => copyToClipboard(code.code_string)}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                            title="نسخ الكود"
-                          >
-                            <Copy size={14} />
-                          </button>
-                        </div>
-                      </td>
-
-                      <td className="px-4 py-3 text-gray-900">
-                        {code.code.card.price} د.أ
-                      </td>
-
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {code.code.name}
-                        </div>
-
-                        <div className="text-xs text-gray-500">
-                          بواسطة: {code.code.generated_by}
-                        </div>
-                      </td>
-
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex gap-2">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              code.is_used
-                                ? "bg-red-100 text-red-800"
-                                : "bg-green-100 text-green-800"
-                            }`}
-                          >
-                            {code.is_used ? "مستخدم" : "متاح"}
-                          </span>
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              code.is_active
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-gray-100 text-gray-800"
-                            }`}
-                          >
-                            {code.is_active ? "مفعل" : "معطل"}
-                          </span>
-                        </div>
-                      </td>
-
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {code.used_by?.map((el: any) => el.name).join(", ") ||
-                          "-"}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {code.updated_at
-                          ? formatDateTimeSimple(code.updated_at)
-                          : "-"}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">
-                        {formatDateTimeSimple(code.created_at)}
-                      </td>
-
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => toggleCodeStatus(code.id)}
-                            className={`cursor-pointer p-1 rounded transition-colors ${
-                              code.is_active
-                                ? "text-green-600 hover:bg-green-50"
-                                : "text-gray-400 hover:bg-gray-50"
-                            }`}
-                            title={
-                              code.is_active ? "تعطيل الكود" : "تفعيل الكود"
-                            }
-                          >
-                            {code.is_active ? (
-                              <Eye size={16} />
-                            ) : (
-                              <EyeOff size={16} />
-                            )}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            <Pagination
-              count={generateCodes?.data?.pagination?.count}
-              currentPage={page}
-              onPageChange={setPage}
-            />
-
-            {cardCodes?.data?.data?.generated_codes?.length === 0 && (
-              <div className="text-center py-12">
-                <Hash className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-800 mb-2">
-                  لا توجد كودات
-                </h3>
-                <p className="text-gray-500">
-                  لم يتم العثور على كودات تطابق المعايير المحددة
-                </p>
-              </div>
-            )}
-          </div>
+          <button
+            onClick={() => setShowGenerateModal(true)}
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+          >
+            <Plus size={16} />
+            إضافة كودات جديدة
+          </button>
         </div>
+      ) : (
+        <>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-gray-800">قائمة الكودات</h2>
+            </div>
+            {/* Responsive Table */}
+            <div className="w-full max-w-[300px] min-w-full overflow-auto pb-6">
+              <table className="min-w-[1000px] w-full text-sm bg-white">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      الكود
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      السعر
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      المجموعة
+                    </th>
+
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      الحالة
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      مستخدم بواسطة
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      تاريخ الاستخدام
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      تاريخ الإنشاء
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      الإجراءات
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {generateCodes?.data?.data?.map((code: any) => {
+                    return (
+                      <tr key={code.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs font-medium text-gray-900 truncate max-w-[100px]">
+                              {code.code_string}
+                            </span>
+                            <button
+                              onClick={() => copyToClipboard(code.code_string)}
+                              className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                              title="نسخ الكود"
+                            >
+                              <Copy size={14} />
+                            </button>
+                          </div>
+                        </td>
+
+                        <td className="px-4 py-3 text-gray-900">
+                          {code.code.card.price} د.أ
+                        </td>
+
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {code.code.name}
+                          </div>
+
+                          <div className="text-xs text-gray-500">
+                            بواسطة: {code.code.generated_by}
+                          </div>
+                        </td>
+
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="flex gap-2">
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                code.is_used
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-green-100 text-green-800"
+                              }`}
+                            >
+                              {code.is_used ? "مستخدم" : "متاح"}
+                            </span>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                code.is_active
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}
+                            >
+                              {code.is_active ? "مفعل" : "معطل"}
+                            </span>
+                          </div>
+                        </td>
+
+                        <td className="px-4 py-3 text-sm text-gray-900">
+                          {code.used_by?.map((el: any) => el.name).join(", ") ||
+                            "-"}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-900">
+                          {code.updated_at
+                            ? formatDateTimeSimple(code.updated_at)
+                            : "-"}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-900">
+                          {formatDateTimeSimple(code.created_at)}
+                        </td>
+
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => toggleCodeStatus(code.id)}
+                              className={`cursor-pointer p-1 rounded transition-colors ${
+                                code.is_active
+                                  ? "text-green-600 hover:bg-green-50"
+                                  : "text-gray-400 hover:bg-gray-50"
+                              }`}
+                              title={
+                                code.is_active ? "تعطيل الكود" : "تفعيل الكود"
+                              }
+                            >
+                              {code.is_active ? (
+                                <Eye size={16} />
+                              ) : (
+                                <EyeOff size={16} />
+                              )}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+
+              {cardCodes?.data?.data?.generated_codes?.length === 0 && (
+                <div className="text-center py-12">
+                  <Hash className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">
+                    لا توجد كودات
+                  </h3>
+                  <p className="text-gray-500">
+                    لم يتم العثور على كودات تطابق المعايير المحددة
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+          <Pagination
+            count={generateCodes?.data?.pagination?.count}
+            currentPage={page}
+            onPageChange={setPage}
+          />
+        </>
       )}
 
       {/* Generate Modal */}

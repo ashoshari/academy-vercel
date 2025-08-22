@@ -106,7 +106,7 @@ const CoursesPage = () => {
   const spec = subsub?.specializations?.find(
     (sp: any) => sp.id === selectedSpec
   );
-  console.log("spec",spec)
+  console.log("spec", spec);
 
   const [courses, setCourses] = useState<any>();
   useEffect(() => {
@@ -155,7 +155,7 @@ const CoursesPage = () => {
         newCourse.specialization_material
       );
     newCourse.is_published &&
-      formData.append("is_published", newCourse.is_published || false);
+      formData.append("is_published", newCourse.is_published || true);
     newCourse.is_special &&
       formData.append("is_special", newCourse.is_special || false);
     if (newCourse.image instanceof File && newCourse.image) {
@@ -201,6 +201,7 @@ const CoursesPage = () => {
 
     try {
       const formData = new FormData();
+
       Object.entries(changedData).forEach(([key, value]) => {
         if (value instanceof File) {
           formData.append(key, value);
@@ -1786,7 +1787,7 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الدورات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {courseStatsData?.total_courses || 0}
+                {courseStatsData?.total_courses || "-"}
               </p>
             </div>
             <BookOpen className="w-12 h-12 text-orange-500" />
@@ -1798,7 +1799,7 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الدورات النشطة</p>
               <p className="text-3xl font-bold text-green-600">
-                {courseStatsData?.active_courses || 0}
+                {courseStatsData?.active_courses || "-"}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-green-500" />
@@ -1810,7 +1811,7 @@ const CoursesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
               <p className="text-3xl font-bold text-blue-600">
-                {courseStatsData?.total_students_in_enrolled_courses || 0}
+                {courseStatsData?.total_students_in_enrolled_courses || "-"}
               </p>
             </div>
             <Users className="w-12 h-12 text-blue-500" />
@@ -1926,6 +1927,22 @@ const CoursesPage = () => {
       {isLoading ? (
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
+      ) : !courseData || courseData?.length === 0 ? (
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-800 mb-2">
+            لا توجد نتائج
+          </h3>
+          <p className="text-gray-500 mb-6">ابدأ بإضافة دورة جديدة للمنصة</p>
+
+          <button
+            onClick={() => setCurrentView("create")}
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+          >
+            <Plus size={16} />
+            إضافة دورة جديدة
+          </button>
         </div>
       ) : viewMode === "grid" ? (
         <>

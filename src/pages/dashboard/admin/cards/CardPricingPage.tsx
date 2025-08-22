@@ -9,6 +9,7 @@ import {
   ToggleRight,
   Eye,
   EyeOff,
+  Users,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -205,7 +206,7 @@ const CardPricingPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة سعر جديد
@@ -230,19 +231,19 @@ const CardPricingPage = () => {
         </div> */}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-orange-600">
-            {cardStatistics?.data?.data?.total_cards}
+            {cardStatistics?.data?.data?.total_cards || "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأسعار</p>
         </div>
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-green-600">
-            {cardStatistics?.data?.data?.active_cards}
+            {cardStatistics?.data?.data?.active_cards || "-"}
           </p>
           <p className="text-sm text-gray-600"> الأسعار المفعلة</p>
         </div>{" "}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-green-600">
-            {cardStatistics?.data?.data?.inactive_cards}
+            {cardStatistics?.data?.data?.inactive_cards || "-"}
           </p>
           <p className="text-sm text-gray-600"> الأسعار غير المفعلة</p>
         </div>
@@ -252,6 +253,24 @@ const CardPricingPage = () => {
       {cards?.isLoading ? (
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
+        </div>
+      ) : !cards?.data?.data || cards?.data?.data.length > 0 ? (
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-800 mb-2">
+            لا توجد نتائج
+          </h3>
+          <p className="text-gray-500 mb-6">
+            ابدأ بإضافة أسعار جديدة للمنصة
+          </p>
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+          >
+            <Plus size={16} />
+            إضافة سعر جديد
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
@@ -355,7 +374,7 @@ const CardPricingPage = () => {
               {!searchTerm && (
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة سعر جديد
@@ -377,7 +396,7 @@ const CardPricingPage = () => {
                 </h2>
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -419,7 +438,7 @@ const CardPricingPage = () => {
                   onClick={() =>
                     setNewCard({ ...newCard, is_active: !newCard.is_active })
                   }
-                  className={`p-1 rounded-full transition-colors ${
+                  className={`cursor-pointer p-1 rounded-full transition-colors ${
                     newCard.is_active ? "text-green-600" : "text-gray-400"
                   }`}
                 >
@@ -435,13 +454,13 @@ const CardPricingPage = () => {
             <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+                className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 إلغاء
               </button>
               <button
                 onClick={handleAddCard}
-                className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
               >
                 <Save size={16} />
                 حفظ السعر

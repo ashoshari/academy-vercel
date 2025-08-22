@@ -221,7 +221,6 @@ const ExamsPage = () => {
   }, [singleExam?.data?.data]);
 
   const handleCreateExam = () => {
-
     addExam
       .mutateAsync(newExam)
       .then((res) => {
@@ -1496,7 +1495,7 @@ const ExamsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الامتحانات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {dataStatistcs?.data?.data?.total_exams}
+                {dataStatistcs?.data?.data?.total_exams || "-"}
               </p>
             </div>
             <FileText className="w-12 h-12 text-orange-500" />
@@ -1508,7 +1507,7 @@ const ExamsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الامتحانات النشطة</p>
               <p className="text-3xl font-bold text-green-600">
-                {dataStatistcs?.data?.data?.active_exams}
+                {dataStatistcs?.data?.data?.active_exams || "-"}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-green-500" />
@@ -1520,7 +1519,7 @@ const ExamsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي المحاولات</p>
               <p className="text-3xl font-bold text-blue-600">
-                {dataStatistcs?.data?.data?.total_attempts}
+                {dataStatistcs?.data?.data?.total_attempts || "-"}
               </p>
             </div>
             <Users className="w-12 h-12 text-blue-500" />
@@ -1532,7 +1531,7 @@ const ExamsPage = () => {
             <div>
               <p className="text-gray-500 text-sm"> الاختبارات غير النشطة </p>
               <p className="text-3xl font-bold text-orange-600">
-                {dataStatistcs?.data?.data?.inactive_exams}
+                {dataStatistcs?.data?.data?.inactive_exams || "-"}
               </p>
             </div>
             <Award className="w-12 h-12 text-orange-500" />
@@ -1626,20 +1625,38 @@ const ExamsPage = () => {
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
+      ) : !data?.data?.data || data?.data?.data?.length === 0 ? (
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-800 mb-2">
+            لا توجد نتائج
+          </h3>
+          <p className="text-gray-500 mb-6">
+            ابدأ بإضافة امتحانات جديدة للمنصة
+          </p>
+
+          <button
+            onClick={() => setCurrentView("create")}
+            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+          >
+            <Plus size={16} />
+            إضافة امتحان جديد
+          </button>
+        </div>
       ) : currentView == "grid" ? (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data?.data?.data?.map((exam: any) => (
               <ExamCard key={exam.id} exam={exam} />
             ))}
-            <Pagination
-              currentPage={page}
-              count={paginationData?.count}
-              onPageChange={setPage}
-            />
           </div>
+          <Pagination
+            currentPage={page}
+            count={paginationData?.count}
+            onPageChange={setPage}
+          />
 
-          {data?.data?.data?.length === 0 && (
+          {/* {data?.data?.data?.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
               <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
@@ -1654,152 +1671,154 @@ const ExamsPage = () => {
                 إنشاء امتحان جديد
               </button>
             </div>
-          )}
+          )} */}
         </div>
       ) : (
-        // Table View
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الامتحان
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    المادة
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    النوع
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    مدة الامتحان
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    عدد الأسئلة
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    إجمالي الدرجات
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    درجات النجاح
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الحالة
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    الإجراءات
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {data?.data?.data?.map((exam: any) => (
-                  <tr key={exam?.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="font-medium text-gray-900 line-clamp-1">
-                          {exam?.title}
+        <>
+          {/* Table View */}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الامتحان
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      المادة
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      النوع
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      مدة الامتحان
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      عدد الأسئلة
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      إجمالي الدرجات
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      درجات النجاح
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الحالة
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الإجراءات
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className=" divide-y divide-gray-200">
+                  {data?.data?.data?.map((exam: any) => (
+                    <tr key={exam?.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="font-medium text-gray-900 line-clamp-1">
+                            {exam?.title}
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam?.material?.name || "-"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
-                          exam?.type?.name
-                        )}`}
-                      >
-                        {exam?.type?.name}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam?.time_in_minutes} دقيقة
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam?.number_of_questions}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam?.total_marks}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {exam?.passing_marks}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex gap-2">
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {exam?.material?.name || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            exam.is_published
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
+                            exam?.type?.name
+                          )}`}
                         >
-                          {exam.is_published ? "منشور" : "مسودة"}
+                          {exam?.type?.name}
                         </span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            exam.is_free
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {exam.is_free ? "مجاني" : "مدفوع"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedExam(exam);
-                            setCurrentView("questions");
-                          }}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                          title="إدارة الأسئلة"
-                        >
-                          <FileText size={16} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedExam(exam);
-                            setCurrentView("results");
-                          }}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-green-600 transition-colors"
-                          title="النتائج"
-                        >
-                          <BarChart3 size={16} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedExam(exam);
-                            setCurrentView("edit");
-                          }}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                          title="تعديل"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        {/* <button
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {exam?.time_in_minutes} دقيقة
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {exam?.number_of_questions}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {exam?.total_marks}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {exam?.passing_marks}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex gap-2">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              exam.is_published
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {exam.is_published ? "منشور" : "مسودة"}
+                          </span>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              exam.is_free
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {exam.is_free ? "مجاني" : "مدفوع"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedExam(exam);
+                              setCurrentView("questions");
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            title="إدارة الأسئلة"
+                          >
+                            <FileText size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedExam(exam);
+                              setCurrentView("results");
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-green-600 transition-colors"
+                            title="النتائج"
+                          >
+                            <BarChart3 size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedExam(exam);
+                              setCurrentView("edit");
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            title="تعديل"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          {/* <button
                           onClick={() => handleDeleteExam(exam.id)}
                           className="p-1 text-gray-400 hover:text-red-600 transition-colors"
                           title="حذف"
                         >
                           <Trash2 size={16} />
                         </button> */}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
           <Pagination
             currentPage={page}
             count={paginationData?.count}
             onPageChange={setPage}
           />
-        </div>
+        </>
       )}
     </div>
   );
