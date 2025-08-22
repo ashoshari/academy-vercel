@@ -33,8 +33,8 @@ const Sidebar = ({
   const setIsExamMode = useExam((state) => state.setIsExamMode);
   const setStartExam = useExam((state) => state.setStartExam);
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
-  const setCurrentLessonIndex = useLesson(
-    (state) => state.setCurrentLessonIndex
+  const setCurrentLesson = useLesson(
+    (state) => state.setCurrentLesson
   );
   useEffect(() => {
     if (courseData?.semesters) {
@@ -60,9 +60,10 @@ const Sidebar = ({
     for (const semester of course?.semesters || []) {
       for (const unit of semester?.units || []) {
         for (const topic of unit?.topics || []) {
-          for (const lesson of topic?.lessons || []) {
+          for (let i = 0; i < topic?.lessons?.length; i++) {
+            const lesson = topic?.lessons[i];
             if (!lesson?.is_completed) {
-              return lesson;
+              return i;
             }
           }
         }
@@ -72,7 +73,8 @@ const Sidebar = ({
   }
   useEffect(() => {
     const lesson = getFirstIncompleteLesson(courseData);
-    if (lesson) setCurrentLessonIndex(lesson || 0);
+    console.log("lesson", lesson);
+    if (lesson) setCurrentLesson(lesson || 0);
   }, [courseData]);
   const toggleSemester = (semesterId: any) => {
     setSemesters((prev: any) =>
@@ -144,9 +146,9 @@ const Sidebar = ({
       )
     );
   };
-  const handleLessonClick = (lesson: any, lessonIndex: number) => {
+  const handleLessonClick = (lesson: any) => {
     if (lesson?.is_completed) {
-      setCurrentLessonIndex(lessonIndex);
+      setCurrentLesson(lesson);
       // setActive(lessonIndex);
       if (lesson?.type != "exam") {
         setIsExamMode(false);
@@ -287,7 +289,7 @@ const Sidebar = ({
                                       (lesson: any, index: number) => (
                                         <button
                                           onClick={() =>
-                                            handleLessonClick(lesson, index)
+                                            handleLessonClick(lesson)
                                           }
                                           key={lesson?.id}
                                           className={`my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 

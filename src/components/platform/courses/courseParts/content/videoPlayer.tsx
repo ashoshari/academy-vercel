@@ -16,6 +16,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
     } catch (error) {
     }
   };
+  console.log("currentLesson", currentLesson);
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video bg-black rounded-t-2xl overflow-hidden">
@@ -23,8 +24,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
           width="100%"
           height="100%"
           src={
-            "https://www.youtube.com/embed/" + currentLesson?.link ||
-            "?si=3uTi5rBiWUGXQ8gT"
+            "https://www.youtube.com/embed/" + currentLesson?.link
           }
           title={currentLesson?.title}
           frameBorder="0"

@@ -182,8 +182,8 @@ const ExamsPage = () => {
     "exams-statistics",
   ]);
   // GET Codes
-  const { data: cards } = useCustomQuery("/cards/", ["cards"]);
-  const cardsData = cards?.data;
+  // const { data: cards } = useCustomQuery("/cards/", ["cards"]);
+  // const cardsData = cards?.data;
   const updateExam = useCustomUpdate(
     `/training/admin/exams/${selectedExam?.id}/`,
     ["exams"]
@@ -590,7 +590,7 @@ const ExamsPage = () => {
                     نوع الامتحان *
                   </label>
                   <select
-                    value={newExam.type}
+                    value={newExam?.type}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -613,7 +613,7 @@ const ExamsPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newExam.time_in_minutes || ""}
+                    value={newExam?.time_in_minutes || ""}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -641,7 +641,7 @@ const ExamsPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newExam.number_of_questions || ""}
+                    value={newExam?.number_of_questions || ""}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -659,7 +659,7 @@ const ExamsPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newExam.total_marks || ""}
+                    value={newExam?.total_marks || ""}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -680,7 +680,7 @@ const ExamsPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newExam.passing_marks || ""}
+                    value={newExam?.passing_marks || ""}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -715,7 +715,7 @@ const ExamsPage = () => {
                     اختر استاذ *
                   </label>
                   <select
-                    value={newExam.teacher}
+                    value={newExam?.teacher}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -742,21 +742,20 @@ const ExamsPage = () => {
                 <div className="space-y-3">
                   <label className="flex items-center gap-3">
                     <input
-                      type="radio"
+                      type="checkbox"
                       name="pricing"
-                      checked={newExam.is_free === true}
-                      onChange={() =>
+                      checked={newExam?.is_free}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewExam({
                           ...newExam,
-                          is_free: true,
-                          price: undefined,
+                          is_free: e.target.checked,
                         })
                       }
                       className="text-orange-600 focus:ring-orange-500"
                     />
                     <span>امتحان مجاني</span>
                   </label>
-                  <label className="flex items-center gap-3">
+                  {/* <label className="flex items-center gap-3">
                     <input
                       type="radio"
                       name="pricing"
@@ -767,9 +766,9 @@ const ExamsPage = () => {
                       className="text-orange-600 focus:ring-orange-500"
                     />
                     <span>امتحان مدفوع</span>
-                  </label>
+                  </label> */}
                 </div>
-                {newExam.is_free === false && (
+                {/* {newExam.is_free === false && (
                   <div className="mt-3">
                     <div className="space-y-2 max-h-32 overflow-y-auto">
                       <div className="col-span-2">
@@ -798,7 +797,7 @@ const ExamsPage = () => {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
                 {/* {newExam.is_free === false && (
                   <div className="mt-3">
                     <input
@@ -828,7 +827,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.enable_countdown || false}
+                    checked={newExam?.enable_countdown || false}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -848,7 +847,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.show_correct_answers || false}
+                    checked={newExam?.show_correct_answers || false}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -868,7 +867,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.shuffle_questions || false}
+                    checked={newExam?.shuffle_questions || false}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -888,7 +887,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.shuffle_answers || false}
+                    checked={newExam?.shuffle_answers || false}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -908,7 +907,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.is_published}
+                    checked={newExam?.is_published}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -936,12 +935,12 @@ const ExamsPage = () => {
             <button
               onClick={handleCreateExam}
               disabled={
-                !newExam.title ||
-                !newExam.description ||
-                !newExam.material ||
-                !newExam.level ||
-                !newExam.type ||
-                !newExam.teacher
+                !newExam?.title ||
+                !newExam?.description ||
+                !newExam?.material ||
+                !newExam?.level ||
+                !newExam?.type ||
+                !newExam?.teacher
               }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1078,7 +1077,7 @@ const ExamsPage = () => {
                   </label>
 
                   <select
-                    value={newExam.material}
+                    value={newExam?.material}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1100,7 +1099,7 @@ const ExamsPage = () => {
                     مستوى الصعوبة
                   </label>
                   <select
-                    value={newExam.level}
+                    value={newExam?.level}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1125,7 +1124,7 @@ const ExamsPage = () => {
                     نوع الامتحان *
                   </label>
                   <select
-                    value={newExam.type}
+                    value={newExam?.type}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1137,7 +1136,7 @@ const ExamsPage = () => {
                     <option value="">اختر نوع الامتحان</option>
                     {types?.data?.data?.map((type: any) => (
                       <option value={type.id} key={type.id}>
-                        {type.name}
+                        {type?.name}
                       </option>
                     ))}
                   </select>
@@ -1148,7 +1147,7 @@ const ExamsPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newExam.time_in_minutes || ""}
+                    value={newExam?.time_in_minutes || ""}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1176,7 +1175,7 @@ const ExamsPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newExam.number_of_questions || ""}
+                    value={newExam?.number_of_questions || ""}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1194,7 +1193,7 @@ const ExamsPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newExam.total_marks || ""}
+                    value={newExam?.total_marks || ""}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1215,7 +1214,7 @@ const ExamsPage = () => {
                   </label>
                   <input
                     type="number"
-                    value={newExam.passing_marks || ""}
+                    value={newExam?.passing_marks || ""}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1250,7 +1249,7 @@ const ExamsPage = () => {
                     اختر استاذ *
                   </label>
                   <select
-                    value={newExam.teacher}
+                    value={newExam?.teacher}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1277,21 +1276,20 @@ const ExamsPage = () => {
                 <div className="space-y-3">
                   <label className="flex items-center gap-3">
                     <input
-                      type="radio"
+                      type="checkbox"
                       name="pricing"
-                      checked={newExam.is_free === true}
-                      onChange={() =>
+                      checked={newExam?.is_free}
+                      onChange={(e) =>
                         setNewExam({
                           ...newExam,
-                          is_free: true,
-                          price: undefined,
+                          is_free: e.target.checked,
                         })
                       }
                       className="text-orange-600 focus:ring-orange-500"
                     />
                     <span>امتحان مجاني</span>
                   </label>
-                  <label className="flex items-center gap-3">
+                  {/* <label className="flex items-center gap-3">
                     <input
                       type="radio"
                       name="pricing"
@@ -1302,9 +1300,9 @@ const ExamsPage = () => {
                       className="text-orange-600 focus:ring-orange-500"
                     />
                     <span>امتحان مدفوع</span>
-                  </label>
+                  </label> */}
                 </div>
-                {newExam.is_free === false && (
+                {/* {newExam.is_free === false && (
                   <div className="mt-3">
                     <div className="space-y-2 max-h-32 overflow-y-auto">
                       <div className="col-span-2">
@@ -1333,7 +1331,7 @@ const ExamsPage = () => {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
 
               {/* Advanced Settings */}
@@ -1345,7 +1343,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.enable_countdown || false}
+                    checked={newExam?.enable_countdown || false}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1365,7 +1363,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.show_correct_answers || false}
+                    checked={newExam?.show_correct_answers || false}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1385,7 +1383,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.shuffle_questions || false}
+                    checked={newExam?.shuffle_questions || false}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1405,7 +1403,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.shuffle_answers || false}
+                    checked={newExam?.shuffle_answers || false}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,
@@ -1425,7 +1423,7 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam.is_published}
+                    checked={newExam?.is_published}
                     onChange={(e) =>
                       setNewExam({
                         ...newExam,

@@ -85,13 +85,16 @@ const CourseContent = ({
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
       const prevLesson = allLessons[currentLessonIndex - 1];
+      console.log("prevLesson", prevLesson);
+
       prevLesson?.type == "video" ? setIsExamMode(false) : setIsExamMode(true);
     } else if (
       direction === "next" &&
       currentLessonIndex < allLessons.length - 1
     ) {
       const nextLesson = allLessons[currentLessonIndex + 1];
-      if (nextLesson.is_completed) {
+      console.log("nextLesson", nextLesson);
+      if (allLessons[currentLessonIndex]?.is_completed) {
         setCurrentLessonIndex(currentLessonIndex + 1);
         nextLesson?.type == "video"
           ? setIsExamMode(false)
@@ -104,12 +107,17 @@ const CourseContent = ({
   const markLessonComplete = () => {
     const updatedLessons = [...allLessons];
     updatedLessons[currentLessonIndex].isCompleted = true;
-    completeMutateAsync(updatedLessons[currentLessonIndex].id);
+    completeMutateAsync({ lesson_id: updatedLessons[currentLessonIndex].id });
+    console.log("updatedLessons[currentLessonIndex].id", {
+      lesson_id: updatedLessons[currentLessonIndex].id,
+    });
 
     // Unlock next lesson
     if (currentLessonIndex + 1 < updatedLessons.length) {
       updatedLessons[currentLessonIndex + 1].is_completed = true;
-      completeMutateAsync(updatedLessons[currentLessonIndex + 1].id);
+      completeMutateAsync({
+        lesson_id: updatedLessons[currentLessonIndex + 1].id,
+      });
     }
     setAllLessons(updatedLessons);
 

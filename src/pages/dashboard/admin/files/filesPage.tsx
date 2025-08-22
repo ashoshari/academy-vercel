@@ -38,6 +38,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import Spinner from "@/components/dashboard/Spinner";
 
+
 const ResourcesPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -50,7 +51,9 @@ const ResourcesPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const types = ["resources", "bookses", "ministerial_questions", "files"];
 
-  const [uploadResources, setUploadResources] = useState<any>({});
+  const [uploadResources, setUploadResources] = useState<any>({
+    is_published: true,
+  });
   const [selectedResources, setSelectedResources] = useState<any>({});
   const [resourceId, setResourceId] = useState<string>("");
   const [page, setPage] = useState(1);
@@ -89,36 +92,43 @@ const ResourcesPage = () => {
   const teacherData = teachers?.data;
 
   // GET Lessons
-  const { data: lessons } = useCustomQuery("/training/admin/lessons/", [
-    "lessons",
-  ]);
-  const lessonData = lessons?.data;
-  // GET Specializations
-  const { data: specializations } = useCustomQuery(
-    "/training/admin/specializations/",
-    ["specializations"]
+  // const { data: lessons } = useCustomQuery("/training/admin/lessons/", [
+  //   "lessons",
+  // ]);
+  // GET SubSection
+  const { data: subsections } = useCustomQuery(
+    "/training/admin/subsections-ids/",
+    ["subsections"]
   );
+  const subsectionData = subsections?.data;
+
+  // const lessonData = lessons?.data;
+  // GET Specializations
+  // const { data: specializations } = useCustomQuery(
+  //   "/training/admin/specializations/",
+  //   ["specializations"]
+  // );
 
   // GET Specializations_material
   // const { data: specialization_material } = useCustomQuery(
   //   "/training/admin/specialization-materials/",
   //   ["specializations_material"]
   // );
-
-  const specializationData = specializations?.data;
-  // const specialization_materialData = specialization_material?.data;
-
-  // const [resources, setResources] = useState<any>();
-  // useEffect(() => {
-  //   setResources(resourcesData);
-  // }, [resourcesData]);
+  const [selectedSubSection, setSelectedSubSection] = useState<string>("");
+  const [selectedSubSub, setSelectedSubSub] = useState<string>("");
+  const [selectedSpec, setSelectedSpec] = useState<string>("");
+  const subSection = subsectionData?.find(
+    (s: any) => s.id === selectedSubSection
+  );
+  const subsub = subSection?.subsubsections?.find(
+    (ss: any) => ss.id === selectedSubSub
+  );
+  const spec = subsub?.specializations?.find(
+    (sp: any) => sp.id === selectedSpec
+  );
+  console.log("spec", spec);
+  // const specializationData = specializations?.data;
   const resourcesStatsData = resourcesStats?.data;
-  // const [newresources, setNewresources] = useState<any>({});
-  // const [editresourcesData, setEditresourcesData] = useState<any>({});
-  // PUT resources
-  // const { mutateAsync: putResources } = useCustomUpdate(
-  //   `/training/admin/resources/${resourcesId}/`,
-  //   ["putResources", resourcesId]
   // );
   // POST New resources
   const { mutateAsync: postResources } = useCustomPost(
@@ -201,9 +211,12 @@ const ResourcesPage = () => {
     selectedResources.type &&
       formData.append("type", selectedResources.type || null);
     selectedResources.is_free &&
-      formData.append("is_free", selectedResources.is_free || false);
-    selectedResources.is_published &&
-      formData.append("is_published", selectedResources.is_published || true);
+      formData.append("is_free", selectedResources.is_free);
+    console.log(
+      "selectedResources.is_published",
+      selectedResources.is_published
+    );
+    formData.append("is_published", selectedResources.is_published ?? true);
     if (
       selectedResources.image &&
       typeof (selectedResources.image as any).name === "string" &&
@@ -274,6 +287,7 @@ const ResourcesPage = () => {
     }
   };
   const handleResourseUpload = async () => {
+    console.log("uploadResources", uploadResources);
     const formData = new FormData();
     uploadResources.title && formData.append("title", uploadResources.title);
     uploadResources.description &&
@@ -289,13 +303,14 @@ const ResourcesPage = () => {
         "specialization_material",
         uploadResources.specialization_material
       );
+    console.log("uploadResources.is_published", uploadResources.is_published);
     uploadResources.lesson && formData.append("lesson", uploadResources.lesson);
     uploadResources.type &&
       formData.append("type", uploadResources.type || null);
     uploadResources.is_free &&
       formData.append("is_free", uploadResources.is_free || false);
     uploadResources.is_published &&
-      formData.append("is_published", uploadResources.is_published || true);
+      formData.append("is_published", uploadResources.is_published ?? true);
     if (
       uploadResources.image &&
       typeof (uploadResources.image as any).name === "string" &&
@@ -327,6 +342,9 @@ const ResourcesPage = () => {
       queryClient.invalidateQueries({
         queryKey: ["resources-stats"],
       });
+      setSelectedSubSection("");
+      setSelectedSubSub("");
+      setSelectedSpec("");
       setUploadResources({});
       setShowCreateModal(false);
     } catch (error: any) {
@@ -375,6 +393,7 @@ const ResourcesPage = () => {
 
             <button
               onClick={() => {
+                console.log("resource", resource);
                 setSelectedResources(resource);
                 setShowEditModal(true);
               }}
@@ -493,7 +512,13 @@ const ResourcesPage = () => {
                 رفع ملفات جديدة
               </h2>
               <button
-                onClick={() => setShowCreateModal(false)}
+                onClick={() => {
+                  setSelectedSubSection("");
+                  setSelectedSubSub("");
+                  setSelectedSpec("");
+                  setUploadResources({});
+                  setShowCreateModal(false);
+                }}
                 className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <X size={20} />
@@ -660,7 +685,7 @@ const ResourcesPage = () => {
               {/* Description */}
               <div className="lg:col-span-3">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  وصف الملف *
+                  وصف الملف
                 </label>
                 <textarea
                   value={uploadResources?.description}
@@ -681,7 +706,7 @@ const ResourcesPage = () => {
                   نوع الملف *
                 </label>
                 <select
-                  value={uploadResources?.type || ""}
+                  value={uploadResources?.type}
                   onChange={(e) =>
                     setUploadResources({
                       ...uploadResources,
@@ -697,65 +722,13 @@ const ResourcesPage = () => {
                   <option value="ministerial_questions">أسئلة وزارية</option>
                 </select>
               </div>
-              {/* Specialization */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  التخصص
-                </label>
-                <select
-                  value={uploadResources?.specialization || ""}
-                  onChange={(e) =>
-                    setUploadResources({
-                      ...uploadResources,
-                      specialization: e.target.value as any,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                >
-                  <option value="">اختر التخصص</option>
-                  {specializationData?.map((specialization: any) => (
-                    <option key={specialization?.id} value={specialization?.id}>
-                      {specialization?.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Specialization Material */}
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  مادة التخصص
-                </label>
-                <select
-                  value={uploadResources?.specialization_material || ""}
-                  onChange={(e) =>
-                    setUploadResources({
-                      ...uploadResources,
-                      specialization_material: e.target.value as any,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                >
-                  <option value="">اختر مادة التخصص</option>
-                  {specialization_materialData?.map(
-                    (specialization_material: any) => (
-                      <option
-                        key={specialization_material?.id}
-                        value={specialization_material?.id}
-                      >
-                        {specialization_material?.name}
-                      </option>
-                    )
-                  )}
-                </select>
-              </div> */}
               {/* Teacher */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   المعلم *
                 </label>
                 <select
-                  value={uploadResources?.teacher || ""}
+                  value={uploadResources?.teacher?.id}
                   onChange={(e) =>
                     setUploadResources({
                       ...uploadResources,
@@ -772,79 +745,131 @@ const ResourcesPage = () => {
                   ))}
                 </select>
               </div>
-              {/* Lesson */}
+              {/* SubSections */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الدرس *
-                </label>
-                <select
-                  value={uploadResources?.lesson || ""}
-                  onChange={(e) =>
-                    setUploadResources({
-                      ...uploadResources,
-                      lesson: e.target.value as any,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                >
-                  <option value="">اختر الدرس</option>
-                  {lessonData?.map((lesson: any) => (
-                    <option
-                      className="text-black"
-                      key={lesson?.id}
-                      value={lesson?.id}
-                    >
-                      {lesson?.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex flex-col justify-end gap-4">
-                {/* Published */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="isPublished"
-                    checked={uploadResources?.is_published || true}
-                    onChange={(e) =>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    القسم *
+                  </label>
+                  <select
+                    value={selectedSubSection}
+                    onChange={(e) => {
+                      setSelectedSubSection(e.target.value);
+                      setSelectedSubSub("");
+                      setSelectedSpec("");
                       setUploadResources({
                         ...uploadResources,
-                        is_published: e.target.checked as any,
-                      })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                  <label
-                    htmlFor="isPublished"
-                    className="text-sm text-gray-700"
+                        subsection: e.target.value,
+                      });
+                    }}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
-                    منشور
-                  </label>
-                </div>
-                {/* Free */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="isFree"
-                    disabled={uploadResources?.type === "resources"}
-                    checked={
-                      uploadResources?.type == "resources"
-                        ? true
-                        : uploadResources?.is_free || false
-                    }
-                    onChange={(e) =>
-                      setUploadResources({
-                        ...uploadResources,
-                        is_free: e.target.checked as any,
-                      })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                  <label htmlFor="isFree" className="text-sm text-gray-700">
-                    مجانا
-                  </label>
+                    <option value="">اختر القسم</option>
+                    {subsectionData?.map((subSection: any) => (
+                      <option key={subSection.id} value={subSection.id}>
+                        {subSection?.title}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
+              {/* SubSubSection */}
+              {subSection?.subsubsections.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      الصف *
+                    </label>
+                    <select
+                      value={selectedSubSub}
+                      onChange={(e) => {
+                        setSelectedSubSub(e.target.value);
+                        setSelectedSpec("");
+                        setUploadResources({
+                          ...uploadResources,
+                          subsubsection: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر الصف</option>
+                      {subSection?.subsubsections?.map((subSubSection: any) => (
+                        <option key={subSubSection.id} value={subSubSection.id}>
+                          {subSubSection?.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specialization */}
+              {subsub?.specializations.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      التخصص *
+                    </label>
+                    <select
+                      value={selectedSpec}
+                      onChange={(e) => {
+                        setSelectedSpec(e.target.value);
+                        setUploadResources({
+                          ...uploadResources,
+                          specialization: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر قسم فرعي</option>
+                      {subsub?.specializations?.map((specialization: any) => (
+                        <option
+                          key={specialization.id}
+                          value={specialization.id}
+                        >
+                          {specialization?.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specialization Material */}
+              {(spec?.specialization_materials.length > 0 ||
+                (subsub?.specializations?.length == 0 &&
+                  subsub?.specialization_materials?.length > 0)) && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      مادة التخصص *
+                    </label>
+                    <select
+                      value={uploadResources?.specialization_material}
+                      onChange={(e) => {
+                        setUploadResources({
+                          ...uploadResources,
+                          specialization_material: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر مادة التخصص</option>
+                      {(spec?.specialization_materials.length > 0
+                        ? spec?.specialization_materials
+                        : subsub?.specialization_materials
+                      ).map((specialization_material: any) => (
+                        <option
+                          key={specialization_material.id}
+                          value={specialization_material.id}
+                        >
+                          {specialization_material?.material}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
             </div>
             {/* Expiry Date */}
             <div>
@@ -863,11 +888,37 @@ const ResourcesPage = () => {
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
               />
             </div>
+            <div className="flex flex-col justify-end gap-4">
+              {/* Published */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">منشور</p>
+                  <p className="text-sm text-gray-500">متاح للطلاب</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={uploadResources?.is_published ?? true}
+                  onChange={(e) =>
+                    setUploadResources({
+                      ...uploadResources,
+                      is_published: e.target.checked,
+                    })
+                  }
+                  className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
             <button
-              onClick={() => setShowCreateModal(false)}
+              onClick={() => {
+                setSelectedSubSection("");
+                setSelectedSubSub("");
+                setSelectedSpec("");
+                setUploadResources({});
+                setShowCreateModal(false);
+              }}
               className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
@@ -876,7 +927,6 @@ const ResourcesPage = () => {
               onClick={handleResourseUpload}
               disabled={
                 !uploadResources?.title ||
-                !uploadResources?.description ||
                 !uploadResources?.file ||
                 !uploadResources?.teacher ||
                 !uploadResources?.specialization ||
@@ -1067,7 +1117,7 @@ const ResourcesPage = () => {
               {/* Description */}
               <div className="lg:col-span-3">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  وصف الملف *
+                  وصف الملف
                 </label>
                 <textarea
                   value={selectedResources?.description}
@@ -1104,58 +1154,6 @@ const ResourcesPage = () => {
                   <option value="ministerial_questions">أسئلة وزارية</option>
                 </select>
               </div>
-              {/* Specialization */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  التخصص
-                </label>
-                <select
-                  value={selectedResources?.specialization || ""}
-                  onChange={(e) =>
-                    setSelectedResources({
-                      ...selectedResources,
-                      specialization: e.target.value as any,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                >
-                  <option value="">اختر التخصص</option>
-                  {specializationData?.map((specialization: any) => (
-                    <option key={specialization?.id} value={specialization?.id}>
-                      {specialization?.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Specialization Material */}
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  مادة التخصص
-                </label>
-                <select
-                  value={uploadResources?.specialization_material || ""}
-                  onChange={(e) =>
-                    setUploadResources({
-                      ...uploadResources,
-                      specialization_material: e.target.value as any,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                >
-                  <option value="">اختر مادة التخصص</option>
-                  {specialization_materialData?.map(
-                    (specialization_material: any) => (
-                      <option
-                        key={specialization_material?.id}
-                        value={specialization_material?.id}
-                      >
-                        {specialization_material?.name}
-                      </option>
-                    )
-                  )}
-                </select>
-              </div> */}
               {/* Teacher */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1179,79 +1177,131 @@ const ResourcesPage = () => {
                   ))}
                 </select>
               </div>
-              {/* Lesson */}
+              {/* SubSections */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الدرس *
-                </label>
-                <select
-                  value={selectedResources?.lesson || ""}
-                  onChange={(e) =>
-                    setSelectedResources({
-                      ...selectedResources,
-                      lesson: e.target.value as any,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                >
-                  <option value="">اختر الدرس</option>
-                  {lessonData?.map((lesson: any) => (
-                    <option
-                      className="text-black"
-                      key={lesson?.id}
-                      value={lesson?.id}
-                    >
-                      {lesson?.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex flex-col justify-end gap-4">
-                {/* Published */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="isPublished"
-                    checked={selectedResources?.is_published || true}
-                    onChange={(e) =>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    القسم *
+                  </label>
+                  <select
+                    value={selectedSubSection}
+                    onChange={(e) => {
+                      setSelectedSubSection(e.target.value);
+                      setSelectedSubSub("");
+                      setSelectedSpec("");
                       setSelectedResources({
                         ...selectedResources,
-                        is_published: e.target.checked as any,
-                      })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                  <label
-                    htmlFor="isPublished"
-                    className="text-sm text-gray-700"
+                        subsection: e.target.value,
+                      });
+                    }}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
-                    منشور
-                  </label>
-                </div>
-                {/* Free */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="isFree"
-                    disabled={selectedResources?.type === "resources"}
-                    checked={
-                      selectedResources?.type == "resources"
-                        ? true
-                        : selectedResources?.is_free || false
-                    }
-                    onChange={(e) =>
-                      setSelectedResources({
-                        ...selectedResources,
-                        is_free: e.target.checked as any,
-                      })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                  <label htmlFor="isFree" className="text-sm text-gray-700">
-                    مجانا
-                  </label>
+                    <option value="">اختر القسم</option>
+                    {subsectionData?.map((subSection: any) => (
+                      <option key={subSection.id} value={subSection.id}>
+                        {subSection?.title}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
+              {/* SubSubSection */}
+              {subSection?.subsubsections.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      الصف
+                    </label>
+                    <select
+                      value={selectedSubSub}
+                      onChange={(e) => {
+                        setSelectedSubSub(e.target.value);
+                        setSelectedSpec("");
+                        setSelectedResources({
+                          ...selectedResources,
+                          subsubsection: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر الصف</option>
+                      {subSection?.subsubsections?.map((subSubSection: any) => (
+                        <option key={subSubSection.id} value={subSubSection.id}>
+                          {subSubSection?.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specialization */}
+              {subsub?.specializations.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      التخصص
+                    </label>
+                    <select
+                      value={selectedSpec}
+                      onChange={(e) => {
+                        setSelectedSpec(e.target.value);
+                        setSelectedResources({
+                          ...selectedResources,
+                          specialization: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر قسم فرعي</option>
+                      {subsub?.specializations?.map((specialization: any) => (
+                        <option
+                          key={specialization.id}
+                          value={specialization.id}
+                        >
+                          {specialization?.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specialization Material */}
+              {(spec?.specialization_materials.length > 0 ||
+                (subsub?.specializations?.length == 0 &&
+                  subsub?.specialization_materials?.length > 0)) && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      مادة التخصص
+                    </label>
+                    <select
+                      value={selectedResources?.specialization_material}
+                      onChange={(e) => {
+                        setSelectedResources({
+                          ...selectedResources,
+                          specialization_material: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر مادة التخصص</option>
+                      {(spec?.specialization_materials.length > 0
+                        ? spec?.specialization_materials
+                        : subsub?.specialization_materials
+                      ).map((specialization_material: any) => (
+                        <option
+                          key={specialization_material.id}
+                          value={specialization_material.id}
+                        >
+                          {specialization_material?.material}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
             </div>
             {/* Expiry Date */}
             <div>
@@ -1270,6 +1320,26 @@ const ResourcesPage = () => {
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
               />
             </div>
+            <div className="flex flex-col justify-end gap-4">
+              {/* Published */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">منشور</p>
+                  <p className="text-sm text-gray-500">متاح للطلاب</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={selectedResources?.is_published ?? true}
+                  onChange={(e) =>
+                    setSelectedResources({
+                      ...selectedResources,
+                      is_published: e.target.checked,
+                    })
+                  }
+                  className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
@@ -1283,13 +1353,15 @@ const ResourcesPage = () => {
               onClick={() => handleEditFile(selectedResources?.id)}
               disabled={
                 !selectedResources?.title ||
-                !selectedResources?.description ||
                 !selectedResources?.file ||
-                !selectedResources?.teacher ||
-                !selectedResources?.specialization ||
-                // !uploadResources?.specialization_material ||
+                !selectedResources?.image ||
                 !selectedResources?.type ||
-                !selectedResources?.image
+                !selectedResources?.teacher
+                //  ||
+                // !selectedResources?.subsection ||
+                // !selectedResources?.subsubsection ||
+                // !selectedResources?.specialization ||
+                // !selectedResources?.specialization_material
               }
               className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1620,6 +1692,7 @@ const ResourcesPage = () => {
 
                             <button
                               onClick={() => {
+                                console.log("resource", resource);
                                 setShowEditModal(true);
                                 setSelectedResources(resource);
                               }}

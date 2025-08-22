@@ -14,7 +14,7 @@ import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 
 interface FormData {
-  fullName: string;
+  name: string;
   mobile_number: string;
   password: string;
   otp: string;
@@ -35,7 +35,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     setIsLoading,
   ] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    fullName: "",
+    name: "",
     mobile_number: "",
     password: "",
     otp: "",
@@ -133,7 +133,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     formdata.append("password", formData.password);
 
     if (!isLogin) {
-      formdata.append("name", formData.fullName);
+      formdata.append("name", formData.name);
     }
 
     try {
@@ -142,7 +142,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         : await RegisterMutateAsync(data);
       if (res?.status) {
         setTokens(`"${res.data.tokens.access}"`, res.data?.user);
-        setFormData({ mobile_number: "", password: "", fullName: "", otp: "" });
+        setFormData({ mobile_number: "", password: "", name: "", otp: "" });
         toast.success(
           isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
         );
@@ -203,7 +203,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   // const resetForm = () => {
 
   //   setFormData({
-  //     fullName: "",
+  //     name: "",
   //     mobile_number: "",
   //     password: "",
   //     otp: "",
@@ -311,20 +311,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                       👤 الاسم الكامل
                     </label>
                     <input
-                      {...register("fullName", {
+                      {...register("name", {
                         required: "الاسم الكامل مطلوب",
                       })}
                       type="text"
-                      // value={formData.fullName}
+                      // value={formData.name}
                       // onChange={(e) =>
-                      //   handleInputChange("fullName", e.target.value)
+                      //   handleInputChange("name", e.target.value)
                       // }
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
                       placeholder="أدخل اسمك الكامل"
                     />
-                    {errors.fullName && (
+                    {errors.name && (
                       <span className="text-sm text-red-500">
-                        {errors.fullName.message}
+                        {errors.name.message}
                       </span>
                     )}
                   </div>
