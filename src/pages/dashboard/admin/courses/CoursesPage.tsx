@@ -176,6 +176,7 @@ const CoursesPage = () => {
     }
   };
   const handleEditCourse = async () => {
+    
     if (!selectedCourse?.id) {
       toast.error("لم يتم تحديد كورس للتعديل");
       return;
@@ -506,6 +507,7 @@ const CoursesPage = () => {
             <button
               onClick={() => {
                 setSelectedCourse(course);
+                console.log("selectedCourse", selectedCourse);
                 setCurrentView("edit");
               }}
               className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"

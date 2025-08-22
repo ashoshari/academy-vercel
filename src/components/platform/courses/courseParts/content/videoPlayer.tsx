@@ -16,6 +16,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
     } catch (error) {
     }
   };
+  console.log("currentLesson", currentLesson);
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video bg-black rounded-t-2xl overflow-hidden">
@@ -23,8 +24,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
           width="100%"
           height="100%"
           src={
-            "https://www.youtube.com/embed/" + currentLesson?.link ||
-            "?si=3uTi5rBiWUGXQ8gT"
+            "https://www.youtube.com/embed/" + currentLesson?.link
           }
           title={currentLesson?.title}
           frameBorder="0"
@@ -90,16 +90,16 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
         <div className="flex items-center justify-between">
           <button
             onClick={markLessonComplete}
-            disabled={currentLesson?.is_completed}
+            disabled={currentLesson?.isCompleted}
             className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
-              currentLesson?.is_completed
+              currentLesson?.isCompleted
                 ? "bg-green-100 text-green-800 cursor-not-allowed"
                 : "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
             }`}
           >
             <CheckCircle className="w-5 h-5" />
             <span>
-              {currentLesson?.is_completed ? "مكتمل" : "وضع علامة مكتمل"}
+              {currentLesson?.isCompleted ? "مكتمل" : "وضع علامة مكتمل"}
             </span>
           </button>
         </div>

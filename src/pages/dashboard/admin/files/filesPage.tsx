@@ -50,7 +50,9 @@ const ResourcesPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const types = ["resources", "bookses", "ministerial_questions", "files"];
 
-  const [uploadResources, setUploadResources] = useState<any>({});
+  const [uploadResources, setUploadResources] = useState<any>({
+    is_published: true,
+  });
   const [selectedResources, setSelectedResources] = useState<any>({});
   const [resourceId, setResourceId] = useState<string>("");
   const [page, setPage] = useState(1);
@@ -289,6 +291,7 @@ const ResourcesPage = () => {
         "specialization_material",
         uploadResources.specialization_material
       );
+    console.log("uploadResources.is_published", uploadResources.is_published);
     uploadResources.lesson && formData.append("lesson", uploadResources.lesson);
     uploadResources.type &&
       formData.append("type", uploadResources.type || null);
@@ -805,7 +808,7 @@ const ResourcesPage = () => {
                   <input
                     type="checkbox"
                     id="isPublished"
-                    checked={uploadResources?.is_published || true}
+                    checked={uploadResources?.is_published}
                     onChange={(e) =>
                       setUploadResources({
                         ...uploadResources,
@@ -1212,7 +1215,7 @@ const ResourcesPage = () => {
                   <input
                     type="checkbox"
                     id="isPublished"
-                    checked={selectedResources?.is_published || true}
+                    checked={selectedResources?.is_published}
                     onChange={(e) =>
                       setSelectedResources({
                         ...selectedResources,

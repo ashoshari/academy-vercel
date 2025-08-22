@@ -17,6 +17,7 @@ const CoursePage = () => {
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   // const currentLesson = useLesson((state) => state.currentLesson);
+  console.log("currentLessonIndex",currentLessonIndex)
   const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
   const { data, error } = useCustomQuery(
@@ -54,6 +55,7 @@ const CoursePage = () => {
 
   useEffect(() => {
     const activeLesson = allLessons[currentLessonIndex];
+    console.log("allLessons", allLessons);
     if (activeLesson) {
       setCurrentLesson(activeLesson);
     }
@@ -107,6 +109,7 @@ const CoursePage = () => {
   //     </div>
   //   );
   // } else
+    console.log("currentLessonIndex", currentLessonIndex);
     const typedError = error as any;
   if (typedError?.response?.data?.error != "لا يوجد عنصر بهذا المعرف") {
     // return (

@@ -142,7 +142,18 @@ const TeacherProfile: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["teachers"] });
       toast.success("تم تفعيل الدورة بنجاح! 🎉");
     } catch (error: any) {
-      toast.error(error?.response?.data?.error);
+      {
+        if (!isLoggedIn) {
+          setShowAuthModal(true);
+          setShowActivationModal(false);
+          queryClient.invalidateQueries({ queryKey: ["teachers"] });
+        }
+      }
+      // console.log(
+      //   error?.response?.data?.detail ===
+      //     "Authentication credentials were not provided."
+      // );
+      // toast.error(error?.response?.data?.detail);
     }
   };
   const handleCourseClick = (course: any) => {
