@@ -38,7 +38,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import Spinner from "@/components/dashboard/Spinner";
 
-
 const ResourcesPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -91,10 +90,6 @@ const ResourcesPage = () => {
 
   const teacherData = teachers?.data;
 
-  // GET Lessons
-  // const { data: lessons } = useCustomQuery("/training/admin/lessons/", [
-  //   "lessons",
-  // ]);
   // GET SubSection
   const { data: subsections } = useCustomQuery(
     "/training/admin/subsections-ids/",
@@ -173,7 +168,7 @@ const ResourcesPage = () => {
       // Delete file and all its children if it's a folder
       try {
         const response = await deleteResources(id);
-        toast.success(response?.message);
+        toast.success(response?.data);
         queryClient.invalidateQueries({ queryKey: ["resources"] });
       } catch (err: any) {
         toast.error(err?.response?.data?.message);
@@ -182,9 +177,6 @@ const ResourcesPage = () => {
   };
   const handleEditFile = async (id: any) => {
     setResourceId(id);
-    // const initialResource = resourcesData?.find((resource: any) => {
-    //   resource?.id === id;
-    // });
     const formData = new FormData();
     selectedResources.title &&
       formData.append("title", selectedResources.title);
@@ -199,7 +191,11 @@ const ResourcesPage = () => {
       );
     selectedResources.expiry_date &&
       formData.append("expiry_date", selectedResources.expiry_date);
+    selectedResources.subsection &&
+      formData.append("subsection", selectedResources.subsection);
     selectedResources.specialization &&
+      formData.append("subsubsection", selectedResources.subsubsection);
+    selectedResources.subsubsection &&
       formData.append("specialization", selectedResources.specialization);
     selectedResources.specialization_material &&
       formData.append(
@@ -296,6 +292,10 @@ const ResourcesPage = () => {
       formData.append("teacher", uploadResources.teacher);
     uploadResources.expiry_date &&
       formData.append("expiry_date", uploadResources.expiry_date);
+    uploadResources.subsection &&
+      formData.append("subsection", uploadResources.subsection);
+    uploadResources.specialization &&
+      formData.append("subsubsection", uploadResources.subsubsection);
     uploadResources.specialization &&
       formData.append("specialization", uploadResources.specialization);
     uploadResources.specialization_material &&

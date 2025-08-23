@@ -195,7 +195,7 @@ const EnrolledCourses: React.FC = () => {
 
                     {/* Continue Button */}
                     <button
-                      onClick={() => navigate(`/coursePage/${course?.id}`)}
+                      onClick={() => navigate(`/coursePage/${course?.course_id}`)}
                       className="w-full cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
                     >
                       <Play className="w-4 h-4" />

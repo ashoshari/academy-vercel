@@ -21,6 +21,7 @@ import {
   Save,
   Rows,
   Grid,
+  ArrowRight,
   // Play,
   // Pause,
 } from "lucide-react";
@@ -31,6 +32,7 @@ import handleErrorAlerts from "@/utils/showErrorMessages";
 import ExamQuestionsPage from "./questions/QuestionsPage";
 import Spinner from "@/components/dashboard/Spinner";
 import Pagination from "@/components/dashboard/core/Pagination";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface Exam {
   id: string;
@@ -39,6 +41,10 @@ export interface Exam {
   material: string;
   level: string;
   time_in_minutes: number;
+  subsection: string;
+  subsubsection: string;
+  specialization: string;
+  specialization_material: string;
   number_of_questions: number;
   total_marks: number;
   passing_marks: number;
@@ -126,25 +132,25 @@ const ExamsPage = () => {
   const [currentView, setCurrentView] = useState<
     "table" | "grid" | "create" | "edit" | "questions" | "results"
   >("table");
-  const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
+  const queryClient = useQueryClient();
+  const [selectedExam, setSelectedExam] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [materialFilter, setMaterialFilter] = useState<string>("");
-  const [levelFilter, setLevelFilter] = useState<string>("");
-  const [typeFilter, setTypeFilter] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [newExam, setNewExam] = useState<any>({
     title: "",
     description: "",
-    material: "",
-    level: "",
     time_in_minutes: 60,
     number_of_questions: 10,
+    subsection: "",
+    subsubsection: "",
+    specialization: "",
+    specialization_material: "",
     total_marks: 50,
     passing_marks: 30,
     is_published: true,
     is_free: true,
     teacher: "",
-    type: "",
     enable_countdown: false,
     show_correct_answers: false,
     shuffle_questions: false,
@@ -154,33 +160,29 @@ const ExamsPage = () => {
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("search", searchTerm);
   if (materialFilter) queryParams.append("material", materialFilter);
-  if (levelFilter) queryParams.append("level", levelFilter);
-  if (typeFilter) queryParams.append("type", typeFilter);
   if (page) queryParams.append("page", page.toString());
   const queryString = queryParams.toString();
   const data = useCustomQuery(`/training/admin/exams/?${queryString}`, [
     "exams",
     searchTerm,
     materialFilter,
-    levelFilter,
-    typeFilter,
   ]);
   const paginationData = data?.data?.pagination;
   const dataStatistcs = useCustomQuery("/training/admin/exams-statistics/", [
     "exams-statistics",
   ]);
   const materials = useCustomQuery("/core/materials/", ["materials"]);
-  const levels = useCustomQuery("/core/exam-levels/", ["levels"]);
-  const types = useCustomQuery("/core/exam-types/", ["exam-types"]);
 
   const materialsData = materials?.data?.data;
-  const levelsData = levels?.data?.data;
-  const typesData = types?.data?.data;
   const teachers = useCustomQuery("account/admin/teachers/", ["teachers"]);
   const addExam = useCustomPost("training/admin/exams/", [
-    "exams",
+    "addExams",
     "exams-statistics",
   ]);
+  const { mutateAsync: putExam } = useCustomUpdate(
+    `/training/admin/exams/${selectedExam?.id}/`,
+    ["putExams"]
+  );
   // GET Codes
   // const { data: cards } = useCustomQuery("/cards/", ["cards"]);
   // const cardsData = cards?.data;
@@ -220,36 +222,67 @@ const ExamsPage = () => {
     }
   }, [singleExam?.data?.data]);
 
+  // GET SubSection
+  const { data: subsections } = useCustomQuery(
+    "/training/admin/subsections-ids/",
+    ["subsections"]
+  );
+  const subsectionData = subsections?.data;
+  const [selectedSubSection, setSelectedSubSection] = useState<string>("");
+  const [selectedSubSub, setSelectedSubSub] = useState<string>("");
+  const [selectedSpec, setSelectedSpec] = useState<string>("");
+  const subSection = subsectionData?.find(
+    (s: any) => s.id === selectedSubSection
+  );
+  const subsub = subSection?.subsubsections?.find(
+    (ss: any) => ss.id === selectedSubSub
+  );
+  const spec = subsub?.specializations?.find(
+    (sp: any) => sp.id === selectedSpec
+  );
+  console.log("spec", spec);
   const handleCreateExam = () => {
     addExam
       .mutateAsync(newExam)
       .then((res) => {
         if (res?.status) {
-          toast.success("تمإضافة الاختبار بنجاح");
-          // navigate("/dashboard/admin/exams");
+          toast.success("تم إضافة الاختبار بنجاح");
           setCurrentView("table");
           setSelectedExam(null);
           setNewExam(null);
+          queryClient.invalidateQueries({ queryKey: ["exams"] });
         } else {
           handleErrorAlerts(res?.error);
         }
       })
       .catch((error: any) => {
         handleErrorAlerts(
-          error?.response?.data?.error || "حدث خطاء اثناء اضافة الاختبار"
+          error?.response?.data?.error || "حدث خطا اثناء اضافة الاختبار"
         );
       });
   };
-
-  // const handleDeleteExam = (id: number) => {
-  //   if (
-  //     confirm(
-  //       "هل أنت متأكد من حذف هذا الامتحان؟ سيتم حذف جميع الأسئلة والمحاولات المرتبطة به."
-  //     )
-  //   ) {
-  //     setExams(exams.filter((exam) => exam.id !== id));
-  //   }
-  // };
+  const handleEditExam = () => {
+    selectedExam.teacher = selectedExam?.teacher?.id;
+    selectedExam.specialization = selectedExam?.specialization?.id;
+    selectedExam.specialization_material =
+      selectedExam?.specialization_material?.id;
+    putExam(selectedExam)
+      .then((res: any) => {
+        if (res?.status) {
+          toast.success("تم تحديث الاختبار بنجاح");
+          setCurrentView("table");
+          setSelectedExam(null);
+          queryClient.invalidateQueries({ queryKey: ["exams"] });
+        } else {
+          handleErrorAlerts(res?.error);
+        }
+      })
+      .catch((error: any) => {
+        handleErrorAlerts(
+          error?.response?.data?.error || "حدث خطا اثناء تحديث الاختبار"
+        );
+      });
+  };
 
   const toggleExamStatus = (status: boolean) => {
     updateExam
@@ -473,7 +506,6 @@ const ExamsPage = () => {
       </div>
     </div>
   );
-
   // Render different views
   if (currentView === "create") {
     return (
@@ -482,12 +514,15 @@ const ExamsPage = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => {
+              setSelectedSubSection("");
+              setSelectedSubSub("");
+              setSelectedSpec("");
               setCurrentView("table");
               setNewExam({});
             }}
             className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <ArrowLeft size={20} className="rtl:rotate-180" />
+            <ArrowRight size={20} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
@@ -512,7 +547,7 @@ const ExamsPage = () => {
                 </label>
                 <input
                   type="text"
-                  value={newExam?.title || ""}
+                  value={newExam?.title}
                   onChange={(e) =>
                     setNewExam({ ...newExam, title: e.target.value })
                   }
@@ -523,12 +558,15 @@ const ExamsPage = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  وصف الامتحان *
+                  وصف الامتحان
                 </label>
                 <textarea
-                  value={newExam?.description || ""}
+                  value={newExam?.description}
                   onChange={(e) =>
-                    setNewExam({ ...newExam, description: e.target.value })
+                    setNewExam({
+                      ...newExam,
+                      description: e.target.value,
+                    })
                   }
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
@@ -537,179 +575,7 @@ const ExamsPage = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    المادة *
-                  </label>
-
-                  <select
-                    value={newExam?.material}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        material: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر مادة</option>
-                    {materials?.data?.data?.map((material: any) => (
-                      <option key={material.id} value={material.id}>
-                        {material.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    مستوى الصعوبة *
-                  </label>
-                  <select
-                    value={newExam?.level}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        level: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value=""> اختر مستوى </option>
-                    {levels?.data?.data?.map((level: any) => (
-                      <option key={level.id} value={level.id}>
-                        {level.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    نوع الامتحان *
-                  </label>
-                  <select
-                    value={newExam?.type}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        type: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر نوع الامتحان</option>
-                    {types?.data?.data?.map((type: any) => (
-                      <option value={type.id} key={type.id}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    المدة (بالدقائق)
-                  </label>
-                  <input
-                    type="number"
-                    value={newExam?.time_in_minutes || ""}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        time_in_minutes: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="60"
-                    min="1"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Exam Settings */}
-            <div className="space-y-6">
-              <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
-                إعدادات الامتحان
-              </h2>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    عدد الأسئلة
-                  </label>
-                  <input
-                    type="number"
-                    value={newExam?.number_of_questions || ""}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        number_of_questions: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="10"
-                    min="1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    إجمالي الدرجات
-                  </label>
-                  <input
-                    type="number"
-                    value={newExam?.total_marks || ""}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        total_marks: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="50"
-                    min="1"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    درجة النجاح
-                  </label>
-                  <input
-                    type="number"
-                    value={newExam?.passing_marks || ""}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        passing_marks: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="30"
-                    min="1"
-                  />
-                </div>
-                {/* <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    عدد المحاولات المسموحة
-                  </label>
-                  <input
-                    type="number"
-                    value={newExam.attemptsAllowed || ""}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        attemptsAllowed: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="3"
-                    min="1"
-                  />
-                </div> */}
+                {/* Teachers */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     اختر استاذ *
@@ -732,94 +598,259 @@ const ExamsPage = () => {
                     ))}
                   </select>
                 </div>
-              </div>
-
-              {/* Pricing */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  التسعير
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      name="pricing"
-                      checked={newExam?.is_free}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                {/* SubSections */}
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      القسم *
+                    </label>
+                    <select
+                      value={selectedSubSection}
+                      onChange={(e) => {
+                        setSelectedSubSection(e.target.value);
+                        setSelectedSubSub("");
+                        setSelectedSpec("");
                         setNewExam({
                           ...newExam,
-                          is_free: e.target.checked,
-                        })
-                      }
-                      className="text-orange-600 focus:ring-orange-500"
-                    />
-                    <span>امتحان مجاني</span>
-                  </label>
-                  {/* <label className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="pricing"
-                      checked={newExam.is_free === false}
-                      onChange={() =>
-                        setNewExam({ ...newExam, is_free: false })
-                      }
-                      className="text-orange-600 focus:ring-orange-500"
-                    />
-                    <span>امتحان مدفوع</span>
-                  </label> */}
+                          subsection: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر القسم</option>
+                      {subsectionData?.map((subSection: any) => (
+                        <option key={subSection.id} value={subSection.id}>
+                          {subSection?.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                {/* {newExam.is_free === false && (
-                  <div className="mt-3">
-                    <div className="space-y-2 max-h-32 overflow-y-auto">
-                      <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          البطاقة *
-                        </label>
-                        <select
-                          value={newExam?.price}
-                          onChange={(e) => {
-                            setNewExam({
-                              ...newExam,
-                              price: e.target.value,
-                            });
-                          }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                        >
-                          <option value="">اختر بطاقة</option>
-                          {cardsData
-                            ?.filter((card: any) => card?.is_active)
-                            .map((card: any) => (
-                              <option key={card.id} value={card.id}>
-                                {card?.price} د.ا
-                              </option>
-                            ))}
-                        </select>
-                      </div>
+                {/* SubSubSection */}
+                {subSection?.subsubsections.length > 0 && (
+                  <div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        الصف *
+                      </label>
+                      <select
+                        value={selectedSubSub}
+                        onChange={(e) => {
+                          setSelectedSubSub(e.target.value);
+                          setSelectedSpec("");
+                          setNewExam({
+                            ...newExam,
+                            subsubsection: e.target.value,
+                          });
+                        }}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      >
+                        <option value="">اختر الصف</option>
+                        {subSection?.subsubsections?.map(
+                          (subSubSection: any) => (
+                            <option
+                              key={subSubSection.id}
+                              value={subSubSection.id}
+                            >
+                              {subSubSection?.title}
+                            </option>
+                          )
+                        )}
+                      </select>
                     </div>
                   </div>
-                )} */}
-                {/* {newExam.is_free === false && (
-                  <div className="mt-3">
-                    <input
-                      type="number"
-                      value={newExam.price || ""}
-                      onChange={(e) =>
-                        setNewExam({
-                          ...newExam,
-                          price: parseFloat(e.target.value) || 0,
-                        })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                      placeholder="السعر بالدينار الأردني"
-                      min="0"
-                      step="0.01"
-                    />
+                )}
+
+                {/* Specialization */}
+                {subsub?.specializations.length > 0 && (
+                  <div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        التخصص *
+                      </label>
+                      <select
+                        value={selectedSpec}
+                        onChange={(e) => {
+                          setSelectedSpec(e.target.value);
+                          setNewExam({
+                            ...newExam,
+                            specialization: e.target.value,
+                          });
+                        }}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      >
+                        <option value="">اختر قسم فرعي</option>
+                        {subsub?.specializations?.map((specialization: any) => (
+                          <option
+                            key={specialization.id}
+                            value={specialization.id}
+                          >
+                            {specialization?.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                )} */}
+                )}
+
+                {/* Specialization Material */}
+                {(spec?.specialization_materials.length > 0 ||
+                  (subsub?.specializations?.length == 0 &&
+                    subsub?.specialization_materials?.length > 0)) && (
+                  <div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        مادة التخصص *
+                      </label>
+                      <select
+                        value={newExam?.specialization_material}
+                        onChange={(e) => {
+                          setNewExam({
+                            ...newExam,
+                            specialization_material: e.target.value,
+                          });
+                        }}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      >
+                        <option value="">اختر مادة التخصص</option>
+                        {(spec?.specialization_materials.length > 0
+                          ? spec?.specialization_materials
+                          : subsub?.specialization_materials
+                        ).map((specialization_material: any) => (
+                          <option
+                            key={specialization_material.id}
+                            value={specialization_material.id}
+                          >
+                            {specialization_material?.material}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Exam Settings */}
+            <div className="space-y-6">
+              <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
+                إعدادات الامتحان
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    عدد الأسئلة *
+                  </label>
+                  <input
+                    type="number"
+                    value={newExam?.number_of_questions || ""}
+                    onChange={(e) =>
+                      setNewExam({
+                        ...newExam,
+                        number_of_questions: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="10"
+                    min="1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    إجمالي الدرجات *
+                  </label>
+                  <input
+                    type="number"
+                    value={newExam?.total_marks}
+                    onChange={(e) =>
+                      setNewExam({
+                        ...newExam,
+                        total_marks: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="50"
+                    min="1"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    درجة النجاح *
+                  </label>
+                  <input
+                    type="number"
+                    value={newExam?.passing_marks || ""}
+                    onChange={(e) =>
+                      setNewExam({
+                        ...newExam,
+                        passing_marks: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="30"
+                    min="1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    المدة (بالدقائق)
+                  </label>
+                  <input
+                    type="number"
+                    value={newExam?.time_in_minutes || ""}
+                    onChange={(e) =>
+                      setNewExam({
+                        ...newExam,
+                        time_in_minutes: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="60"
+                    min="1"
+                  />
+                </div>
               </div>
 
               {/* Advanced Settings */}
               <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-800">مفعل</p>
+                    <p className="text-sm text-gray-500">تفعيل الامتحان</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={newExam?.is_published ?? true}
+                    onChange={(e) =>
+                      setNewExam({
+                        ...newExam,
+                        is_published: e.target.checked,
+                      })
+                    }
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                </div>
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-800">مجاني</p>
+                    <p className="text-sm text-gray-500">
+                      تحديد هل الامتحان مجاني أم مدفوع
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={newExam?.is_free ?? true}
+                    onChange={(e) =>
+                      setNewExam({
+                        ...newExam,
+                        is_free: e.target.checked,
+                      })
+                    }
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">تحديد الوقت</p>
@@ -897,26 +928,6 @@ const ExamsPage = () => {
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
                 </div>
-
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-800"> مفعل؟ </p>
-                    {/* <p className="text-sm text-gray-500">
-                      ترتيب عشوائي للخيارات
-                    </p> */}
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={newExam?.is_published}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        is_published: e.target.checked,
-                      })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -926,6 +937,9 @@ const ExamsPage = () => {
             <button
               onClick={() => {
                 setCurrentView("table");
+                setSelectedSubSection("");
+                setSelectedSubSub("");
+                setSelectedSpec("");
                 setNewExam({});
               }}
               className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
@@ -936,11 +950,14 @@ const ExamsPage = () => {
               onClick={handleCreateExam}
               disabled={
                 !newExam?.title ||
-                !newExam?.description ||
-                !newExam?.material ||
-                !newExam?.level ||
-                !newExam?.type ||
-                !newExam?.teacher
+                !newExam?.teacher ||
+                !newExam?.subsection ||
+                !newExam?.subsubsection ||
+                !newExam?.specialization ||
+                !newExam?.specialization_material ||
+                !newExam?.number_of_questions ||
+                !newExam?.total_marks ||
+                !newExam?.passing_marks
               }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -980,7 +997,7 @@ const ExamsPage = () => {
             <h1 className="text-2xl font-bold text-gray-800">
               نتائج وإحصائيات الامتحان
             </h1>
-            <p className="text-gray-600 text-sm">{selectedExam.title}</p>
+            <p className="text-gray-600 text-sm">{selectedExam?.title}</p>
           </div>
         </div>
 
@@ -1018,7 +1035,11 @@ const ExamsPage = () => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentView("table")}
+            onClick={() => {
+              setCurrentView("table");
+              setNewExam({});
+              setSelectedExam(null);
+            }}
             className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft size={20} className="rtl:rotate-180" />
@@ -1039,16 +1060,15 @@ const ExamsPage = () => {
               <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
                 المعلومات الأساسية
               </h2>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   عنوان الامتحان *
                 </label>
                 <input
                   type="text"
-                  value={singleExam?.data?.data?.title || ""}
+                  value={selectedExam?.title}
                   onChange={(e) =>
-                    setNewExam({ ...newExam, title: e.target.value })
+                    setSelectedExam({ ...selectedExam, title: e.target.value })
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="أدخل عنوان الامتحان..."
@@ -1057,12 +1077,15 @@ const ExamsPage = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  وصف الامتحان *
+                  وصف الامتحان
                 </label>
                 <textarea
-                  value={singleExam?.data?.data?.description || ""}
+                  value={selectedExam?.description || ""}
                   onChange={(e) =>
-                    setNewExam({ ...newExam, description: e.target.value })
+                    setSelectedExam({
+                      ...selectedExam,
+                      description: e.target.value,
+                    })
                   }
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
@@ -1071,94 +1094,159 @@ const ExamsPage = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
+                {/* Teachers */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    المادة *
+                    اختر استاذ *
                   </label>
+                  <select
+                    value={selectedExam?.teacher?.id}
+                    onChange={(e) =>
+                      setSelectedExam({
+                        ...selectedExam,
+                        teacher: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  >
+                    <option value="">اختر استاذ</option>
+                    {teachers?.data?.data?.map((teacher: any) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* SubSections */}
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      القسم *
+                    </label>
+                    <select
+                      value={selectedSubSection}
+                      onChange={(e) => {
+                        setSelectedSubSection(e.target.value);
+                        setSelectedSubSub("");
+                        setSelectedSpec("");
+                        setSelectedExam({
+                          ...selectedExam,
+                          subsection: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر القسم</option>
+                      {subsectionData?.map((subSection: any) => (
+                        <option key={subSection.id} value={subSection.id}>
+                          {subSection?.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                {/* SubSubSection */}
+                {subSection?.subsubsections.length > 0 && (
+                  <div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        الصف *
+                      </label>
+                      <select
+                        value={selectedSubSub}
+                        onChange={(e) => {
+                          setSelectedSubSub(e.target.value);
+                          setSelectedSpec("");
+                          setSelectedExam({
+                            ...selectedExam,
+                            subsubsection: e.target.value,
+                          });
+                        }}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      >
+                        <option value="">اختر الصف</option>
+                        {subSection?.subsubsections?.map(
+                          (subSubSection: any) => (
+                            <option
+                              key={subSubSection.id}
+                              value={subSubSection.id}
+                            >
+                              {subSubSection?.title}
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </div>
+                  </div>
+                )}
 
-                  <select
-                    value={newExam?.material}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        material: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر مادة</option>
-                    {materials?.data?.data?.map((material: any) => (
-                      <option key={material.id} value={material.id}>
-                        {material.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    مستوى الصعوبة
-                  </label>
-                  <select
-                    value={newExam?.level}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        level: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value=""> اختر مستوى </option>
-                    {levels?.data?.data?.map((level: any) => (
-                      <option key={level.id} value={level.id}>
-                        {level.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+                {/* Specialization */}
+                {subsub?.specializations.length > 0 && (
+                  <div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        التخصص *
+                      </label>
+                      <select
+                        value={selectedSpec}
+                        onChange={(e) => {
+                          setSelectedSpec(e.target.value);
+                          setSelectedExam({
+                            ...selectedExam,
+                            specialization: e.target.value,
+                          });
+                        }}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      >
+                        <option value="">اختر قسم فرعي</option>
+                        {subsub?.specializations?.map((specialization: any) => (
+                          <option
+                            key={specialization.id}
+                            value={specialization.id}
+                          >
+                            {specialization?.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    نوع الامتحان *
-                  </label>
-                  <select
-                    value={newExam?.type}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        type: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر نوع الامتحان</option>
-                    {types?.data?.data?.map((type: any) => (
-                      <option value={type.id} key={type.id}>
-                        {type?.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    المدة (بالدقائق)
-                  </label>
-                  <input
-                    type="number"
-                    value={newExam?.time_in_minutes || ""}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        time_in_minutes: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="60"
-                    min="1"
-                  />
-                </div>
+                {/* Specialization Material */}
+                {(spec?.specialization_materials.length > 0 ||
+                  (subsub?.specializations?.length == 0 &&
+                    subsub?.specialization_materials?.length > 0)) && (
+                  <div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        مادة التخصص *
+                      </label>
+                      <select
+                        value={selectedExam?.specialization_material}
+                        onChange={(e) => {
+                          setNewExam({
+                            ...newExam,
+                            specialization_material: e.target.value,
+                          });
+                        }}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      >
+                        <option value="">اختر مادة التخصص</option>
+                        {(spec?.specialization_materials.length > 0
+                          ? spec?.specialization_materials
+                          : subsub?.specialization_materials
+                        ).map((specialization_material: any) => (
+                          <option
+                            key={specialization_material.id}
+                            value={specialization_material.id}
+                          >
+                            {specialization_material?.material}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1171,14 +1259,14 @@ const ExamsPage = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    عدد الأسئلة
+                    عدد الأسئلة *
                   </label>
                   <input
                     type="number"
-                    value={newExam?.number_of_questions || ""}
+                    value={selectedExam?.number_of_questions}
                     onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
+                      setSelectedExam({
+                        ...selectedExam,
                         number_of_questions: parseInt(e.target.value) || 0,
                       })
                     }
@@ -1189,15 +1277,15 @@ const ExamsPage = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    إجمالي الدرجات
+                    إجمالي الدرجات *
                   </label>
                   <input
                     type="number"
-                    value={newExam?.total_marks || ""}
+                    value={selectedExam?.total_marks}
                     onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        total_marks: parseInt(e.target.value) || 0,
+                      setSelectedExam({
+                        ...selectedExam,
+                        total_marks: parseInt(e.target.value),
                       })
                     }
                     className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1210,15 +1298,15 @@ const ExamsPage = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    درجة النجاح
+                    درجة النجاح *
                   </label>
                   <input
                     type="number"
-                    value={newExam?.passing_marks || ""}
+                    value={selectedExam?.passing_marks}
                     onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        passing_marks: parseInt(e.target.value) || 0,
+                      setSelectedExam({
+                        ...selectedExam,
+                        passing_marks: parseInt(e.target.value),
                       })
                     }
                     className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1226,116 +1314,64 @@ const ExamsPage = () => {
                     min="1"
                   />
                 </div>
-                {/* <div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    عدد المحاولات المسموحة
+                    المدة (بالدقائق)
                   </label>
                   <input
                     type="number"
-                    value={newExam.attemptsAllowed || ""}
+                    value={selectedExam?.time_in_minutes}
                     onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        attemptsAllowed: parseInt(e.target.value) || 0,
+                      setSelectedExam({
+                        ...selectedExam,
+                        time_in_minutes: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="3"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="60"
                     min="1"
                   />
-                </div> */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    اختر استاذ *
-                  </label>
-                  <select
-                    value={newExam?.teacher}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        teacher: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر استاذ</option>
-                    {teachers?.data?.data?.map((type: any) => (
-                      <option key={type.id} value={type.id}>
-                        {type?.name}
-                      </option>
-                    ))}
-                  </select>
                 </div>
-              </div>
-
-              {/* Pricing */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  التسعير
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      name="pricing"
-                      checked={newExam?.is_free}
-                      onChange={(e) =>
-                        setNewExam({
-                          ...newExam,
-                          is_free: e.target.checked,
-                        })
-                      }
-                      className="text-orange-600 focus:ring-orange-500"
-                    />
-                    <span>امتحان مجاني</span>
-                  </label>
-                  {/* <label className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="pricing"
-                      checked={newExam.is_free === false}
-                      onChange={() =>
-                        setNewExam({ ...newExam, is_free: false })
-                      }
-                      className="text-orange-600 focus:ring-orange-500"
-                    />
-                    <span>امتحان مدفوع</span>
-                  </label> */}
-                </div>
-                {/* {newExam.is_free === false && (
-                  <div className="mt-3">
-                    <div className="space-y-2 max-h-32 overflow-y-auto">
-                      <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          البطاقة *
-                        </label>
-                        <select
-                          value={newExam?.price}
-                          onChange={(e) => {
-                            setNewExam({
-                              ...newExam,
-                              price: e.target.value,
-                            });
-                          }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                        >
-                          <option value="">اختر بطاقة</option>
-                          {cardsData
-                            ?.filter((card: any) => card?.is_active)
-                            .map((card: any) => (
-                              <option key={card.id} value={card.id}>
-                                {card?.price} د.ا
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                )} */}
               </div>
 
               {/* Advanced Settings */}
               <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-800">مفعل</p>
+                    <p className="text-sm text-gray-500">تفعيل الامتحان</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={selectedExam?.is_published ?? true}
+                    onChange={(e) =>
+                      setSelectedExam({
+                        ...selectedExam,
+                        is_published: e.target.checked,
+                      })
+                    }
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                </div>
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-800">مجاني</p>
+                    <p className="text-sm text-gray-500">
+                      تحديد هل الامتحان مجاني أم مدفوع
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={selectedExam?.is_free ?? true}
+                    onChange={(e) =>
+                      setSelectedExam({
+                        ...selectedExam,
+                        is_free: e.target.checked,
+                      })
+                    }
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">تحديد الوقت</p>
@@ -1343,10 +1379,10 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam?.enable_countdown || false}
+                    checked={selectedExam?.enable_countdown}
                     onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
+                      setSelectedExam({
+                        ...selectedExam,
                         enable_countdown: e.target.checked,
                       })
                     }
@@ -1363,10 +1399,10 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam?.show_correct_answers || false}
+                    checked={selectedExam?.show_correct_answers}
                     onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
+                      setSelectedExam({
+                        ...selectedExam,
                         show_correct_answers: e.target.checked,
                       })
                     }
@@ -1383,10 +1419,10 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam?.shuffle_questions || false}
+                    checked={selectedExam?.shuffle_questions}
                     onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
+                      setSelectedExam({
+                        ...selectedExam,
                         shuffle_questions: e.target.checked,
                       })
                     }
@@ -1403,31 +1439,11 @@ const ExamsPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newExam?.shuffle_answers || false}
+                    checked={selectedExam?.shuffle_answers}
                     onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
+                      setSelectedExam({
+                        ...selectedExam,
                         shuffle_answers: e.target.checked,
-                      })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-800"> مفعل؟ </p>
-                    {/* <p className="text-sm text-gray-500">
-                      ترتيب عشوائي للخيارات
-                    </p> */}
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={newExam?.is_published}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        is_published: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
@@ -1440,20 +1456,24 @@ const ExamsPage = () => {
           {/* Action Buttons */}
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
-              onClick={() => setCurrentView("table")}
+              onClick={() => {
+                setCurrentView("table");
+                setSelectedSubSection("");
+                setSelectedSubSub("");
+                setSelectedSpec("");
+              }}
               className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
             </button>
             <button
-              onClick={handleCreateExam}
+              onClick={handleEditExam}
               disabled={
-                !newExam.title ||
-                !newExam.description ||
-                !newExam.material ||
-                !newExam.level ||
-                !newExam.type ||
-                !newExam.teacher
+                !newExam?.title ||
+                !newExam?.teacher ||
+                !newExam?.number_of_questions ||
+                !newExam?.total_marks ||
+                !newExam?.passing_marks
               }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1566,34 +1586,6 @@ const ExamsPage = () => {
             ))}
           </select>
 
-          {/* Level */}
-          <select
-            value={levelFilter}
-            onChange={(e) => setLevelFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
-          >
-            <option value="">جميع المستويات</option>
-            {levelsData?.map((level: any) => (
-              <option key={level?.id} value={level?.id}>
-                {level?.name}
-              </option>
-            ))}
-          </select>
-
-          {/* Type */}
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
-          >
-            <option value="">جميع الأنواع</option>
-            {typesData?.map((type: any) => (
-              <option key={type?.id} value={type?.id}>
-                {type?.name}
-              </option>
-            ))}
-          </select>
-
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCurrentView("table")}
@@ -1680,13 +1672,13 @@ const ExamsPage = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      الامتحان
+                      اسم الامتحان
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      المادة
+                      مادة التخصص
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      النوع
+                      المعلم
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       مدة الامتحان
@@ -1719,16 +1711,10 @@ const ExamsPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {exam?.material?.name || "-"}
+                        {exam?.specialization_material?.name ?? "-"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
-                            exam?.type?.name
-                          )}`}
-                        >
-                          {exam?.type?.name}
-                        </span>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {exam?.teacher?.name ?? "-"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {exam?.time_in_minutes} دقيقة
@@ -1788,6 +1774,7 @@ const ExamsPage = () => {
                           </button>
                           <button
                             onClick={() => {
+                              console.log("exam", exam);
                               setSelectedExam(exam);
                               setCurrentView("edit");
                             }}

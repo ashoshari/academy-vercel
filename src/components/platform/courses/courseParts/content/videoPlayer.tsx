@@ -71,10 +71,10 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
                   <FileText className="w-5 h-5 text-blue-500" />
                   <div className="flex-1">
                     <div className="font-medium text-gray-900 text-sm">
-                      {resource?.title || "ملف"}
+                      {resource?.title ?? "ملف"}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {(resource?.file_size / 1024).toFixed(1) || 0} MB
+                      {(resource?.file_size / 1024).toFixed(1) ?? 0} MB
                     </div>
                   </div>
                   <button className="p-2 text-blue-600 cursor-pointer hover:bg-blue-50 rounded-lg transition-colors duration-200">

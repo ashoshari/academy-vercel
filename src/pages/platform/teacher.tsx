@@ -268,7 +268,7 @@ const TeacherProfile: React.FC = () => {
         </div>
 
         <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-          {course?.short_description}
+          {course?.short_description ?? "-"}
         </p>
         <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
           <div className="flex items-center space-x-2">
@@ -329,12 +329,20 @@ const TeacherProfile: React.FC = () => {
         />
         <div className="absolute top-4 right-4">
           {course?.is_enrolled ? (
-            <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
+            <div
+              className={`${
+                course?.is_enrollment_active ? "bg-green-500" : "bg-blue-500"
+              } text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}
+            >
               <CheckCircle className="w-4 h-4" />
-              <span>مفعلة</span>
+              <span>
+                {course?.is_enrollment_active ? "مفعلة" : "غير مفعلة"}
+              </span>
             </div>
           ) : (
-            <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
+            <div
+              className={`bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}
+            >
               <Lock className="w-4 h-4" />
               <span>غير مفعلة</span>
             </div>
@@ -353,24 +361,24 @@ const TeacherProfile: React.FC = () => {
           <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
             {course?.level?.name && (
               <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg">
-                {course?.level?.name}
+                {course?.level?.name || "-"}
               </span>
             )}
             {course?.subsection?.title && (
               <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
-                {course?.subsection?.title}
+                {course?.subsection?.title || "-"}
               </span>
             )}
             {course?.material?.name && (
               <span className="bg-green-100 text-green-800 px-2 py-1 rounded-lg">
-                {course?.material?.name}
+                {course?.material?.name || "-"}
               </span>
             )}
           </div>
         </div>
 
         <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-          {course?.short_description}
+          {course?.short_description || "-"}
         </p>
         <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
           <div className="flex items-center space-x-2">
@@ -441,7 +449,7 @@ const TeacherProfile: React.FC = () => {
           </div>
           <div className="flex items-center space-x-2">
             <Download className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">{file?.downloads || 0} تحميل</span>
+            <span className="text-gray-600">{file?.number_of_downloads || 0} تحميل</span>
           </div>
           <div className="flex items-center space-x-2">
             <Clock className="w-4 h-4 text-gray-500" />
@@ -862,8 +870,8 @@ const TeacherProfile: React.FC = () => {
             )}
             {activeTab === "bookses" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {!isLoading && filesData?.length > 0 ? (
-                  filesData?.map(renderBooksesCard)
+                {!isLoading && booksesData?.length > 0 ? (
+                  booksesData?.map(renderBooksesCard)
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
@@ -881,7 +889,7 @@ const TeacherProfile: React.FC = () => {
             )}
             {activeTab === "ministerial_questions" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {!isLoading && filesData?.length > 0 ? (
+                {!isLoading && ministerial_questions?.length > 0 ? (
                   ministerial_questions?.map(renderMinisterialQuestionsCard)
                 ) : (
                   <div className="col-span-3 relative flex flex-col items-center">
@@ -932,6 +940,12 @@ const TeacherProfile: React.FC = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   تفعيل الدورة
                 </h3>
+                {selectedCourse?.is_enrolled &&
+                  !selectedCourse?.is_enrollment_active && (
+                    <h1 className="text-red-500 font-bold">
+                      تم تعطيل كودك برجاء التواصل مع المسؤولين
+                    </h1>
+                  )}
                 <p className="text-gray-600">{selectedCourse?.title}</p>
               </div>
 

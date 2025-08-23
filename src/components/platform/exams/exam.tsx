@@ -39,9 +39,9 @@ const Exam = () => {
 
   useEffect(() => {
     if (examData) {
-      setOpenExam(!examData.is_passed);
+      // setOpenExam(!examData.is_passed);
       setScore(examData.score);
-      setIsPassed(examData.is_passed);
+      // setIsPassed(examData.is_passed);
       setTimeLeft((examData.time_in_minutes || 0) * 60);
     }
   }, [examData]);

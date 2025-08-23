@@ -64,7 +64,7 @@ const AllCourses = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {filteredCourses?.map((course: any) => (
         <div
-          key={course?.id}
+          key={course?.course_id}
           className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group transform hover:scale-105"
         >
           <div className="p-6">
@@ -167,7 +167,7 @@ const AllCourses = () => {
 
             {/* Continue Button */}
             <button
-              onClick={() => navigate(`/coursePage/${course?.id}`)}
+              onClick={() => navigate(`/coursePage/${course?.course_id}`)}
               className="w-full cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
             >
               <Play className="w-4 h-4" />

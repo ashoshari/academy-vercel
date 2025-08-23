@@ -37,7 +37,7 @@ import Spinner from "@/components/dashboard/Spinner";
 export interface CardCode {
   id: number;
   code: string;
-  priceId: number;
+  card: string;
   price: number;
   isUsed: boolean;
   isActive: boolean;
@@ -51,7 +51,7 @@ export interface CardCode {
 
 export interface CodeBatch {
   id: string;
-  priceId: number;
+  card: string;
   price: number;
   totalCodes: number;
   usedCodes: number;
@@ -141,7 +141,7 @@ const CardCodesPage = () => {
 
   const [generateForm, setGenerateForm] = useState({
     name: "",
-    priceId: 0,
+    card: "",
     quantity: 0,
     prefix: "",
     notes: "",
@@ -276,7 +276,7 @@ const CardCodesPage = () => {
   const handleGenerateCodes = () => {
     const rawData = {
       name: generateForm.name,
-      card: generateForm.priceId,
+      card: generateForm.card,
       number_of_codes: generateForm.quantity,
       prefix: generateForm.prefix,
       subsections: generateForm?.subsections,
@@ -294,7 +294,7 @@ const CardCodesPage = () => {
         if (res.status) {
           setGenerateForm({
             name: "",
-            priceId: 0,
+            card: "",
             quantity: 0,
             prefix: "",
             notes: "",
@@ -514,11 +514,11 @@ const CardCodesPage = () => {
                             : "bg-red-400/20 text-red-100"
                         }`}
                       >
-                        {batch.card.is_active ? "مفعل" : "معطل"}
+                        {batch?.is_active ? "مفعل" : "معطل"}
                       </span>
                     </div>
                     <div className="text-2xl font-bold">
-                      {batch.card.price} د.أ
+                      {batch?.card?.price} د.أ
                     </div>
                   </div>
 
@@ -898,12 +898,13 @@ const CardCodesPage = () => {
                         </td>
 
                         <td className="px-4 py-3 text-sm text-gray-900">
-                          {code.used_by?.map((el: any) => el.name).join(", ") ||
-                            "-"}
+                          {code.used_by?.user?.name ?? "-"}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-900">
-                          {code.updated_at
-                            ? formatDateTimeSimple(code.updated_at)
+                          {code.used_by?.user?.created_at
+                            ? formatDateTimeSimple(
+                                code.used_by?.user?.created_at
+                              )
                             : "-"}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-900">
