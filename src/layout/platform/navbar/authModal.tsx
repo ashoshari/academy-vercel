@@ -149,6 +149,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
         onLogin();
         onClose();
+        reset();
         // if (!isLogin && !showOTP) {
         //   setShowOTP(true);
         // } else {

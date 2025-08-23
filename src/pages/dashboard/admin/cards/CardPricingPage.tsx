@@ -40,6 +40,7 @@ const CardPricingPage = () => {
     "card-statistics",
   ]);
   const cards = useCustomQuery("cards/", ["cards"]);
+  console.log("cards", cards?.data?.data);
   const addCard = useCustomPost("cards/", ["cards", "card-statistics"]);
   const updateCard = useCustomUpdate(`cards/${selectedCard}/`, [
     "cards",
@@ -195,7 +196,7 @@ const CardPricingPage = () => {
   //       </div>
   //     </div>
   //   );
-
+  console.log("!cards?.data?.data || cards?.data?.data.length > 0",!cards?.data?.data || cards?.data?.data.length === 0)
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -254,7 +255,7 @@ const CardPricingPage = () => {
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
-      ) : !cards?.data?.data || cards?.data?.data.length > 0 ? (
+      ) : !cards?.data?.data || cards?.data?.data.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">

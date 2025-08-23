@@ -122,7 +122,7 @@ const GenerateModal = ({
                 })
               }
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-              placeholder="أدخل عدد الكودات..."
+              placeholder="أدخل اسم الكودات..."
               min="1"
               max="10000"
             />
@@ -134,11 +134,11 @@ const GenerateModal = ({
               سعر البطاقة
             </label>
             <select
-              value={generateForm.priceId}
+              value={generateForm?.card}
               onChange={(e) =>
                 setGenerateForm({
                   ...generateForm,
-                  priceId: e.target.value,
+                  card: e.target.value,
                 })
               }
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -352,7 +352,7 @@ const GenerateModal = ({
             disabled={
               loading
                 ? true
-                : !generateForm.priceId ||
+                : !generateForm.card ||
                   generateForm.quantity <= 0 ||
                   (generateForm.targetingType === "specific" &&
                     generateForm.targetedSubsections.length === 0)

@@ -14,7 +14,7 @@ import {
   useCustomPost,
   useCustomRemove,
   useCustomUpdate,
-} from "@/hooks/useMutation";
+} from "@/hooks/platform/usePlatformMutation";
 import { useParams } from "react-router";
 import { useLesson } from "@/store/platform/useLesson";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";

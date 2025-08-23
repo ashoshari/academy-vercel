@@ -18,6 +18,7 @@ import FilesTab from "./tabs/filesTab";
 import NotesTab from "./tabs/notesTab";
 import QuestionsTab from "./tabs/questionsTab";
 import Exam from "./content/exam";
+import { useQueryClient } from "@tanstack/react-query";
 const CourseContent = ({
   setAllLessons,
   allLessons,
@@ -28,6 +29,7 @@ const CourseContent = ({
   setSemesters: any;
   courseData: any;
 }) => {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("content");
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const isExamMode = useExam((state) => state.isExamMode);
@@ -41,46 +43,6 @@ const CourseContent = ({
     ["complete"]
   );
 
-  // useEffect(() => {
-  //   const completeLesson = async () => {
-  //     try {
-  //       const response = await fetch("/training/students/lesson/complete/", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${window.localStorage.getItem(
-  //             "accessToken"
-  //           )}`,
-  //         },
-  //         body: JSON.stringify({
-  //           lesson_id: currentLesson.id,
-  //         }),
-  //       });
-
-  //       if (!response.ok) {
-  //         const errorData = await response.json();
-  //         throw new Error(errorData.message || "Request failed");
-  //       }
-
-  //       const result = await response.json();
-  //       console.log("Lesson completion success:", result);
-  //     } catch (error) {
-  //       console.error("Error completing lesson:", error);
-  //       // Optional: toast.error("فشل إرسال الطلب");
-  //     }
-  //   };
-
-  //   completeLesson();
-  // }, []);
-
-  // exam
-  // const [_, setIsExamMode] = useState(false);
-  // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // const [selectedAnswers, setSelectedAnswers] = useState({});
-  // const [timeRemaining, setTimeRemaining] = useState(0);
-  // const [examSubmitted, setExamSubmitted] = useState(false);
-  // const [examResults, setExamResults] = useState(null);
-  // const [currentExam, setCurrentExam] = useState(null);
   const navigateLesson = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
@@ -108,6 +70,7 @@ const CourseContent = ({
     const updatedLessons = [...allLessons];
     updatedLessons[currentLessonIndex].isCompleted = true;
     completeMutateAsync({ lesson_id: updatedLessons[currentLessonIndex].id });
+    queryClient.invalidateQueries({ queryKey: ["courses"] });
     console.log("updatedLessons[currentLessonIndex].id", {
       lesson_id: updatedLessons[currentLessonIndex].id,
     });
@@ -171,7 +134,7 @@ const CourseContent = ({
                 }`}
               >
                 <IconComponent className="w-4 h-4" />
-                <span>{tab.title}</span>
+                <span>{tab?.title}</span>
               </button>
             );
           })}

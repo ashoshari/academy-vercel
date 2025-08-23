@@ -7,7 +7,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Play,
-  Lock,
   CheckCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -32,10 +31,9 @@ const Sidebar = ({
   const [semesters, setSemesters] = useState([]);
   const setIsExamMode = useExam((state) => state.setIsExamMode);
   const setStartExam = useExam((state) => state.setStartExam);
-  const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
-  const setCurrentLesson = useLesson(
-    (state) => state.setCurrentLesson
-  );
+  const currentLesson = useLesson((state) => state.currentLesson);
+  // const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   useEffect(() => {
     if (courseData?.semesters) {
       const initialized = courseData?.semesters?.map((semester: any) => ({
@@ -160,6 +158,7 @@ const Sidebar = ({
       toast.error("يجب استكمال الدروس السابق");
     }
   };
+  console.log("currentLesson",currentLesson)
   const renderSidebar = () => (
     <div
       className={`bg-white border-r border-gray-200 transition-all duration-300 ${
@@ -286,7 +285,7 @@ const Sidebar = ({
                                 topic.lessons?.length > 0 && (
                                   <div className="my-[10px] flex-col text-start w-full">
                                     {topic?.lessons?.map(
-                                      (lesson: any, index: number) => (
+                                      (lesson: any) => (
                                         <button
                                           onClick={() =>
                                             handleLessonClick(lesson)
@@ -298,7 +297,7 @@ const Sidebar = ({
                                                  ? "bg-green-100 text-green-600 hover:bg-green-200 duration-[0.5s]"
                                                  : "opacity-60"
                                              } py-1 hover:bg-gray-50 rounded ${
-                                            currentLessonIndex == index &&
+                                            currentLesson?.id == lesson?.id &&
                                             "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                                           }`}
                                         >
@@ -311,12 +310,12 @@ const Sidebar = ({
                                                 {lesson.time_in_minutes} دقيقة
                                               </p>
                                             </div>
-                                            {currentLessonIndex == index ? (
+                                            {currentLesson?.id == lesson?.id ? (
                                               <Play className="w-4 h-4" />
-                                            ) : lesson.is_completed ? (
-                                              <CheckCircle className="w-4 h-4" />
                                             ) : (
-                                              <Lock className="w-4 h-4" />
+                                              lesson?.is_completed && (
+                                                <CheckCircle className="w-4 h-4" />
+                                              )
                                             )}
                                           </div>
                                         </button>

@@ -76,7 +76,7 @@ const FilesTab = () => {
               <div className="flex items-center space-x-2">
                 <Download className="w-4 h-4 text-gray-500" />
                 <span className="text-gray-600">
-                  {file?.downloads || 0} تحميل
+                  {file?.number_of_downloads || 0} تحميل
                 </span>
               </div>
               <div className="flex items-center space-x-2">
