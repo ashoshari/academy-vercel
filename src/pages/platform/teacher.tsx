@@ -9,7 +9,7 @@ import {
   CreditCard,
   Lock,
   Timer,
-  Target,
+  // Target,
   TrendingUp,
   Smile,
   Zap,

@@ -9,7 +9,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import VideoPlayer from "./content/videoPlayer";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import { useLesson } from "@/store/platform/useLesson";
 import { useExam } from "@/store/platform/useExam";
@@ -18,18 +18,18 @@ import FilesTab from "./tabs/filesTab";
 import NotesTab from "./tabs/notesTab";
 import QuestionsTab from "./tabs/questionsTab";
 import Exam from "./content/exam";
-import { useQueryClient } from "@tanstack/react-query";
+// import { useQueryClient } from "@tanstack/react-query";
 const CourseContent = ({
   setAllLessons,
   allLessons,
-  setSemesters,
+  // setSemesters,
 }: {
   setAllLessons: any;
   allLessons: any;
   setSemesters: any;
   courseData: any;
 }) => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("content");
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
