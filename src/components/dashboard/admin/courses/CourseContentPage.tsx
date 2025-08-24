@@ -270,7 +270,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       title: newItem.title,
       description: newItem.description,
       time_in_minutes: newItem.estimatedDuration,
-      is_published: newItem.isPublished || true,
+      is_published: newItem.isPublished ?? true,
       // is_free: newItem.isFree,
       [newItem.type === "unit"
         ? "semester"
@@ -1070,7 +1070,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newItem?.isPublished || true}
+                    checked={newItem?.isPublished ?? true}
                     onChange={(e) =>
                       setNewItem({ ...newItem, isPublished: e.target.checked })
                     }

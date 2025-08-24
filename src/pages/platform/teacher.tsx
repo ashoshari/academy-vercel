@@ -632,19 +632,15 @@ const TeacherProfile: React.FC = () => {
           <h3 className="text-lg font-bold text-gray-900 mb-2">
             {exam?.title}
           </h3>
-          <p className="text-gray-600 text-sm mb-3">{exam?.description}</p>
+          <p className="text-gray-600 text-sm mb-3">{exam?.description || "-"}</p>
         </div>
-        <div className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+        {/* <div className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
           {exam?.type?.name}
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-gray-50 rounded-xl p-4 mb-4">
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center space-x-2">
-            <Target className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">{exam?.material?.name}</span>
-          </div>
           <div className="flex items-center space-x-2">
             <Timer className="w-4 h-4 text-gray-500" />
             <span className="text-gray-600">{exam?.time_in_minutes} دقيقة</span>

@@ -145,20 +145,20 @@ const Sidebar = ({
     );
   };
   const handleLessonClick = (lesson: any) => {
-    if (lesson?.is_completed) {
-      setCurrentLesson(lesson);
-      // setActive(lessonIndex);
-      if (lesson?.type != "exam") {
-        setIsExamMode(false);
-      } else {
-        setIsExamMode(true);
-        setStartExam(true);
-      }
+    // if (lesson?.is_completed) {
+    setCurrentLesson(lesson);
+    // setActive(lessonIndex);
+    if (lesson?.type != "exam") {
+      setIsExamMode(false);
     } else {
-      toast.error("يجب استكمال الدروس السابق");
+      setIsExamMode(true);
+      setStartExam(true);
     }
+    // } else {
+    //   toast.error("يجب استكمال الدروس السابق");
+    // }
   };
-  console.log("currentLesson",currentLesson)
+  console.log("currentLesson", currentLesson);
   const renderSidebar = () => (
     <div
       className={`bg-white border-r border-gray-200 transition-all duration-300 ${
@@ -284,43 +284,40 @@ const Sidebar = ({
                               {topic.isExpanded &&
                                 topic.lessons?.length > 0 && (
                                   <div className="my-[10px] flex-col text-start w-full">
-                                    {topic?.lessons?.map(
-                                      (lesson: any) => (
-                                        <button
-                                          onClick={() =>
-                                            handleLessonClick(lesson)
-                                          }
-                                          key={lesson?.id}
-                                          className={`my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
+                                    {topic?.lessons?.map((lesson: any) => (
+                                      <button
+                                        onClick={() =>
+                                          handleLessonClick(lesson)
+                                        }
+                                        key={lesson?.id}
+                                        className={`my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
                                              ${
-                                               lesson?.is_completed
-                                                 ? "bg-green-100 text-green-600 hover:bg-green-200 duration-[0.5s]"
-                                                 : "opacity-60"
+                                               lesson?.is_completed &&
+                                               "bg-green-100 text-green-600 hover:bg-green-200 duration-[0.5s]"
                                              } py-1 hover:bg-gray-50 rounded ${
-                                            currentLesson?.id == lesson?.id &&
-                                            "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
-                                          }`}
-                                        >
-                                          <div className="flex justify-between items-center p-[5px] w-full">
-                                            <div className="text-start">
-                                              <h6 className="">
-                                                {lesson?.title}
-                                              </h6>
-                                              <p className="text-[0.7rem]">
-                                                {lesson.time_in_minutes} دقيقة
-                                              </p>
-                                            </div>
-                                            {currentLesson?.id == lesson?.id ? (
-                                              <Play className="w-4 h-4" />
-                                            ) : (
-                                              lesson?.is_completed && (
-                                                <CheckCircle className="w-4 h-4" />
-                                              )
-                                            )}
+                                          currentLesson?.id == lesson?.id &&
+                                          "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                                        }`}
+                                      >
+                                        <div className="flex justify-between items-center p-[5px] w-full">
+                                          <div className="text-start">
+                                            <h6 className="">
+                                              {lesson?.title}
+                                            </h6>
+                                            <p className="text-[0.7rem]">
+                                              {lesson.time_in_minutes} دقيقة
+                                            </p>
                                           </div>
-                                        </button>
-                                      )
-                                    )}
+                                          {currentLesson?.id == lesson?.id ? (
+                                            <Play className="w-4 h-4" />
+                                          ) : (
+                                            lesson?.is_completed && (
+                                              <CheckCircle className="w-4 h-4" />
+                                            )
+                                          )}
+                                        </div>
+                                      </button>
+                                    ))}
                                   </div>
                                 )}
                             </div>

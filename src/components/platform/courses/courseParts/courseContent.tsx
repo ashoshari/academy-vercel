@@ -32,6 +32,7 @@ const CourseContent = ({
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("content");
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   const isExamMode = useExam((state) => state.isExamMode);
   const setIsExamMode = useExam((state) => state.setIsExamMode);
   const setCurrentLessonIndex = useLesson(
@@ -56,49 +57,31 @@ const CourseContent = ({
     ) {
       const nextLesson = allLessons[currentLessonIndex + 1];
       console.log("nextLesson", nextLesson);
-      if (allLessons[currentLessonIndex]?.is_completed) {
-        setCurrentLessonIndex(currentLessonIndex + 1);
-        nextLesson?.type == "video"
-          ? setIsExamMode(false)
-          : setIsExamMode(true);
-      } else {
-        toast.error("الدرس غير مكتمل");
-      }
+      setCurrentLessonIndex(currentLessonIndex + 1);
+      nextLesson?.type == "video" ? setIsExamMode(false) : setIsExamMode(true);
     }
   };
+
   const markLessonComplete = () => {
     const updatedLessons = [...allLessons];
-    updatedLessons[currentLessonIndex].isCompleted = true;
-    completeMutateAsync({ lesson_id: updatedLessons[currentLessonIndex].id });
-    queryClient.invalidateQueries({ queryKey: ["courses"] });
-    console.log("updatedLessons[currentLessonIndex].id", {
-      lesson_id: updatedLessons[currentLessonIndex].id,
-    });
+    const updatedLesson = {
+      ...updatedLessons[currentLessonIndex],
+      is_completed: true,
+    };
 
-    // Unlock next lesson
-    if (currentLessonIndex + 1 < updatedLessons.length) {
-      updatedLessons[currentLessonIndex + 1].is_completed = true;
-      completeMutateAsync({
-        lesson_id: updatedLessons[currentLessonIndex + 1].id,
-      });
-    }
+    updatedLessons[currentLessonIndex] = updatedLesson;
+
+    // 1. Update CoursePage state
     setAllLessons(updatedLessons);
 
-    // Update chapters state
-    setSemesters((prev: any) =>
-      prev.map((semester: any) => ({
-        ...semester,
-        units: semester?.units?.map((unit: any) => ({
-          ...unit,
-          lessons: unit?.lessons?.map((lesson: any) => {
-            const updatedLesson = updatedLessons.find(
-              (l) => l.id === lesson.id
-            );
-            return updatedLesson || lesson;
-          }),
-        })),
-      }))
-    );
+    // 2. Update Zustand directly right away
+    setCurrentLesson(updatedLessons[currentLessonIndex]);
+
+    // 3. Fire mutation
+    completeMutateAsync({ lesson_id: updatedLesson.id });
+
+    // 4. Background refetch
+    // queryClient.invalidateQueries({ queryKey: ["courses"] });
   };
   // exam
   //     const startExam = () => {

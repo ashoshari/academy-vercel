@@ -1043,7 +1043,7 @@ const CoursesPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newCourse?.is_published || true}
+                    checked={newCourse?.is_published ?? true}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
