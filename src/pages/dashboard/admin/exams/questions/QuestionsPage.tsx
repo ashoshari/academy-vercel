@@ -136,7 +136,6 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
           {view === "preview" && (
             <button
               onClick={() => {
-                // setSelectedQuestion(question);
                 setView("edit");
               }}
               className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
