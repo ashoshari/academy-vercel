@@ -6,6 +6,7 @@ import { useCustomPost } from "@/hooks/useMutation";
 import { storeTokens } from "@/services/auth";
 import useAuth from "@/store/useAuth";
 import handleErrorAlerts from "@/utils/showErrorMessages";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -29,13 +30,18 @@ const LoginPage = () => {
     mutateAsync(formdata)
       .then(async (res) => {
         if (res.status) {
-          await storeTokens(
-            res.data.tokens.access,
-            onNavigate,
-            setIsAuthenticated
-          );
+          if (res?.data?.user?.type?.name?.toLowerCase() !== "admin") {
+            toast.error("You are not allowed to access dashboard");
+            localStorage.removeItem("user");
+          } else {
+            await storeTokens(
+              res.data.tokens.access,
+              onNavigate,
+              setIsAuthenticated
+            );
 
-          localStorage.setItem("user", JSON.stringify(res?.data?.user));
+            localStorage.setItem("user", JSON.stringify(res?.data?.user));
+          }
         } else {
           setError(res.error);
         }

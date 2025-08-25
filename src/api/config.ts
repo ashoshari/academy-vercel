@@ -35,7 +35,12 @@ axiosInstance.interceptors.response.use(
       window.location.href = "/login";
     }
 
-    console.error("Response Error:", error);
+    if (error?.response?.data?.code === "user_not_found") {
+      localStorage.removeItem("auth_tokens");
+      window.location.href = "/login";
+    }
+
+    console.error("Response Error:", error?.response?.data?.code);
     return Promise.reject(error);
   }
 );

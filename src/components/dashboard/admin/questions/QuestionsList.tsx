@@ -34,9 +34,9 @@ const QuestionsList: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
+        <div className="w-full max-w-[300px] min-w-full overflow-auto pb-6">
+          <table className="min-w-[1000px] w-full text-sm bg-white">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500">
