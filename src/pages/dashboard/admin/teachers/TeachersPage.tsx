@@ -17,6 +17,8 @@ import {
   Grid,
   Rows,
   CircleX,
+  Book,
+  EyeOff,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -271,21 +273,12 @@ const TeachersPage = () => {
           <div className="flex items-center gap-1">
             <button
               onClick={() => {
-                setSelectedTeacher(teacher);
-                toggleTeacherStatus();
+                navigate(`/dashboard/teachers/${teacher.id}`);
               }}
-              className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                teacher.is_active
-                  ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
-                  : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-              }`}
-              title={teacher.is_active ? "إلغاء التفعيل" : "تفعيل المعلم"}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+              title="عرض التفاصيل"
             >
-              {teacher.is_active ? (
-                <CheckCircle size={16} />
-              ) : (
-                <XCircle size={16} />
-              )}
+              <Book size={16} />
             </button>
 
             <button
@@ -304,14 +297,22 @@ const TeachersPage = () => {
           <div className="flex items-center gap-1">
             <button
               onClick={() => {
-                navigate(`/dashboard/teachers/${teacher.id}`);
+                setSelectedTeacher(teacher);
+                toggleTeacherStatus();
               }}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
-              title="عرض التفاصيل"
+              className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                teacher.is_active
+                  ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
+                  : "text-gray-400 bg-gray-50 hover:bg-gray-100"
+              }`}
+              title={teacher.is_active ? "إلغاء التفعيل" : "تفعيل المعلم"}
             >
-              <Eye size={16} />
+              {teacher.is_active ? (
+                <Eye size={16} />
+              ) : (
+                <EyeOff size={16} />
+              )}
             </button>
-
             <button
               onClick={() => {
                 navigate(`/dashboard/teachers/edit/${teacher.id}`);
@@ -646,9 +647,9 @@ const TeachersPage = () => {
                             }
                           >
                             {teacher?.is_active ? (
-                              <CheckCircle size={16} />
+                              <Eye size={16} />
                             ) : (
-                              <XCircle size={16} />
+                              <EyeOff size={16} />
                             )}
                           </button>
 
@@ -670,7 +671,7 @@ const TeachersPage = () => {
                             className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
                             title="عرض التفاصيل"
                           >
-                            <Eye size={16} />
+                            <Book size={16} />
                           </button>
                           <button
                             onClick={() => {

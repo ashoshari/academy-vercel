@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Save, RefreshCw } from "lucide-react";
+import { Save, RefreshCw, ArrowRight } from "lucide-react";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -82,9 +82,19 @@ const EditStudentPage = () => {
     );
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        تعديل بيانات الطالب
-      </h2>
+      <div className="flex items-center mb-6 gap-x-[5px]">
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <ArrowRight size={20} />
+        </button>
+        <h2 className="text-2xl font-bold text-gray-800">
+          تعديل بيانات الطالب
+        </h2>
+      </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"

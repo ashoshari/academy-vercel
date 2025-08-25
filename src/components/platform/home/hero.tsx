@@ -186,7 +186,7 @@ const Hero: React.FC = () => {
                             onClick={() => {
                               setStopSlider(!stopSlider);
                             }}
-                            className={`cursor-pointer absolute bottom-4 right-4 bg-white hover:bg-gradient-to-r hover:text-white hover:from-yellow-400 hover:to-orange-500 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm`}
+                            className={`cursor-pointer absolute bottom-12 right-2 bg-white hover:bg-gradient-to-r hover:text-white hover:from-yellow-400 hover:to-orange-500 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm`}
                           >
                             {!stopSlider ? " ▶️ شاهد الفيديو" : "  ❌ أوقف الفيديو"}
                           </button>
@@ -204,7 +204,7 @@ const Hero: React.FC = () => {
                     </div>
 
                     {/* Floating Elements */}
-                    {slides[currentSlide]?.link && (
+                    {slides[currentSlide]?.link && !stopSlider && (
                       <div>
                         <div className="absolute -top-4 -right-4 bg-yellow-400 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm animate-bounce">
                           🏆 الأفضل في الأردن

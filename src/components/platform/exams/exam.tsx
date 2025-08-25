@@ -83,12 +83,8 @@ const Exam = () => {
   );
   const startExam = () => {
     setIsExamMode(true);
-    // setCurrentExam(examData);
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
-    // setTimeRemaining(examData.duration * 60);
-    // setExamSubmitted(false);
-    // setExamResults(null);
   };
   const handleAnswerSelect = (questionId: any, answerId: any) => {
     setSelectedAnswers((prev: any) => {

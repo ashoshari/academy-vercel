@@ -2,6 +2,7 @@ import {
   Plus,
   Edit,
   Eye,
+  Book,
   Users,
   Phone,
   Mail,
@@ -11,12 +12,16 @@ import {
   Grid,
   Search,
   CircleX,
+  EyeOff,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
+import { useCustomUpdate } from "@/hooks/useMutation";
 import Spinner from "@/components/dashboard/Spinner";
 import { useState } from "react";
 import Pagination from "@/components/dashboard/core/Pagination";
+import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface Student {
   id: number;
@@ -91,8 +96,10 @@ export interface ActivityRecord {
 }
 
 const StudentsPage = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
+  const [studentId, setStudentId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [courseFilter, setCourseFilter] = useState<any>(null);
   const [gradeFilter, setGradeFilter] = useState<any>();
@@ -106,7 +113,7 @@ const StudentsPage = () => {
   if (statusFilter) queryParams.append("is_active", statusFilter);
   if (page) queryParams.append("page", page.toString());
   const queryString = queryParams.toString();
-  // GET courses
+  // GET Students
   const { data, isLoading } = useCustomQuery(
     `/account/admin/students/?${queryString}`,
     ["students", page, searchTerm, courseFilter, gradeFilter, statusFilter]
@@ -126,7 +133,25 @@ const StudentsPage = () => {
   const paginationData = data?.pagination;
   const coursesData = courses?.data;
   const gradesData = grades?.data;
-
+  // PUT Student
+  const { mutateAsync: putStudent, isPending } = useCustomUpdate(
+    `/account/admin/students/${studentId}/`,
+    ["putstudents"]
+  );
+  const handleActivation = async (student: any) => {
+    const is_active = student?.is_active;
+    try {
+      const response = await putStudent({
+        is_active: !is_active,
+      });
+      toast.success(response?.data?.message ?? "تم تحديث حالة الطلب");
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.error ?? "حدث خطأ في تحديث حالة الطالب"
+      );
+    }
+  };
   const StudentCard = ({ student }: { student: any }) => (
     <div className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
@@ -281,7 +306,17 @@ const StudentsPage = () => {
               className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               title="عرض التفاصيل"
             >
-              <Eye size={16} />
+              <Book size={16} />
+            </button>
+            <button
+              onClick={() => {
+                setStudentId(student?.id);
+                handleActivation(student);
+              }}
+              className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              title={student?.is_active ? "إخفاء الطالب" : "إظهار الطالب"}
+            >
+              {student?.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
 
             <button
@@ -468,7 +503,7 @@ const StudentsPage = () => {
       </div>
 
       {/* Students Grid/Table */}
-      {isLoading ? (
+      {isLoading || isPending ? (
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
@@ -624,7 +659,25 @@ const StudentsPage = () => {
                             className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
                             title="عرض التفاصيل"
                           >
-                            <Eye size={16} />
+                            <Book size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStudentId(student?.id);
+                              handleActivation(student);
+                            }}
+                            className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title={
+                              student?.is_active
+                                ? "إخفاء الطالب"
+                                : "إظهار الطالب"
+                            }
+                          >
+                            {student?.is_active ? (
+                              <Eye size={16} />
+                            ) : (
+                              <EyeOff size={16} />
+                            )}
                           </button>
                           <button
                             onClick={() => {
@@ -633,17 +686,10 @@ const StudentsPage = () => {
                               );
                             }}
                             className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                            title="تعديل"
+                            title="تعديل الطالب"
                           >
                             <Edit size={16} />
                           </button>
-                          {/* <button
-                          onClick={() => handleDeleteStudent(student.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                          title="حذف"
-                        >
-                          <Trash2 size={16} />
-                        </button> */}
                         </div>
                       </td>
                     </tr>

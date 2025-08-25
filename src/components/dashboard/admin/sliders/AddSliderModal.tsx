@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
+// import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
 import {
   FileImage,
   // FileVideo,
@@ -12,11 +12,11 @@ import { useMemo } from "react";
 
 interface ModalProps {
   setShowAddModal: (s: boolean) => void;
-  setNewSlide: (slide: Slider) => void;
+  setNewSlide: (slide: any) => void;
   handleAddSlide: () => any;
   setSelectedImageFile: (f: File | null) => void;
   selectedImageFile: File | null;
-  newSlide: Slider;
+  newSlide: any;
 }
 
 export default function AddSliderModal({
@@ -40,7 +40,13 @@ export default function AddSliderModal({
               إضافة سلايد جديد
             </h2>
             <button
-              onClick={() => setShowAddModal(false)}
+              onClick={() => {
+                setNewSlide({
+                  type: "image",
+                  is_published: true,
+                });
+                setShowAddModal(false);
+              }}
               className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <X size={20} />
@@ -83,7 +89,7 @@ export default function AddSliderModal({
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              العنوان
+              العنوان *
             </label>
             <input
               type="text"
@@ -98,7 +104,7 @@ export default function AddSliderModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              العنوان الرئيسي
+              العنوان الرئيسي *
             </label>
             <input
               type="text"
@@ -243,14 +249,21 @@ export default function AddSliderModal({
 
         <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
           <button
-            onClick={() => setShowAddModal(false)}
+            onClick={() => {
+              setNewSlide({
+                type: "image",
+                is_published: false,
+              });
+              setShowAddModal(false);
+            }}
             className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
           >
             إلغاء
           </button>
           <button
+            disabled={!newSlide.title || !newSlide.header}
             onClick={handleAddSlide}
-            className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
             حفظ السلايد

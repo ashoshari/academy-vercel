@@ -1,30 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCustomUpdate } from "@/hooks/useMutation";
-import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
+import { useCustomRemove, useCustomUpdate } from "@/hooks/useMutation";
+// import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import {
   ArrowDown,
   ArrowUp,
+  Book,
   Edit,
-  Eye,
+  // Eye,
   Image,
   ToggleLeft,
   ToggleRight,
   Trash2,
+  // Trash2,
   Video,
 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface SliderCardProps {
-  slide: Slider;
+  slide: any;
   prevId: string | null;
   nextId: string | null;
   prevOrder?: number;
   nextOrder?: number;
   onSwap: (aId: string, bId: string) => void;
-  setSelectedSlide: (s: Slider) => void;
+  setSelectedSlide: (s: any) => void;
   setShowEditModal: (s: boolean) => void;
   setShowDetailsModal: (s: boolean) => void;
 }
@@ -40,6 +43,7 @@ export default function SliderCard({
   setShowEditModal,
   setShowDetailsModal,
 }: SliderCardProps) {
+  const queryClient = useQueryClient();
   const updateSlideStatus = useCustomUpdate(
     `/training/admin/sliders/${slide?.id}/`,
     ["sliders"]
@@ -54,6 +58,10 @@ export default function SliderCard({
       .then((res) => {
         if (res.status) {
           toast.success(res.message ?? "تم الحفظ");
+          queryClient.invalidateQueries({
+            predicate: (query) => query.queryKey[0] === "sliders",
+          });
+          queryClient.invalidateQueries({ queryKey: ["sliders-statistics"] });
         } else toast.error(res.message ?? "فشل الحفظ");
       })
       .catch((e) => handleErrorAlerts(e?.response?.data?.error));
@@ -73,6 +81,25 @@ export default function SliderCard({
     ["sliders"]
   );
 
+  // Delete Slides
+  const { mutateAsync: deleteSlide } = useCustomRemove(
+    `/training/admin/sliders/${slide?.id}/`,
+    ["deleteSliders"]
+  );
+  const handleDeleteSlide = async () => {
+    if (confirm("هل أنت متأكد من حذف هذا السلايد؟")) {
+      try {
+        const response = await deleteSlide();
+        toast.success(response.message ?? "تم الحذف");
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === "sliders",
+        });
+        queryClient.invalidateQueries({ queryKey: ["sliders-statistics"] });
+      } catch (e: any) {
+        handleErrorAlerts(e?.response?.data?.error);
+      }
+    }
+  };
   const [isMoving, setIsMoving] = useState<null | "up" | "down">(null);
 
   const moveSlide = async (direction: "up" | "down") => {
@@ -120,7 +147,7 @@ export default function SliderCard({
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                   <Image className="w-8 h-8 text-gray-400" />
-                </div>  
+                </div>
               )
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -230,7 +257,7 @@ export default function SliderCard({
                   }}
                   className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 >
-                  <Eye size={16} />
+                  <Book size={16} />
                 </button>
 
                 {/* Edit */}
@@ -246,8 +273,10 @@ export default function SliderCard({
 
                 {/* Delete */}
                 <button
-                  // onClick={() => handleDeleteSlide(slide.id)}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  onClick={() => {
+                    handleDeleteSlide();
+                  }}
+                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                 >
                   <Trash2 size={16} />
                 </button>

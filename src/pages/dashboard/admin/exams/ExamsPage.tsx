@@ -5,7 +5,7 @@ import {
   Plus,
   Edit,
   Search,
-  // Trash2,
+  Trash2,
   Eye,
   EyeOff,
   ArrowLeft,
@@ -26,7 +26,11 @@ import {
   // Pause,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
+import {
+  useCustomPost,
+  useCustomRemove,
+  useCustomUpdate,
+} from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import ExamQuestionsPage from "./questions/QuestionsPage";
@@ -133,6 +137,7 @@ const ExamsPage = () => {
     "table" | "grid" | "create" | "edit" | "questions" | "results"
   >("table");
   const queryClient = useQueryClient();
+  const [examId, setExamId] = useState();
   const [selectedExam, setSelectedExam] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [materialFilter, setMaterialFilter] = useState<string>("");
@@ -179,9 +184,16 @@ const ExamsPage = () => {
     "addExams",
     "exams-statistics",
   ]);
+
+  // PUT Exams
   const { mutateAsync: putExam } = useCustomUpdate(
     `/training/admin/exams/${selectedExam?.id}/`,
     ["putExams"]
+  );
+  // DELETE Exams
+  const { mutateAsync: deleteExam } = useCustomRemove(
+    `/training/admin/exams/${examId}/`,
+    ["deleteExams"]
   );
   // GET Codes
   // const { data: cards } = useCustomQuery("/cards/", ["cards"]);
@@ -283,7 +295,17 @@ const ExamsPage = () => {
         );
       });
   };
-
+  const handleDeleteExam = async () => {
+    if (confirm("هل أنت متأكد من حذف هذا الامتحان؟")) {
+      try {
+        const response: any = await deleteExam();
+        toast.success(response.message ?? "تم الحذف بنجاح");
+        queryClient.invalidateQueries({ queryKey: ["exams"] });
+      } catch (err: any) {
+        toast.error(err?.response?.data?.error);
+      }
+    }
+  };
   const toggleExamStatus = (status: boolean) => {
     updateExam
       .mutateAsync({
@@ -493,14 +515,16 @@ const ExamsPage = () => {
             >
               <Edit size={16} />
             </button>
-
-            {/* <button
-              onClick={() => handleDeleteExam(exam.id)}
-              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            <button
+              onClick={() => {
+                setExamId(exam?.id);
+                handleDeleteExam();
+              }}
+              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               title="حذف الامتحان"
             >
               <Trash2 size={16} />
-            </button> */}
+            </button>
           </div>
         </div>
       </div>
@@ -1774,7 +1798,6 @@ const ExamsPage = () => {
                           </button>
                           <button
                             onClick={() => {
-                              console.log("exam", exam);
                               setSelectedExam(exam);
                               setCurrentView("edit");
                             }}
@@ -1783,13 +1806,6 @@ const ExamsPage = () => {
                           >
                             <Edit size={16} />
                           </button>
-                          {/* <button
-                          onClick={() => handleDeleteExam(exam.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                          title="حذف"
-                        >
-                          <Trash2 size={16} />
-                        </button> */}
                         </div>
                       </td>
                     </tr>

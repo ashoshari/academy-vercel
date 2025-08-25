@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Save } from "lucide-react";
+import { Save, ArrowRight } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
@@ -87,9 +87,20 @@ export default function EditTeacherPage() {
   }
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        تعديل بيانات المعلم
-      </h2>
+      <div className="flex items-center mb-6 gap-x-[5px]">
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <ArrowRight size={20} />
+        </button>
+        <h2 className="text-2xl font-bold text-gray-800">
+          تعديل بيانات المعلم
+        </h2>
+      </div>
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"

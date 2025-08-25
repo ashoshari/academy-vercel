@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { RefreshCw, Save } from "lucide-react";
+import { RefreshCw, Save, ArrowRight } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
@@ -33,7 +33,7 @@ export default function AddTeacherPage() {
   ]);
 
   const addTeacher = useCustomPost("account/admin/teachers/", ["teachers"]);
-  console.log("dataMaterials",dataMaterials?.data)
+  console.log("dataMaterials", dataMaterials?.data);
   const onSubmit = async (data: FormValues) => {
     try {
       const res = await addTeacher.mutateAsync({
@@ -70,7 +70,18 @@ export default function AddTeacherPage() {
 
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">إضافة معلم جديد</h2>
+      <div className="flex items-center mb-6 gap-x-[5px]">
+        <button
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <ArrowRight size={20} />
+        </button>
+        <h2 className="text-2xl font-bold text-gray-800">إضافة معلم جديد</h2>
+      </div>
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"

@@ -145,7 +145,7 @@ const AllCourses = () => {
                 </span>
               </div>
               <p className="text-sm text-gray-600 line-clamp-1 mb-2">
-                {course?.nextLesson || "لا يوجد"}
+                {course?.next_lesson ?? "لا يوجد"}
               </p>
             </div>
 

@@ -25,14 +25,13 @@ import {
   Users,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import GenerateModal from "@/components/card-codes/GenerateModal";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import Pagination from "@/components/dashboard/core/Pagination";
-// import Loader from "@/components/core/Loader";
 import Spinner from "@/components/dashboard/Spinner";
+import { formatDate } from "@/services/date";
 
 export interface CardCode {
   id: number;
@@ -235,7 +234,6 @@ const CardCodesPage = () => {
   const getClientInfo = () => {
     const parser = new UAParser();
     const result = parser.getResult();
-
     return {
       // 🧠 عام
       ua: result.ua, // user-agent string
@@ -271,8 +269,11 @@ const CardCodesPage = () => {
         architecture: result.cpu.architecture || "unknown",
       },
     };
-  };
-
+    };
+    const getUserInfo = () =>{
+      
+    }
+    console.log(getClientInfo());
   const handleGenerateCodes = () => {
     const rawData = {
       name: generateForm.name,
@@ -527,11 +528,11 @@ const CardCodesPage = () => {
                     <div className="flex items-center gap-2 text-sm">
                       <targeting.icon size={16} className={targeting.color} />
                       <span className={`font-medium ${targeting.color}`}>
-                        {targeting.display}
+                        الأقسام المحددة: {batch.subsubsections.length}
                       </span>
                     </div>
                     {/* {batch.targetingType === "specific" && */}
-                    {true && batch?.subsubsections?.length > 1 && (
+                    {true && batch?.subsubsections?.length >= 1 && (
                       <div className="mt-2 flex flex-wrap gap-1">
                         {batch?.subsubsections?.slice(0, 3).map((sec: any) => (
                           <span
@@ -614,7 +615,7 @@ const CardCodesPage = () => {
                     <div className="flex items-center gap-2 text-sm">
                       <Calendar className="w-4 h-4 text-gray-400" />
                       <span className="text-gray-600">
-                        {formatDateTimeSimple(batch.created_at)}
+                        {formatDate(batch.created_at)}
                       </span>
                     </div>
 
@@ -623,7 +624,7 @@ const CardCodesPage = () => {
                         <div className="flex items-center gap-2 text-xs text-gray-500">
                           <Clock className="w-3 h-3" />
                           <span>
-                            آخر تعديل: {formatDateTimeSimple(batch.updated_at)}{" "}
+                            آخر تعديل: {formatDate(batch.updated_at)}{" "}
                             {/* بواسطة {batch.updated_at} */}
                           </span>
                         </div>
@@ -672,8 +673,7 @@ const CardCodesPage = () => {
                             <div className="flex items-center gap-2">
                               <Clock size={12} />
                               <span>
-                                التاريخ:{" "}
-                                {formatDateTimeSimple(batch.created_at)}
+                                التاريخ: {formatDate(batch.created_at)}
                               </span>
                             </div>
                           </div>
@@ -902,13 +902,11 @@ const CardCodesPage = () => {
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-900">
                           {code.used_by?.user?.created_at
-                            ? formatDateTimeSimple(
-                                code.used_by?.user?.created_at
-                              )
+                            ? formatDate(code.used_by?.user?.created_at)
                             : "-"}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-900">
-                          {formatDateTimeSimple(code.created_at)}
+                          {formatDate(code.created_at)}
                         </td>
 
                         <td className="px-4 py-3 whitespace-nowrap">

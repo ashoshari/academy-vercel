@@ -10,28 +10,30 @@ import handleErrorAlerts from "@/utils/showErrorMessages";
 import AddSliderModal from "@/components/dashboard/admin/sliders/AddSliderModal";
 import ShowSliderModal from "@/components/dashboard/admin/sliders/ShowSliderModal";
 import Spinner from "@/components/dashboard/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
 // import Pagination from "@/components/dashboard/core/Pagination";
 
 export type SlideType = "image" | "video";
 
-export interface Slider {
-  id: string;
-  header: string;
-  title: string;
-  subtitle: string;
-  image: string;
-  type: SlideType;
-  link: string | null;
-  is_published: boolean;
-  order: number;
-}
+// export interface Slider {
+//   id: string;
+//   header: string;
+//   title: string;
+//   subtitle: string;
+//   image: string;
+//   type: SlideType;
+//   link: string | null;
+//   is_published: boolean;
+//   order: number;
+// }
 
 const SliderPage = () => {
+  const queryClient = useQueryClient();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedSlide, setSelectedSlide] = useState<Slider | null>(null);
+  const [selectedSlide, setSelectedSlide] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [selectedImageFile, setSelectedImageFile] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   // const [page, setPage] = useState<any>(null);
 
@@ -42,9 +44,7 @@ const SliderPage = () => {
 
   const slidersData = useCustomQuery(
     `/training/admin/sliders/?${queryString}`,
-    ["sliders", searchTerm,
-      // page
-    ]
+    ["sliders", searchTerm]
   );
   // const paginationData = slidersData?.data?.pagination;
   const sliderStatisticsData = useCustomQuery(
@@ -54,12 +54,12 @@ const SliderPage = () => {
 
   const updateSlide = useCustomUpdate(
     `/training/admin/sliders/${selectedSlide?.id ?? "noop"}/`,
-    ["sliders"]
+    ["putSliders"]
   );
 
-  const addSlide = useCustomPost(`/training/admin/sliders/`, ["sliders"]);
+  const addSlide = useCustomPost(`/training/admin/sliders/`, ["postSliders"]);
 
-  const [sliderItems, setSliderItems] = useState<Slider[]>([]);
+  const [sliderItems, setSliderItems] = useState<any>([]);
 
   useEffect(() => {
     if (slidersData?.data?.data) setSliderItems(slidersData?.data?.data);
@@ -71,10 +71,10 @@ const SliderPage = () => {
   );
 
   const swapById = (aId: string, bId: string) => {
-    setSliderItems((prev) => {
-      const next = prev.map((s) => ({ ...s }));
-      const ai = next.findIndex((s) => s.id === aId);
-      const bi = next.findIndex((s) => s.id === bId);
+    setSliderItems((prev: any) => {
+      const next = prev.map((s: any) => ({ ...s }));
+      const ai = next.findIndex((s: any) => s.id === aId);
+      const bi = next.findIndex((s: any) => s.id === bId);
       if (ai === -1 || bi === -1) return prev;
 
       // swap only the two order values
@@ -86,7 +86,7 @@ const SliderPage = () => {
     });
   };
 
-  const [newSlide, setNewSlide] = useState<Partial<Slider>>({
+  const [newSlide, setNewSlide] = useState<any>({
     type: "image",
     title: "",
     header: "",
@@ -122,6 +122,12 @@ const SliderPage = () => {
       toast.success("تم اضافة السلايد");
       setShowAddModal(false);
       setSelectedImageFile(null);
+      queryClient.invalidateQueries({ queryKey: ["sliders", searchTerm] });
+      queryClient.invalidateQueries({ queryKey: ["sliders-statistics"] });
+      setNewSlide({
+        type: "image",
+        is_published: true,
+      });
     } catch (e: any) {
       handleErrorAlerts(e?.response?.data?.error);
     }
@@ -143,8 +149,6 @@ const SliderPage = () => {
 
       if (selectedImageFile) {
         fd.append("image", selectedImageFile);
-      } else if (selectedSlide.image) {
-        fd.append("image", selectedSlide.image);
       }
 
       await updateSlide.mutateAsync(fd);
@@ -152,16 +156,12 @@ const SliderPage = () => {
       toast.success("تم حفظ التغييرات");
       setShowEditModal(false);
       setSelectedImageFile(null);
+      queryClient.invalidateQueries({ queryKey: ["sliders", searchTerm] });
+      queryClient.invalidateQueries({ queryKey: ["sliders-statistics"] });
     } catch (e: any) {
       handleErrorAlerts(e?.response?.data?.error);
     }
   };
-
-  // const handleDeleteSlide = (id: number) => {
-  //   if (confirm("هل أنت متأكد من حذف هذا السلايد؟")) {
-  //     setSliderItems(sliderItems.filter((slide) => slide.id !== id));
-  //   }
-  // };
 
   return (
     <div className="space-y-6">
@@ -231,7 +231,7 @@ const SliderPage = () => {
       ) : (
         <>
           <div className="space-y-4">
-            {sorted.map((slide: Slider, idx: number) => {
+            {sorted.map((slide: any, idx: number) => {
               const prev = idx > 0 ? sorted[idx - 1] : null;
               const next = idx < sorted.length - 1 ? sorted[idx + 1] : null;
               return (
@@ -328,7 +328,7 @@ const SliderPage = () => {
         <EditSliderModal
           setShowEditModal={setShowEditModal}
           setSelectedSlide={setSelectedSlide as any}
-          selectedSlide={selectedSlide as Slider}
+          selectedSlide={selectedSlide as any}
           handleEditSlide={handleEditSlide}
           setSelectedImageFile={setSelectedImageFile}
           selectedImageFile={selectedImageFile}
@@ -337,7 +337,7 @@ const SliderPage = () => {
       {showAddModal && (
         <AddSliderModal
           handleAddSlide={handleAddSlide}
-          newSlide={newSlide as Slider}
+          newSlide={newSlide as any}
           selectedImageFile={selectedImageFile}
           setNewSlide={setNewSlide}
           setSelectedImageFile={setSelectedImageFile}
@@ -346,7 +346,7 @@ const SliderPage = () => {
       )}
       {showDetailsModal && (
         <ShowSliderModal
-          selectedSlide={selectedSlide as Slider}
+          selectedSlide={selectedSlide as any}
           setShowDetailsModal={setShowDetailsModal}
           setShowEditModal={setShowEditModal}
         />

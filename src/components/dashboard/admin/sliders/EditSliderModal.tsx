@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
+// import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
 import {
   FileImage,
   // FileVideo,
@@ -10,14 +10,14 @@ import {
 } from "lucide-react";
 import { useMemo } from "react";
 
-interface ModalProps {
-  setShowEditModal: (s: boolean) => void;
-  setSelectedSlide: (slide: Slider) => void;
-  handleEditSlide: () => any;
-  setSelectedImageFile: (f: File | null) => void;
-  selectedImageFile: File | null;
-  selectedSlide: Slider;
-}
+// interface ModalProps {
+//   setShowEditModal: (s: boolean) => void;
+//   setSelectedSlide: (slide: any) => void;
+//   handleEditSlide: () => any;
+//   setSelectedImageFile: (f: File | null) => void;
+//   selectedImageFile: File | null;
+//   selectedSlide: any;
+// }
 
 export default function EditSliderModal({
   setShowEditModal,
@@ -26,7 +26,7 @@ export default function EditSliderModal({
   setSelectedImageFile,
   selectedImageFile,
   selectedSlide,
-}: ModalProps) {
+}: any) {
   const previewUrl = useMemo(() => {
     if (selectedImageFile) return URL.createObjectURL(selectedImageFile);
     return selectedSlide?.image || "";

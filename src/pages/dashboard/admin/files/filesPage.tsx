@@ -137,7 +137,7 @@ const ResourcesPage = () => {
     ["putResources", resourceId]
   );
   // DELETE Resources
-  const { mutateAsync: deleteResources } = useCustomRemove(
+  const { mutateAsync: deleteResources, isPending: isDeleting } = useCustomRemove(
     `/training/admin/resources/${resourceId}/`,
     ["deleteResources", resourceId]
   );
@@ -1574,7 +1574,7 @@ const ResourcesPage = () => {
       </div>
 
       {/* resourcess Grid/Table */}
-      {isLoading ? (
+      {isLoading || isDeleting ? (
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>

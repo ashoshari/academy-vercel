@@ -14,10 +14,15 @@ import {
   Rows,
   Grid,
   User,
+  Trash2,
 } from "lucide-react";
 import CourseContentPage from "@/components/dashboard/admin/courses/CourseContentPage";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
+import {
+  useCustomPost,
+  useCustomUpdate,
+  useCustomRemove,
+} from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
@@ -115,10 +120,9 @@ const CoursesPage = () => {
   const courseStatsData = coursesStats?.data;
 
   const [newCourse, setNewCourse] = useState<any>({});
-  // const [editCourseData, setEditCourseData] = useState<any>({});
 
   // PUT Course
-  const { mutateAsync: editCourse } = useCustomUpdate(
+  const { mutateAsync: editCourse , isPending: isEditing } = useCustomUpdate(
     `/training/admin/courses/${courseId}/`,
     ["editcourses", courseId]
   );
@@ -127,6 +131,12 @@ const CoursesPage = () => {
   const { mutateAsync: createCourse } = useCustomPost(
     "/training/admin/courses/",
     ["postCourses"]
+  );
+
+  // DELETE Courses
+  const { mutateAsync: deleteCourse, isPending: isDeleting } = useCustomRemove(
+    `/training/admin/courses/${courseId}/`,
+    ["deleteCourses", courseId]
   );
   const handleCreateCourse = async () => {
     const formData = new FormData();
@@ -176,7 +186,6 @@ const CoursesPage = () => {
     }
   };
   const handleEditCourse = async () => {
-    
     if (!selectedCourse?.id) {
       toast.error("لم يتم تحديد كورس للتعديل");
       return;
@@ -220,15 +229,21 @@ const CoursesPage = () => {
     }
   };
 
-  // const handleDeleteCourse = (id: number) => {
-  //   if (
-  //     confirm(
-  //       "هل أنت متأكد من حذف هذه الدورة؟ سيتم حذف جميع المحتوى المرتبط بها."
-  //     )
-  //   ) {
-  // setCourses(courses.filter((course) => course.id !== id));
-  //   }
-  // };
+  const handleDeleteCourse = async () => {
+    if (
+      confirm(
+        "هل أنت متأكد من حذف هذه الدورة؟ سيتم حذف جميع المحتوى المرتبط بها."
+      )
+    ) {
+      try {
+        const response: any = await deleteCourse();
+        toast.success(response.message ?? "تم الحذف بنجاح");
+        queryClient.invalidateQueries({ queryKey: ["courses"] });
+      } catch (err: any) {
+        toast.error(err?.response?.data?.error);
+      }
+    }
+  };
 
   const toggleCourseStatus = async (courseId: string) => {
     setCourses((prev: any) =>
@@ -483,7 +498,7 @@ const CoursesPage = () => {
               title={course?.is_Published ? "إلغاء النشر" : "نشر الدورة"}
             >
               {course?.is_published ? (
-                <Eye className="text-green-600" size={16} />
+                <Eye className="text-blue-600" size={16} />
               ) : (
                 <EyeOff size={16} />
               )}
@@ -515,14 +530,16 @@ const CoursesPage = () => {
             >
               <Edit size={16} />
             </button>
-
-            {/* <button
-              onClick={() => handleDeleteCourse(course.id)}
-              className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            <button
+              onClick={() => {
+                setCourseId(course?.id);
+                handleDeleteCourse();
+              }}
+              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               title="حذف الدورة"
             >
               <Trash2 size={16} />
-            </button> */}
+            </button>
           </div>
         </div>
       </div>
@@ -1926,7 +1943,7 @@ const CoursesPage = () => {
         </div>
       </div>
       {/* Courses Grid/Table */}
-      {isLoading ? (
+      {isLoading || isDeleting || isEditing ? (
         <div className="flex justify-center">
           <Spinner size={40} thickness={4} className="text-orange-500" />
         </div>
@@ -2123,7 +2140,7 @@ const CoursesPage = () => {
                             }}
                             className={`cursor-pointer p-2 rounded-lg transition-colors ${
                               course?.is_published
-                                ? "text-green-600"
+                                ? "text-blue-600"
                                 : "text-gray-400"
                             }`}
                             title={
@@ -2146,17 +2163,20 @@ const CoursesPage = () => {
                               console.log("Editing course:", course);
                             }}
                             className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                            title="تعديل"
+                            title="الدورة تعديل"
                           >
                             <Edit size={16} />
                           </button>
-                          {/* <button
-                          onClick={() => handleDeleteCourse(course.id)}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
-                          title="حذف"
-                        >
-                          <Trash2 size={16} />
-                        </button> */}
+                          <button
+                            onClick={() => {
+                              setCourseId(course?.id);
+                              handleDeleteCourse();
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            title="حذف الدورة"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </td>
                     </tr>
