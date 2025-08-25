@@ -30,6 +30,7 @@ const CoursePage = () => {
     }
   );
   const courseData = data?.data;
+  console.log("error", error);
   const sidebarCollapseHandler = (state: boolean) => {
     setSidebarCollapsed(state);
   };
@@ -112,19 +113,19 @@ const CoursePage = () => {
     console.log("currentLessonIndex", currentLessonIndex);
     const typedError = error as any;
   if (typedError?.response?.data?.error != "لا يوجد عنصر بهذا المعرف") {
-    // return (
-    //   <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
-    //     <div className="text-center">
-    //       <img
-    //       loading="lazy"
-    //         src={errorIllustation}
-    //         alt="404"
-    //         className="w-[200px] h-[200px] mx-auto mb-4"
-    //       />
-    //       <p className="text-gray-600">ليس لديك الصلاحيات لمشاهدة الدورة</p>
-    //     </div>
-    //   </div>
-    // );
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <img
+          loading="lazy"
+            src={errorIllustation}
+            alt="404"
+            className="w-[200px] h-[200px] mx-auto mb-4"
+          />
+          <p className="text-gray-600">ليس لديك الصلاحيات لمشاهدة الدورة</p>
+        </div>
+      </div>
+    );
   } else if (allLessons.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br px-2 from-gray-50 to-white flex items-center justify-center">

@@ -59,6 +59,7 @@ const TeacherProfile: React.FC = () => {
         resource_id: resourceId,
       });
       toast.success(response?.message ?? "تم تحميل الملف بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["teachers", id] });
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "حدث خطأ");
     }
@@ -157,7 +158,7 @@ const TeacherProfile: React.FC = () => {
     }
   };
   const handleCourseClick = (course: any) => {
-    if (course?.is_enrolled) {
+    if (course?.is_enrolled && course?.is_enrollment_active) {
       if (!isMoblieOrTablet) {
         if (isLoggedIn) {
           navigate(`/coursePage/${course?.id}`);
@@ -336,7 +337,7 @@ const TeacherProfile: React.FC = () => {
             >
               <CheckCircle className="w-4 h-4" />
               <span>
-                {course?.is_enrollment_active ? "مفعلة" : "غير مفعلة"}
+                {course?.is_enrollment_active ? "مفعلة" : "معطلة"}
               </span>
             </div>
           ) : (
@@ -402,12 +403,12 @@ const TeacherProfile: React.FC = () => {
         <button
           onClick={() => handleCourseClick(course)}
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
-            course?.is_enrolled
+            course?.is_enrolled && course?.is_enrollment_active
               ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
               : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
           }`}
         >
-          {course?.is_enrolled ? (
+          {course?.is_enrolled && course?.is_enrollment_active ? (
             <>
               <Play className="w-5 h-5" />
               <span>دخول الدورة</span>
@@ -449,7 +450,9 @@ const TeacherProfile: React.FC = () => {
           </div>
           <div className="flex items-center space-x-2">
             <Download className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">{file?.number_of_downloads || 0} تحميل</span>
+            <span className="text-gray-600">
+              {file?.number_of_downloads || 0} تحميل
+            </span>
           </div>
           <div className="flex items-center space-x-2">
             <Clock className="w-4 h-4 text-gray-500" />
@@ -512,14 +515,14 @@ const TeacherProfile: React.FC = () => {
             <div className="flex items-center space-x-2">
               <FileText className="w-4 h-4 text-gray-500" />
               <span className="text-gray-600">
-                {(book?.file_size / 1024).toFixed(1) || 0} MB
+                {(book?.file_size / 1024).toFixed(1) ?? 0} MB
               </span>
             </div>
 
             <div className="flex items-center space-x-2">
               <Download className="w-4 h-4 text-gray-500" />
               <span className="text-gray-600">
-                {book?.downloads || 0} تحميل
+                {book?.number_of_downloads} تحميل
               </span>
             </div>
             <div className="flex items-center space-x-2">
@@ -590,7 +593,7 @@ const TeacherProfile: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Download className="w-4 h-4 text-gray-500" />
               <span className="text-gray-600">
-                {question?.downloads || 0} تحميل
+                {question?.number_of_downloads || 0} تحميل
               </span>
             </div>
             <div className="flex items-center space-x-2">
@@ -632,7 +635,9 @@ const TeacherProfile: React.FC = () => {
           <h3 className="text-lg font-bold text-gray-900 mb-2">
             {exam?.title}
           </h3>
-          <p className="text-gray-600 text-sm mb-3">{exam?.description || "-"}</p>
+          <p className="text-gray-600 text-sm mb-3">
+            {exam?.description || "-"}
+          </p>
         </div>
         {/* <div className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
           {exam?.type?.name}

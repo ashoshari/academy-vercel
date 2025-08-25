@@ -119,7 +119,11 @@ const CoursesPage = () => {
   }, [courseData]);
   const courseStatsData = coursesStats?.data;
 
-  const [newCourse, setNewCourse] = useState<any>({});
+  const [newCourse, setNewCourse] = useState<any>({
+    is_free: true,
+    is_published: true,
+    is_special: false,
+  });
 
   // PUT Course
   const { mutateAsync: editCourse , isPending: isEditing } = useCustomUpdate(
@@ -817,12 +821,12 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={newCourse.is_free === true}
+                      checked={newCourse?.is_free == true}
                       onChange={() =>
                         setNewCourse({
                           ...newCourse,
                           is_free: true,
-                          card: 0,
+                          card_price: 0,
                         })
                       }
                       className="text-orange-600 focus:ring-orange-500"
@@ -833,7 +837,7 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={newCourse?.is_free === false}
+                      checked={newCourse?.is_free == false}
                       onChange={() =>
                         setNewCourse({ ...newCourse, is_free: false })
                       }
@@ -1382,7 +1386,6 @@ const CoursesPage = () => {
                         setSelectedCourse({
                           ...selectedCourse,
                           is_free: true,
-                          card_price: 0,
                         })
                       }
                       className="text-orange-600 focus:ring-orange-500"

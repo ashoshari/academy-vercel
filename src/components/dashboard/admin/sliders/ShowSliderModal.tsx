@@ -1,10 +1,10 @@
-import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
+// import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
 import { Edit, X } from "lucide-react";
 
 interface ModalProps {
   setShowDetailsModal: (s: boolean) => void;
   setShowEditModal: (s: boolean) => void;
-  selectedSlide: Slider;
+  selectedSlide: any;
 }
 
 export default function ShowSliderModal({

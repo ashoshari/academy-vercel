@@ -14,7 +14,7 @@ import {
   CheckCircle,
   User,
   Clock,
-  MapPin,
+  // MapPin,
   Smartphone,
   Target,
   Globe,
@@ -77,12 +77,13 @@ const CardCodesPage = () => {
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [
-    selectedPriceFilter,
-    // , setSelectedPriceFilter
-  ] = useState<string | null>(null);
+  // const [
+  //   selectedPriceFilter,
+  //   // , setSelectedPriceFilter
+  // ] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
+  const [codesFilter, setCodesFilter] = useState();
   const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
     "all"
   );
@@ -99,7 +100,7 @@ const CardCodesPage = () => {
 
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
-  if (selectedPriceFilter) queryParams.append("code_name", selectedPriceFilter);
+  if (codesFilter) queryParams.append("code_name", codesFilter);
   if (isUsed !== null && isUsed !== undefined)
     queryParams.append("is_used", isUsed);
   if (statusFilter) queryParams.append("is_active", statusFilter);
@@ -109,14 +110,7 @@ const CardCodesPage = () => {
 
   const generateCodes = useCustomQuery(
     `cards/codes-generated/?${queryString}`,
-    [
-      "codes-generated",
-      searchTerm,
-      selectedPriceFilter,
-      isUsed,
-      statusFilter,
-      page,
-    ]
+    ["codes-generated", searchTerm, codesFilter, isUsed, statusFilter, page]
   );
 
   const cards = useCustomQuery("cards/", ["cards"]);
@@ -269,11 +263,7 @@ const CardCodesPage = () => {
         architecture: result.cpu.architecture || "unknown",
       },
     };
-    };
-    const getUserInfo = () =>{
-      
-    }
-    console.log(getClientInfo());
+  };
   const handleGenerateCodes = () => {
     const rawData = {
       name: generateForm.name,
@@ -597,18 +587,25 @@ const CardCodesPage = () => {
                         </span>
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-2 text-sm">
+                    {/* Location */}
+                    {/* <div className="flex items-center gap-2 text-sm">
                       <MapPin className="w-4 h-4 text-gray-400" />
                       <span className="text-gray-600 font-mono text-xs">
                         {batch?.security_information?.ip || "-"}
                       </span>
-                    </div>
+                    </div> */}
 
+                    {/* Device Info */}
                     <div className="flex items-center gap-2 text-sm">
                       <Smartphone className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600 text-xs">
-                        {batch?.security_information?.device_name || "-"}
+                      <span>
+                        {batch?.security_information?.device?.vendor}
+                        {" - "}
+                        {batch?.security_information?.device?.model}
+                        {" - "}
+                        {batch?.security_information?.device?.type}
+                        {" - "}
+                        {batch?.security_information?.browser?.name}
                       </span>
                     </div>
 
@@ -630,7 +627,7 @@ const CardCodesPage = () => {
                         </div>
                       </div>
                     )}
-                    <div className="flex flex-col gap-y-[10px] h-52 overflow-y-auto">
+                    <div className="flex flex-col gap-y-[10px] min-h-20 overflow-y-auto">
                       {batch.note && (
                         <div className="bg-blue-50 p-3 rounded-lg">
                           <div className="text-xs text-blue-600 font-medium mb-1">
@@ -642,7 +639,7 @@ const CardCodesPage = () => {
                         </div>
                       )}
 
-                      {batch.security_information && (
+                      {/* {batch.security_information && (
                         <div className="bg-blue-50 p-3 rounded-lg">
                           <div className="text-xs text-blue-600 font-medium mb-1">
                             معلومات الأمان :
@@ -678,7 +675,7 @@ const CardCodesPage = () => {
                             </div>
                           </div>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </div>
 
@@ -732,21 +729,19 @@ const CardCodesPage = () => {
             />
           </div>
 
-          {/* Price Filter */}
-          {/* <select
-            value={selectedPriceFilter || ""}
-            onChange={(e) =>
-              setSelectedPriceFilter(e.target.value ? e.target.value : null)
-            }
+          {/* Group Filter */}
+          <select
+            value={codesFilter}
+            onChange={(e) => setCodesFilter(e.target.value as any)}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
-            <option value="">جميع الأسعار</option>
-            {cards?.data?.data.map((price: any) => (
-              <option key={price.id} value={price.id}>
-                {price.price} د.أ
+            <option value="">جميع المجموعات</option>
+            {cardCodes?.data?.data.map((card: any) => (
+              <option key={card.id} value={card.name}>
+                {card.name || "-"}
               </option>
             ))}
-          </select> */}
+          </select>
 
           {/* Batch Filter */}
           <select
@@ -869,9 +864,9 @@ const CardCodesPage = () => {
                             {code.code.name}
                           </div>
 
-                          <div className="text-xs text-gray-500">
+                          {/* <div className="text-xs text-gray-500">
                             بواسطة: {code.code.generated_by}
-                          </div>
+                          </div> */}
                         </td>
 
                         <td className="px-4 py-3 whitespace-nowrap">

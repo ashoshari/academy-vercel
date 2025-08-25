@@ -41,7 +41,7 @@ const EditModal: React.FC<Props> = ({
       ),
     [data?.sections]
   );
-
+  console.log("data",data);
   /* ── mutation ──────────────────────────────────────────── */
   const mutation = useCustomUpdate(`${endpointBase}${data?.id}/`, queryKey);
 
@@ -141,7 +141,7 @@ const EditModal: React.FC<Props> = ({
                 الأقسام الأب
               </label>
               <select
-                value={mainSections?.find((m) => m.id === data?.subsection?.id)}
+                value={data?.subsection ?? ""}
                 onChange={(e) => {
                   onChange({ ...data, subsection: e.target.value });
                 }}

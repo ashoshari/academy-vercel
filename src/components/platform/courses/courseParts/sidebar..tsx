@@ -33,6 +33,12 @@ const Sidebar = ({
   const setStartExam = useExam((state) => state.setStartExam);
   const currentLesson = useLesson((state) => state.currentLesson);
   // const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
+  const [course, setCourse] = useState(courseData);
+  useEffect(() => {
+    if (courseData) {
+      setCourse(courseData);
+    }
+  }, [courseData]);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   useEffect(() => {
     if (courseData?.semesters) {
@@ -173,10 +179,10 @@ const Sidebar = ({
           {!sidebarCollapsed && (
             <div className="flex-1">
               <h3 className="font-bold text-gray-900 text-sm line-clamp-2">
-                {courseData?.name}
+                {course?.name}
               </h3>
               <p className="text-xs text-gray-600 mt-1">
-                {courseData?.teacher?.name}
+                {course?.teacher?.name}
               </p>
             </div>
           )}
@@ -204,12 +210,12 @@ const Sidebar = ({
           <div className="mt-3">
             <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
               <span>التقدم</span>
-              <span>{courseData?.progress_bar}%</span>
+              <span>{course?.progress_bar}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
                 className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${courseData?.progress_bar}%` }}
+                style={{ width: `${course?.progress_bar}%` }}
               ></div>
             </div>
           </div>

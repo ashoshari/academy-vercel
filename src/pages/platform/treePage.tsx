@@ -135,13 +135,17 @@ const TreePage: React.FC = () => {
             >
               {node?.title || node?.name || node?.material?.name}
             </p>
-            <p
-              className={`font-semibold p-2 ${
-                level === 0 ? "text-sm text-gray-500" : "text-xs text-gray-500"
-              }`}
-            >
-              {node?.description}
-            </p>
+            {node?.description && (
+              <p
+                className={`font-semibold p-2 ${
+                  level === 0
+                    ? "text-sm text-gray-500"
+                    : "text-xs text-gray-500"
+                }`}
+              >
+                {node?.description}
+              </p>
+            )}
           </div>
 
           {hasTeachers && isExpanded && (
@@ -222,7 +226,10 @@ const TreePage: React.FC = () => {
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center space-x-2 text-gray-600">
-          <a href="/" className="flex items-center space-x-1 hover:text-gray-900">
+          <a
+            href="/"
+            className="flex items-center space-x-1 hover:text-gray-900"
+          >
             <Home className="w-4 h-4" />
             <p>الرئيسية</p>
           </a>

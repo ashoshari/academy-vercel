@@ -8,8 +8,6 @@ import {
   Phone,
   Mail,
   UserCheck,
-  CheckCircle,
-  XCircle,
   RefreshCw,
   Check,
   ClipboardCopy,

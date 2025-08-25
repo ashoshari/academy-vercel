@@ -18,18 +18,20 @@ import FilesTab from "./tabs/filesTab";
 import NotesTab from "./tabs/notesTab";
 import QuestionsTab from "./tabs/questionsTab";
 import Exam from "./content/exam";
-// import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router";
 const CourseContent = ({
   setAllLessons,
   allLessons,
-  // setSemesters,
-}: {
+}: // setSemesters,
+{
   setAllLessons: any;
   allLessons: any;
   setSemesters: any;
   courseData: any;
 }) => {
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
+  const { courseId } = useParams();
   const [activeTab, setActiveTab] = useState("content");
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
@@ -81,7 +83,7 @@ const CourseContent = ({
     completeMutateAsync({ lesson_id: updatedLesson.id });
 
     // 4. Background refetch
-    // queryClient.invalidateQueries({ queryKey: ["courses"] });
+    queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
   };
   // exam
   //     const startExam = () => {
