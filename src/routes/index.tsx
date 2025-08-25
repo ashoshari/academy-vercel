@@ -23,6 +23,7 @@ import CoursePage from "@/components/platform/courses/courseParts/coursePage";
 // Dashboard
 import Dashboard from "@/pages/dashboard/admin/Dashboard";
 import TeachersPage from "@/pages/dashboard/admin/teachers/TeachersPage";
+import LibrariesPage from "@/pages/dashboard/admin/libraries/LibrariesPage";
 import StudentsPage from "@/pages/dashboard/admin/students/StudentsPage";
 
 // Courses
@@ -32,6 +33,12 @@ import CoursesPage from "@/pages/dashboard/admin/courses/CoursesPage";
 import AddTeacherPage from "@/pages/dashboard/admin/teachers/AddTeacherPage";
 import EditTeacherPage from "@/pages/dashboard/admin/teachers/EditTeacherPage";
 import TeacherDetailsPage from "@/pages/dashboard/admin/teachers/TeacherDetailsPage";
+
+import AddLibraryPage from "@/pages/dashboard/admin/libraries/AddLibraryPage";
+import EditLibraryPage from "@/pages/dashboard/admin/libraries/EditLibraryPage";
+import LibraryDetailsPage from "@/pages/dashboard/admin/libraries/LibraryDetailsPage";
+import LibraryWalletPage from "@/pages/dashboard/admin/libraries/LibraryWallet";
+
 import CardPricingPage from "@/pages/dashboard/admin/cards/CardPricingPage";
 import CardCodesPage from "@/pages/dashboard/admin/cards/CardCodesPage";
 import AllCourses from "@/components/platform/courses/allCourses";
@@ -82,6 +89,17 @@ export default function AppRoutes() {
             <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
             <Route path="teachers/:id" element={<TeacherDetailsPage />} />
             {/* teachers */}
+
+            {/* libraries */}
+            <Route path="libraries" element={<LibrariesPage />} />
+            <Route path="libraries/add" element={<AddLibraryPage />} />
+            <Route path="libraries/edit/:id" element={<EditLibraryPage />} />
+            <Route
+              path="libraries/wallet/:id"
+              element={<LibraryWalletPage />}
+            />
+            <Route path="libraries/:id" element={<LibraryDetailsPage />} />
+            {/* libraries */}
 
             {/* courses */}
             <Route path="courses" element={<CoursesPage />} />

@@ -4,6 +4,7 @@ interface PaginationProps {
   currentPage: number;
   count: number;
   onPageChange: (page: number) => void;
+  pageSize?: number;
 }
 
 const getPageRange = (current: number, total: number): (number | "...")[] => {
@@ -28,15 +29,16 @@ export default function Pagination({
   currentPage,
   count,
   onPageChange,
+  pageSize,
 }: PaginationProps) {
-  const totalPages = Math.ceil(count / 20);
+  const totalPages = Math.ceil(count / (pageSize || 20));
 
   if (totalPages <= 1) return null;
 
   const pages = getPageRange(currentPage, totalPages);
 
   return (
-    <div className="flex justify-center items-center gap-2 mt-10 rtl:flex-row-reverse">
+    <div className="flex justify-center items-center gap-2 self-center mt-10 rtl:flex-row-reverse">
       {/* Previous */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
@@ -48,10 +50,10 @@ export default function Pagination({
       </button>
 
       {/* Page Numbers */}
-      {pages.map((page, index) =>
+      {pages.map((page) =>
         page === "..." ? (
           <span
-            key={index}
+            key={page}
             className="px-3 py-2 text-gray-400 select-none pointer-events-none"
           >
             <MoreHorizontal size={16} />
