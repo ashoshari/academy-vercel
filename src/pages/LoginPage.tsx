@@ -31,7 +31,7 @@ const LoginPage = () => {
       .then(async (res) => {
         if (res.status) {
           if (
-            !["admin", "library"].includes(
+            !["admin", "library", "teacher"].includes(
               res?.data?.user?.type?.name?.toLowerCase()
             )
           ) {
