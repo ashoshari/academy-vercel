@@ -313,6 +313,30 @@ const CardPricingPage = () => {
                   </span>
                 </div>
 
+                <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-600 mb-1">
+                      السعر الافتراضي للمكتبة
+                    </span>
+                    <span className="text-lg font-semibold text-gray-900">
+                      {card.default_library_price ?? "—"}
+                      <span className="text-sm text-gray-500 ml-1">ج.م</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-600 mb-1">
+                      السعر الافتراضي للمعلم
+                    </span>
+                    <span className="text-lg font-semibold text-gray-900">
+                      {card.default_teacher_price ?? "—"}
+                      <span className="text-sm text-gray-500 ml-1">ج.م</span>
+                    </span>
+                  </div>
+                </div>
+
                 {/* Date */}
                 <div className="text-center text-xs text-gray-500 mb-4">
                   تم الإنشاء: {formatDateTimeSimple(card.created_at)}
@@ -416,16 +440,23 @@ const CardPricingPage = () => {
                   <input
                     type="number"
                     value={newCard.price || ""}
-                    onChange={(e) =>
-                      setNewCard({
-                        ...newCard,
-                        price: parseFloat(e.target.value) || 0,
-                      })
-                    }
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0;
+                      setNewCard((prev) => ({
+                        ...prev,
+                        price: value,
+                        default_teacher_price: prev.default_teacher_price
+                          ? Math.min(prev.default_teacher_price, value)
+                          : prev.default_teacher_price,
+                        default_library_price: prev.default_library_price
+                          ? Math.min(prev.default_library_price, value)
+                          : prev.default_library_price,
+                      }));
+                    }}
                     className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="أدخل السعر..."
                     min="0"
-                    step="10"
+                    step="1"
                   />
                 </div>
               </div>
@@ -434,23 +465,27 @@ const CardPricingPage = () => {
               {/* teacher_price */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  سعر المدرس
+                  سعر البيع للمدرس
                 </label>
                 <div className="relative">
                   <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     type="number"
                     value={newCard.default_teacher_price || ""}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0;
                       setNewCard({
                         ...newCard,
-                        default_teacher_price: parseFloat(e.target.value) || 0,
-                      })
-                    }
+                        default_teacher_price: Math.min(
+                          value,
+                          newCard.price || 0
+                        ),
+                      });
+                    }}
                     className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="ادخل سعر المدرس..."
                     min="0"
-                    step="10"
+                    step="1"
                   />
                 </div>
               </div>
@@ -459,23 +494,27 @@ const CardPricingPage = () => {
               {/* library_price */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  سعر المكتبة
+                  سعر البيع للمكتبة
                 </label>
                 <div className="relative">
                   <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     type="number"
                     value={newCard.default_library_price || ""}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0;
                       setNewCard({
                         ...newCard,
-                        default_library_price: parseFloat(e.target.value) || 0,
-                      })
-                    }
+                        default_library_price: Math.min(
+                          value,
+                          newCard.price || 0
+                        ),
+                      });
+                    }}
                     className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="ادخل سعر المكتبة..."
                     min="0"
-                    step="10"
+                    step="1"
                   />
                 </div>
               </div>
