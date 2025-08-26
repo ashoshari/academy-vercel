@@ -1,69 +1,106 @@
-import { useCustomQuery } from "@/hooks/useQuery";
-import { BookOpen, Image, Users } from "lucide-react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { LucideIcon } from "lucide-react";
 
-interface MainStatistics {
-  total_students: number;
-  active_courses: number;
-  total_teachers: number;
-  resources: number;
+export type StatItem<T extends object> = {
+  key: Extract<keyof T, string>;
+  label: string;
+  icon: LucideIcon;
+  variant?: "primary" | "glass";
+};
+
+export interface StatisticsCardsProps<T extends object> {
+  data?: T | null;
+  items: ReadonlyArray<StatItem<T>>;
+  loading?: boolean;
+  emptyLabel?: string;
 }
 
-export default function StatisticsCards() {
-  const data = useCustomQuery("/account/admin/main-statistics/", [
-    "main-statistics",
-  ]);
+function getValue<T extends object, K extends Extract<keyof T, string>>(
+  data: T,
+  key: K
+): T[K] {
+  return (data as any)[key] as T[K];
+}
 
-  const mainStatistics: MainStatistics = data?.data?.data;
+function valueToNode<T extends object>(item: StatItem<T>, data?: T | null) {
+  const raw = data ? getValue(data, item.key) : undefined;
+
+  if (raw == null) return "—";
+  return String(raw);
+}
+
+export default function StatisticsCards<T extends object>({
+  data,
+  items,
+  loading,
+  emptyLabel = "لا توجد بيانات",
+}: StatisticsCardsProps<T>) {
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {Array.from({ length: Math.max(4, items.length || 1) }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-xl p-6 border border-orange-100/50 shadow-lg bg-white animate-pulse h-[110px]"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="text-center text-gray-500 text-sm py-10">
+        {emptyLabel}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-orange-100 text-sm">إجمالي الطلاب</p>
-            <p className="text-3xl font-bold">
-              {mainStatistics?.total_students}
-            </p>
+      {items.map(({ key, label, icon: Icon, variant = "glass" }) => {
+        const isPrimary = variant === "primary";
+        return (
+          <div
+            key={String(key)}
+            className={
+              isPrimary
+                ? "bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg"
+                : "bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-lg border border-orange-100/50"
+            }
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p
+                  className={
+                    isPrimary
+                      ? "text-orange-100 text-sm"
+                      : "text-gray-500 text-sm"
+                  }
+                >
+                  {label}
+                </p>
+                <p
+                  className={
+                    isPrimary
+                      ? "text-3xl font-bold"
+                      : "text-3xl font-bold text-gray-800"
+                  }
+                >
+                  {valueToNode({ key, label, icon: Icon, variant }, data)}
+                </p>
+              </div>
+              <Icon
+                className={
+                  isPrimary
+                    ? "w-12 h-12 text-orange-200"
+                    : "w-12 h-12 text-orange-500"
+                }
+              />
+            </div>
           </div>
-          <Users className="w-12 h-12 text-orange-200" />
-        </div>
-      </div>
-
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-lg border border-orange-100/50">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500 text-sm">الدورات النشطة</p>
-            <p className="text-3xl font-bold text-gray-800">
-              {mainStatistics?.active_courses}
-            </p>
-          </div>
-          <BookOpen className="w-12 h-12 text-orange-500" />
-        </div>
-      </div>
-
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-lg border border-orange-100/50">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500 text-sm">المعلمين</p>
-            <p className="text-3xl font-bold text-gray-800">
-              {mainStatistics?.total_teachers}
-            </p>
-          </div>
-          <Users className="w-12 h-12 text-orange-500" />
-        </div>
-      </div>
-
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-lg border border-orange-100/50">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500 text-sm">الموارد</p>
-            <p className="text-3xl font-bold text-gray-800">
-              {mainStatistics?.resources}
-            </p>
-          </div>
-          <Image className="w-12 h-12 text-orange-500" />
-        </div>
-      </div>
+        );
+      })}
     </div>
   );
 }
