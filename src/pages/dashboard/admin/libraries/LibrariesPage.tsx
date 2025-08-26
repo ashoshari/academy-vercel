@@ -366,6 +366,9 @@ const LibrariesPage = () => {
                       البريد الإلكتروني
                     </th>
                     <th className="px-6 py-3 text-right text-xs whitespace-nowrap font-medium text-gray-500 uppercase tracking-wider">
+                      رصيد المكتبة الحالي
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs whitespace-nowrap font-medium text-gray-500 uppercase tracking-wider">
                       الإجراءات
                     </th>
                   </tr>
@@ -380,7 +383,6 @@ const LibrariesPage = () => {
                           </div>
                         </div>
                       </td>
-
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex gap-2">
                           <span
@@ -399,6 +401,9 @@ const LibrariesPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {library?.email || "-"}
+                      </td>{" "}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {library?.wallet_balance || "0"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
