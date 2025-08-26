@@ -1,4 +1,5 @@
 import { useCustomQuery } from "@/hooks/useQuery";
+import { readUserFromStorage, roleOf } from "@/services/auth";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -23,6 +24,9 @@ function formatMoney(n: number) {
 }
 
 export default function RevenueChart() {
+  const user = readUserFromStorage();
+  const role = roleOf(user);
+
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth() + 1;
@@ -33,6 +37,8 @@ export default function RevenueChart() {
   const res = useCustomQuery(`/account/admin/main-income-chart/?year=${year}`, [
     "main-income-chart",
     year,
+    role,
+    user?.type?.id,
   ]);
 
   const points: ChartPoint[] = useMemo(

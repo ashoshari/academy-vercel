@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useMemo, useState } from "react";
-
-const PAGE_SIZE = 20;
+import { readUserFromStorage, roleOf } from "@/services/auth";
+import { useState } from "react";
+import Pagination from "../../core/Pagination";
 
 interface Pagination {
   next: number | null;
@@ -55,48 +56,29 @@ function colorForAction(action: string) {
 }
 
 export default function RecentActivities() {
-  const [page, setPage] = useState<number>(0);
+  const user = readUserFromStorage();
+  const role = roleOf(user);
+
+  const [filters, setFilters] = useState({
+    page: 1,
+    page_size: 5,
+  });
+
+  const queryParams = new URLSearchParams();
+  queryParams.append("page", filters.page?.toString());
+  queryParams.append("page_size", String(filters.page_size));
 
   const { data, isLoading, isError, refetch } = useCustomQuery(
-    `/account/admin/main-recent-activities/?page=${page}`,
-    ["main-recent-activities", page]
+    `/account/admin/main-recent-activities/?${queryParams.toString()}`,
+    ["main-recent-activities", filters, role, user?.type?.id]
   );
 
   const pagination: Pagination | undefined = data?.pagination;
   const activities: Activity[] = data?.data ?? [];
 
-  const lastPage = useMemo(() => {
-    const total = pagination?.count ?? 0;
-    return Math.max(0, Math.ceil(total / PAGE_SIZE) - 1);
-  }, [pagination?.count]);
-
-  const canPrev = page > 0 && (pagination?.previous !== null || page > 0);
-  const canNext =
-    page < lastPage && (pagination?.next !== null || page < lastPage);
-
-  const handlePrev = () => {
-    if (!canPrev) return;
-    setPage((p) => Math.max(0, p - 1));
-  };
-
-  const handleNext = () => {
-    if (!canNext) return;
-    setPage((p) => Math.min(lastPage, p + 1));
-  };
-
   return (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-gray-800">النشاطات الحديثة</h2>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span>الصفحة</span>
-          <strong className="text-gray-800">
-            {lastPage ? page + 1 : activities.length ? page + 1 : 0}
-          </strong>
-          <span>من</span>
-          <strong className="text-gray-800">{lastPage + 1}</strong>
-        </div>
-      </div>
+      <h2 className="text-lg font-bold text-gray-800 mb-4">النشاطات الحديثة</h2>
 
       {/* Loading / Error / Empty */}
       {isLoading && (
@@ -113,7 +95,10 @@ export default function RecentActivities() {
       {isError && (
         <div className="bg-red-50 text-red-700 p-3 rounded-lg">
           حدث خطأ أثناء جلب البيانات.
-          <button onClick={() => refetch?.()} className="cursor-poiner ml-2 underline">
+          <button
+            onClick={() => refetch?.()}
+            className="cursor-poiner ml-2 underline"
+          >
             إعادة المحاولة
           </button>
         </div>
@@ -144,9 +129,15 @@ export default function RecentActivities() {
           </div>
         ))}
       </div>
-
       {/* Pagination */}
-      <div className="flex items-center justify-between mt-4">
+
+      <Pagination
+        count={pagination?.count ?? 0}
+        currentPage={filters.page}
+        onPageChange={(page: any) => setFilters((prev) => ({ ...prev, page }))}
+        pageSize={filters.page_size}
+      />
+      {/* <div className="flex items-center justify-between mt-4">
         <button
           onClick={handlePrev}
           disabled={!canPrev}
@@ -175,7 +166,7 @@ export default function RecentActivities() {
         >
           التالي
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
