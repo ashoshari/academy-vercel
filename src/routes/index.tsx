@@ -53,17 +53,17 @@ import ExamsPage from "@/pages/dashboard/admin/exams/ExamsPage";
 import ResourcesPage from "@/pages/dashboard/admin/files/filesPage";
 import SliderPage from "@/pages/dashboard/admin/sliders/SliderPage";
 import { RequireRole } from "./guards";
-import { readUserFromStorage, roleOf } from "@/services/auth";
+// import { readUserFromStorage, roleOf } from "@/services/auth";
 
-function DashboardIndexGate() {
-  const user = readUserFromStorage();
-  const role = roleOf(user) ?? "";
-  return role === "library" ? (
-    <Navigate to="card-pricing" replace />
-  ) : (
-    <Dashboard />
-  );
-}
+// function DashboardIndexGate() {
+//   const user = readUserFromStorage();
+//   const role = roleOf(user) ?? "";
+//   return role === "library" ? (
+//     <Navigate to="card-pricing" replace />
+//   ) : (
+//     <Dashboard />
+//   );
+// }
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -86,7 +86,7 @@ export default function AppRoutes() {
 
         {isAuthenticated && (
           <Route path="dashboard" element={<Layout />}>
-            <Route index element={<DashboardIndexGate />} />
+            <Route index element={<Dashboard />} />
 
             <Route element={<RequireRole exclude={["library"]} />}>
               {/* students */}
@@ -134,9 +134,9 @@ export default function AppRoutes() {
               <Route path="sections" element={<SectionsPage />} />
               <Route path="sub-sections" element={<SubsectionsPage />} />
               {/* sections */}
+              <Route path="card-pricing" element={<CardPricingPage />} />
             </Route>
             {/* cards */}
-            <Route path="card-pricing" element={<CardPricingPage />} />
             <Route path="card-codes" element={<CardCodesPage />} />
             {/* cards */}
           </Route>

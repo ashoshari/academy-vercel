@@ -56,7 +56,7 @@ const Layout = () => {
     // { id: "reports", label: "التقارير", icon: BarChart3 },
   ];
 
-  const LIBRARY_ALLOWED = new Set(["card-pricing", "card-codes"]);
+  const LIBRARY_ALLOWED = new Set(["", "card-codes"]);
   const filteredMenuItems =
     role === "library"
       ? menuItems.filter((i) => LIBRARY_ALLOWED.has(i.id))

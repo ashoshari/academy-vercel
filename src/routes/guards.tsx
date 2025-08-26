@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 
-type Role = "admin" | "teacher" | "student" | "library" | string;
+type Role = "admin" | "teacher" | "library" | string;
 
 export function RequireRole({
   allow,
