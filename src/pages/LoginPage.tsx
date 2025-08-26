@@ -30,7 +30,11 @@ const LoginPage = () => {
     mutateAsync(formdata)
       .then(async (res) => {
         if (res.status) {
-          if (res?.data?.user?.type?.name?.toLowerCase() !== "admin") {
+          if (
+            !["admin", "library"].includes(
+              res?.data?.user?.type?.name?.toLowerCase()
+            )
+          ) {
             toast.error("You are not allowed to access dashboard");
             localStorage.removeItem("user");
           } else {

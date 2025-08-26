@@ -52,6 +52,18 @@ import StudentDetailsPage from "@/pages/dashboard/admin/students/StudentDetailsP
 import ExamsPage from "@/pages/dashboard/admin/exams/ExamsPage";
 import ResourcesPage from "@/pages/dashboard/admin/files/filesPage";
 import SliderPage from "@/pages/dashboard/admin/sliders/SliderPage";
+import { RequireRole } from "./guards";
+import { readUserFromStorage, roleOf } from "@/services/auth";
+
+function DashboardIndexGate() {
+  const user = readUserFromStorage();
+  const role = roleOf(user) ?? "";
+  return role === "library" ? (
+    <Navigate to="card-pricing" replace />
+  ) : (
+    <Dashboard />
+  );
+}
 
 export default function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -74,54 +86,55 @@ export default function AppRoutes() {
 
         {isAuthenticated && (
           <Route path="dashboard" element={<Layout />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<DashboardIndexGate />} />
 
-            {/* students */}
-            <Route path="students" element={<StudentsPage />} />
-            <Route path="students/add" element={<AddStudentPage />} />
-            <Route path="students/edit/:id" element={<EditStudentPage />} />
-            <Route path="students/:id" element={<StudentDetailsPage />} />
-            {/* students */}
+            <Route element={<RequireRole exclude={["library"]} />}>
+              {/* students */}
+              <Route path="students" element={<StudentsPage />} />
+              <Route path="students/add" element={<AddStudentPage />} />
+              <Route path="students/edit/:id" element={<EditStudentPage />} />
+              <Route path="students/:id" element={<StudentDetailsPage />} />
+              {/* students */}
 
-            {/* teachers */}
-            <Route path="teachers" element={<TeachersPage />} />
-            <Route path="teachers/add" element={<AddTeacherPage />} />
-            <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
-            <Route path="teachers/:id" element={<TeacherDetailsPage />} />
-            {/* teachers */}
+              {/* teachers */}
+              <Route path="teachers" element={<TeachersPage />} />
+              <Route path="teachers/add" element={<AddTeacherPage />} />
+              <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
+              <Route path="teachers/:id" element={<TeacherDetailsPage />} />
+              {/* teachers */}
 
-            {/* libraries */}
-            <Route path="libraries" element={<LibrariesPage />} />
-            <Route path="libraries/add" element={<AddLibraryPage />} />
-            <Route path="libraries/edit/:id" element={<EditLibraryPage />} />
-            <Route
-              path="libraries/wallet/:id"
-              element={<LibraryWalletPage />}
-            />
-            <Route path="libraries/:id" element={<LibraryDetailsPage />} />
-            {/* libraries */}
+              {/* libraries */}
+              <Route path="libraries" element={<LibrariesPage />} />
+              <Route path="libraries/add" element={<AddLibraryPage />} />
+              <Route path="libraries/edit/:id" element={<EditLibraryPage />} />
+              <Route
+                path="libraries/wallet/:id"
+                element={<LibraryWalletPage />}
+              />
+              <Route path="libraries/:id" element={<LibraryDetailsPage />} />
+              {/* libraries */}
 
-            {/* courses */}
-            <Route path="courses" element={<CoursesPage />} />
-            {/* courses */}
+              {/* courses */}
+              <Route path="courses" element={<CoursesPage />} />
+              {/* courses */}
 
-            {/* exams */}
-            <Route path="exams" element={<ExamsPage />} />
-            {/* exams */}
+              {/* exams */}
+              <Route path="exams" element={<ExamsPage />} />
+              {/* exams */}
 
-            {/* files */}
-            <Route path="files" element={<ResourcesPage />} />
-            {/* files */}
+              {/* files */}
+              <Route path="files" element={<ResourcesPage />} />
+              {/* files */}
 
-            {/* slider */}
-            <Route path="slider" element={<SliderPage />} />
-            {/* slider */}
+              {/* slider */}
+              <Route path="slider" element={<SliderPage />} />
+              {/* slider */}
 
-            {/* sections */}
-            <Route path="sections" element={<SectionsPage />} />
-            <Route path="sub-sections" element={<SubsectionsPage />} />
-            {/* sections */}
-
+              {/* sections */}
+              <Route path="sections" element={<SectionsPage />} />
+              <Route path="sub-sections" element={<SubsectionsPage />} />
+              {/* sections */}
+            </Route>
             {/* cards */}
             <Route path="card-pricing" element={<CardPricingPage />} />
             <Route path="card-codes" element={<CardCodesPage />} />

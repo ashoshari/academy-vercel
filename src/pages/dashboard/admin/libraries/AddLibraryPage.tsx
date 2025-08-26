@@ -35,11 +35,10 @@ export default function AddLibraryPage() {
       mobile_number: "",
       about_me: "",
       image: null,
-      is_active: false,
+      is_active: true,
     },
   });
 
-  // ensure RHF tracks the image field
   useEffect(() => {
     register("image");
     register("is_active");
@@ -279,7 +278,6 @@ export default function AddLibraryPage() {
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
                 setValue("image", file, { shouldDirty: true });
-                // allow re-choosing the same file
                 e.currentTarget.value = "";
               }}
             />
