@@ -41,7 +41,10 @@ const Navbar: React.FC = () => {
         <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-full">
             {/* Logo */}
-            <button onClick={() => navigate("/")} className="cursor-pointer flex items-center space-x-2">
+            <button
+              onClick={() => navigate("/")}
+              className="cursor-pointer flex items-center space-x-2"
+            >
               <div className="flex items-center space-x-3">
                 {headerData?.logo ? (
                   <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
