@@ -8,15 +8,20 @@ import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import Spinner from "@/components/dashboard/Spinner";
+import { applyServerErrors } from "@/utils/errors";
 
 interface FormValues {
   name: string;
   email: string;
+  password?: string;
   mobile_number: string;
   about_me: string;
   image: File | string | null;
   is_active?: boolean;
 }
+
+export type FieldName = keyof FormValues;
+export type ServerErr = Record<string, string | string[]>;
 
 export default function EditLibraryPage() {
   const navigate = useNavigate();
@@ -27,8 +32,14 @@ export default function EditLibraryPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    setError,
+    setFocus,
     control,
-  } = useForm<FormValues>({ defaultValues: { image: null, is_active: false } });
+  } = useForm<FormValues>({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: { image: null, is_active: false },
+  });
 
   useEffect(() => {
     register("image");
@@ -93,18 +104,25 @@ export default function EditLibraryPage() {
 
       const res = await updateLibrary.mutateAsync(formData);
 
-      if (res?.status) {
-        toast.success("تم تحديث المكتبة بنجاح");
-        navigate("/dashboard/libraries");
-      } else {
-        toast.error("فشل في تحديث بيانات المكتبة");
+      if (res?.status === false) {
+        applyServerErrors(res?.error as ServerErr, setError, setFocus);
+        handleErrorAlerts("فشل في تعديل المكتبة");
+        return;
       }
+      toast.success("تم تحديث المكتبة بنجاح");
+      navigate("/dashboard/libraries");
     } catch (error: any) {
-      handleErrorAlerts(
-        error?.response?.data?.message || "حدث خطأ أثناء التحديث"
-      );
+      const payload = error?.response?.data;
+      applyServerErrors(payload?.error as ServerErr, setError, setFocus);
+      handleErrorAlerts(payload?.message || "حدث خطأ أثناء إضافة المكتبة");
     }
   };
+
+  const inputClass = (hasError: boolean) =>
+    `w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 ${
+      hasError ? "border-red-500 focus:border-red-500" : "border-gray-200"
+    }`;
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -128,11 +146,14 @@ export default function EditLibraryPage() {
           </label>
           <input
             type="text"
-            {...register("name", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            {...register("name", { required: "الاسم مطلوب" })}
+            className={inputClass(!!errors.name)}
+            placeholder="أدخل الاسم الكامل"
           />
           {errors.name && (
-            <span className="text-sm text-red-500">الاسم مطلوب</span>
+            <span className="text-sm text-red-500">
+              {String(errors.name.message ?? "الاسم مطلوب")}
+            </span>
           )}
         </div>
 
@@ -143,13 +164,19 @@ export default function EditLibraryPage() {
           </label>
           <input
             type="email"
-            {...register("email", { required: false })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            {...register("email", {
+              required: "البريد الإلكتروني مطلوب",
+              pattern: {
+                value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+                message: "من فضلك ادخل بريد إلكتروني صحيح",
+              },
+            })}
+            className={inputClass(!!errors.email)}
             placeholder="example@domain.com"
           />
           {errors.email && (
-            <span className="text-sm text-red-500">
-              البريد الإلكتروني مطلوب
+            <span className="text-sm text-red-500 mt-1 block">
+              {errors.email.message as string}
             </span>
           )}
         </div>
@@ -165,27 +192,30 @@ export default function EditLibraryPage() {
             {...register("mobile_number", {
               required: "رقم الهاتف مطلوب",
               pattern: {
-                value: /^07[0-9]{8}$/,
+                value: /^07\d{8}$/,
                 message: "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
               },
+              minLength: {
+                value: 10,
+                message: "رقم الهاتف يجب أن يتكون من 10 أرقام",
+              },
+              maxLength: {
+                value: 10,
+                message: "رقم الهاتف يجب أن يتكون من 10 أرقام",
+              },
             })}
-            maxLength={10}
-            minLength={10}
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
                 ""
               );
             }}
-            className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-orange-500  ${
-              errors.mobile_number ? "border-red-500" : "border-gray-200"
-            }`}
+            className={inputClass(!!errors.mobile_number)}
             placeholder="07XXXXXXXX"
           />
-
           {errors.mobile_number && (
             <span className="text-sm text-red-500 mt-1 block">
-              {errors.mobile_number.message}
+              {errors.mobile_number.message as string}
             </span>
           )}
         </div>
@@ -196,11 +226,14 @@ export default function EditLibraryPage() {
           </label>
           <input
             type="text"
-            {...register("about_me", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            {...register("about_me", { required: "النبذة مختصرة مطلوبة" })}
+            className={inputClass(!!errors.name)}
+            placeholder="نبذة مختصرة عن المكتبة"
           />
           {errors.about_me && (
-            <span className="text-sm text-red-500">النظرة العامة مطلوبة</span>
+            <span className="text-sm text-red-500">
+              {errors.about_me.message as string}
+            </span>
           )}
         </div>
 
@@ -218,7 +251,10 @@ export default function EditLibraryPage() {
             <button
               type="button"
               onClick={() =>
-                setValue("is_active", !isActive, { shouldDirty: true })
+                setValue("is_active", !isActive, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
               }
               className={`p-1 rounded-full transition-colors ${
                 isActive ? "text-green-600" : "text-gray-400"
@@ -245,7 +281,10 @@ export default function EditLibraryPage() {
               hidden
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
-                setValue("image", file, { shouldDirty: true });
+                setValue("image", file, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
                 e.currentTarget.value = "";
               }}
             />
