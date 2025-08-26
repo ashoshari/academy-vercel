@@ -303,7 +303,7 @@ const CardCodesPage = () => {
       })
       .catch((error) => {
         handleErrorAlerts(
-          error?.response?.data?.message || "حدث خطأ أثناء تحديث حالة البطاقة"
+          error?.response?.data?.error || "حدث خطأ أثناء تحديث حالة البطاقة"
         );
       });
   };
