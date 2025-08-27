@@ -98,7 +98,7 @@ const Hero: React.FC = () => {
                       <p className="text-xl text-gray-200 leading-relaxed max-w-2xl">
                         {slides?.length > 0
                           ? slides[currentSlide]?.header
-                          : "لا يوجد بيانات في السلايدر "}
+                          : "لا توجد بيانات في السلايدر "}
                       </p>
                     </div>
 
@@ -188,7 +188,9 @@ const Hero: React.FC = () => {
                             }}
                             className={`cursor-pointer absolute bottom-12 right-2 bg-white hover:bg-gradient-to-r hover:text-white hover:from-yellow-400 hover:to-orange-500 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm`}
                           >
-                            {!stopSlider ? " ▶️ شاهد الفيديو" : "  ❌ أوقف الفيديو"}
+                            {!stopSlider
+                              ? " ▶️ شاهد الفيديو"
+                              : "  ❌ أوقف الفيديو"}
                           </button>
                         </>
                       )}
@@ -219,44 +221,48 @@ const Hero: React.FC = () => {
               </div>
             </div>
 
-            {/* Navigation Arrows */}
-            <button
-              onClick={() => {
-                setStopSlider(false);
-                prevSlide();
-              }}
-              className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
-            >
-              <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
-            </button>
-            <button
-              onClick={() => {
-                setStopSlider(false);
-                nextSlide();
-              }}
-              className="cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
-            >
-              <ChevronRight className="cursor-pointer w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
-            </button>
-
-            {/* Slide Indicators */}
-            <div
-              className={`absolute ${
-                stopSlider ? "hidden" : "block"
-              } bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3`}
-            >
-              {slides?.map((_: any, index: number) => (
+            {slides?.length > 1 && (
+              <>
+                {/* Navigation Arrows */}
                 <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`cursor-pointer w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentSlide
-                      ? "bg-yellow-400 w-8"
-                      : "bg-white/50 hover:bg-white/70"
-                  }`}
-                />
-              ))}
-            </div>
+                  onClick={() => {
+                    setStopSlider(false);
+                    prevSlide();
+                  }}
+                  className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+                >
+                  <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
+                </button>
+                <button
+                  onClick={() => {
+                    setStopSlider(false);
+                    nextSlide();
+                  }}
+                  className="cursor-pointer absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 group"
+                >
+                  <ChevronRight className="cursor-pointer w-6 h-6 text-white group-hover:scale-110 transition-transform duration-200" />
+                </button>
+
+                {/* Slide Indicators */}
+                <div
+                  className={`absolute ${
+                    stopSlider ? "hidden" : "block"
+                  } bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3`}
+                >
+                  {slides?.map((_: any, index: number) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`cursor-pointer w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentSlide
+                          ? "bg-yellow-400 w-8"
+                          : "bg-white/50 hover:bg-white/70"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </>
         ) : (
           <div className="h-full flex flex-col justify-center items-center">

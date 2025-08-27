@@ -48,7 +48,7 @@ const ResourcesPage = () => {
   const [statusFilter, setStatusFilter] = useState<any>("all");
 
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
-  const types = ["resources", "bookses", "ministerial_questions", "files"];
+  const types = ["مصادر", "الدوسيهات", "الأسئلة الوزارية", "الملفات"];
 
   const [uploadResources, setUploadResources] = useState<any>({
     is_published: true,

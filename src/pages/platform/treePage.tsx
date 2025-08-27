@@ -29,6 +29,29 @@ const TreePage: React.FC = () => {
     }
     setExpandedNodes(newExpanded);
   };
+  const hasValidChildren = (node: any, childKey: string) => {
+    if (!childKey || !node[childKey]) return false;
+
+    return node[childKey].some((child: any) => {
+      const childChildKey = Object.keys(child).find(
+        (key) =>
+          Array.isArray(child[key]) &&
+          child[key].length > 0 &&
+          child[key].every(
+            (item: any) => typeof item === "object" && "id" in item
+          )
+      );
+
+      const childHasChildren =
+        !!childChildKey && hasValidChildren(child, childChildKey);
+      const childHasTeachers =
+        child.teachers &&
+        Array.isArray(child.teachers) &&
+        child.teachers.length > 0;
+
+      return childHasChildren || childHasTeachers;
+    });
+  };
   const renderTeacher = (teacher: any) => (
     <div
       key={teacher.id}
@@ -83,9 +106,12 @@ const TreePage: React.FC = () => {
         node[key].every((item: any) => typeof item === "object" && "id" in item)
     );
 
-    const hasChildren = !!childKey;
+    const hasChildren = !!childKey && hasValidChildren(node, childKey);
     const hasTeachers =
       node.teachers && Array.isArray(node.teachers) && node.teachers.length > 0;
+    if (!hasChildren && !hasTeachers) {
+      return null;
+    }
     return (
       <div key={node?.id} className="mb-4">
         <div
