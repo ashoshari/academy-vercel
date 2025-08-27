@@ -52,6 +52,11 @@ const Layout = () => {
     { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
     { id: "sub-sections", label: "الأقسام الفرعية", icon: FolderTree },
     { id: "card-pricing", label: "أسعار البطاقات", icon: CreditCard },
+    {
+      id: "custom-card-pricing",
+      label: "أسعار البطاقات المخصصة",
+      icon: CreditCard,
+    },
     { id: "card-codes", label: "كودات البطاقات", icon: Hash },
     // { id: "reports", label: "التقارير", icon: BarChart3 },
   ];

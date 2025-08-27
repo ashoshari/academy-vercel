@@ -53,6 +53,7 @@ import ExamsPage from "@/pages/dashboard/admin/exams/ExamsPage";
 import ResourcesPage from "@/pages/dashboard/admin/files/filesPage";
 import SliderPage from "@/pages/dashboard/admin/sliders/SliderPage";
 import { RequireRole } from "./guards";
+import CardCustomPrice from "@/pages/dashboard/admin/cards/CardCustomPrice";
 // import { readUserFromStorage, roleOf } from "@/services/auth";
 
 // function DashboardIndexGate() {
@@ -88,7 +89,7 @@ export default function AppRoutes() {
           <Route path="dashboard" element={<Layout />}>
             <Route index element={<Dashboard />} />
 
-            <Route element={<RequireRole exclude={["library"]} />}>
+            <Route element={<RequireRole exclude={["library", "teacher"]} />}>
               {/* students */}
               <Route path="students" element={<StudentsPage />} />
               <Route path="students/add" element={<AddStudentPage />} />
@@ -134,7 +135,11 @@ export default function AppRoutes() {
               <Route path="sections" element={<SectionsPage />} />
               <Route path="sub-sections" element={<SubsectionsPage />} />
               {/* sections */}
+
+              {/* cards */}
               <Route path="card-pricing" element={<CardPricingPage />} />
+              <Route path="custom-card-pricing" element={<CardCustomPrice />} />
+              {/* cards */}
             </Route>
             {/* cards */}
             <Route path="card-codes" element={<CardCodesPage />} />

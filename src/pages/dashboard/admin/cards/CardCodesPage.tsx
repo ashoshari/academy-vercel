@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UAParser } from "ua-parser-js";
 import { useState } from "react";
 import {
@@ -130,6 +131,7 @@ const CardCodesPage = () => {
     "card-codes",
     "card-codes-statistics",
     "codes-generated",
+    "main-statistics",
   ]);
 
   const [generateForm, setGenerateForm] = useState({
@@ -146,18 +148,18 @@ const CardCodesPage = () => {
   });
 
   // Build tree structure for subsection selection
-  const buildSubsectionTree = (
-    items: any[],
-    parentId: number | null = null
-  ): any[] => {
-    return items
-      ?.filter((item) => item.order === parentId)
-      .sort((a, b) => a.title.localeCompare(b.title))
-      .map((item) => ({
-        ...item,
-        children: buildSubsectionTree(items, item.id),
-      })) as any[];
-  };
+  // const buildSubsectionTree = (
+  //   items: any[],
+  //   parentId: number | null = null
+  // ): any[] => {
+  //   return items
+  //     ?.filter((item) => item.order === parentId)
+  //     .sort((a, b) => a.title.localeCompare(b.title))
+  //     .map((item) => ({
+  //       ...item,
+  //       children: buildSubsectionTree(items, item.id),
+  //     })) as any[];
+  // };
 
   // const subsectionTree = buildSubsectionTree(subsections?.data?.data);
   const subsectionTree = subsections?.data?.data;
