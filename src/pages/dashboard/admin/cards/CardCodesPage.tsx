@@ -220,6 +220,7 @@ const CardCodesPage = () => {
 
   const cleanObject = (obj: any) => {
     return Object.fromEntries(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(obj).filter(([_, v]) => {
         if (Array.isArray(v)) return v.length > 0;
         return v !== null && v !== undefined && v !== "";
@@ -310,16 +311,23 @@ const CardCodesPage = () => {
       });
   };
 
-  const toggleCodeStatus = (id: string) => {
+  const toggleCodeStatus = async (id: string) => {
     setCodeBatches(id);
-
-    toggleGeneratedCodeState.mutateAsync({}).then((res) => {
-      if (res) {
+    try {
+      const res = await toggleGeneratedCodeState.mutateAsync({});
+      if (res?.status) {
         toast.success("تم تحديث حالة البطاقة بنجاح");
       } else {
-        toast.error("حدث خطأ أثناء تحديث حالة البطاقة");
+        handleErrorAlerts(res?.error ?? "حدث خطأ أثناء تحديث حالة البطاقة");
       }
-    });
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.error ??
+        err?.response?.data?.message ??
+        err?.message ??
+        "حدث خطأ أثناء تحديث حالة البطاقة";
+      handleErrorAlerts(msg);
+    }
   };
 
   const toggleBatchStatus = (batchId: string) => {
@@ -524,7 +532,7 @@ const CardCodesPage = () => {
                       </span>
                     </div>
                     {/* {batch.targetingType === "specific" && */}
-                    {true && batch?.subsubsections?.length >= 1 && (
+                    {batch?.subsubsections?.length >= 1 && (
                       <div className="mt-2 flex flex-wrap gap-1">
                         {batch?.subsubsections?.slice(0, 3).map((sec: any) => (
                           <span
