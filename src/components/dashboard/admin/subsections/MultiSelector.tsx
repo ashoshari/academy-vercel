@@ -10,6 +10,8 @@ interface Props {
   value: string[];
   onChange: (ids: string[]) => void;
   placeholder?: string;
+  single?: boolean;
+  disabled?: boolean;
 }
 
 const MultiSelectAutocomplete: React.FC<Props> = ({
@@ -17,10 +19,16 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   value,
   onChange,
   placeholder = "اختر...",
+  single = false,
+  disabled = false,
 }) => {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (disabled) setOpen(false);
+  }, [disabled]);
 
   const available = options
     .filter((o) => !value?.includes(o.id))
@@ -35,25 +43,35 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   }, []);
 
   const add = (id: string) => {
-    onChange([...value, id]);
+    if (disabled) return;
+    // if single, replace the selection; otherwise keep multi
+    onChange(single ? [id] : [...value, id]);
     setQuery("");
   };
-  const remove = (id: string) => onChange(value.filter((v) => v !== id));
+
+  const remove = (id: string) => {
+    if (disabled) return;
+    onChange(value.filter((v) => v !== id));
+  };
 
   return (
     <div className="relative" ref={containerRef}>
       <div
         className={`flex flex-wrap items-center gap-2 px-3 py-[9px] border rounded-lg
-                    ${
-                      open
-                        ? "border-orange-500 ring-1 ring-orange-500"
-                        : "border-gray-200"
-                    }
-                    focus-within:border-orange-500`}
-        onClick={() => setOpen(true)}
+          ${
+            open
+              ? "border-orange-500 ring-1 ring-orange-500"
+              : "border-gray-200"
+          }
+          focus-within:border-orange-500`}
+        onClick={() => {
+          if (disabled) return;
+          setOpen(true);
+        }}
       >
         {value?.map((id) => {
-          const opt = options.find((o) => o.id === id)!;
+          const opt = options.find((o) => o.id === id);
+          if (!opt) return null;
           return (
             <span
               key={id}
@@ -64,6 +82,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  if (disabled) return;
                   remove(id);
                 }}
                 className="w-4 h-4 flex items-center justify-center hover:text-red-600"
@@ -77,16 +96,19 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
         <input
           value={query}
           onChange={(e) => {
+            if (disabled) return;
             setQuery(e.target.value);
             if (!open) setOpen(true);
           }}
+          readOnly={disabled}
+          aria-disabled={disabled}
           className="flex-1 min-w-[80px] bg-transparent outline-none text-sm"
           placeholder={placeholder}
           dir="rtl"
         />
       </div>
 
-      {open && available.length > 0 && (
+      {open && !disabled && available.length > 0 && (
         <ul
           className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto bg-white
                     border border-gray-200 rounded-lg shadow-lg space-y-1 py-1"
@@ -95,6 +117,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
             <li
               key={o.id}
               onClick={() => {
+                if (disabled) return;
                 add(o.id);
                 setOpen(true);
               }}
