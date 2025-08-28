@@ -27,7 +27,7 @@ import {
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
   useCustomPost,
-  useCustomRemove,
+  // useCustomRemove,
   useCustomUpdate,
 } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
@@ -136,7 +136,7 @@ const ExamsPage = () => {
     "table" | "grid" | "create" | "edit" | "questions" | "results"
   >("table");
   const queryClient = useQueryClient();
-  const [examId, setExamId] = useState();
+  // const [examId, setExamId] = useState();
   const [selectedExam, setSelectedExam] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [materialFilter, setMaterialFilter] = useState<string>("");
@@ -190,10 +190,10 @@ const ExamsPage = () => {
     ["putExams"]
   );
   // DELETE Exams
-  const { mutateAsync: deleteExam } = useCustomRemove(
-    `/training/admin/exams/${examId}/`,
-    ["deleteExams"]
-  );
+  // const { mutateAsync: deleteExam } = useCustomRemove(
+  //   `/training/admin/exams/${examId}/`,
+  //   ["deleteExams"]
+  // );
   // GET Codes
   // const { data: cards } = useCustomQuery("/cards/", ["cards"]);
   // const cardsData = cards?.data;
