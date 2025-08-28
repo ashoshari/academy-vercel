@@ -336,9 +336,7 @@ const TeacherProfile: React.FC = () => {
               } text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}
             >
               <CheckCircle className="w-4 h-4" />
-              <span>
-                {course?.is_enrollment_active ? "مفعلة" : "معطلة"}
-              </span>
+              <span>{course?.is_enrollment_active ? "مفعلة" : "معطلة"}</span>
             </div>
           ) : (
             <div

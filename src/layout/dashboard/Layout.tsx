@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
 
-import { removeTokens } from "@/services/auth";
+import { removeTokens, readUserFromStorage, roleOf } from "@/services/auth";
 import useAuth from "@/store/useAuth";
 import {
   Menu,
@@ -36,6 +36,10 @@ const Layout = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const user = readUserFromStorage();
+  const role = roleOf(user) ?? "";
+
   const menuItems = [
     { id: "", label: "الرئيسية", icon: Home },
     { id: "students", label: "الطلاب", icon: GraduationCap },
@@ -48,9 +52,20 @@ const Layout = () => {
     { id: "sections", label: "الأقسام الرئيسية", icon: Layers },
     { id: "sub-sections", label: "الأقسام الفرعية", icon: FolderTree },
     { id: "card-pricing", label: "أسعار البطاقات", icon: CreditCard },
+    {
+      id: "custom-card-pricing",
+      label: "أسعار البطاقات المخصصة",
+      icon: CreditCard,
+    },
     { id: "card-codes", label: "كودات البطاقات", icon: Hash },
     // { id: "reports", label: "التقارير", icon: BarChart3 },
   ];
+
+  const LIBRARY_ALLOWED = new Set(["", "card-codes"]);
+  const filteredMenuItems =
+    role === "library"
+      ? menuItems.filter((i) => LIBRARY_ALLOWED.has(i.id))
+      : menuItems;
 
   return (
     <div className="min-h-screen flex" dir="rtl">
@@ -86,7 +101,7 @@ const Layout = () => {
 
           {/* Menu Items */}
           <nav className="space-y-1">
-            {menuItems.map((item) => (
+            {filteredMenuItems.map((item) => (
               <NavLink
                 to={item.id ? `/dashboard/${item.id}` : "/dashboard"}
                 key={item.id || "dashboard-root"}

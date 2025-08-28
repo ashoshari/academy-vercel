@@ -21,13 +21,14 @@ import { formatDateTimeSimple } from "@/utils/formatDateTime";
 export interface CardPricing {
   id: number;
   price: number;
+  default_teacher_price: number;
+  default_library_price: number;
   is_active: boolean;
   createdAt: string;
 }
 
 const CardPricingPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
-  //   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [searchTerm, _] = useState("");
 
@@ -39,8 +40,8 @@ const CardPricingPage = () => {
   const cardStatistics = useCustomQuery("/cards/statistics/", [
     "card-statistics",
   ]);
+
   const cards = useCustomQuery("cards/", ["cards"]);
-  console.log("cards", cards?.data?.data);
   const addCard = useCustomPost("cards/", ["cards", "card-statistics"]);
   const updateCard = useCustomUpdate(`cards/${selectedCard}/`, [
     "cards",
@@ -56,6 +57,8 @@ const CardPricingPage = () => {
     addCard
       .mutateAsync({
         price: newCard.price,
+        default_teacher_price: newCard.default_teacher_price,
+        default_library_price: newCard.default_library_price,
         is_active: newCard.is_active,
       })
       .then(() => {
@@ -196,7 +199,7 @@ const CardPricingPage = () => {
   //       </div>
   //     </div>
   //   );
-  console.log("!cards?.data?.data || cards?.data?.data.length > 0",!cards?.data?.data || cards?.data?.data.length === 0)
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -261,9 +264,7 @@ const CardPricingPage = () => {
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
           </h3>
-          <p className="text-gray-500 mb-6">
-            ابدأ بإضافة أسعار جديدة للمنصة
-          </p>
+          <p className="text-gray-500 mb-6">ابدأ بإضافة أسعار جديدة للمنصة</p>
 
           <button
             onClick={() => setShowAddModal(true)}
@@ -310,6 +311,30 @@ const CardPricingPage = () => {
                   >
                     {card.is_active ? "مفعل" : "معطل"}
                   </span>
+                </div>
+
+                <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-600 mb-1">
+                      السعر الافتراضي للمكتبة
+                    </span>
+                    <span className="text-lg font-semibold text-gray-900">
+                      {card.default_library_price ?? "—"}
+                      <span className="text-sm text-gray-500 ml-1">ج.م</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mb-4 bg-gray-50 rounded-xl p-4 border border-gray-100">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-600 mb-1">
+                      السعر الافتراضي للمعلم
+                    </span>
+                    <span className="text-lg font-semibold text-gray-900">
+                      {card.default_teacher_price ?? "—"}
+                      <span className="text-sm text-gray-500 ml-1">ج.م</span>
+                    </span>
+                  </div>
                 </div>
 
                 {/* Date */}
@@ -415,19 +440,85 @@ const CardPricingPage = () => {
                   <input
                     type="number"
                     value={newCard.price || ""}
-                    onChange={(e) =>
-                      setNewCard({
-                        ...newCard,
-                        price: parseFloat(e.target.value) || 0,
-                      })
-                    }
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0;
+                      setNewCard((prev) => ({
+                        ...prev,
+                        price: value,
+                        default_teacher_price: prev.default_teacher_price
+                          ? Math.min(prev.default_teacher_price, value)
+                          : prev.default_teacher_price,
+                        default_library_price: prev.default_library_price
+                          ? Math.min(prev.default_library_price, value)
+                          : prev.default_library_price,
+                      }));
+                    }}
                     className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     placeholder="أدخل السعر..."
                     min="0"
-                    step="0.01"
+                    step="1"
                   />
                 </div>
               </div>
+              {/* Price */}
+
+              {/* teacher_price */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  سعر البيع للمدرس
+                </label>
+                <div className="relative">
+                  <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="number"
+                    value={newCard.default_teacher_price || ""}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0;
+                      setNewCard({
+                        ...newCard,
+                        default_teacher_price: Math.min(
+                          value,
+                          newCard.price || 0
+                        ),
+                      });
+                    }}
+                    className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="ادخل سعر المدرس..."
+                    min="0"
+                    step="1"
+                  />
+                </div>
+              </div>
+              {/* teacher_price */}
+
+              {/* library_price */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  سعر البيع للمكتبة
+                </label>
+                <div className="relative">
+                  <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="number"
+                    value={newCard.default_library_price || ""}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0;
+                      setNewCard({
+                        ...newCard,
+                        default_library_price: Math.min(
+                          value,
+                          newCard.price || 0
+                        ),
+                      });
+                    }}
+                    className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    placeholder="ادخل سعر المكتبة..."
+                    min="0"
+                    step="1"
+                  />
+                </div>
+              </div>
+              {/* library_price */}
 
               {/* Status Toggle */}
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -461,7 +552,25 @@ const CardPricingPage = () => {
               </button>
               <button
                 onClick={handleAddCard}
-                className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                disabled={
+                  !newCard.price ||
+                  newCard.price <= 0 ||
+                  !newCard.default_teacher_price ||
+                  newCard.default_teacher_price <= 0 ||
+                  !newCard.default_library_price ||
+                  newCard.default_library_price <= 0
+                }
+                className={`px-6 py-2 rounded-lg transition-all flex items-center gap-2
+                ${
+                  !newCard.price ||
+                  newCard.price <= 0 ||
+                  !newCard.default_teacher_price ||
+                  newCard.default_teacher_price <= 0 ||
+                  !newCard.default_library_price ||
+                  newCard.default_library_price <= 0
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
+                }`}
               >
                 <Save size={16} />
                 حفظ السعر

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NavigateFunction } from "react-router";
 
 const TOKEN_KEY = "auth_tokens";
@@ -18,9 +19,9 @@ export async function storeTokens(
 ): Promise<void> {
   await localStorage.setItem(TOKEN_KEY, JSON.stringify(tokens));
 
-  setIsAuthenticated && setIsAuthenticated();
+  if (setIsAuthenticated) setIsAuthenticated();
 
-  navigate && navigate("/dashboard");
+  if (navigate) navigate("/dashboard");
 }
 
 export async function removeTokens(
@@ -30,11 +31,31 @@ export async function removeTokens(
   await localStorage.removeItem(TOKEN_KEY);
   await localStorage.removeItem("company_domian");
 
-  setIsAuthenticated && setIsAuthenticated();
+  if (setIsAuthenticated) setIsAuthenticated();
 
-  navigate && navigate("/", { replace: true });
+  if (navigate) navigate("/", { replace: true });
 }
 
 export function isAuthenticated(): boolean {
   return !!getStoredTokens();
 }
+
+export type User = {
+  type?: { id?: number; name?: string };
+  is_active?: boolean;
+  [k: string]: any;
+};
+
+export function readUserFromStorage(): User | null {
+  const raw = localStorage.getItem("user");
+  try {
+    const u = JSON.parse(raw as string);
+    if (u && typeof u === "object" && "type" in u) return u as User;
+  } catch {
+    console.log("no user logged in");
+  }
+  return null;
+}
+
+export const roleOf = (u: User | null): string | null =>
+  u?.type?.name?.toLowerCase?.() ?? null;

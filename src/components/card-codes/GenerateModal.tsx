@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
   Clock,
@@ -13,6 +15,7 @@ import {
 } from "lucide-react";
 import MultiSelectAutocomplete from "../dashboard/admin/subsections/MultiSelector";
 import { useEffect, useState } from "react";
+import { readUserFromStorage, roleOf } from "@/services/auth";
 
 const GenerateModal = ({
   generateForm,
@@ -89,6 +92,10 @@ const GenerateModal = ({
       specialization_material: selectedSpecializationMaterial,
     });
   }, [selectedSpecializationMaterial]);
+
+  const user = readUserFromStorage();
+  const role = roleOf(user) ?? "";
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -191,76 +198,80 @@ const GenerateModal = ({
             />
           </div>
 
-          {/* subsections */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              اختر قسم
-            </label>
-            <div className="space-y-3">
-              <MultiSelectAutocomplete
-                value={selectedSubsections}
-                onChange={setSelectedSubsections}
-                options={subsections?.data?.data || []}
-                placeholder="اختر الأقسام..."
-              />
-            </div>
-          </div>
+          {role !== "library" && (
+            <>
+              {/* subsections */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  اختر قسم
+                </label>
+                <div className="space-y-3">
+                  <MultiSelectAutocomplete
+                    value={selectedSubsections}
+                    onChange={setSelectedSubsections}
+                    options={subsections?.data?.data || []}
+                    placeholder="اختر الأقسام..."
+                  />
+                </div>
+              </div>
 
-          {/* subsubsections */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              اختر الاقسام الفرعية
-            </label>
-            <div className="space-y-3">
-              <MultiSelectAutocomplete
-                value={selectedSubSubsections}
-                onChange={setSelectedSubSubsections}
-                options={subsubsections?.data?.data || []}
-                placeholder="اختر الاقسام الفرعية..."
-              />
-            </div>
-          </div>
+              {/* subsubsections */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  اختر الاقسام الفرعية
+                </label>
+                <div className="space-y-3">
+                  <MultiSelectAutocomplete
+                    value={selectedSubSubsections}
+                    onChange={setSelectedSubSubsections}
+                    options={subsubsections?.data?.data || []}
+                    placeholder="اختر الاقسام الفرعية..."
+                  />
+                </div>
+              </div>
 
-          {/* specializations */}
+              {/* specializations */}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              اختر تخصص
-            </label>
-            <div className="space-y-3">
-              <MultiSelectAutocomplete
-                value={selectedSpecializations}
-                onChange={setSelectedSpecializations}
-                options={
-                  specializations?.data?.data.map((s: any) => ({
-                    ...s,
-                    title: s.name,
-                  })) || []
-                }
-                placeholder="اختر تخصص  ..."
-              />
-            </div>
-          </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  اختر تخصص
+                </label>
+                <div className="space-y-3">
+                  <MultiSelectAutocomplete
+                    value={selectedSpecializations}
+                    onChange={setSelectedSpecializations}
+                    options={
+                      specializations?.data?.data.map((s: any) => ({
+                        ...s,
+                        title: s.name,
+                      })) || []
+                    }
+                    placeholder="اختر تخصص  ..."
+                  />
+                </div>
+              </div>
 
-          {/* specialization-materials */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              اختر المواد
-            </label>
-            <div className="space-y-3">
-              <MultiSelectAutocomplete
-                value={selectedSpecializationMaterial}
-                onChange={setSelectedSpecializationMaterial}
-                options={
-                  specializationMaterial?.data?.data.map((s: any) => ({
-                    ...s,
-                    title: s.name,
-                  })) || []
-                }
-                placeholder="اختر المواد  ..."
-              />
-            </div>
-          </div>
+              {/* specialization-materials */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  اختر المواد
+                </label>
+                <div className="space-y-3">
+                  <MultiSelectAutocomplete
+                    value={selectedSpecializationMaterial}
+                    onChange={setSelectedSpecializationMaterial}
+                    options={
+                      specializationMaterial?.data?.data.map((s: any) => ({
+                        ...s,
+                        title: s.name,
+                      })) || []
+                    }
+                    placeholder="اختر المواد  ..."
+                  />
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Notes */}
           <div>
@@ -352,7 +363,8 @@ const GenerateModal = ({
             disabled={
               loading
                 ? true
-                : !generateForm.card ||
+                : generateForm.name === "" ||
+                  !generateForm.card ||
                   generateForm.quantity <= 0 ||
                   (generateForm.targetingType === "specific" &&
                     generateForm.targetedSubsections.length === 0)

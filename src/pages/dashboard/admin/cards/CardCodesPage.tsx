@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UAParser } from "ua-parser-js";
 import { useState } from "react";
 import {
@@ -130,6 +131,7 @@ const CardCodesPage = () => {
     "card-codes",
     "card-codes-statistics",
     "codes-generated",
+    "main-statistics",
   ]);
 
   const [generateForm, setGenerateForm] = useState({
@@ -146,18 +148,18 @@ const CardCodesPage = () => {
   });
 
   // Build tree structure for subsection selection
-  const buildSubsectionTree = (
-    items: any[],
-    parentId: number | null = null
-  ): any[] => {
-    return items
-      ?.filter((item) => item.order === parentId)
-      .sort((a, b) => a.title.localeCompare(b.title))
-      .map((item) => ({
-        ...item,
-        children: buildSubsectionTree(items, item.id),
-      })) as any[];
-  };
+  // const buildSubsectionTree = (
+  //   items: any[],
+  //   parentId: number | null = null
+  // ): any[] => {
+  //   return items
+  //     ?.filter((item) => item.order === parentId)
+  //     .sort((a, b) => a.title.localeCompare(b.title))
+  //     .map((item) => ({
+  //       ...item,
+  //       children: buildSubsectionTree(items, item.id),
+  //     })) as any[];
+  // };
 
   // const subsectionTree = buildSubsectionTree(subsections?.data?.data);
   const subsectionTree = subsections?.data?.data;
@@ -218,6 +220,7 @@ const CardCodesPage = () => {
 
   const cleanObject = (obj: any) => {
     return Object.fromEntries(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(obj).filter(([_, v]) => {
         if (Array.isArray(v)) return v.length > 0;
         return v !== null && v !== undefined && v !== "";
@@ -303,21 +306,28 @@ const CardCodesPage = () => {
       })
       .catch((error) => {
         handleErrorAlerts(
-          error?.response?.data?.message || "حدث خطأ أثناء تحديث حالة البطاقة"
+          error?.response?.data?.error || "حدث خطأ أثناء تحديث حالة البطاقة"
         );
       });
   };
 
-  const toggleCodeStatus = (id: string) => {
+  const toggleCodeStatus = async (id: string) => {
     setCodeBatches(id);
-
-    toggleGeneratedCodeState.mutateAsync({}).then((res) => {
-      if (res) {
+    try {
+      const res = await toggleGeneratedCodeState.mutateAsync({});
+      if (res?.status) {
         toast.success("تم تحديث حالة البطاقة بنجاح");
       } else {
-        toast.error("حدث خطأ أثناء تحديث حالة البطاقة");
+        handleErrorAlerts(res?.error ?? "حدث خطأ أثناء تحديث حالة البطاقة");
       }
-    });
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.error ??
+        err?.response?.data?.message ??
+        err?.message ??
+        "حدث خطأ أثناء تحديث حالة البطاقة";
+      handleErrorAlerts(msg);
+    }
   };
 
   const toggleBatchStatus = (batchId: string) => {
@@ -522,7 +532,7 @@ const CardCodesPage = () => {
                       </span>
                     </div>
                     {/* {batch.targetingType === "specific" && */}
-                    {true && batch?.subsubsections?.length >= 1 && (
+                    {batch?.subsubsections?.length >= 1 && (
                       <div className="mt-2 flex flex-wrap gap-1">
                         {batch?.subsubsections?.slice(0, 3).map((sec: any) => (
                           <span
