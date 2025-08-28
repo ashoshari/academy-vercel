@@ -62,9 +62,17 @@ const Layout = () => {
   ];
 
   const LIBRARY_ALLOWED = new Set(["", "card-codes"]);
+  const TEACHER_DISALLOWED = new Set([
+    "custom-card-pricing",
+    "card-pricing",
+    "teachers",
+  ]);
+
   const filteredMenuItems =
     role === "library"
       ? menuItems.filter((i) => LIBRARY_ALLOWED.has(i.id))
+      : role === "teacher"
+      ? menuItems.filter((i) => !TEACHER_DISALLOWED.has(i.id))
       : menuItems;
 
   return (
