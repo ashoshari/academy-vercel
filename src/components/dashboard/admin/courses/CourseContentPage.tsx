@@ -98,83 +98,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
     ["putLessons"]
   );
 
-  // تحويل بيانات الدورة إلى هيكل شجري
-  // const buildContentTree = (): ContentItem[] => {
-  //   const items: ContentItem[] = [];
-
-  //   course?.semesters?.forEach((semester: any) => {
-  //     const semesterItem: ContentItem = {
-  //       id: semester.id,
-  //       type: "semester",
-  //       title: semester.title,
-  //       description: semester.description,
-  //       order: semester.order,
-  //       isPublished: semester.isPublished,
-  //       isFree: semester.isFree,
-  //       estimatedDuration: semester.estimatedDuration,
-  //       children: [],
-  //     };
-
-  //     semester.units.forEach((unit: any) => {
-  //       const unitItem: ContentItem = {
-  //         id: unit.id,
-  //         type: "unit",
-  //         title: unit.title,
-  //         description: unit.description,
-  //         order: unit.order,
-  //         isPublished: unit.isPublished,
-  //         isFree: unit.isFree,
-  //         estimatedDuration: unit.estimatedDuration,
-  //         parentId: semester.id,
-  //         children: [],
-  //       };
-
-  //       unit.topics.forEach((topic: any) => {
-  //         const topicItem: ContentItem = {
-  //           id: topic.id,
-  //           type: "topic",
-  //           title: topic.title,
-  //           description: topic.description,
-  //           order: topic.order,
-  //           isPublished: topic.isPublished,
-  //           isFree: topic.isFree,
-  //           estimatedDuration: topic.estimatedDuration,
-  //           parentId: unit.id,
-  //           children: [],
-  //         };
-
-  //         topic.lessons.forEach((lesson: any) => {
-  //           const lessonItem: ContentItem = {
-  //             id: lesson.id,
-  //             type: "lesson",
-  //             title: lesson.title,
-  //             description: lesson.description,
-  //             order: lesson.order,
-  //             isPublished: lesson.isPublished,
-  //             isFree: lesson.isFree,
-  //             estimatedDuration: lesson.estimatedDuration,
-  //             parentId: topic.id,
-  //             lessonType: lesson.type === "video" ? "video" : "exam",
-  //             videoUrl: lesson.type === "video" ? lesson.content : undefined,
-  //             examId:
-  //               lesson.type === "exam" ? parseInt(lesson.content) : undefined,
-  //           };
-
-  //           topicItem.children!.push(lessonItem);
-  //         });
-
-  //         unitItem.children!.push(topicItem);
-  //       });
-
-  //       semesterItem.children!.push(unitItem);
-  //     });
-
-  //     items.push(semesterItem);
-  //   });
-
-  //   return items;
-  // };
-
   const [contentTree, setContentTree] = useState<any>();
 
   useEffect(() => {
@@ -262,9 +185,11 @@ const CourseContentPage = ({ course, onBack }: any) => {
   };
 
   const handleAddItem = async () => {
-    if (!newItem.title
+    if (
+      !newItem.title
       //  || !newItem.description
-      ) return;
+    )
+      return;
 
     const addItem = {
       title: newItem.title,
@@ -294,7 +219,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
           : await postLessons(addItem);
 
       queryClient.invalidateQueries({
-        queryKey: ["course-content"],
+        queryKey: ["course-content", course?.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["course-content-statistics"],
       });
       toast.success(response?.message ?? "تم الحفظ بنجاح");
     } catch (err: any) {
@@ -324,7 +252,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         ? await putTopics(editedContent)
         : await putLessons(editedContent);
       queryClient.invalidateQueries({
-        queryKey: ["course-content"],
+        queryKey: ["course-content", course?.id],
       });
       toast.success(response?.message ?? "تم تعديل المحتوى بنجاح");
       setCurrentView("tree");
@@ -679,9 +607,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
         {/* Filters */}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-          <div className="flex justify-between  gap-4">
+          <div className="flex justify-between gap-4">
             {/* Search */}
-            <div className="flex items-center gap-x-[20px] w-[50%]">
+            <div className="flex items-center w-[50%] gap-x-[20px]">
               <div className="relative w-full">
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
@@ -692,38 +620,18 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                 />
               </div>
-
-              {/* Type Filter */}
-              {/* <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value as any)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-              >
-              <option value="all">جميع الأنواع</option>
-              <option value="semester">الفصول</option>
-              <option value="unit">الوحدات</option>
-              <option value="topic">الدروس</option>
-              <option value="lesson">الحصص</option>
-              <option value="video">فيديوهات</option>
-              <option value="exam">امتحانات</option>
-            </select> */}
-
               {/* Published Filter */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="showUnpublished"
-                  checked={showUnpublished}
-                  onChange={(e) => setShowUnpublished(e.target.checked)}
-                  className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                />
-                <label
-                  htmlFor="showUnpublished"
-                  className="text-sm text-gray-700"
-                >
-                  إظهار المسودات
-                </label>
-              </div>
+
+              <button
+                onClick={() => setShowUnpublished(!showUnpublished)}
+                className={`cursor-pointer px-3 py-1 text-sm ${
+                  showUnpublished
+                    ? "bg-orange-50 text-orange-600"
+                    : "bg-gray-100 text-gray-600 "
+                } rounded-lg hover:shadow-md transition-colors`}
+              >
+                {showUnpublished == true ? "إخفاء المسودات" : "إظهار المسودات"}
+              </button>
             </div>
 
             {/* Expand All */}
@@ -778,7 +686,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               <div className="text-center py-12">
                 <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
-                  لا يوجد محتوى
+                  لا يوجد محتوى لعرضه
                 </h3>
                 <p className="text-gray-500 mb-6">
                   ابدأ بإضافة فصول ووحدات ودروس للدورة
@@ -1388,9 +1296,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
                 handleEditItem();
               }}
-              disabled={!selectedItem.title
+              disabled={
+                !selectedItem.title
                 //  || !selectedItem.description
-                }
+              }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />

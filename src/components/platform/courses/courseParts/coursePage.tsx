@@ -17,7 +17,7 @@ const CoursePage = () => {
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   // const currentLesson = useLesson((state) => state.currentLesson);
-  console.log("currentLessonIndex",currentLessonIndex)
+  console.log("currentLessonIndex", currentLessonIndex);
   const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
   const { data, error } = useCustomQuery(
@@ -73,51 +73,17 @@ const CoursePage = () => {
     });
     setAllLessons(lessons);
   }, [courseData]);
-  // const markLessonComplete = () => {
-  //   const updatedLessons = [...allLessons];
-  //   updatedLessons[currentLessonIndex].isCompleted = true;
-
-  //   // Unlock next lesson
-  //   if (currentLessonIndex + 1 < updatedLessons.length) {
-  //     updatedLessons[currentLessonIndex + 1].isLocked = false;
-  //   }
-
-  //   setAllLessons(updatedLessons);
-
-  //   // Update chapters state
-  //   setSemesters((prev: any) =>
-  //     prev.map((semester: any) => ({
-  //       ...semester,
-  //       units: semester.units.map((unit: any) => ({
-  //         ...unit,
-  //         lessons: unit.lessons.map((lesson: any) => {
-  //           const updatedLesson = updatedLessons.find(
-  //             (l) => l.id === lesson.id
-  //           );
-  //           return updatedLesson || lesson;
-  //         }),
-  //       })),
-  //     }))
-  //   );
-  // };
-  // if (!!error === null) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-  //         <p className="text-gray-600">جاري تحميل الدورة...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // } else
-    console.log("currentLessonIndex", currentLessonIndex);
-    const typedError = error as any;
-  if (typedError?.response?.data?.error != "لا يوجد عنصر بهذا المعرف") {
+  console.log("currentLessonIndex", currentLessonIndex);
+  const typedError = error as any;
+  if (
+    typedError &&
+    typedError?.response?.data?.error != "لا يوجد عنصر بهذا المعرف"
+  ) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
           <img
-          loading="lazy"
+            loading="lazy"
             src={errorIllustation}
             alt="404"
             className="w-[200px] h-[200px] mx-auto mb-4"
@@ -131,7 +97,7 @@ const CoursePage = () => {
       <div className="min-h-screen bg-gradient-to-br px-2 from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
           <img
-          loading="lazy"
+            loading="lazy"
             src={errorIllustation}
             alt="404"
             className="w-[300px] h-[250px]"
@@ -167,12 +133,7 @@ const CoursePage = () => {
         setCurrentLessonIndex={setCurrentLessonIndex}
         courseData={courseData}
       />
-      <CourseContent
-        allLessons={allLessons}
-        courseData={courseData}
-        setAllLessons={setAllLessons}
-        setSemesters={setSemesters}
-      />
+      <CourseContent allLessons={allLessons} />
     </div>
   );
 };

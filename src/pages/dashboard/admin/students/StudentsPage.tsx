@@ -146,6 +146,7 @@ const StudentsPage = () => {
       });
       toast.success(response?.data?.message ?? "تم تحديث حالة الطلب");
       queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["students-statistics"] });
     } catch (error: any) {
       toast.error(
         error?.response?.data?.error ?? "حدث خطأ في تحديث حالة الطالب"

@@ -19,8 +19,10 @@ import { useParams } from "react-router";
 import { useLesson } from "@/store/platform/useLesson";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import handleErrorAlerts from "@/utils/showErrorMessages";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TextNotes = () => {
+  const queryClient = useQueryClient();
   const [showAddNote, setShowAddNote] = useState(false);
   const [newNote, setNewNote] = useState("");
 
@@ -35,7 +37,7 @@ const TextNotes = () => {
   //GET NOTES
   const { data } = useCustomQuery(
     `/training/students/course/${courseId}/`,
-    ["courses"],
+    ["courses", courseId],
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -63,6 +65,7 @@ const TextNotes = () => {
     try {
       await deleteNote();
       setNotes((prev: any) => prev.filter((note: any) => note.id !== noteId));
+      queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
     } catch (error) {
       handleErrorAlerts("حدث خطأ في حذف الملاحظة");
     }
@@ -82,15 +85,16 @@ const TextNotes = () => {
         setNotes((prev: any) =>
           prev.map((note: any) => (note.id === noteId ? response?.data : note))
         );
-      } catch (error) {
-        handleErrorAlerts("حدث خطاء في تعديل الملاحظة");
+        queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
+      } catch (error:any) {
+        handleErrorAlerts(error?.response?.data?.message || "حدث خطاء في تعديل الملاحظة");
       }
       setEditNote("");
       setEditingNoteId(null);
     }
   };
   const handleAddNote = async () => {
-    console.log(currentLesson)
+    console.log(currentLesson);
     if (newNote.trim()) {
       const note: any = {
         note: newNote,
@@ -99,8 +103,9 @@ const TextNotes = () => {
       try {
         const response = await postNote(note);
         setNotes((prev: any) => [response.data, ...prev]);
-      } catch (error) {
-        console.error("Failed to send note:", error);
+        queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
+      } catch (error:any) {
+        console.error("حدث خطأ في إضافة الملاحظة:", error);
       }
       setEditNote("");
       setShowAddNote(false);
