@@ -1652,9 +1652,9 @@ const ResourcesPage = () => {
       ) : (
         <>
           {/* List View */}
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">

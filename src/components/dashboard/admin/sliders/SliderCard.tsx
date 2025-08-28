@@ -168,7 +168,7 @@ export default function SliderCard({
           </div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
+          <div className="lg:flex-1 min-w-0">
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
                 <h3 className="font-bold text-gray-800 text-lg mb-1 truncate">
