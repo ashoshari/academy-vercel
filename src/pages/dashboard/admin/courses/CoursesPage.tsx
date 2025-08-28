@@ -99,6 +99,7 @@ const CoursesPage = () => {
   // const specialization_materialData = specialization_material?.data;
   const cardsData = cards?.data;
 
+  const [editSections, setEditSections] = useState(false);
   const [selectedSubSection, setSelectedSubSection] = useState<string>("");
   const [selectedSubSub, setSelectedSubSub] = useState<string>("");
   const [selectedSpec, setSelectedSpec] = useState<string>("");
@@ -126,7 +127,7 @@ const CoursesPage = () => {
   });
 
   // PUT Course
-  const { mutateAsync: editCourse , isPending: isEditing } = useCustomUpdate(
+  const { mutateAsync: editCourse, isPending: isEditing } = useCustomUpdate(
     `/training/admin/courses/${courseId}/`,
     ["editcourses", courseId]
   );
@@ -228,6 +229,10 @@ const CoursesPage = () => {
       toast.success(res.message ?? "تم الحفظ بنجاح");
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       setCurrentView("list");
+      setSelectedSubSection("");
+      setSelectedSubSub("");
+      setSelectedSpec("");
+      setEditSections(false);
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
     }
@@ -1147,7 +1152,13 @@ const CoursesPage = () => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentView("list")}
+            onClick={() => {
+              setSelectedSubSection("");
+              setSelectedSubSub("");
+              setSelectedSpec("");
+              setEditSections(false);
+              setCurrentView("list");
+            }}
             className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowRight size={20} />
@@ -1246,54 +1257,9 @@ const CoursesPage = () => {
                       ))}
                   </select>
                 </div>
-
-                {/* <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    التصنيف
-                  </label>
-                  <input
-                    type="text"
-                    value={selectedCourse?.specialization}
-                    onChange={(e) =>
-                      setSelectedCourse({
-                        ...selectedCourse,
-                        specialization: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="مثل:  علمي ، أدبي"
-                  />
-                </div> */}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    المستوى
-                  </label>
-                  <select
-                    value={selectedCourse?.level?.id}
-                    onChange={(e) =>
-                      setSelectedCourse({
-                        ...selectedCourse,
-                        level: e.target.value as any,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر المستوى</option>
-                    <option value="d72e95dd-dc4c-4495-8ec5-cea7e7c5a0c3">
-                      مبتدئ
-                    </option>
-                    <option value="e6ec8a9c-e0d0-47ae-a2c9-2f6defb2ca97">
-                      متوسط
-                    </option>
-                    <option value="381137cd-7aa9-4165-a0e1-181dc686cb50">
-                      متقدم
-                    </option>
-                  </select>
-                </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     المدة (بالساعات)
@@ -1474,223 +1440,152 @@ const CoursesPage = () => {
                 </div>
               </div>
 
-              {/* Targeted Sections */}
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  التخصصات المستهدفة
-                </label>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {specializationData?.map((specialization: any) => (
-                    <label
-                      key={specialization?.id}
-                      className="flex items-center gap-2"
-                    >
-                      <input
-                        type="radio"
-                        name="specialization" // Same name for all radio buttons
-                        value={specialization?.id}
-                        checked={
-                          selectedCourse?.specialization === specialization?.id
-                        }
+              {/* SubSection */}
+              {!editSections ? (
+                <button
+                  onClick={() => setEditSections(!editSections)}
+                  className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                >
+                  تعديل الأقسام
+                </button>
+              ) : (
+                <>
+                  <div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        القسم
+                      </label>
+                      <select
+                        value={selectedSubSection}
                         onChange={(e) => {
+                          setSelectedSubSection(e.target.value);
+                          setSelectedSubSub("");
+                          setSelectedSpec("");
                           setSelectedCourse({
                             ...selectedCourse,
-                            specialization: e.target.value,
+                            subsection: e.target.value,
+                            subsubsection: "",
+                            specialization: "",
+                            specialization_material: "",
                           });
                         }}
-                        className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                      />
-                      <span className="text-sm">{specialization?.name}</span>
-                    </label>
-                  ))}
-                </div>
-              </div> */}
-
-              {/* Targeted Subsections */}
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  الأقسام الفرعية المستهدفة
-                </label>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {specialization_materialData?.map(
-                    (specialization_material: any) => (
-                      <label
-                        key={specialization_material?.id}
-                        className="flex items-center gap-2"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                       >
-                        <input
-                          type="radio"
-                          name="specialization_material" // Same name for all radio buttons
-                          value={specialization_material?.id}
-                          checked={
-                            selectedCourse.specialization_material ===
-                            specialization_material?.id
-                          }
+                        <option value="">اختر القسم</option>
+                        {subsectionData?.map((subSection: any) => (
+                          <option key={subSection.id} value={subSection.id}>
+                            {subSection?.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  {/* SubSubSection */}
+                  {subSection?.subsubsections.length > 0 && (
+                    <div>
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          الصف
+                        </label>
+                        <select
+                          value={selectedSubSub}
+                          onChange={(e) => {
+                            setSelectedSubSub(e.target.value);
+                            setSelectedSpec("");
+                            setSelectedCourse({
+                              ...selectedCourse,
+                              subsubsection: e.target.value,
+                            });
+                          }}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        >
+                          <option value="">اختر الصف</option>
+                          {subSection?.subsubsections?.map(
+                            (subSubSection: any) => (
+                              <option
+                                key={subSubSection.id}
+                                value={subSubSection.id}
+                              >
+                                {subSubSection?.title}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Specialization */}
+                  {subsub?.specializations.length > 0 && (
+                    <div>
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          التخصص
+                        </label>
+                        <select
+                          value={selectedSpec}
+                          onChange={(e) => {
+                            setSelectedSpec(e.target.value);
+                            setSelectedCourse({
+                              ...selectedCourse,
+                              specialization: e.target.value,
+                            });
+                          }}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        >
+                          <option value="">اختر قسم فرعي</option>
+                          {subsub?.specializations?.map(
+                            (specialization: any) => (
+                              <option
+                                key={specialization.id}
+                                value={specialization.id}
+                              >
+                                {specialization?.name}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Specialization Material */}
+                  {(spec?.specialization_materials?.length > 0 ||
+                    (subsub?.specializations?.length == 0 &&
+                      subsub?.specialization_materials?.length > 0)) && (
+                    <div>
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          مادة التخصص
+                        </label>
+                        <select
+                          value={selectedCourse?.specialization_material}
                           onChange={(e) => {
                             setSelectedCourse({
                               ...selectedCourse,
                               specialization_material: e.target.value,
                             });
                           }}
-                          className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                        />
-                        <span className="text-sm">
-                          {specialization_material?.name}
-                        </span>
-                      </label>
-                    )
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        >
+                          <option value="">اختر مادة التخصص</option>
+                          {(spec?.specialization_materials.length > 0
+                            ? spec?.specialization_materials
+                            : subsub?.specialization_materials
+                          ).map((specialization_material: any) => (
+                            <option
+                              key={specialization_material.id}
+                              value={specialization_material.id}
+                            >
+                              {specialization_material?.material}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   )}
-                </div>
-              </div> */}
-
-              {/* SubSection */}
-              <div>
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    القسم
-                  </label>
-                  <select
-                    value={selectedSubSection}
-                    onChange={(e) => {
-                      setSelectedSubSection(e.target.value);
-                      setSelectedSubSub("");
-                      setSelectedSpec("");
-                      setSelectedCourse({
-                        ...selectedCourse,
-                        subsection: e.target.value,
-                        subsubsection: "",
-                        specialization: "",
-                        specialization_material: "",
-                      });
-                    }}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر القسم</option>
-                    {subsectionData?.map((subSection: any) => (
-                      <option key={subSection.id} value={subSection.id}>
-                        {subSection?.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              {/* SubSubSection */}
-              {subSection?.subsubsections.length > 0 && (
-                <div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      الصف
-                    </label>
-                    <select
-                      value={selectedSubSub}
-                      onChange={(e) => {
-                        setSelectedSubSub(e.target.value);
-                        setSelectedSpec("");
-                        setSelectedCourse({
-                          ...selectedCourse,
-                          subsubsection: e.target.value,
-                        });
-                      }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    >
-                      <option value="">اختر الصف</option>
-                      {subSection?.subsubsections?.map((subSubSection: any) => (
-                        <option key={subSubSection.id} value={subSubSection.id}>
-                          {subSubSection?.title}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+                </>
               )}
-
-              {/* Specialization */}
-              {subsub?.specializations.length > 0 && (
-                <div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      التخصص
-                    </label>
-                    <select
-                      value={selectedSpec}
-                      onChange={(e) => {
-                        setSelectedSpec(e.target.value);
-                        setSelectedCourse({
-                          ...selectedCourse,
-                          specialization: e.target.value,
-                        });
-                      }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    >
-                      <option value="">اختر قسم فرعي</option>
-                      {subsub?.specializations?.map((specialization: any) => (
-                        <option
-                          key={specialization.id}
-                          value={specialization.id}
-                        >
-                          {specialization?.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              )}
-
-              {/* Specialization Material */}
-              {(spec?.specialization_materials?.length > 0 ||
-                (subsub?.specializations?.length == 0 &&
-                  subsub?.specialization_materials?.length > 0)) && (
-                <div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      مادة التخصص
-                    </label>
-                    <select
-                      value={selectedCourse?.specialization_material}
-                      onChange={(e) => {
-                        setSelectedCourse({
-                          ...selectedCourse,
-                          specialization_material: e.target.value,
-                        });
-                      }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    >
-                      <option value="">اختر مادة التخصص</option>
-                      {(spec?.specialization_materials.length > 0
-                        ? spec?.specialization_materials
-                        : subsub?.specialization_materials
-                      ).map((specialization_material: any) => (
-                        <option
-                          key={specialization_material.id}
-                          value={specialization_material.id}
-                        >
-                          {specialization_material?.material}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              )}
-
-              {/* Maximum Students */}
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الحد الأقصى للطلاب
-                </label>
-                <input
-                  type="number"
-                  value={selectedCourse?.maximum_number_of_students || 0}
-                  onChange={(e) =>
-                    setSelectedCourse({
-                      ...selectedCourse,
-                      maximum_number_of_students: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  placeholder="100"
-                  min="1"
-                />
-              </div> */}
 
               {/* Status Settings */}
               <div className="grid grid-cols-2 gap-4">
@@ -1711,24 +1606,6 @@ const CoursesPage = () => {
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
                 </div>
-
-                {/* <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-800">نشط</p>
-                    <p className="text-sm text-gray-500">يمكن التسجيل فيه</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={selectedCourse?.is_published}
-                    onChange={(e) =>
-                      setSelectedCourse({
-                        ...selectedCourse,
-                        is_published: e.target.checked,
-                      })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                </div> */}
 
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
@@ -1754,7 +1631,13 @@ const CoursesPage = () => {
           {/* Action Buttons */}
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
-              onClick={() => setCurrentView("list")}
+              onClick={() => {
+                setSelectedSubSection("");
+                setSelectedSubSub("");
+                setSelectedSpec("");
+                setEditSections(false);
+                setCurrentView("list");
+              }}
               className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
