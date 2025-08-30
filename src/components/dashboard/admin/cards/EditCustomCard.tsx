@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCustomUpdate } from "@/hooks/useMutation";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { CustomCard } from "@/pages/dashboard/admin/cards/CardCustomPrice";
@@ -43,7 +42,20 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
     "cards-custom-card",
   ]);
 
+  const filteredCards: CardPricing[] = dataCards?.data?.data?.filter(
+    (c: CardPricing) => c.is_active
+  );
+
+  const targetCard: CardPricing = dataCards?.data?.data?.find(
+    (c: CardPricing) => c.id === selectedCard[0]
+  );
+
   const handleSavePrice = async () => {
+    if (Number(amount) >= targetCard.price) {
+      toast.error("لا يمكن تخصيص سعر أعلي من السعر الأصلي للبطاقة");
+      return;
+    }
+
     const body = {
       user:
         selectedLibrary.length > 0 ? selectedLibrary[0] : selectedTeacher[0],
@@ -111,7 +123,7 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
           <MultiSelectAutocomplete
             onChange={setSelectedCard}
             options={
-              dataCards?.data?.data.map((s: CardPricing) => ({
+              filteredCards.map((s: CardPricing) => ({
                 ...s,
                 title: `بطاقة ${s.price} دينار أردني`,
               })) || []
