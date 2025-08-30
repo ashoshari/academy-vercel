@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Plus, Edit, Users, Grid, Rows, CreditCard } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";

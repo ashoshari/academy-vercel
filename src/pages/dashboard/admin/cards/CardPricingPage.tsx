@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import {
   Plus,
@@ -19,7 +20,7 @@ import Spinner from "@/components/dashboard/Spinner";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 
 export interface CardPricing {
-  id: number;
+  id: string;
   price: number;
   default_teacher_price: number;
   default_library_price: number;
@@ -320,7 +321,7 @@ const CardPricingPage = () => {
                     </span>
                     <span className="text-lg font-semibold text-gray-900">
                       {card.default_library_price ?? "—"}
-                      <span className="text-sm text-gray-500 ml-1">ج.م</span>
+                      <span className="text-sm text-gray-500 ml-1">د.أ</span>
                     </span>
                   </div>
                 </div>
@@ -332,7 +333,7 @@ const CardPricingPage = () => {
                     </span>
                     <span className="text-lg font-semibold text-gray-900">
                       {card.default_teacher_price ?? "—"}
-                      <span className="text-sm text-gray-500 ml-1">ج.م</span>
+                      <span className="text-sm text-gray-500 ml-1">د.أ</span>
                     </span>
                   </div>
                 </div>
