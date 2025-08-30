@@ -44,9 +44,11 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
 
   const add = (id: string) => {
     if (disabled) return;
-    // if single, replace the selection; otherwise keep multi
     onChange(single ? [id] : [...value, id]);
     setQuery("");
+    if (single) {
+      setOpen(false);
+    }
   };
 
   const remove = (id: string) => {
@@ -119,7 +121,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
               onClick={() => {
                 if (disabled) return;
                 add(o.id);
-                setOpen(true);
+                if (!single) setOpen(true);
               }}
               className="px-3 py-2 hover:bg-orange-50 cursor-pointer text-sm"
             >

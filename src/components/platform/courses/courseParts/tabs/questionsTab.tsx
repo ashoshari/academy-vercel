@@ -19,7 +19,9 @@ import { useParams } from "react-router";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 const QuestionsTab = () => {
+  const queryClient = useQueryClient();
   const { courseId } = useParams();
   // GET QUESTIONS and comments
   const { data } = useCustomQuery(`/training/students/course/${courseId}/`, [
@@ -76,6 +78,7 @@ const QuestionsTab = () => {
         lesson: currentLesson?.id,
       };
       const response = await postQuestions(question);
+      queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       setCourseQuestions((prev: any) => [response.data, ...prev]);
       setNewQuestionTitle("");
       setNewQuestionContent("");
@@ -120,6 +123,7 @@ const QuestionsTab = () => {
           return q;
         });
       });
+      queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
     } catch (error) {
       console.error("Failed to send like:", error);
     }
@@ -150,6 +154,7 @@ const QuestionsTab = () => {
           return q;
         });
       });
+      queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       if (response.status) {
         toast.success(response?.data);
       } else {
@@ -189,6 +194,7 @@ const QuestionsTab = () => {
               : q
           )
         );
+        queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       } catch (error) {
         console.log(error);
       }
@@ -216,6 +222,7 @@ const QuestionsTab = () => {
             question.id === questionId ? response?.data : question
           )
         );
+        queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       } catch (error) {
         handleErrorAlerts("حدث خطأ في تعديل الأسئلة");
       }
@@ -237,6 +244,7 @@ const QuestionsTab = () => {
       setCourseQuestions((prev: any) =>
         prev.filter((question: any) => question?.id !== questionId)
       );
+      queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
     } catch (error) {
       handleErrorAlerts("حدث خطأ في حذف السؤال");
     }
@@ -267,6 +275,7 @@ const QuestionsTab = () => {
             return question;
           })
         );
+        queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       } catch (error) {
         handleErrorAlerts("حدث خطأ في تعديل الأسئلة");
       }
@@ -296,8 +305,9 @@ const QuestionsTab = () => {
           return question;
         })
       );
-    } catch (error) {
-      handleErrorAlerts("حدث خطأ في حذف السؤال");
+      queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
+    } catch (error:any) {
+      handleErrorAlerts(error?.response?.data?.message || "حدث خطأ في حذف السؤال");
     }
   };
   return (

@@ -145,7 +145,7 @@ const Footer: React.FC = () => {
                 )}
               </ul>
             ) : (
-              <p className="text-gray-300">لا يوجد روابط سريعة</p>
+              <p className="text-gray-300">لا توجد روابط سريعة</p>
             )}
             {/* {footerData?.links?.length > 3 && (
               <Link
@@ -197,18 +197,20 @@ const Footer: React.FC = () => {
             <h4 className="text-lg font-semibold text-yellow-400">تابعنا</h4>
 
             <div className="flex space-x-4">
-              {socialMediaData?.length === 0 && (
-                <p className="text-gray-300">لا يوجد وسائل تواصل</p>
+              {socialMediaData?.filter((link: any) => link?.link).length ===
+              0 ? (
+                <p className="text-gray-300">لا توجد وسائل تواصل</p>
+              ) : (
+                socialMediaData?.map((link: any, index: number) => (
+                  <button
+                    key={index}
+                    onClick={() => navigate(link?.link)}
+                    className={`cursor-pointer w-[25px] h-[25px] p-[5px] ${link?.color} rounded-lg flex items-center justify-center hover:${link?.hover} transition-colors duration-200`}
+                  >
+                    {React.createElement(link?.icon, { className: "w-5 h-5" })}
+                  </button>
+                ))
               )}
-              {socialMediaData?.map((link: any, index: number) => (
-                <button
-                  key={index}
-                  onClick={() => navigate(link?.link)}
-                  className={`cursor-pointer w-[25px] h-[25px] p-[5px] ${link?.color} rounded-lg flex items-center justify-center hover:${link?.hover} transition-colors duration-200`}
-                >
-                  {React.createElement(link?.icon, { className: "w-5 h-5" })}
-                </button>
-              ))}
             </div>
             <p className="text-gray-400 text-xs">
               {footerData?.text_under_social ||

@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
 import { useState } from "react";
@@ -110,7 +110,7 @@ const Discover: React.FC = () => {
                     className={`cursor-pointer w-full bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
                   >
                     <span>استكشف الآن</span>
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                    <ArrowLeft className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </button>
                 </div>
 

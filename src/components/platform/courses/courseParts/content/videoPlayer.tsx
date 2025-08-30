@@ -91,7 +91,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
           <button
             onClick={markLessonComplete}
             disabled={currentLesson?.is_completed}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
+            className={`cursor-pointer disabled:cursor-not-allowed px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
               currentLesson?.is_completed
                 ? "bg-green-100 text-green-800 cursor-not-allowed"
                 : "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"

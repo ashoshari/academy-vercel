@@ -5,7 +5,6 @@ import {
   Plus,
   Edit,
   Search,
-  Trash2,
   Eye,
   EyeOff,
   ArrowLeft,
@@ -28,7 +27,7 @@ import {
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
   useCustomPost,
-  useCustomRemove,
+  // useCustomRemove,
   useCustomUpdate,
 } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
@@ -137,7 +136,7 @@ const ExamsPage = () => {
     "table" | "grid" | "create" | "edit" | "questions" | "results"
   >("table");
   const queryClient = useQueryClient();
-  const [examId, setExamId] = useState();
+  // const [examId, setExamId] = useState();
   const [selectedExam, setSelectedExam] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [materialFilter, setMaterialFilter] = useState<string>("");
@@ -191,10 +190,10 @@ const ExamsPage = () => {
     ["putExams"]
   );
   // DELETE Exams
-  const { mutateAsync: deleteExam } = useCustomRemove(
-    `/training/admin/exams/${examId}/`,
-    ["deleteExams"]
-  );
+  // const { mutateAsync: deleteExam } = useCustomRemove(
+  //   `/training/admin/exams/${examId}/`,
+  //   ["deleteExams"]
+  // );
   // GET Codes
   // const { data: cards } = useCustomQuery("/cards/", ["cards"]);
   // const cardsData = cards?.data;
@@ -275,6 +274,8 @@ const ExamsPage = () => {
   };
   const handleEditExam = () => {
     selectedExam.teacher = selectedExam?.teacher?.id;
+    selectedExam.subsection = selectedExam?.subsection?.id;
+    selectedExam.subsubsection = selectedExam?.subsubsection?.id;
     selectedExam.specialization = selectedExam?.specialization?.id;
     selectedExam.specialization_material =
       selectedExam?.specialization_material?.id;
@@ -285,6 +286,7 @@ const ExamsPage = () => {
           setCurrentView("table");
           setSelectedExam(null);
           queryClient.invalidateQueries({ queryKey: ["exams"] });
+          queryClient.invalidateQueries({ queryKey: ["exams-statistics"] });
         } else {
           handleErrorAlerts(res?.error);
         }
@@ -295,17 +297,17 @@ const ExamsPage = () => {
         );
       });
   };
-  const handleDeleteExam = async () => {
-    if (confirm("هل أنت متأكد من حذف هذا الامتحان؟")) {
-      try {
-        const response: any = await deleteExam();
-        toast.success(response.message ?? "تم الحذف بنجاح");
-        queryClient.invalidateQueries({ queryKey: ["exams"] });
-      } catch (err: any) {
-        toast.error(err?.response?.data?.error);
-      }
-    }
-  };
+  // const handleDeleteExam = async () => {
+  //   if (confirm("هل أنت متأكد من حذف هذا الامتحان؟")) {
+  //     try {
+  //       const response: any = await deleteExam();
+  //       toast.success(response.message ?? "تم الحذف بنجاح");
+  //       queryClient.invalidateQueries({ queryKey: ["exams"] });
+  //     } catch (err: any) {
+  //       toast.error(err?.response?.data?.error);
+  //     }
+  //   }
+  // };
   const toggleExamStatus = (status: boolean) => {
     updateExam
       .mutateAsync({
@@ -317,6 +319,12 @@ const ExamsPage = () => {
           // navigate("/dashboard/admin/exams");
           // setCurrentView("table");
           setNewExam(null);
+          queryClient.invalidateQueries({
+            queryKey: ["exams"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["exams-statistics"],
+          });
         } else {
           handleErrorAlerts(res?.error);
         }
@@ -509,13 +517,14 @@ const ExamsPage = () => {
               onClick={() => {
                 setSelectedExam(exam);
                 setCurrentView("edit");
+                console.log("selectedExam", selectedExam);
               }}
               className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               title="تعديل الامتحان"
             >
               <Edit size={16} />
             </button>
-            <button
+            {/* <button
               onClick={() => {
                 setExamId(exam?.id);
                 handleDeleteExam();
@@ -524,7 +533,7 @@ const ExamsPage = () => {
               title="حذف الامتحان"
             >
               <Trash2 size={16} />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -1246,10 +1255,15 @@ const ExamsPage = () => {
                         مادة التخصص *
                       </label>
                       <select
-                        value={selectedExam?.specialization_material}
+                        value={
+                          selectedExam?.specialization_material?.id
+                            ? selectedExam?.specialization_material.id
+                            : selectedExam?.specialization_material
+                        }
                         onChange={(e) => {
-                          setNewExam({
-                            ...newExam,
+                          console.log("selectedExam", selectedExam);
+                          setSelectedExam({
+                            ...selectedExam,
                             specialization_material: e.target.value,
                           });
                         }}
@@ -1493,11 +1507,11 @@ const ExamsPage = () => {
             <button
               onClick={handleEditExam}
               disabled={
-                !newExam?.title ||
-                !newExam?.teacher ||
-                !newExam?.number_of_questions ||
-                !newExam?.total_marks ||
-                !newExam?.passing_marks
+                !selectedExam?.title ||
+                !selectedExam?.teacher ||
+                !selectedExam?.number_of_questions ||
+                !selectedExam?.total_marks ||
+                !selectedExam?.passing_marks
               }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1805,6 +1819,22 @@ const ExamsPage = () => {
                             title="تعديل"
                           >
                             <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedExam(exam);
+                              toggleExamStatus(exam.is_published);
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            title={
+                              exam.is_published ? "إلغاء النشر" : "نشر الامتحان"
+                            }
+                          >
+                            {exam.is_published ? (
+                              <Eye size={16} />
+                            ) : (
+                              <EyeOff size={16} />
+                            )}
                           </button>
                         </div>
                       </td>

@@ -20,32 +20,22 @@ import QuestionsTab from "./tabs/questionsTab";
 import Exam from "./content/exam";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router";
-const CourseContent = ({
-  setAllLessons,
-  allLessons,
-}: // setSemesters,
-{
-  setAllLessons: any;
-  allLessons: any;
-  setSemesters: any;
-  courseData: any;
-}) => {
+import toast from "react-hot-toast";
+const CourseContent = ({ allLessons }: { allLessons: any }) => {
   const queryClient = useQueryClient();
   const { courseId } = useParams();
   const [activeTab, setActiveTab] = useState("content");
+  const currentLesson = useLesson((state) => state.currentLesson);
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
-  const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   const isExamMode = useExam((state) => state.isExamMode);
   const setIsExamMode = useExam((state) => state.setIsExamMode);
   const setCurrentLessonIndex = useLesson(
     (state) => state.setCurrentLessonIndex
   );
-  // const currentLesson = useLesson((state) => state.currentLesson);
   const { mutateAsync: completeMutateAsync } = useCustomPost(
     "/training/students/lesson/complete/",
     ["complete"]
   );
-
   const navigateLesson = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
@@ -64,26 +54,15 @@ const CourseContent = ({
     }
   };
 
-  const markLessonComplete = () => {
-    const updatedLessons = [...allLessons];
-    const updatedLesson = {
-      ...updatedLessons[currentLessonIndex],
-      is_completed: true,
-    };
-
-    updatedLessons[currentLessonIndex] = updatedLesson;
-
-    // 1. Update CoursePage state
-    setAllLessons(updatedLessons);
-
-    // 2. Update Zustand directly right away
-    setCurrentLesson(updatedLessons[currentLessonIndex]);
-
-    // 3. Fire mutation
-    completeMutateAsync({ lesson_id: updatedLesson.id });
-
-    // 4. Background refetch
-    queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
+  const markLessonComplete = async () => {
+    try {
+      await completeMutateAsync({
+        lesson_id: currentLesson?.id,
+      });
+      queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error || "حدث خطأ أثناء إكمال الدرس");
+    }
   };
   // exam
   //     const startExam = () => {
@@ -131,9 +110,7 @@ const CourseContent = ({
             {/* Main Content */}
             {
               isExamMode ? (
-                <Exam
-                // markLessonComplete={markLessonComplete}
-                />
+                <Exam markLessonComplete={markLessonComplete} />
               ) : (
                 <VideoPlayer markLessonComplete={markLessonComplete} />
               )
