@@ -89,20 +89,22 @@ export default function AppRoutes() {
           <Route path="dashboard" element={<Layout />}>
             <Route index element={<Dashboard />} />
 
-            <Route element={<RequireRole exclude={["library", "teacher"]} />}>
-              {/* students */}
-              <Route path="students" element={<StudentsPage />} />
-              <Route path="students/add" element={<AddStudentPage />} />
-              <Route path="students/edit/:id" element={<EditStudentPage />} />
-              <Route path="students/:id" element={<StudentDetailsPage />} />
-              {/* students */}
-
+            <Route element={<RequireRole exclude={["teacher", "library"]} />}>
               {/* teachers */}
               <Route path="teachers" element={<TeachersPage />} />
               <Route path="teachers/add" element={<AddTeacherPage />} />
               <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
               <Route path="teachers/:id" element={<TeacherDetailsPage />} />
               {/* teachers */}
+            </Route>
+
+            <Route element={<RequireRole exclude={["library"]} />}>
+              {/* students */}
+              <Route path="students" element={<StudentsPage />} />
+              <Route path="students/add" element={<AddStudentPage />} />
+              <Route path="students/edit/:id" element={<EditStudentPage />} />
+              <Route path="students/:id" element={<StudentDetailsPage />} />
+              {/* students */}
 
               {/* libraries */}
               <Route path="libraries" element={<LibrariesPage />} />
@@ -135,12 +137,15 @@ export default function AppRoutes() {
               <Route path="sections" element={<SectionsPage />} />
               <Route path="sub-sections" element={<SubsectionsPage />} />
               {/* sections */}
+            </Route>
 
+            <Route element={<RequireRole exclude={["teacher", "library"]} />}>
               {/* cards */}
               <Route path="card-pricing" element={<CardPricingPage />} />
               <Route path="custom-card-pricing" element={<CardCustomPrice />} />
               {/* cards */}
             </Route>
+
             {/* cards */}
             <Route path="card-codes" element={<CardCodesPage />} />
             {/* cards */}

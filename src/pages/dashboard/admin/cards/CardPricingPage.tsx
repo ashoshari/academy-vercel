@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import {
   Plus,
@@ -19,7 +20,7 @@ import Spinner from "@/components/dashboard/Spinner";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 
 export interface CardPricing {
-  id: number;
+  id: string;
   price: number;
   default_teacher_price: number;
   default_library_price: number;
