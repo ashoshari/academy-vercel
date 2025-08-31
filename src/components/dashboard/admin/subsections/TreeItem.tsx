@@ -20,7 +20,7 @@ export default function TreeItem({
   item,
   isExpanded,
   type,
-  index,
+  // index,
   getMainSectionIcon,
   getMainSectionColor,
   toggleExpanded,

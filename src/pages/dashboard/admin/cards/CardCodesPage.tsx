@@ -16,7 +16,6 @@ import {
   User,
   Clock,
   // MapPin,
-  Smartphone,
   Target,
   Globe,
   Folder,
