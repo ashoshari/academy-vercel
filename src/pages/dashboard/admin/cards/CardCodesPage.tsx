@@ -24,6 +24,7 @@ import {
   ChevronDown,
   ChevronUp,
   Users,
+  Monitor,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -75,6 +76,7 @@ const CardCodesPage = () => {
   const cardPricing: any = [];
 
   const [page, setPage] = useState(1);
+  const [codePage, setCodePage] = useState(1);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -94,11 +96,10 @@ const CardCodesPage = () => {
     "card-codes-statistics",
   ]);
 
-  const cardCodes = useCustomQuery("cards/codes/", ["card-codes"]);
+  const cardCodes = useCustomQuery(`cards/codes/?page=${codePage}`, ["card-codes",codePage]);
   const subsections = useCustomQuery("training/admin/subsections/", [
     "subsections",
   ]);
-
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
   if (codesFilter) queryParams.append("code_name", codesFilter);
@@ -226,7 +227,9 @@ const CardCodesPage = () => {
         return v !== null && v !== undefined && v !== "";
       })
     );
-  };
+  };  
+  const parser = new UAParser();
+  console.log("result", parser.getResult());
 
   const getClientInfo = () => {
     const parser = new UAParser();
@@ -607,14 +610,14 @@ const CardCodesPage = () => {
 
                     {/* Device Info */}
                     <div className="flex items-center gap-2 text-sm">
-                      <Smartphone className="w-4 h-4 text-gray-400" />
+                      <Monitor className="w-4 h-4 text-gray-400" />
                       <span>
-                        {batch?.security_information?.device?.vendor}
+                        {/* {batch?.security_information?.device?.vendor}
                         {" - "}
                         {batch?.security_information?.device?.model}
                         {" - "}
                         {batch?.security_information?.device?.type}
-                        {" - "}
+                        {" - "} */}
                         {batch?.security_information?.browser?.name}
                       </span>
                     </div>
@@ -721,6 +724,11 @@ const CardCodesPage = () => {
               );
             })}
           </div>
+          <Pagination
+            count={cardCodes?.data?.pagination?.count}
+            currentPage={codePage}
+            onPageChange={setCodePage}
+          />
         </div>
       </div>
 

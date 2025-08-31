@@ -990,10 +990,12 @@ const ExamsPage = () => {
               disabled={
                 !newExam?.title ||
                 !newExam?.teacher ||
-                !newExam?.subsection ||
-                !newExam?.subsubsection ||
-                !newExam?.specialization ||
-                !newExam?.specialization_material ||
+                !newExam.subsection ||
+                !newExam.subsubsection ||
+                (subsub?.specializations.length > 0
+                  ? !newExam.specialization
+                  : false) ||
+                !newExam.specialization_material ||
                 !newExam?.number_of_questions ||
                 !newExam?.total_marks ||
                 !newExam?.passing_marks
@@ -1534,6 +1536,12 @@ const ExamsPage = () => {
               disabled={
                 !selectedExam?.title ||
                 !selectedExam?.teacher ||
+                !selectedExam.subsection ||
+                !selectedExam.subsubsection ||
+                (subsub?.specializations.length > 0
+                  ? !selectedExam.specialization
+                  : false) ||
+                !selectedExam.specialization_material ||
                 !selectedExam?.number_of_questions ||
                 !selectedExam?.total_marks ||
                 !selectedExam?.passing_marks

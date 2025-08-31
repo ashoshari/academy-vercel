@@ -19,13 +19,16 @@ import {
   CheckCircle,
   Target,
 } from "lucide-react";
+import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import Spinner from "@/components/dashboard/Spinner";
 
 const CourseContentPage = ({ course, onBack }: any) => {
   const queryClient = useQueryClient();
+  const [selectedResources, setSelectedResources] = useState<any>([]);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [expandedItems, setExpandedItems] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,10 +41,17 @@ const CourseContentPage = ({ course, onBack }: any) => {
     "tree"
   );
   // GET courseContent
-  const { data: courseContent } = useCustomQuery(
+  const { data: courseContent, isLoading } = useCustomQuery(
     `/training/admin/courses/${course?.id}/`,
     ["course-content", course?.id]
   );
+
+  // GET Resources
+  const { data: resources } = useCustomQuery(
+    `/training/admin/resources/?specialization_material=${course?.specialization_material?.id}`,
+    ["resources"]
+  );
+  const resourceData = resources?.data;
   // GET Exams
   const { data: exams } = useCustomQuery("/training/admin/exams/", ["exams"]);
   const examData = exams?.data;
@@ -109,6 +119,24 @@ const CourseContentPage = ({ course, onBack }: any) => {
     type: "semester",
   });
 
+  useEffect(() => {
+    if (selectedItem && selectedItem?.resources) {
+      setSelectedResources(selectedItem?.resources?.map((res: any) => res?.id));
+    }
+  }, [selectedItem?.id]);
+  useEffect(() => {
+    if (selectedItem) {
+      setSelectedItem((prev: any) => ({
+        ...prev,
+        resources: selectedResources,
+      }));
+    } else {
+      setNewItem((prev: any) => ({
+        ...prev,
+        resources: selectedResources,
+      }));
+    }
+  }, [selectedResources]);
   // فلترة المحتوى
   const filterContent = (items: any) => {
     return items
@@ -125,8 +153,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
         let children = childKey ? filterContent(item[childKey]) : [];
 
         const matchesSearch =
-          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchTerm.toLowerCase());
+          item?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item?.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
         const matchesPublished = showUnpublished || item?.is_published;
 
@@ -153,7 +181,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
         : [...prev, id]
     );
   };
-
   const getItemIcon = (depth: any, item: any) => {
     switch (depth) {
       case 0:
@@ -190,7 +217,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
       //  || !newItem.description
     )
       return;
-
     const addItem = {
       title: newItem.title,
       description: newItem.description,
@@ -207,6 +233,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       ...(newItem.videoUrl && { link: newItem.videoUrl }),
       ...(newItem.examId && { exam: newItem.examId }),
       ...(newItem.order !== undefined && { order: newItem.order }),
+      ...(newItem.resources !== undefined && { resources: newItem.resources }),
     };
     try {
       const response =
@@ -225,6 +252,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         queryKey: ["course-content-statistics"],
       });
       toast.success(response?.message ?? "تم الحفظ بنجاح");
+      setSelectedResources([]);
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
     }
@@ -241,7 +269,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
       // is_free: selectedItem?.is_free,
       ...(selectedItem?.link && { link: selectedItem?.link }),
       ...(selectedItem?.exam && { exam: selectedItem?.exam.id }),
-      ...(selectedItem?.order && { exam: selectedItem?.order }),
+      ...(selectedItem?.order && { order: selectedItem?.order }),
+      ...(selectedItem?.resources && { resources: selectedItem?.resources }),
     };
     try {
       const response = selectedItem?.course
@@ -257,6 +286,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       toast.success(response?.message ?? "تم تعديل المحتوى بنجاح");
       setCurrentView("tree");
       setSelectedItem(null);
+      setSelectedResources([]);
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
     }
@@ -334,6 +364,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const renderTreeItem = (item: any, depth: any = 0) => {
     const childKey: any = Object.keys(item).find(
       (key) =>
+        key !== "resources" &&
+        key !== "مصادر" &&
         Array.isArray(item[key]) &&
         item[key].length > 0 &&
         item[key].every(
@@ -680,7 +712,11 @@ const CourseContentPage = ({ course, onBack }: any) => {
         {/* Content Tree */}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="space-y-4">
-            {filteredContent?.length > 0 ? (
+            {isLoading ? (
+              <div className="flex justify-center w-full">
+                <Spinner size={40} thickness={4} className="text-orange-500" />
+              </div>
+            ) : filteredContent?.length > 0 ? (
               filteredContent?.map((item: any) => renderTreeItem(item))
             ) : (
               <div className="text-center py-12">
@@ -713,7 +749,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentView("tree")}
+            onClick={() => {
+              setCurrentView("tree");
+              setSelectedResources([]);
+            }}
             className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowRight size={20} />
@@ -985,22 +1024,37 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-4 h-4"
                   />
                 </div>
-
-                {/* <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-800">مجاني</p>
-                    <p className="text-sm text-gray-500">متاح بدون رسوم</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={newItem?.isFree || false}
-                    onChange={(e) =>
-                      setNewItem({ ...newItem, isFree: e.target.checked })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                </div> */}
               </div>
+              {/* Resources */}
+              {newItem.type === "lesson" &&
+                resourceData?.filter(
+                  (resource: any) =>
+                    resource.specialization_material ==
+                      course?.specialization_material?.id &&
+                    (resource?.type == "resources" || resource?.type == "مصادر")
+                ) && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      اختر الملفات
+                    </label>
+                    <div className="space-y-3">
+                      <MultiSelectAutocomplete
+                        value={selectedResources}
+                        onChange={setSelectedResources}
+                        options={
+                          resourceData?.filter(
+                            (resource: any) =>
+                              resource.specialization_material ==
+                                course?.specialization_material?.id &&
+                              (resource?.type == "resources" ||
+                                resource?.type == "مصادر")
+                          ) || []
+                        }
+                        placeholder="اختر الملفات..."
+                      />
+                    </div>
+                  </div>
+                )}
 
               {/* Preview */}
               {newItem.title && (
@@ -1029,7 +1083,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
           {/* Action Buttons */}
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
-              onClick={() => setCurrentView("tree")}
+              onClick={() => {
+                setSelectedResources([]);
+                setCurrentView("tree");
+              }}
               className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
@@ -1038,7 +1095,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
               onClick={() => handleAddItem()}
               disabled={
                 !newItem.title ||
-                // !newItem.description ||
                 (newItem.type !== "semester" && !newItem.parentId) ||
                 (newItem.type === "lesson" &&
                   newItem.lessonType === "video" &&
@@ -1065,7 +1121,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setCurrentView("tree")}
+            onClick={() => {
+              setCurrentView("tree");
+              setSelectedResources([]);
+            }}
             className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowRight size={20} />
@@ -1214,24 +1273,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-4 h-4"
                   />
                 </div>
-                {/* 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-800">مجاني</p>
-                    <p className="text-sm text-gray-500">متاح بدون رسوم</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={selectedItem?.is_free ?? false}
-                    onChange={(e) =>
-                      setSelectedItem({
-                        ...selectedItem,
-                        is_free: e.target.checked,
-                      })
-                    }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                  />
-                </div> */}
               </div>
 
               {/* Type Info */}
@@ -1258,19 +1299,54 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       ? "وحدة"
                       : selectedItem?.unit
                       ? "موضوع"
-                      : selectedItem?.type.toLowerCase() === "video"
+                      : selectedItem?.type?.toLowerCase() === "video"
                       ? "درس فيديو"
                       : "درس امتحان"}
                   </span>
                 </div>
               </div>
+
+              {/* Resources */}
+              {(selectedItem?.type?.toLowerCase() === "video" ||
+                selectedItem?.type?.toLowerCase() === "exam") &&
+                resourceData?.filter(
+                  (resource: any) =>
+                    resource.specialization_material ==
+                      course?.specialization_material?.id &&
+                    (resource?.type == "resources" || resource?.type == "مصادر")
+                ) && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      اختر الملفات
+                    </label>
+                    <div className="space-y-3">
+                      <MultiSelectAutocomplete
+                        value={selectedResources}
+                        onChange={setSelectedResources}
+                        options={
+                          resourceData?.filter(
+                            (resource: any) =>
+                              resource.specialization_material ==
+                                course?.specialization_material?.id &&
+                              (resource?.type == "resources" ||
+                                resource?.type == "مصادر")
+                          ) || []
+                        }
+                        placeholder="اختر الملفات..."
+                      />
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
-              onClick={() => setCurrentView("tree")}
+              onClick={() => {
+                setCurrentView("tree");
+                setSelectedResources([]);
+              }}
               className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
             >
               إلغاء
@@ -1296,10 +1372,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
                 handleEditItem();
               }}
-              disabled={
-                !selectedItem.title
-                //  || !selectedItem.description
-              }
+              disabled={!selectedItem.title}
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />

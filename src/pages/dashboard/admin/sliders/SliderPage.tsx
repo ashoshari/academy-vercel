@@ -65,6 +65,7 @@ const SliderPage = () => {
     if (slidersData?.data?.data) setSliderItems(slidersData?.data?.data);
   }, [slidersData?.data?.data]);
 
+  console.log("sliderItems", sliderItems);
   const sorted = useMemo(
     () => [...(sliderItems ?? [])].sort((a, b) => a.order - b.order),
     [sliderItems]
@@ -109,7 +110,7 @@ const SliderPage = () => {
       fd.append("type", newSlide.type as SlideType);
       fd.append("link", newSlide.link ?? "");
       fd.append("is_published", String(newSlide.is_published));
-      fd.append("order", String(sorted.length + 1));
+      fd.append("order", newSlide.order ?? 1);
 
       if (selectedImageFile) {
         fd.append("image", selectedImageFile);

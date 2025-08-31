@@ -89,10 +89,10 @@ export default function TeacherDetailsPage() {
                     label="رقم الهاتف"
                     value={selectedTeacher.mobile_number || "غير متوفر"}
                   />
-                  <Info
+                  {/* <Info
                     label="التخصص"
                     value={selectedTeacher.academic_qualification}
-                  />
+                  /> */}
                 </div>
               </div>
 

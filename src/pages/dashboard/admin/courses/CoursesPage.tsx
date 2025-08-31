@@ -938,7 +938,7 @@ const CoursesPage = () => {
               <div>
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    القسم
+                    القسم *
                   </label>
                   <select
                     value={selectedSubSection}
@@ -949,6 +949,7 @@ const CoursesPage = () => {
                       setNewCourse({
                         ...newCourse,
                         subsection: e.target.value,
+                        subsubsection: "",
                       });
                     }}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -967,7 +968,7 @@ const CoursesPage = () => {
                 <div>
                   <div className="col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      الصف
+                      الصف *
                     </label>
                     <select
                       value={selectedSubSub}
@@ -977,6 +978,7 @@ const CoursesPage = () => {
                         setNewCourse({
                           ...newCourse,
                           subsubsection: e.target.value,
+                          specialization: "",
                         });
                       }}
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -997,7 +999,7 @@ const CoursesPage = () => {
                 <div>
                   <div className="col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      التخصص
+                      التخصص *
                     </label>
                     <select
                       value={selectedSpec}
@@ -1006,6 +1008,7 @@ const CoursesPage = () => {
                         setNewCourse({
                           ...newCourse,
                           specialization: e.target.value,
+                          specialization_material: "",
                         });
                       }}
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1031,7 +1034,7 @@ const CoursesPage = () => {
                 <div>
                   <div className="col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      مادة التخصص
+                      مادة التخصص *
                     </label>
                     <select
                       value={newCourse?.specialization_material}
@@ -1132,7 +1135,13 @@ const CoursesPage = () => {
                 !newCourse.start_date ||
                 !newCourse.end_date ||
                 (!newCourse.is_free && !newCourse.card_price) ||
-                !newCourse.teacher
+                !newCourse.teacher ||
+                !newCourse.subsection ||
+                !newCourse.subsubsection ||
+                (subsub?.specializations.length > 0
+                  ? !newCourse.specialization
+                  : false) ||
+                !newCourse.specialization_material
               }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1652,7 +1661,13 @@ const CoursesPage = () => {
                 !selectedCourse.start_date ||
                 !selectedCourse.end_date ||
                 (!selectedCourse.is_free && !selectedCourse.card_price) ||
-                !selectedCourse.teacher
+                !selectedCourse.teacher ||
+                !selectedCourse.subsection ||
+                !selectedCourse.subsubsection ||
+                (subsub?.specializations.length > 0
+                  ? !selectedCourse.specialization
+                  : false) ||
+                !selectedCourse.specialization_material
               }
               className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >

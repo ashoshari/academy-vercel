@@ -280,15 +280,11 @@ const CoreExam = ({
               {/* Question */}
               <div className="mb-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                  {examData?.questions?.[currentQuestionIndex]
-                    ?.question_image && (
+                  {examData?.questions?.[currentQuestionIndex]?.image && (
                     <img
-                      src={
-                        examData?.questions?.[currentQuestionIndex]
-                          ?.question_image
-                      }
+                      src={examData?.questions?.[currentQuestionIndex]?.image}
                       alt="Question"
-                      className="mb-4 rounded-lg w-120 h-120"
+                      className="mb-4 rounded-lg"
                     />
                   )}
                   {examData?.questions?.[currentQuestionIndex]?.question_text}
@@ -326,11 +322,11 @@ const CoreExam = ({
                             )}
                           </div>
                           <span className="flex items-center gap-x-[20px] font-medium">
-                            {answer?.answer_image && (
+                            {answer?.image && (
                               <img
-                                src={answer?.answer_image}
+                                src={answer?.image}
                                 alt="Answer"
-                                className="mb-2 rounded-lg w-24 h-24"
+                                className="mb-2 rounded-lg max-w-100 max-h-100"
                               />
                             )}
                             {answer?.answer_text}
@@ -468,9 +464,18 @@ const CoreExam = ({
                             >
                               {questionIndex + 1}
                             </div>
-                            <h4 className="font-semibold text-gray-900 mb-3">
-                              {question?.question_text}
-                            </h4>
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-3">
+                                {question?.question_text}
+                              </h4>
+                              {question?.image && (
+                                <img
+                                  src={question?.image}
+                                  alt="Question"
+                                  className="mb-4 rounded-lg"
+                                />
+                              )}
+                            </div>
                           </div>
                           <div className="space-y-3">
                             {question?.answers?.map(
@@ -494,6 +499,13 @@ const CoreExam = ({
                                       )
                                     )}
                                     <span className="flex-1 font-medium">
+                                      {answer?.image && (
+                                        <img
+                                          src={answer?.image}
+                                          alt="Answer"
+                                          className="mb-2 rounded-lg max-w-100 max-h-100"
+                                        />
+                                      )}
                                       {answer?.answer_text}
                                     </span>
                                   </div>

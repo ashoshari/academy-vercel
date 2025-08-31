@@ -195,7 +195,23 @@ export default function EditSliderModal({
                 </p>
               </div>
             )}
-
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                الترتيب
+              </label>
+              <input
+                type="number"
+                value={selectedSlide.order ?? ""}
+                onChange={(e) =>
+                  setSelectedSlide({
+                    ...selectedSlide,
+                    order: Number(e.target.value),
+                  })
+                }
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                placeholder="أدخل رابط..."
+              />
+            </div>
             {/* Status Toggles */}
             <div className="grid grid-cols-2 gap-4">
               {/* <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">

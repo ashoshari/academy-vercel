@@ -22,6 +22,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   single = false,
   disabled = false,
 }) => {
+  console.log("value", value);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);

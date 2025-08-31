@@ -77,6 +77,7 @@ const ResourcesPage = () => {
     ]
   );
   const resourcesData = data?.data;
+  console.log("resourcesData", resourcesData);
   const paginationData = data?.pagination;
   // GET resourcess stats
   const { data: resourcesStats } = useCustomQuery(
@@ -88,6 +89,7 @@ const ResourcesPage = () => {
     "teachers",
   ]);
 
+  console.log("teachers", teachers);
   const teacherData = teachers?.data;
 
   // GET SubSection
@@ -744,11 +746,14 @@ const ResourcesPage = () => {
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                 >
                   <option value="">اختر معلم</option>
-                  {teacherData?.map((teacher: any) => (
-                    <option key={teacher?.id} value={teacher?.id}>
-                      {teacher?.name}
-                    </option>
-                  ))}
+                  {teacherData?.map(
+                    (teacher: any) =>
+                      teacher?.is_active && (
+                        <option key={teacher?.id} value={teacher?.id}>
+                          {teacher?.name}
+                        </option>
+                      )
+                  )}
                 </select>
               </div>
               {/* SubSections */}
@@ -937,12 +942,12 @@ const ResourcesPage = () => {
                 !uploadResources?.image ||
                 !uploadResources?.type ||
                 !uploadResources?.teacher ||
-                !uploadResources?.subsection ||
-                !uploadResources?.subsubsection ||
-                (uploadResources?.subsection ==
-                  "cdceb418-bead-41ed-80b4-151aeb2bebb7" &&
-                  (!uploadResources?.specialization ||
-                    !uploadResources?.specialization_material))
+                !uploadResources.subsection ||
+                !uploadResources.subsubsection ||
+                (subsub?.specializations.length > 0
+                  ? !uploadResources.specialization
+                  : false) ||
+                !uploadResources.specialization_material
               }
               className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1398,12 +1403,13 @@ const ResourcesPage = () => {
                 !selectedResources?.file ||
                 !selectedResources?.image ||
                 !selectedResources?.type ||
-                !selectedResources?.teacher
-                //  ||
-                // !selectedResources?.subsection ||
-                // !selectedResources?.subsubsection ||
-                // !selectedResources?.specialization ||
-                // !selectedResources?.specialization_material
+                !selectedResources?.teacher ||
+                !selectedResources.subsection ||
+                !selectedResources.subsubsection ||
+                (subsub?.specializations.length > 0
+                  ? !selectedResources.specialization
+                  : false) ||
+                !selectedResources.specialization_material
               }
               className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >

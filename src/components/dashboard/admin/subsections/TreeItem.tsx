@@ -68,7 +68,7 @@ export default function TreeItem({
     <div
       className={`bg-white/95 backdrop-blur-xl rounded-lg shadow-sm border border-orange-100/50 hover:shadow-md transition-all duration-300`}
       style={{
-        marginRight: `${(index - 1) * 26}px`,
+        marginRight: `${(type === "subsections" ? 0 : type === "subsubsections" ? 1 : 2) * 26}px`,
       }}
     >
       <div className="p-4">
@@ -125,7 +125,11 @@ export default function TreeItem({
                 <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                   <Hash size={12} />
                   المستوى
-                  {index}
+                  {type === "subsections"
+                    ? " 1"
+                    : type === "subsubsections"
+                    ? " 2"
+                    : " 3"}
                 </span>
               </div>
             </div>
@@ -180,9 +184,9 @@ export default function TreeItem({
                   {type === "subsections"
                     ? "إضافة قسم فرعي"
                     : type === "subsubsections"
-                    ? "اضافة تخصص"
+                    ? "إضافة تخصص"
                     : type === "specializations"
-                    ? "اضافة مواد"
+                    ? "إضافة مواد"
                     : ""}
                 </button>
               )}

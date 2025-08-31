@@ -152,7 +152,6 @@ export default function AddSliderModal({
           </div>
 
           {/* Media */}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               اختر صورة
@@ -166,7 +165,23 @@ export default function AddSliderModal({
               className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
             />
           </div>
-
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              الترتيب
+            </label>
+            <input
+              type="number"
+              value={newSlide.order ?? ""}
+              onChange={(e) =>
+                setNewSlide({
+                  ...newSlide,
+                  order: e.target.value,
+                })
+              }
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              placeholder="أدخل رابط..."
+            />
+          </div>
           {newSlide.image && !selectedImageFile && (
             <div className="mt-2">
               <p className="text-sm text-gray-700 mb-2">الصورة الحالية:</p>
@@ -220,7 +235,6 @@ export default function AddSliderModal({
                 )}
               </button>
             </div> */}
-
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
                 <p className="font-medium text-gray-800">مفعل</p>
