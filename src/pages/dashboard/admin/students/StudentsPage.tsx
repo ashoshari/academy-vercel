@@ -15,10 +15,6 @@ import {
   EyeOff,
   RefreshCcw,
   Info,
-  Sheet,
-  Rewind,
-  RefreshCw,
-  RefreshCcwDot,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -28,7 +24,6 @@ import { useState } from "react";
 import Pagination from "@/components/dashboard/core/Pagination";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { set } from "lodash";
 
 export interface Student {
   id: number;
