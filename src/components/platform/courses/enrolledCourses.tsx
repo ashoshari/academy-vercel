@@ -99,14 +99,14 @@ const EnrolledCourses: React.FC = () => {
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
-                            {course?.specialization?.name}
+                            {course?.specialization?.name || "-"}
                           </span>
                         </div>
                         <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
-                          {course?.course_name}
+                          {course?.course_name || "-"}
                         </h3>
                         <p className="text-sm text-gray-600 mb-3">
-                          {course?.teacher}
+                          {course?.teacher || "-"}
                         </p>
                       </div>
 

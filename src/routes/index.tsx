@@ -96,6 +96,41 @@ export default function AppRoutes() {
               <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
               <Route path="teachers/:id" element={<TeacherDetailsPage />} />
               {/* teachers */}
+
+              {/* students */}
+              <Route path="students" element={<StudentsPage />} />
+              <Route path="students/add" element={<AddStudentPage />} />
+              <Route path="students/edit/:id" element={<EditStudentPage />} />
+              <Route path="students/:id" element={<StudentDetailsPage />} />
+              {/* students */}
+
+              {/* libraries */}
+              <Route path="libraries" element={<LibrariesPage />} />
+              <Route path="libraries/add" element={<AddLibraryPage />} />
+              <Route path="libraries/edit/:id" element={<EditLibraryPage />} />
+              <Route
+                path="libraries/wallet/:id"
+                element={<LibraryWalletPage />}
+              />
+              <Route path="libraries/:id" element={<LibraryDetailsPage />} />
+              {/* libraries */}
+
+              {/* slider */}
+              <Route path="slider" element={<SliderPage />} />
+              {/* slider */}
+
+              {/* sections */}
+              <Route path="sections" element={<SectionsPage />} />
+              <Route path="sub-sections" element={<SubsectionsPage />} />
+              {/* sections */}
+            </Route>
+
+            <Route element={<RequireRole exclude={["teacher"]} />}>
+            
+              {/* Codes */}
+              <Route path="card-codes" element={<CardCodesPage />} />
+              {/* Codes */}
+
             </Route>
 
             <Route element={<RequireRole exclude={["library"]} />}>
@@ -128,10 +163,6 @@ export default function AppRoutes() {
               {/* files */}
               <Route path="files" element={<ResourcesPage />} />
               {/* files */}
-
-              {/* slider */}
-              <Route path="slider" element={<SliderPage />} />
-              {/* slider */}
 
               {/* sections */}
               <Route path="sections" element={<SectionsPage />} />

@@ -12,6 +12,7 @@ export interface StatisticsCardsProps<T extends object> {
   data?: T | null;
   items: ReadonlyArray<StatItem<T>>;
   loading?: boolean;
+  role?: string;
   emptyLabel?: string;
 }
 
@@ -33,6 +34,7 @@ export default function StatisticsCards<T extends object>({
   data,
   items,
   loading,
+  role,
   emptyLabel = "لا توجد بيانات",
 }: StatisticsCardsProps<T>) {
   if (loading) {
@@ -47,7 +49,6 @@ export default function StatisticsCards<T extends object>({
       </div>
     );
   }
-
   if (!data) {
     return (
       <div className="text-center text-gray-500 text-sm py-10">
@@ -57,7 +58,11 @@ export default function StatisticsCards<T extends object>({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div
+      className={`grid grid-cols-1 ${
+        role === "teacher" ? "lg:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-4"
+      } gap-4`}
+    >
       {items.map(({ key, label, icon: Icon, variant = "glass" }) => {
         const isPrimary = variant === "primary";
         return (

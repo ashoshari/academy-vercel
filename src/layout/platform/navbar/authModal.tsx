@@ -40,14 +40,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     password: "",
     otp: "",
   });
-  // const { setTokens } = useToken();
+
+  // POST Login
   const { mutateAsync: loginMutateAsync } = useCustomPost("/account/login/", [
     "login",
   ]);
+  // POST Register
   const { mutateAsync: RegisterMutateAsync } = useCustomPost(
     "/account/register/",
     ["register"]
   );
+  // POST Generate IMEI
+  const { mutateAsync: generateIMEI } = useCustomPost("/account/imei-string/", [
+    "generateIMEI",
+  ]);
   const {
     register,
     handleSubmit,
@@ -56,76 +62,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     reset,
   } = useForm<FormData>();
   const setTokens = useTokenStore((state) => state.setTokens);
-  // eng: mahmoud code of auth
-  //   const handleSubmit = async (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     setIsLoading(true);
-
-  //     const formdata = new FormData();
-  //     formdata.append("mobile_number", formData.mobile);
-  //     formdata.append("password", formData.password);
-
-  //     mutateAsync(formdata)
-  //       .then(async (res) => {
-  //         if (res.status) {
-  //           await storeTokens(
-  //             res.data.tokens.access,
-  //             onNavigate,
-  //             setIsAuthenticated
-  //           );
-
-  //           localStorage.setItem("user", JSON.stringify(res?.data?.user));
-  //         } else {
-  //           setError(res.error);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         handleErrorAlerts(error?.response?.data?.error);
-  //       })
-  //       .finally(() => {
-  //         setIsLoading(false);
-  //       });
-  //   };
-
-  //       mutateAsync(loginData, );
-  // // setTokens(response.tokens.access, response.tokens.refresh);
-  // };
-
-  //   const handleSubmit = async (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     setIsLoading(true);
-
-  //     const formdata = new FormData();
-  //     formdata.append("mobile_number", formData.mobile);
-  //     formdata.append("password", formData.password);
-  //     // Simulate API call
-  //     setTimeout(() => {
-  //       if (!isLogin && !showOTP) {
-  //         setShowOTP(true);
-  //       } else {
-  //         // Handle login or OTP verification
-  //         onLogin();
-  //         onClose();
-  //       }
-  //       setIsLoading(false);
-  //     }, 1500);
-  //     mutateAsync(formdata)
-  //       .then(async (res) => {
-  //         if (res.status) {
-  //           await setTokens(
-  //             res.data.tokens.access,
-  //             res.data.tokens.refresh
-  //           );
-
-  //           // localStorage.setItem("user", JSON.stringify(res?.data?.user));
-  //         }
-  //       })
-  //       .finally(() => {
-  //         setIsLoading(false);
-  //       });
-  //   };
   const onSubmit = async (data: FormData) => {
-    // e.preventDefault();
+    const IMEIResponse = await generateIMEI({});
+    const imei = IMEIResponse?.data;
+    console.log("Generated IMEI:", imei);
+    console.log("data", data);
+
     setIsLoading(true);
 
     const formdata = new FormData();
@@ -138,8 +80,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
     try {
       const res = isLogin
-        ? await loginMutateAsync(data)
-        : await RegisterMutateAsync(data);
+        ? await loginMutateAsync({ ...data, imei })
+        : await RegisterMutateAsync({ ...data, imei });
       if (res?.status) {
         setTokens(`"${res.data.tokens.access}"`, res.data?.user);
         setFormData({ mobile_number: "", password: "", name: "", otp: "" });
@@ -316,10 +258,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                         required: "الاسم الكامل مطلوب",
                       })}
                       type="text"
-                      // value={formData.name}
-                      // onChange={(e) =>
-                      //   handleInputChange("name", e.target.value)
-                      // }
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
                       placeholder="أدخل اسمك الكامل"
                     />

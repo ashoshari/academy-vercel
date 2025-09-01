@@ -21,8 +21,6 @@ import {
   Rows,
   Grid,
   ArrowRight,
-  // Play,
-  // Pause,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
@@ -36,7 +34,7 @@ import ExamQuestionsPage from "./questions/QuestionsPage";
 import Spinner from "@/components/dashboard/Spinner";
 import Pagination from "@/components/dashboard/core/Pagination";
 import { useQueryClient } from "@tanstack/react-query";
-
+import { readUserFromStorage, roleOf } from "@/services/auth";
 export interface Exam {
   id: string;
   title: string;
@@ -53,7 +51,7 @@ export interface Exam {
   passing_marks: number;
   is_published: boolean;
   is_free: boolean;
-  teacher: string;
+  teacher?: string;
   price?: number;
   type: string;
   enable_countdown: boolean;
@@ -132,6 +130,8 @@ export interface QuestionStatistics {
 }
 
 const ExamsPage = () => {
+  const user = readUserFromStorage();
+  const role = roleOf(user) ?? "";
   const [currentView, setCurrentView] = useState<
     "table" | "grid" | "create" | "edit" | "questions" | "results"
   >("table");
@@ -154,7 +154,7 @@ const ExamsPage = () => {
     passing_marks: 30,
     is_published: true,
     is_free: true,
-    teacher: "",
+    ...(role !== "teacher" && { teacher: "" }),
     enable_countdown: false,
     show_correct_answers: false,
     shuffle_questions: false,
@@ -222,7 +222,7 @@ const ExamsPage = () => {
         number_of_questions: exam.number_of_questions,
         total_marks: exam.total_marks,
         passing_marks: exam.passing_marks,
-        teacher: exam.teacher?.id,
+        ...(role !== "teacher" && { teacher: exam.teacher?.id }),
         is_free: exam.is_free,
         enable_countdown: exam.enable_countdown,
         show_correct_answers: exam.show_correct_answers,
@@ -253,7 +253,6 @@ const ExamsPage = () => {
   const spec = subsub?.specializations?.find(
     (sp: any) => sp.id === selectedSpec
   );
-  console.log("spec", spec);
   const handleCreateExam = () => {
     addExam
       .mutateAsync(newExam)
@@ -275,7 +274,7 @@ const ExamsPage = () => {
       });
   };
   const handleEditExam = () => {
-    selectedExam.teacher = selectedExam?.teacher?.id;
+    role !== "teacher" && (selectedExam.teacher = selectedExam?.teacher?.id);
     selectedExam.subsection = selectedExam?.subsection?.id;
     selectedExam.subsubsection = selectedExam?.subsubsection?.id;
     selectedExam.specialization = selectedExam?.specialization?.id;
@@ -303,17 +302,6 @@ const ExamsPage = () => {
         );
       });
   };
-  // const handleDeleteExam = async () => {
-  //   if (confirm("هل أنت متأكد من حذف هذا الامتحان؟")) {
-  //     try {
-  //       const response: any = await deleteExam();
-  //       toast.success(response.message ?? "تم الحذف بنجاح");
-  //       queryClient.invalidateQueries({ queryKey: ["exams"] });
-  //     } catch (err: any) {
-  //       toast.error(err?.response?.data?.error);
-  //     }
-  //   }
-  // };
   const toggleExamStatus = (status: boolean) => {
     updateExam
       .mutateAsync({
@@ -322,8 +310,6 @@ const ExamsPage = () => {
       .then((res) => {
         if (res?.status) {
           toast.success("تم تحديث حالة الاختبار بنجاح");
-          // navigate("/dashboard/admin/exams");
-          // setCurrentView("table");
           setNewExam(null);
           queryClient.invalidateQueries({
             queryKey: ["exams"],
@@ -379,7 +365,6 @@ const ExamsPage = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
-
   const ExamCard = ({ exam }: { exam: any }) => (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
@@ -437,8 +422,6 @@ const ExamsPage = () => {
             {exam?.level?.name}
           </span>
           <div className="flex items-center gap-2 text-xs text-gray-500">
-            {/* <span>المحاولات: {exam.attemptsAllowed}</span> */}
-            {/* <span>•</span> */}
             <span>النجاح: {exam.passing_marks}%</span>
           </div>
         </div>
@@ -454,15 +437,6 @@ const ExamsPage = () => {
           >
             {exam.is_published ? "منشور" : "مسودة"}
           </span>
-          {/* <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${
-              exam.isActive
-                ? "bg-blue-100 text-blue-800"
-                : "bg-red-100 text-red-800"
-            }`}
-          >
-            {exam.isActive ? "نشط" : "معطل"}
-          </span> */}
         </div>
 
         {/* Actions */}
@@ -478,29 +452,6 @@ const ExamsPage = () => {
             >
               <FileText size={16} />
             </button>
-            {/* 
-            <button
-              onClick={() => {
-                setSelectedExam(exam);
-                setCurrentView("results");
-              }}
-              className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-              title="النتائج والإحصائيات"
-            >
-              <BarChart3 size={16} />
-            </button> */}
-
-            {/* <button
-              onClick={() => toggleExamStatus(exam.id, "isActive")}
-              className={`p-2 rounded-lg transition-colors ${
-                exam.isActive
-                  ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
-                  : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-              }`}
-              title={exam.isActive ? "تعطيل الامتحان" : "تفعيل الامتحان"}
-            >
-              {exam.isActive ? <Pause size={16} /> : <Play size={16} />}
-            </button> */}
 
             <button
               onClick={() => {
@@ -523,23 +474,12 @@ const ExamsPage = () => {
               onClick={() => {
                 setSelectedExam(exam);
                 setCurrentView("edit");
-                console.log("selectedExam", selectedExam);
               }}
               className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               title="تعديل الامتحان"
             >
               <Edit size={16} />
             </button>
-            {/* <button
-              onClick={() => {
-                setExamId(exam?.id);
-                handleDeleteExam();
-              }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-              title="حذف الامتحان"
-            >
-              <Trash2 size={16} />
-            </button> */}
           </div>
         </div>
       </div>
@@ -613,30 +553,32 @@ const ExamsPage = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Teachers */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    اختر استاذ *
-                  </label>
-                  <select
-                    value={newExam?.teacher}
-                    onChange={(e) =>
-                      setNewExam({
-                        ...newExam,
-                        teacher: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر استاذ</option>
-                    {teachers?.data?.data?.map((type: any) => (
-                      <option key={type.id} value={type.id}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {role !== "teacher" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      اختر استاذ *
+                    </label>
+                    <select
+                      value={newExam?.teacher}
+                      onChange={(e) =>
+                        setNewExam({
+                          ...newExam,
+                          teacher: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر استاذ</option>
+                      {teachers?.data?.data?.map((type: any) => (
+                        <option key={type.id} value={type.id}>
+                          {type.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 {/* SubSections */}
                 <div>
                   <div className="col-span-2">
@@ -652,6 +594,9 @@ const ExamsPage = () => {
                         setNewExam({
                           ...newExam,
                           subsection: e.target.value,
+                          subsubsection: "",
+                          specialization: "",
+                          specialization_material: "",
                         });
                       }}
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -680,6 +625,8 @@ const ExamsPage = () => {
                           setNewExam({
                             ...newExam,
                             subsubsection: e.target.value,
+                            specialization: "",
+                            specialization_material: "",
                           });
                         }}
                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -714,6 +661,7 @@ const ExamsPage = () => {
                           setNewExam({
                             ...newExam,
                             specialization: e.target.value,
+                            specialization_material: "",
                           });
                         }}
                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -733,6 +681,13 @@ const ExamsPage = () => {
                 )}
 
                 {/* Specialization Material */}
+                {selectedSubSub &&
+                  subsub?.specialization_materials.length == 0 &&
+                  subsub?.specializations.length == 0 && (
+                    <p className="col-span-1 lg:col-span-2 text-center text-md text-red-600 font-semibold">
+                      لا يوجد مواد تخصص لعرضها برجاء اختيار مسار صحيح
+                    </p>
+                  )}
                 {(spec?.specialization_materials.length > 0 ||
                   (subsub?.specializations?.length == 0 &&
                     subsub?.specialization_materials?.length > 0)) && (
@@ -775,7 +730,7 @@ const ExamsPage = () => {
               <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
                 إعدادات الامتحان
               </h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     عدد الأسئلة *
@@ -813,7 +768,7 @@ const ExamsPage = () => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     درجة النجاح *
@@ -853,7 +808,7 @@ const ExamsPage = () => {
               </div>
 
               {/* Advanced Settings */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">مفعل</p>
@@ -989,7 +944,7 @@ const ExamsPage = () => {
               onClick={handleCreateExam}
               disabled={
                 !newExam?.title ||
-                !newExam?.teacher ||
+                (role !== "teacher" && !newExam?.teacher) ||
                 !newExam.subsection ||
                 !newExam.subsubsection ||
                 (subsub?.specializations.length > 0
@@ -1068,7 +1023,6 @@ const ExamsPage = () => {
       </div>
     );
   }
-
   // Render different views
   if (currentView === "edit") {
     return (
@@ -1139,28 +1093,30 @@ const ExamsPage = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 {/* Teachers */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    اختر استاذ *
-                  </label>
-                  <select
-                    value={selectedExam?.teacher?.id}
-                    onChange={(e) =>
-                      setSelectedExam({
-                        ...selectedExam,
-                        teacher: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                  >
-                    <option value="">اختر استاذ</option>
-                    {teachers?.data?.data?.map((teacher: any) => (
-                      <option key={teacher.id} value={teacher.id}>
-                        {teacher?.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {role !== "teacher" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      اختر استاذ *
+                    </label>
+                    <select
+                      value={selectedExam?.teacher?.id}
+                      onChange={(e) =>
+                        setSelectedExam({
+                          ...selectedExam,
+                          teacher: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    >
+                      <option value="">اختر استاذ</option>
+                      {teachers?.data?.data?.map((teacher: any) => (
+                        <option key={teacher.id} value={teacher.id}>
+                          {teacher?.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 {/* SubSections */}
                 {!editSections ? (
@@ -1188,6 +1144,9 @@ const ExamsPage = () => {
                             setSelectedExam({
                               ...selectedExam,
                               subsection: e.target.value,
+                              subsubsection: "",
+                              specialization: "",
+                              specialization_material: "",
                             });
                           }}
                           className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1216,6 +1175,8 @@ const ExamsPage = () => {
                               setSelectedExam({
                                 ...selectedExam,
                                 subsubsection: e.target.value,
+                                specialization: "",
+                                specialization_material: "",
                               });
                             }}
                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1235,7 +1196,6 @@ const ExamsPage = () => {
                         </div>
                       </div>
                     )}
-
                     {/* Specialization */}
                     {subsub?.specializations.length > 0 && (
                       <div>
@@ -1250,6 +1210,7 @@ const ExamsPage = () => {
                               setSelectedExam({
                                 ...selectedExam,
                                 specialization: e.target.value,
+                                specialization_material: "",
                               });
                             }}
                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -1271,6 +1232,13 @@ const ExamsPage = () => {
                     )}
 
                     {/* Specialization Material */}
+                    {selectedSubSub &&
+                      subsub?.specialization_materials.length == 0 &&
+                      subsub?.specializations.length == 0 && (
+                        <p className="col-span-1 lg:col-span-2 text-center text-md text-red-600 font-semibold">
+                          لا يوجد مواد تخصص لعرضها برجاء اختيار مسار صحيح
+                        </p>
+                      )}
                     {(spec?.specialization_materials.length > 0 ||
                       (subsub?.specializations?.length == 0 &&
                         subsub?.specialization_materials?.length > 0)) && (
@@ -1286,7 +1254,6 @@ const ExamsPage = () => {
                                 : selectedExam?.specialization_material
                             }
                             onChange={(e) => {
-                              console.log("selectedExam", selectedExam);
                               setSelectedExam({
                                 ...selectedExam,
                                 specialization_material: e.target.value,
@@ -1535,7 +1502,7 @@ const ExamsPage = () => {
               onClick={handleEditExam}
               disabled={
                 !selectedExam?.title ||
-                !selectedExam?.teacher ||
+                (role !== "teacher" && !selectedExam?.teacher) ||
                 !selectedExam.subsection ||
                 !selectedExam.subsubsection ||
                 (subsub?.specializations.length > 0
@@ -1578,13 +1545,13 @@ const ExamsPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي الامتحانات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {dataStatistcs?.data?.data?.total_exams || "-"}
+                {dataStatistcs?.data?.data?.total_exams ?? "-"}
               </p>
             </div>
             <FileText className="w-12 h-12 text-orange-500" />
@@ -1596,7 +1563,7 @@ const ExamsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الامتحانات النشطة</p>
               <p className="text-3xl font-bold text-green-600">
-                {dataStatistcs?.data?.data?.active_exams || "-"}
+                {dataStatistcs?.data?.data?.active_exams ?? "-"}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-green-500" />
@@ -1606,24 +1573,24 @@ const ExamsPage = () => {
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">إجمالي المحاولات</p>
-              <p className="text-3xl font-bold text-blue-600">
-                {dataStatistcs?.data?.data?.total_attempts || "-"}
+              <p className="text-gray-500 text-sm"> الامتحانات الغير نشطة </p>
+              <p className="text-3xl font-bold text-red-600">
+                {dataStatistcs?.data?.data?.inactive_exams ?? "-"}
               </p>
             </div>
-            <Users className="w-12 h-12 text-blue-500" />
+            <Award className="w-12 h-12 text-red-500" />
           </div>
         </div>
 
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm"> الاختبارات غير النشطة </p>
-              <p className="text-3xl font-bold text-orange-600">
-                {dataStatistcs?.data?.data?.inactive_exams || "-"}
+              <p className="text-gray-500 text-sm">إجمالي المحاولات</p>
+              <p className="text-3xl font-bold text-blue-600">
+                {dataStatistcs?.data?.data?.total_attempts ?? "-"}
               </p>
             </div>
-            <Award className="w-12 h-12 text-orange-500" />
+            <Users className="w-12 h-12 text-blue-500" />
           </div>
         </div>
       </div>
@@ -1748,9 +1715,11 @@ const ExamsPage = () => {
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       مادة التخصص
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      المعلم
-                    </th>
+                    {role !== "teacher" && (
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        المعلم
+                      </th>
+                    )}
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       مدة الامتحان
                     </th>
@@ -1784,9 +1753,11 @@ const ExamsPage = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {exam?.specialization_material?.name ?? "-"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {exam?.teacher?.name ?? "-"}
-                      </td>
+                      {role !== "teacher" && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {exam?.teacher?.name ?? "-"}
+                        </td>
+                      )}
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {exam?.time_in_minutes} دقيقة
                       </td>

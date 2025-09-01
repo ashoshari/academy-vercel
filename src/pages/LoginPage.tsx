@@ -67,7 +67,7 @@ const LoginPage = () => {
           <div className="absolute top-6 left-6">
             <button
               onClick={() => onNavigate("/contact")}
-              className="flex items-center gap-2 px-6 py-3 text-orange-600 hover:text-orange-700 hover:bg-white/60 rounded-xl transition-all duration-300 backdrop-blur-md shadow-lg border border-orange-200/30"
+              className="cursor-pointer flex items-center gap-2 px-6 py-3 text-orange-600 hover:text-orange-700 hover:bg-white/60 rounded-xl transition-all duration-300 backdrop-blur-md shadow-lg border border-orange-200/30"
             >
               <Mail size={20} />
               <span className="font-medium">تواصل معنا</span>
@@ -111,7 +111,13 @@ const LoginPage = () => {
                       id="phone"
                       type="tel"
                       value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      onChange={(e) => {
+                        const onlyNums = e.target.value.replace(/[^0-9]/g, "");
+                        setPhoneNumber(onlyNums);
+                      }}
+                      pattern="^07[0-9]{8}$"
+                      maxLength={10}
+                      minLength={10}
                       className="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-orange-300 text-lg"
                       placeholder="07XXXXXXXX"
                       required
@@ -134,6 +140,7 @@ const LoginPage = () => {
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      minLength={6}
                       className="w-full pr-12 pl-14 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-orange-300 text-lg"
                       placeholder="••••••••"
                       required
@@ -141,7 +148,7 @@ const LoginPage = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors p-1"
+                      className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors p-1"
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -152,7 +159,7 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl hover:shadow-2xl"
+                  className="cursor-pointer w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl hover:shadow-2xl"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-3">
@@ -171,7 +178,7 @@ const LoginPage = () => {
                   مواجهة مشكلة في تسجيل الدخول؟{" "}
                   <button
                     onClick={() => onNavigate("/contact")}
-                    className="text-orange-600 hover:text-orange-700 font-semibold transition-colors hover:underline"
+                    className="cursor-pointer text-orange-600 hover:text-orange-700 font-semibold transition-colors hover:underline"
                   >
                     تواصل معنا
                   </button>

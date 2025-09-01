@@ -63,9 +63,15 @@ const Layout = () => {
 
   const LIBRARY_ALLOWED = new Set(["", "card-codes"]);
   const TEACHER_DISALLOWED = new Set([
-    "custom-card-pricing",
-    "card-pricing",
     "teachers",
+    "students",
+    "libraries",
+    "slider",
+    "sections",
+    "sub-sections",
+    "card-pricing",
+    "custom-card-pricing",
+    "card-codes"
   ]);
 
   const filteredMenuItems =

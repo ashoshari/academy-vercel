@@ -85,6 +85,20 @@ const Dashboard = () => {
         icon: Wallet,
       },
     ] as const;
+  } else {
+    items = [
+      {
+        key: "number_of_courses",
+        label: "عدد الدورات",
+        icon: BookOpen,
+        variant: "primary",
+      },
+      {
+        key: "total_payed_money",
+        label: "إجمالي المدفوعات",
+        icon: Wallet,
+      },
+    ] as const;
   }
 
   return (
@@ -99,6 +113,7 @@ const Dashboard = () => {
       </div>
 
       <StatisticsCards
+        role={role ?? undefined}
         data={mainStatistics}
         items={items}
         loading={isLoading}

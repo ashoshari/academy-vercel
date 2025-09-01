@@ -13,15 +13,22 @@ import {
   Search,
   CircleX,
   EyeOff,
+  RefreshCcw,
+  Info,
+  Sheet,
+  Rewind,
+  RefreshCw,
+  RefreshCcwDot,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomUpdate } from "@/hooks/useMutation";
+import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import Spinner from "@/components/dashboard/Spinner";
 import { useState } from "react";
 import Pagination from "@/components/dashboard/core/Pagination";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { set } from "lodash";
 
 export interface Student {
   id: number;
@@ -138,6 +145,32 @@ const StudentsPage = () => {
     `/account/admin/students/${studentId}/`,
     ["putstudents"]
   );
+  // POST Reset IMEI
+  const { mutateAsync: resetIMEI } = useCustomPost(
+    `/account/admin/students/${studentId}/reset-device-sessions/`,
+    ["resetIMEI"]
+  );
+  const handleResetIMEI = async (id: string) => {
+    setStudentId(id);
+    try {
+      const response = await resetIMEI({ id });
+      toast.success(response?.data ?? "تم إعادة تعيين IMEI");
+      queryClient.invalidateQueries({
+        queryKey: [
+          "students",
+          page,
+          searchTerm,
+          courseFilter,
+          gradeFilter,
+          statusFilter,
+        ],
+      });
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.error ?? "حدث خطأ في إعادة تعيين IMEI"
+      );
+    }
+  };
   const handleActivation = async (student: any) => {
     const is_active = student?.is_active;
     try {
@@ -169,11 +202,6 @@ const StudentsPage = () => {
               alt={student?.name}
               className="w-16 h-16 rounded-full border-2 border-white/20"
             />
-            {/* <div
-              className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
-                student.is_active ? "bg-green-500" : "bg-gray-400"
-              }`}
-            ></div> */}
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-lg mb-1">{student?.name || "-"}</h3>
@@ -219,126 +247,73 @@ const StudentsPage = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="space-y-2 mb-6">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+        <div className="grid grid-cols-1 lg:grid-cols-2 space-y-5 mb-6">
+          <div className="flex items-center h-full gap-2 text-sm text-gray-600">
             <Phone size={14} />
             <span>{student?.mobile_number}</span>
           </div>
-          {student?.email && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Mail size={14} />
-              <span className="truncate">{student?.email}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Recent Courses */}
-        {/* <div className="mb-6">
-          <h4 className="font-medium text-gray-800 mb-3">الدورات الحالية</h4>
-          <div className="space-y-2">
-            {student?.current_courses
-              ?.filter((c: any) => c.status === "active")
-              .slice(0, 2)
-              .map((course: any) => {
-                const IconComponent = getCourseTypeIcon(course.courseType);
-                return (
-                  <div
-                    key={course.courseId}
-                    className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg"
-                  >
-                    <IconComponent size={16} className="text-orange-500" />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-gray-800 truncate">
-                        {course.courseName}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {course.progress}% مكتمل
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            {student?.current_courses?.filter((c: any) => c.status === "active")
-              .length === 0 && (
-              <p className="text-sm text-gray-500 text-center py-2">
-                لا توجد دورات نشطة
-              </p>
-            )}
+          {/* {student?.email && ( */}
+          <div className="flex items-center h-full gap-2 text-sm text-gray-600">
+            <Mail size={14} />
+            <span className="truncate">{student?.email || "-"}</span>
           </div>
-        </div> */}
+          {/* )} */}
+          <div className="flex items-center h-full gap-2 text-sm text-gray-600">
+            <Info size={14} />
+            <span className="truncate">{student?.imei || "-"}</span>
+          </div>
+          <div className="flex items-center h-full gap-2 text-sm text-gray-600">
+            <RefreshCcw size={14} />
+            <span className="truncate">
+              {student?.imei_reseted_count || "-"}
+            </span>
+          </div>
+        </div>
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-1">
-            {/* <button
-              onClick={() => toggleStudentStatus(student.id, "isActive")}
-              className={`p-2 rounded-lg transition-colors ${
-                student.isActive
-                  ? "text-green-600 bg-green-50 hover:bg-green-100"
-                  : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-              }`}
-              title={student.isActive ? "إلغاء تفعيل الطالب" : "تفعيل الطالب"}
-            >
-              {student.isActive ? <UserCheck size={16} /> : <UserX size={16} />}
-            </button> */}
-
-            {/* <button
-              onClick={() => toggleStudentStatus(student.id, "isVerified")}
-              className={`p-2 rounded-lg transition-colors ${
-                student.isVerified
-                  ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
-                  : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-              }`}
-              title={student.isVerified ? "إلغاء التحقق" : "تأكيد الطالب"}
-            >
-              {student.isVerified ? (
-                <CheckCircle size={16} />
-              ) : (
-                <XCircle size={16} />
-              )}
-            </button> */}
-          </div>
-
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => {
-                navigate(`/dashboard/students/${student.id}`);
-              }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              title="عرض التفاصيل"
-            >
-              <Book size={16} />
-            </button>
-            <button
-              onClick={() => {
-                setStudentId(student?.id);
-                handleActivation(student);
-              }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              title={student?.is_active ? "إخفاء الطالب" : "إظهار الطالب"}
-            >
-              {student?.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
-            </button>
-
-            <button
-              onClick={() => {
-                navigate(`/dashboard/students/edit/${student.id}`);
-              }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-              title="تعديل الطالب"
-            >
-              <Edit size={16} />
-            </button>
-
-            {/* 
+          <div className="flex justify-between items-center gap-1 w-full">
+            <div>
               <button
-                onClick={() => handleDeleteStudent(student.id)}
-                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                title="حذف الطالب"
+                onClick={() => {
+                  navigate(`/dashboard/students/${student.id}`);
+                }}
+                className="cursor-pointer p-2 text-gray-400 hover:text-green-600 rounded-lg transition-colors"
+                title="عرض التفاصيل"
               >
-                <Trash2 size={16} />
-              </button> 
-            */}
+                <Book size={16} />
+              </button>
+              <button
+                onClick={() => {
+                  setStudentId(student?.id);
+                  handleActivation(student);
+                }}
+                className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 rounded-lg transition-colors"
+                title={student?.is_active ? "إخفاء الطالب" : "إظهار الطالب"}
+              >
+                {student?.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={() => {
+                  handleResetIMEI(student?.id);
+                }}
+                className="cursor-pointer p-2 text-gray-400 hover:text-purple-600 rounded-lg transition-colors"
+                title="إعادة تعيين رمز هوية الجهاز"
+              >
+                <RefreshCcw size={16} />
+              </button>
+              <button
+                onClick={() => {
+                  navigate(`/dashboard/students/edit/${student.id}`);
+                }}
+                className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 rounded-lg transition-colors"
+                title="تعديل الطالب"
+              >
+                <Edit size={16} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -586,6 +561,12 @@ const StudentsPage = () => {
                       البريد الإلكتروني
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      رمز هوية الجهاز
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      مرات إعادة التعيين هوية الجهاز
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       الإجراءات
                     </th>
                   </tr>
@@ -613,11 +594,6 @@ const StudentsPage = () => {
                           </span>
                         </div>
                       </td>
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <span className="font-medium">
-                        {student?.averageGrade?.toFixed(1)}%
-                      </span>
-                    </td> */}
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <span className="font-medium">
                           {student?.total_spend} د.أ
@@ -634,11 +610,6 @@ const StudentsPage = () => {
                           >
                             {student?.is_active ? "نشط" : "غير نشط"}
                           </span>
-                          {/* {student.isVerified && (
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            مؤكد
-                          </span>
-                        )} */}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -651,13 +622,23 @@ const StudentsPage = () => {
                           {student?.email || "-"}
                         </span>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <span className="font-medium">
+                          {student?.imei || "-"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <span className="font-medium">
+                          {student?.imei_reseted_count || "-"}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
                               navigate(`/dashboard/students/${student.id}`);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-green-600 transition-colors"
                             title="عرض التفاصيل"
                           >
                             <Book size={16} />
@@ -667,7 +648,7 @@ const StudentsPage = () => {
                               setStudentId(student?.id);
                               handleActivation(student);
                             }}
-                            className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 rounded-lg transition-colors"
                             title={
                               student?.is_active
                                 ? "إخفاء الطالب"
@@ -679,6 +660,15 @@ const StudentsPage = () => {
                             ) : (
                               <EyeOff size={16} />
                             )}
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleResetIMEI(student?.id);
+                            }}
+                            className="cursor-pointer p-1 text-gray-400 hover:text-purple-600 transition-colors"
+                            title="إعادة تعيين رمز هوية الجهاز"
+                          >
+                            <RefreshCcw size={16} />
                           </button>
                           <button
                             onClick={() => {
