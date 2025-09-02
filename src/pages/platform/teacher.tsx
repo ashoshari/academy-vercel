@@ -133,7 +133,7 @@ const TeacherProfile: React.FC = () => {
   const handleActivationSubmit = async () => {
     const addCourse = {
       course_id: selectedCourse?.id,
-      generated_code: activationCode,
+      // generated_code: activationCode,
     };
 
     try {
@@ -154,7 +154,7 @@ const TeacherProfile: React.FC = () => {
       //   error?.response?.data?.detail ===
       //     "Authentication credentials were not provided."
       // );
-      // toast.error(error?.response?.data?.detail);
+      toast.error(error?.response?.data?.error);
     }
   };
   const handleCourseClick = (course: any) => {
