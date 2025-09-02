@@ -133,7 +133,7 @@ const TeacherProfile: React.FC = () => {
   const handleActivationSubmit = async () => {
     const addCourse = {
       course_id: selectedCourse?.id,
-      // generated_code: activationCode,
+      generated_code: activationCode,
     };
 
     try {
