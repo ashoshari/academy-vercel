@@ -19,23 +19,20 @@ const AllCourses = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
 
+  const queryParams = new URLSearchParams();
+  if (searchTerm) queryParams.append("course_name", searchTerm);
+  if (page) queryParams.append("page", page.toString());
+  const queryString = queryParams.toString();
   // GET MY COURSES
   const { data } = useCustomQuery(
-    `/training/students/my-courses/?page=${page}`,
-    ["myAllCourses", page]
+    `/training/students/my-courses/?${queryString}`,
+    ["myAllCourses", page, searchTerm]
   );
   const paginationData = data?.my_courses?.pagination;
   const myCoursesData = data?.my_courses?.data;
   const myCoursesStats = data?.statistics;
   // Extended enrolled courses data
   // Filter and sort courses
-  const filteredCourses = myCoursesData?.filter((course: any) => {
-    // Filter By Subject
-    const matchesSearch =
-      course?.course_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course?.teacher.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
-  });
   // Sort By
   // .sort((a, b) => {
   //   switch (sortBy) {
@@ -57,7 +54,7 @@ const AllCourses = () => {
 
   const renderCourseCard = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {filteredCourses?.map((course: any) => (
+      {myCoursesData?.map((course: any) => (
         <div
           key={course?.course_id}
           className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group transform hover:scale-105"
@@ -74,7 +71,9 @@ const AllCourses = () => {
                 <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
                   {course.course_name || "-"}
                 </h3>
-                <p className="text-sm text-gray-600 mb-3">{course.teacher || "-"}</p>
+                <p className="text-sm text-gray-600 mb-3">
+                  {course.teacher || "-"}
+                </p>
               </div>
 
               {/* Circular Progress */}
@@ -170,7 +169,7 @@ const AllCourses = () => {
 
   const renderCourseList = () => (
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group">
-      {filteredCourses?.map((course: any) => (
+      {myCoursesData?.map((course: any) => (
         <div className="p-6">
           <div className="flex items-center space-x-6">
             {/* Progress Circle */}
@@ -290,7 +289,7 @@ const AllCourses = () => {
             <div className="grid grid-cols-3 gap-6 text-center text-white">
               <div>
                 <div className="text-3xl font-bold mb-1">
-                  {myCoursesStats?.number_of_completed_lessons}
+                  {myCoursesStats?.number_of_completed_lessons ?? "-"}
                 </div>
                 <div className="text-blue-100 text-sm">دروس مكتملة</div>
               </div>
@@ -298,14 +297,14 @@ const AllCourses = () => {
                 <div className="text-3xl font-bold mb-1">
                   {myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(
                     2
-                  )}
+                  ) ?? "-"}
                   %
                 </div>
                 <div className="text-blue-100 text-sm">متوسط التقدم</div>
               </div>
               <div>
                 <div className="text-3xl font-bold mb-1">
-                  {myCoursesStats?.number_of_active_enrolled_courses}
+                  {myCoursesStats?.number_of_active_enrolled_courses ?? "-"}
                 </div>
                 <div className="text-blue-100 text-sm">دورات نشطة</div>
               </div>
@@ -329,34 +328,6 @@ const AllCourses = () => {
                 className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300"
               />
             </div>
-
-            {/* Filters */}
-            {/* <div className="flex items-center space-x-4">
-              <select
-                value={filterSubject}
-                onChange={(e) => setFilterSubject(e.target.value)}
-                className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300"
-              >
-                <option value="all">جميع المواد</option>
-                {subjects.slice(1).map((subject) => (
-                  <option key={subject} value={subject}>
-                    {subject}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300"
-              >
-                <option value="progress">حسب التقدم</option>
-                <option value="recent">الأحدث</option>
-                <option value="rating">حسب التقييم</option>
-                <option value="alphabetical">أبجدياً</option>
-              </select>
-            </div> */}
-
             {/* View Mode */}
             <div className="flex items-center bg-gray-100 rounded-xl p-1">
               <button
@@ -388,10 +359,13 @@ const AllCourses = () => {
           <p className="text-gray-600">
             عرض{" "}
             <span className="font-semibold">
-              {myCoursesStats?.number_of_active_enrolled_courses}
+              {myCoursesStats?.number_of_active_enrolled_courses ?? "-"}
             </span>{" "}
             من أصل{" "}
-            <span className="font-semibold">{myCoursesData?.length}</span> دورة
+            <span className="font-semibold">
+              {myCoursesData?.length ?? "-"}
+            </span>{" "}
+            دورة
           </p>
         </div>
 
@@ -408,7 +382,7 @@ const AllCourses = () => {
         />
 
         {/* Empty State */}
-        {filteredCourses?.length === 0 && (
+        {myCoursesData?.length === 0 && (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <BookOpen className="w-12 h-12 text-gray-400" />
