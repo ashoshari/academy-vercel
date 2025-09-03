@@ -1,9 +1,5 @@
 import { useParams } from "react-router";
-import {
-  Shield,
-  ArrowRight,
-  User,
-} from "lucide-react";
+import { Shield, ArrowRight, User } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import Spinner from "@/components/dashboard/Spinner";
@@ -67,7 +63,10 @@ export default function TeacherDetailsPage() {
                   {selectedTeacher?.name}
                 </h2>
                 <p className="text-gray-600">
-                  {selectedTeacher?.material?.name || "-"}
+                  {selectedTeacher?.materials.map(
+                    (material: any, index: number, arr: any) =>
+                      `${material?.name}${index + 1 !== arr.length ? ", " : ""}`
+                  ) || "-"}
                 </p>
               </div>
             </div>

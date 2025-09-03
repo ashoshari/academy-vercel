@@ -93,7 +93,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
             onChange={setSelectedLibrary}
             options={
               filteredLibraries?.map((s: User) => ({
-                ...s,
+                id: String(s.id),
                 title: `${s.name} (${s.mobile_number})`,
               })) || []
             }
@@ -107,7 +107,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
             onChange={setSelectedTeacher}
             options={
               filteredTeachers?.map((s: User) => ({
-                ...s,
+                id: String(s.id),
                 title: `${s.name} (${s.mobile_number})`,
               })) || []
             }
@@ -121,7 +121,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
             onChange={setSelectedCard}
             options={
               filteredCards?.map((s: CardPricing) => ({
-                ...s,
+                id: String(s.id),
                 title: `بطاقة ${s.price} دينار أردني`,
               })) || []
             }

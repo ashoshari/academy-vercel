@@ -23,7 +23,7 @@ const StudentDetailsPage = () => {
   ]);
 
   const selectedStudent = data?.data;
-
+  console.log("selectedStudent", selectedStudent);
   // const getCourseTypeIcon = (type: string) => {
   //   switch (type) {
   //     case "exam":
@@ -352,13 +352,21 @@ const StudentDetailsPage = () => {
                         <div className="bg-gray-50 rounded-lg py-5 px-[10%] text-center">
                           <h2>تم انشاؤه في</h2>
                           <p className="font-medium text-gray-800">
-                            {formatDateTimeSimple(selectedStudent?.created_at)}
+                            {selectedStudent?.created_at === null
+                              ? "-"
+                              : formatDateTimeSimple(
+                                  selectedStudent?.created_at
+                                )}
                           </p>
                         </div>
                         <div className="bg-gray-50 rounded-lg py-5 px-[10%] text-center">
                           <h2>اخر تسجيل دخول</h2>
                           <p className="font-medium  text-gray-800">
-                            {formatDateTimeSimple(selectedStudent?.last_login)}
+                            {selectedStudent?.last_login == null
+                              ? "-"
+                              : formatDateTimeSimple(
+                                  selectedStudent?.last_login
+                                )}
                           </p>
                         </div>
                       </div>

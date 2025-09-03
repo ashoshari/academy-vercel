@@ -71,7 +71,7 @@ const CoursesPage = () => {
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
-    ["coursesStats"]
+    ["courses-stats"]
   );
   // GET teachers
   const { data: teachers } = useCustomQuery("/account/admin/teachers/", [
@@ -190,7 +190,16 @@ const CoursesPage = () => {
       setSelectedSubSub("");
       setSelectedSpec("");
       setCurrentView("list");
-      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      queryClient.invalidateQueries({
+        queryKey: [
+          "courses",
+          page,
+          searchTerm,
+          teacherFilter,
+          freeFilter,
+          statusFilter,
+        ],
+      });
       queryClient.invalidateQueries({ queryKey: ["courses-stats"] });
     } catch (err: any) {
       toast.error(err?.response?.data?.error);

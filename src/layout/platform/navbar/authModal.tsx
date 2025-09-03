@@ -28,6 +28,10 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
+  const [
+    forgetPassword,
+    // , setForgetPassword
+  ] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [
     // isLoading,
@@ -66,7 +70,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     setIsLoading(true);
 
     try {
-      // 1. Get IMEI from localStorage (or generate if not exists)
       let imei: string | null = window.localStorage.getItem("IMEI");
 
       if (!imei) {
@@ -77,12 +80,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         }
       }
 
-      // 2. Call login or register API
       const res = isLogin
         ? await loginMutateAsync({ ...data, imei })
         : await RegisterMutateAsync({ ...data, imei });
 
-      // 3. Handle success
       if (res?.status) {
         setTokens(res.data.tokens.access, res.data?.user);
 
@@ -101,13 +102,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         onClose();
         reset();
       } else {
-        // 4. Handle API returning success: false
         toast.error(
           res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
         );
       }
     } catch (error: any) {
-      // 5. Handle network or validation errors
       const errorData = error.response?.data?.error;
 
       if (errorData?.mobile_number?.[0]) {
@@ -213,7 +212,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* OTP Input */}
-            {showOTP && (
+            {showOTP && forgetPassword === false && (
               <div className="space-y-4">
                 <label className="block text-sm font-semibold text-gray-700 text-center">
                   أدخل رمز التحقق المكون من 4 أرقام
@@ -251,87 +250,90 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             {/* Regular Form Fields */}
             {!showOTP && (
               <div className="space-y-4">
-                {/* Full Name (Register only) */}
-                {!isLogin && (
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      👤 الاسم الكامل
-                    </label>
-                    <input
-                      {...register("name", {
-                        required: "الاسم الكامل مطلوب",
-                      })}
-                      type="text"
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
-                      placeholder="أدخل اسمك الكامل"
-                    />
-                    {errors.name && (
-                      <span className="text-sm text-red-500">
-                        {errors.name.message}
-                      </span>
-                    )}
-                  </div>
+                {forgetPassword ? (
+                  <></>
+                ) : (
+                  !isLogin && (
+                    <>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          👤 الاسم الكامل
+                        </label>
+                        <input
+                          {...register("name", {
+                            required: "الاسم الكامل مطلوب",
+                          })}
+                          type="text"
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
+                          placeholder="أدخل اسمك الكامل"
+                        />
+                        {errors.name && (
+                          <span className="text-sm text-red-500">
+                            {errors.name.message}
+                          </span>
+                        )}
+                      </div>
+                      {/* Mobile Number */}
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          📱 رقم الهاتف
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="tel"
+                            {...register("mobile_number", {
+                              required: "رقم الهاتف مطلوب",
+                              pattern: {
+                                value: /^07[0-9]{8}$/,
+                                message:
+                                  "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
+                              },
+                            })}
+                            maxLength={10}
+                            minLength={10}
+                            onInput={(e) => {
+                              e.currentTarget.value =
+                                e.currentTarget.value.replace(/[^0-9]/g, "");
+                            }}
+                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                            placeholder="07XXXXXXXX"
+                          />
+                          {errors.mobile_number && (
+                            <span className="text-sm text-red-500">
+                              {errors.mobile_number.message}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Password */}
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          🔒 كلمة المرور
+                        </label>
+                        <input
+                          type="text"
+                          {...register("password", {
+                            required: "كلمة المرور مطلوبة",
+                            minLength: {
+                              value: 6,
+                              message:
+                                "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                            },
+                          })}
+                          minLength={6}
+                          className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                          placeholder="أدخل كلمة المرور"
+                        />
+                        {errors.password && (
+                          <span className="text-sm text-red-500">
+                            {errors.password.message}
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )
                 )}
-
-                {/* Mobile Number */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
-                    📱 رقم الهاتف
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="tel"
-                      {...register("mobile_number", {
-                        required: "رقم الهاتف مطلوب",
-                        pattern: {
-                          value: /^07[0-9]{8}$/,
-                          message:
-                            "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
-                        },
-                      })}
-                      maxLength={10}
-                      minLength={10}
-                      onInput={(e) => {
-                        e.currentTarget.value = e.currentTarget.value.replace(
-                          /[^0-9]/g,
-                          ""
-                        );
-                      }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                      placeholder="07XXXXXXXX"
-                    />
-                    {errors.mobile_number && (
-                      <span className="text-sm text-red-500">
-                        {errors.mobile_number.message}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
-                    🔒 كلمة المرور
-                  </label>
-                  <input
-                    type="text"
-                    {...register("password", {
-                      required: "كلمة المرور مطلوبة",
-                      minLength: {
-                        value: 6,
-                        message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-                      },
-                    })}
-                    minLength={6}
-                    className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                    placeholder="أدخل كلمة المرور"
-                  />
-                  {errors.password && (
-                    <span className="text-sm text-red-500">
-                      {errors.password.message}
-                    </span>
-                  )}
-                </div>
               </div>
             )}
 
@@ -359,7 +361,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
           {/* Switch Mode */}
           {!showOTP && (
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center flex gap-x-[10px]">
               <button
                 onClick={switchMode}
                 className="cursor-pointer text-yellow-600 hover:text-yellow-700 text-sm font-semibold transition-all duration-300"
@@ -368,6 +370,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   ? "🆕 لا تملك حساب؟ إنشاء حساب جديد"
                   : "👋 لديك حساب؟ تسجيل الدخول"}
               </button>
+              {/* <button
+                onClick={() => setForgetPassword(true)}
+                className="cursor-pointer text-gray-400 hover:text-gray-800 text-sm font-semibold transition-all duration-300"
+              >
+                هل نسيت كلمة السر
+              </button> */}
             </div>
           )}
         </div>
