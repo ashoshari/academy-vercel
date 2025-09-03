@@ -44,6 +44,12 @@ importers:
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
+      devtools-detect:
+        specifier: ^4.0.2
+        version: 4.0.2
+      disable-devtool:
+        specifier: ^0.3.9
+        version: 0.3.9
       i18next:
         specifier: ^25.2.1
         version: 25.3.3(typescript@5.7.3)
@@ -1099,6 +1105,13 @@ packages:
   detect-libc@2.0.4:
     resolution: {integrity: sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA==}
     engines: {node: '>=8'}
+
+  devtools-detect@4.0.2:
+    resolution: {integrity: sha512-LfvHOc/a72gt4OvHOGFK51VmOeTM9Q5uuEeKX+k5oVWZM3qDoLBFVbdhjk7zXX54FuQ370L7OpmxQbNStT+7Gw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  disable-devtool@0.3.9:
+    resolution: {integrity: sha512-WHCpC8f93Cn2DnTeaq57NFLcdw4921sovh1ammnp/2o8Snb704HK/Vw1/D2D1Pihc0zc8/mVKb5nchHtoadObQ==}
 
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
@@ -3000,6 +3013,10 @@ snapshots:
   detect-europe-js@0.1.2: {}
 
   detect-libc@2.0.4: {}
+
+  devtools-detect@4.0.2: {}
+
+  disable-devtool@0.3.9: {}
 
   dom-helpers@5.2.1:
     dependencies:
