@@ -217,12 +217,6 @@ const TeachersPage = () => {
       <div className="p-6">
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-gray-800">
-              {teacher?.number_of_students_enrolled}
-            </div>
-            <div className="text-xs text-gray-500">طالب</div>
-          </div>
-          <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">
               {teacher?.number_of_courses_has}
             </div>
@@ -305,11 +299,7 @@ const TeachersPage = () => {
               }`}
               title={teacher.is_active ? "إلغاء التفعيل" : "تفعيل المعلم"}
             >
-              {teacher.is_active ? (
-                <Eye size={16} />
-              ) : (
-                <EyeOff size={16} />
-              )}
+              {teacher.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
             <button
               onClick={() => {
@@ -592,7 +582,12 @@ const TeachersPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {teacher?.material?.name || "-"}
+                        {teacher?.materials?.map(
+                          (material: any, index: number, array: any) =>
+                            `${material.name} ${
+                              index + 1 !== array.length ? " ، " : ""
+                            }`
+                        ) || "-"}
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

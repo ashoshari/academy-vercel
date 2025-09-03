@@ -92,8 +92,8 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
           <MultiSelectAutocomplete
             onChange={setSelectedLibrary}
             options={
-              filteredLibraries.map((s: User) => ({
-                id: s.id,
+              filteredLibraries?.map((s: User) => ({
+                id: String(s.id),
                 title: `${s.name} (${s.mobile_number})`,
               })) || []
             }
@@ -106,8 +106,8 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
           <MultiSelectAutocomplete
             onChange={setSelectedTeacher}
             options={
-              filteredTeachers.map((s: User) => ({
-                id: s.id,
+              filteredTeachers?.map((s: User) => ({
+                id: String(s.id),
                 title: `${s.name} (${s.mobile_number})`,
               })) || []
             }
@@ -120,8 +120,8 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
           <MultiSelectAutocomplete
             onChange={setSelectedCard}
             options={
-              filteredCards.map((s: CardPricing) => ({
-                id: s.id,
+              filteredCards?.map((s: CardPricing) => ({
+                id: String(s.id),
                 title: `بطاقة ${s.price} دينار أردني`,
               })) || []
             }

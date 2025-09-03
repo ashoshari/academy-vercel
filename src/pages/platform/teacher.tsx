@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Users,
   BookOpen,
   Monitor,
   Clock,
@@ -282,12 +281,6 @@ const TeacherProfile: React.FC = () => {
               {course?.total_number_of_lessons} درس
             </span>
           </div>
-          <div className="flex items-center space-x-2">
-            <Users className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">
-              {course?.total_number_of_enrolled_students} طالب
-            </span>
-          </div>
         </div>
 
         <button
@@ -388,12 +381,6 @@ const TeacherProfile: React.FC = () => {
             <Play className="w-4 h-4 text-gray-500" />
             <span className="text-gray-600">
               {course?.total_number_of_lessons} درس
-            </span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Users className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">
-              {course?.total_number_of_enrolled_students} طالب
             </span>
           </div>
         </div>
@@ -727,14 +714,14 @@ const TeacherProfile: React.FC = () => {
                       teacherData?.name
                     )}&background=ffffff&color=f97316&size=64`
                   }
-                  alt={teacherData?.name || "اسم المعلم"}
+                  alt={teacherData?.name ?? "اسم المعلم"}
                   className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
                 />
               </div>
 
               <div className="flex-1 text-center md:text-right text-white">
                 <h1 className="text-4xl font-bold mb-2">
-                  {teacherData?.name || "اسم المعلم"}
+                  {teacherData?.name ?? "اسم المعلم"}
                 </h1>
                 {teacherData?.materials?.map(
                   (material: any, index: number, array: []) => (
@@ -746,20 +733,8 @@ const TeacherProfile: React.FC = () => {
                 )}
 
                 <p className="text-blue-100 leading-relaxed max-w-2xl">
-                  {teacherData?.about_me}
+                  {teacherData?.about_me ?? "-"}
                 </p>
-              </div>
-
-              <div className="flex gap-6 text-center text-white">
-                <div>
-                  <div className="flex items-center justify-center space-x-1 mb-2">
-                    <Users className="w-6 h-6 text-blue-300" />
-                    <span className="text-3xl font-bold">
-                      {teacherData?.total_enrolled_students || "-"}
-                    </span>
-                  </div>
-                  <p className="text-blue-100">طالب</p>
-                </div>
               </div>
             </div>
 

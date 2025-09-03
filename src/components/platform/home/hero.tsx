@@ -101,42 +101,6 @@ const Hero: React.FC = () => {
                           : "لا توجد بيانات في السلايدر "}
                       </p>
                     </div>
-
-                    {/* Stats */}
-                    {/* <div className="grid grid-cols-3 gap-6">
-                    {Object.entries(slides[currentSlide].stats).map(
-                      ([key, value], index) => (
-                        <div key={key} className="text-center">
-                          <div className="text-2xl md:text-3xl font-bold text-yellow-400">
-                            {value}
-                          </div>
-                          <div className="text-sm text-gray-300 capitalize">
-                            {key === "students" && "طالب"}
-                            {key === "courses" && "دورة"}
-                            {key === "success" && "نجاح"}
-                            {key === "hours" && "ساعة"}
-                            {key === "teachers" && "مدرس"}
-                            {key === "rating" && "تقييم"}
-                            {key === "questions" && "سؤال"}
-                            {key === "tests" && "اختبار"}
-                            {key === "accuracy" && "دقة"}
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div> */}
-
-                    {/* CTA Buttons */}
-                    {/* <div className="flex flex-col sm:flex-row gap-4">
-                    <button className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center justify-center space-x-3">
-                      <span>ابدأ التعلم الآن</span>
-                      <BookOpen className="w-6 h-6" />
-                    </button>
-                    <button className="border-2 border-white text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3">
-                      <span>شاهد الفيديو</span>
-                      <Play className="w-6 h-6" />
-                    </button>
-                  </div> */}
                   </div>
 
                   {/* Video/Image Preview */}

@@ -1,4 +1,4 @@
-import { ArrowRight, Menu, Users } from "lucide-react";
+import { ArrowRight, Menu } from "lucide-react";
 import { useNavigate } from "react-router";
 const Header = ({
   setSidebarVisible,
@@ -36,17 +36,6 @@ const Header = ({
               <p className="text-sm text-gray-600">
                 {courseData?.teacher.name}
               </p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600">
-              <div className="flex items-center space-x-1">
-                <Users className="w-4 h-4" />
-                <span>
-                  {courseData?.total_number_of_enrolled_students} طالب
-                </span>
-              </div>
             </div>
           </div>
         </div>

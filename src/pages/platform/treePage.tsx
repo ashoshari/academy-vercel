@@ -4,7 +4,6 @@ import {
   ChevronRight,
   Home,
   ArrowRight,
-  Users,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
@@ -78,18 +77,6 @@ const TreePage: React.FC = () => {
           <p className="text-gray-600 font-medium">
             {teacher?.materials?.[0].name}
           </p>
-        </div>
-      </div>
-
-      <div className="flex justify-center gap-4 mb-4">
-        <div className="text-center">
-          <div className="flex items-center justify-center space-x-1 mb-1">
-            <Users className="w-4 h-4 text-blue-500" />
-            <span className="text-lg font-bold text-gray-900">
-              {teacher?.total_enrolled_students ?? 0}
-            </span>
-          </div>
-          <p className="text-xs text-gray-500">طالب</p>
         </div>
       </div>
 
@@ -238,13 +225,6 @@ const TreePage: React.FC = () => {
                   {data?.statistics?.number_of_teachers || 0}
                 </div>
                 <div className="text-sm text-yellow-100">أستاذ</div>
-              </div>
-              <div className="w-px h-12 bg-white/20"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">
-                  {data?.statistics?.number_of_students || 0}
-                </div>
-                <div className="text-sm text-yellow-100">طالب</div>
               </div>
             </div>
           </div>

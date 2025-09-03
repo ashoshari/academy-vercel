@@ -47,18 +47,6 @@ const Discover: React.FC = () => {
             منصة شاملة تضم كل ما تحتاجه للتفوق في التوجيهي - من الدورات
             التفاعلية إلى الامتحانات الالكترونية
           </p>
-          {/* <div className="flex items-center justify-center mt-8 space-x-8">
-                <div className="flex items-center space-x-2">
-                  <Users className="w-5 h-5 text-blue-500" />
-                  <span className="text-gray-600 font-medium">
-                    +15,000 طالب
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Award className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600 font-medium">95% نجاح</span>
-                </div>
-              </div> */}
         </div>
 
         {/* Sections Grid */}

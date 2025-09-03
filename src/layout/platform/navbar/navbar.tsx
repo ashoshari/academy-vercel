@@ -19,7 +19,6 @@ const Navbar: React.FC = () => {
   const clearTokens = useToken((state) => state.clearTokens);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
-  // const setIsLoggedIn = useUserAuthStore((state) => state.setIsLoggedIn);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleLogin = () => {
@@ -70,7 +69,17 @@ const Navbar: React.FC = () => {
             </button>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-8">
+              <Link
+                to="/all-courses"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/all-courses", { replace: false });
+                }}
+                className=" text-white bg-gradient-to-r from-purple-400 to-blue-500 rounded-xl px-4 py-2 font-medium transition-colors duration-200"
+              >
+                دوراتي
+              </Link>
               {footerData?.links?.slice(0, 3).map((item: any) => (
                 <button
                   key={item.id}
@@ -80,6 +89,7 @@ const Navbar: React.FC = () => {
                   {item.title}
                 </button>
               ))}
+
               {footerData?.links?.length > 3 && (
                 <Link
                   to="/"
@@ -120,7 +130,7 @@ const Navbar: React.FC = () => {
               {footerData?.links && (
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="cursor-pointer md:hidden p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
+                  className="cursor-pointer lg:hidden p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
                 >
                   {isMenuOpen ? (
                     <X className="w-5 h-5" />
@@ -134,7 +144,7 @@ const Navbar: React.FC = () => {
 
           {/* Mobile Navigation */}
           {isMenuOpen && footerData?.links && (
-            <div className="md:hidden py-4 border-t border-gray-100 bg-gradient-to-b from-yellow-50 to-white">
+            <div className="lg:hidden py-4 border-t border-gray-100 bg-gradient-to-b from-yellow-50 to-white">
               <div className="flex flex-col space-y-3">
                 {footerData?.links?.slice(0, 3).map((item: any) => (
                   <button

@@ -32,9 +32,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [expandedItems, setExpandedItems] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  // const [filterType, setFilterType] = useState<any>("all");
   const [showUnpublished, setShowUnpublished] = useState(true);
-  // const [layer, setLayer] = useState();
   const [filteredContent, setFilteredContent] = useState<any>([]);
 
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
@@ -999,11 +997,15 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
                     <option value="">اختر الامتحان</option>
-                    {examData.map((exam: any) => (
-                      <option key={exam?.id} value={exam?.id}>
-                        {exam.title}
-                      </option>
-                    ))}
+                    {examData
+                      ?.filter(
+                        (exam: any) => exam?.teacher?.id === course?.teacher?.id
+                      )
+                      ?.map((filteredExam: any) => (
+                        <option key={filteredExam?.id} value={filteredExam?.id}>
+                          {filteredExam.title}
+                        </option>
+                      ))}
                   </select>
                 </div>
               )}
@@ -1041,11 +1043,13 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       <MultiSelectAutocomplete
                         value={selectedResources}
                         onChange={setSelectedResources}
+                        big={true}
                         options={
                           resourceData?.filter(
                             (resource: any) =>
                               resource.specialization_material ==
                                 course?.specialization_material?.id &&
+                              resource?.teacher?.id === course?.teacher?.id &&
                               (resource?.type == "resources" ||
                                 resource?.type == "مصادر")
                           ) || []
@@ -1238,11 +1242,19 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       }
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     >
-                      {examData.map((exam: any) => (
-                        <option key={exam?.id} value={exam?.id}>
-                          {exam.title}
-                        </option>
-                      ))}
+                      {examData
+                        ?.filter(
+                          (exam: any) =>
+                            exam?.teacher?.id === course?.teacher?.id
+                        )
+                        ?.map((filteredExam: any) => (
+                          <option
+                            key={filteredExam?.id}
+                            value={filteredExam?.id}
+                          >
+                            {filteredExam.title}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 )}
@@ -1328,6 +1340,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                             (resource: any) =>
                               resource.specialization_material ==
                                 course?.specialization_material?.id &&
+                              resource?.teacher?.id === course?.teacher?.id &&
                               (resource?.type == "resources" ||
                                 resource?.type == "مصادر")
                           ) || []

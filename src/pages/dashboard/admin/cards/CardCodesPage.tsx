@@ -138,7 +138,7 @@ const CardCodesPage = () => {
     name: "",
     card: "",
     quantity: 0,
-    prefix: "",
+    prefix: "M",
     notes: "",
     targetingType: "all" as "all" | "specific",
     subsections: [],

@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Save, ArrowRight } from "lucide-react";
@@ -7,12 +7,13 @@ import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import Spinner from "@/components/dashboard/Spinner";
+import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
 
 interface FormValues {
   name: string;
   email: string;
   mobile_number: string;
-  material: string;
+  materials: string[];
   location?: string;
   is_active?: boolean;
 }
@@ -26,6 +27,8 @@ export default function EditTeacherPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    control,
+    trigger,
   } = useForm<FormValues>();
 
   const { data: teacherData, isLoading } = useCustomQuery(
@@ -48,23 +51,22 @@ export default function EditTeacherPage() {
       setValue("name", t.name);
       setValue("email", t.email);
       setValue("mobile_number", t.mobile_number);
-      setValue("material", t.material?.id);
+
+      // Ensure material is always an array of IDs
+      const materials = Array.isArray(t.materials)
+        ? t.materials.map((m: any) => m.id)
+        : t.materials
+        ? [t.materials.id]
+        : [];
+      setValue("materials", materials);
+
       setValue("is_active", t.is_active);
     }
   }, [teacherData, setValue]);
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const formData = new FormData();
-
-      formData.append("name", data.name);
-      formData.append("email", data.email);
-      formData.append("mobile_number", data.mobile_number);
-      formData.append("material", data.material);
-
-      formData.append("is_active", data.is_active ? "true" : "false");
-
-      const res = await updateTeacher.mutateAsync(formData);
+      const res = await updateTeacher.mutateAsync(data);
 
       if (res?.status) {
         toast.success("تم تحديث المعلم بنجاح");
@@ -180,19 +182,40 @@ export default function EditTeacherPage() {
           <label className="block mb-2 font-medium text-sm text-gray-700">
             التخصص *
           </label>
-          <select
-            {...register("material", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-          >
-            <option value="">اختر التخصص</option>
-            {dataMaterials?.data?.map((mat: any) => (
-              <option key={mat.id} value={mat.id}>
-                {mat.name}
-              </option>
-            ))}
-          </select>
-          {errors.material && (
-            <span className="text-sm text-red-500">اختر التخصص</span>
+          <div className="space-y-3">
+            <Controller
+              name="materials" // same name as old select
+              control={control}
+              defaultValue={[]}
+              rules={{
+                validate: (value) =>
+                  value && value.length > 0 ? true : "اختر التخصص",
+              }}
+              render={({ field }) => (
+                <MultiSelectAutocomplete
+                  {...field}
+                  big={true}
+                  value={field.value || []}
+                  onChange={(ids) => {
+                    field.onChange(ids);
+                    // Manually trigger validation after state update
+                    setTimeout(() => trigger("materials"), 0);
+                  }} // updates RHF state
+                  options={
+                    dataMaterials?.data?.map((mat: any) => ({
+                      id: mat?.id,
+                      title: mat?.name,
+                    })) || []
+                  }
+                  placeholder="اختر التخصصات..."
+                />
+              )}
+            />
+          </div>
+          {errors.materials && (
+            <span className="text-sm text-red-500">
+              {errors.materials.message}
+            </span>
           )}
         </div>
 
