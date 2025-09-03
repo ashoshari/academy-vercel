@@ -59,10 +59,10 @@ const CustomCardTable = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+      <div className="grid gap-4 w-full">
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="">
               <p className="text-gray-500 text-sm">إجمالي البطاقات المخصصة</p>
               <p className="text-3xl font-bold text-gray-800">
                 {dataUserCardPrices?.data?.data?.length || "-"}
