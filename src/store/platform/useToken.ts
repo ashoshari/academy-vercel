@@ -15,7 +15,7 @@ const useTokenStore = create<TokenState>((set) => ({
   isLoggedIn: !!initialAccessToken,
 
   setTokens: (access:string, user:any) => {
-    localStorage.setItem("platform_auth_tokens", access);
+    localStorage.setItem("platform_auth_tokens", JSON.stringify(access));
     localStorage.setItem("platform_user", JSON.stringify(user));
     localStorage.setItem("user_type", JSON.stringify(user.type.id));
     set({
