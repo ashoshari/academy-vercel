@@ -96,7 +96,7 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
             onChange={setSelectedLibrary}
             options={
               dataLibraries?.data?.data.map((s: User) => ({
-                ...s,
+                id: s.id,
                 title: `${s.name} (${s.mobile_number})`,
               })) || []
             }
@@ -110,7 +110,7 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
             onChange={setSelectedTeacher}
             options={
               dataTeachers?.data?.data.map((s: User) => ({
-                ...s,
+                id: s.id,
                 title: `${s.name} (${s.mobile_number})`,
               })) || []
             }

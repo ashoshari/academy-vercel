@@ -36,13 +36,13 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
     "cards-custom-card",
   ]);
 
-  const filteredLibraries = dataLibraries?.data?.data?.filter(
+  const filteredLibraries: User[] = dataLibraries?.data?.data?.filter(
     (u: User) => u.is_active
   );
-  const filteredTeachers = dataTeachers?.data?.data?.filter(
+  const filteredTeachers: User[] = dataTeachers?.data?.data?.filter(
     (u: User) => u.is_active
   );
-  const filteredCards = dataCards?.data?.data?.filter(
+  const filteredCards: CardPricing[] = dataCards?.data?.data?.filter(
     (c: CardPricing) => c.is_active
   );
 
@@ -73,6 +73,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
       handleErrorAlerts(e?.response?.data?.error);
     }
   };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
