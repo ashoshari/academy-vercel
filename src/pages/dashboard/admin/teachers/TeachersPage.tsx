@@ -78,7 +78,7 @@ const TeachersPage = () => {
   const queryParams = new URLSearchParams();
   if (filters.search) queryParams.append("name", filters.search);
   if (filters.status) queryParams.append("is_active", filters.status);
-  if (filters.material) queryParams.append("material", filters.material);
+  if (filters.material) queryParams.append("materials", filters.material);
   queryParams.append("page", filters.page?.toString());
 
   const teachersStatistics = useCustomQuery(
@@ -91,6 +91,7 @@ const TeachersPage = () => {
     ["teachers", filters]
   );
   const dataMaterials = useCustomQuery("core/materials/", ["materials"]);
+  console.log("dataMaterials", dataMaterials?.data?.data);
 
   const teacherStatus = useCustomPost(
     `/account/admin/teachers/${selectedTeacher?.id}/activate/`,

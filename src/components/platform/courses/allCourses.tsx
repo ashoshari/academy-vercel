@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Play,
   Clock,
@@ -18,6 +18,15 @@ const AllCourses = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm); // update after delay
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(handler); // cleanup on new keystroke
+  }, [searchTerm]);
 
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("course_name", searchTerm);
@@ -26,7 +35,7 @@ const AllCourses = () => {
   // GET MY COURSES
   const { data } = useCustomQuery(
     `/training/students/my-courses/?${queryString}`,
-    ["myAllCourses", page, searchTerm]
+    ["myAllCourses", page, debouncedSearch]
   );
   const paginationData = data?.my_courses?.pagination;
   const myCoursesData = data?.my_courses?.data;
@@ -382,7 +391,7 @@ const AllCourses = () => {
         />
 
         {/* Empty State */}
-        {myCoursesData?.length === 0 && (
+        {myCoursesData?.length === 0 || !myCoursesData && (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <BookOpen className="w-12 h-12 text-gray-400" />

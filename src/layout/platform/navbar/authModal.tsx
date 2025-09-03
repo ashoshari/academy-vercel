@@ -55,6 +55,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const { mutateAsync: generateIMEI } = useCustomPost("/account/imei-string/", [
     "generateIMEI",
   ]);
+  // POST Reset Password OTP
+  const { mutateAsync: postForgetPasswordOtp } = useCustomPost(
+    "/account/students/reset-password-otp/",
+    ["forget-password-otp"]
+  );
   const {
     register,
     handleSubmit,
@@ -67,41 +72,51 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     setIsLoading(true);
 
     try {
-      let imei: string | null = window.localStorage.getItem("IMEI");
-
-      if (!imei) {
-        const IMEIResponse = await generateIMEI({});
-        imei = IMEIResponse?.data ?? null;
-        if (imei) {
-          window.localStorage.setItem("IMEI", imei);
-        }
-      }
-
-      const res = isLogin
-        ? await loginMutateAsync({ ...data, imei })
-        : await RegisterMutateAsync({ ...data, imei });
-
-      if (res?.status) {
-        setTokens(res.data.tokens.access, res.data?.user);
-
-        setFormData({
-          mobile_number: "",
-          password: "",
-          name: "",
-          otp: "",
+      if (forgetPassword) {
+        const res = await postForgetPasswordOtp({
+          mobile_number: data.mobile_number,
         });
-
-        toast.success(
-          isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
-        );
-
-        onLogin();
-        onClose();
-        reset();
+        if (res?.status) {
+          setShowOTP(true);
+          toast.success(res?.data);
+        }
       } else {
-        toast.error(
-          res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
-        );
+        let imei: string | null = window.localStorage.getItem("IMEI");
+
+        if (!imei) {
+          const IMEIResponse = await generateIMEI({});
+          imei = IMEIResponse?.data ?? null;
+          if (imei) {
+            window.localStorage.setItem("IMEI", imei);
+          }
+        }
+
+        const res = isLogin
+          ? await loginMutateAsync({ ...data, imei })
+          : await RegisterMutateAsync({ ...data, imei });
+
+        if (res?.status) {
+          setTokens(res.data.tokens.access, res.data?.user);
+
+          setFormData({
+            mobile_number: "",
+            password: "",
+            name: "",
+            otp: "",
+          });
+
+          toast.success(
+            isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
+          );
+
+          onLogin();
+          onClose();
+          reset();
+        } else {
+          toast.error(
+            res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
+          );
+        }
       }
     } catch (error: any) {
       const errorData = error.response?.data?.error;
@@ -188,14 +203,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {showOTP
+              {forgetPassword
+                ? "نسيت كلمة السر "
+                : showOTP
                 ? "📱 تأكيد رقم الهاتف"
                 : isLogin
                 ? "🔐 تسجيل الدخول"
                 : "🚀 إنشاء حساب جديد"}
             </h2>
             <p className="text-gray-600 text-sm">
-              {showOTP
+              {forgetPassword
+                ? "أدخل رقم الهاتف ليتم ارسال كود التحقق "
+                : showOTP
                 ? `تم إرسال رمز التحقق إلى ${formData.mobile_number} 📲`
                 : isLogin
                 ? "أدخل بياناتك للوصول إلى دوراتك المفضلة 📚"
@@ -216,8 +235,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* OTP Input */}
-            {showOTP && forgetPassword === false && (
+            {forgetPassword ? (
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">
+                  أدخل رقم الهاتف
+                </label>
+                <input
+                  {...register("mobile_number", {
+                    required: "رقم الهاتف مطلوب",
+                  })}
+                  type="text"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
+                  placeholder="ادخل رقم الهاتف"
+                />
+                {errors.mobile_number && (
+                  <span className="text-sm text-red-500">
+                    {errors.mobile_number.message}
+                  </span>
+                )}
+              </div>
+            ) : showOTP ? (
               <div className="space-y-4">
                 <label className="block text-sm font-semibold text-gray-700 text-center">
                   أدخل رمز التحقق المكون من 4 أرقام
@@ -250,13 +287,27 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   ))}
                 </div>
               </div>
-            )}
-
-            {/* Regular Form Fields */}
-            {!showOTP && (
+            ) : (
               <div className="space-y-4">
                 {forgetPassword ? (
-                  <></> // empty if forget password
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700">
+                      أدخل رقم الهاتف
+                    </label>
+                    <input
+                      {...register("mobile_number", {
+                        required: "رقم الهاتف مطلوب",
+                      })}
+                      type="text"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
+                      placeholder="ادخل رقم الهاتف"
+                    />
+                    {errors.mobile_number && (
+                      <span className="text-sm text-red-500">
+                        {errors.mobile_number.message}
+                      </span>
+                    )}
+                  </div>
                 ) : (
                   <>
                     {/* Show fullname only if not login */}
@@ -342,29 +393,54 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                 )}
               </div>
             )}
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="cursor-pointer w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
-            >
-              {isSubmitting ? (
-                <div className="flex items-center space-x-2">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>جاري المعالجة...</span>
-                </div>
-              ) : showOTP ? (
-                <div className="flex items-center space-x-2">
-                  <Check className="w-5 h-5" />
-                  <span>✅ تأكيد الرمز</span>
-                </div>
-              ) : (
-                <span>{isLogin ? "🚀 تسجيل الدخول" : "✨ إنشاء الحساب"}</span>
-              )}
-            </button>
+            {forgetPassword ? (
+              // Forget Password
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="cursor-pointer w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>جاري المعالجة...</span>
+                  </div>
+                ) : showOTP ? (
+                  <div className="flex items-center space-x-2">
+                    <Check className="w-5 h-5" />
+                    <span>✅ تأكيد الرمز</span>
+                  </div>
+                ) : forgetPassword ? (
+                  "ارسال كود التحقق"
+                ) : (
+                  <span>{isLogin ? "🚀 تسجيل الدخول" : "✨ إنشاء الحساب"}</span>
+                )}
+              </button>
+            ) : (
+              // Submit Button
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="cursor-pointer w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>جاري المعالجة...</span>
+                  </div>
+                ) : showOTP ? (
+                  <div className="flex items-center space-x-2">
+                    <Check className="w-5 h-5" />
+                    <span>✅ تأكيد الرمز</span>
+                  </div>
+                ) : forgetPassword ? (
+                  "ارسال كود التحقق"
+                ) : (
+                  <span>{isLogin ? "🚀 تسجيل الدخول" : "✨ إنشاء الحساب"}</span>
+                )}
+              </button>
+            )}
           </form>
-
           {/* Switch Mode */}
           {!showOTP && (
             <div className="mt-6 text-center flex gap-x-[10px]">
