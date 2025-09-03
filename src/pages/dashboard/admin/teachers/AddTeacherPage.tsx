@@ -11,7 +11,7 @@ interface FormValues {
   name: string;
   email: string;
   mobile_number: string;
-  material: string[];
+  materials: string[];
   experience?: number;
   location?: string;
   is_active?: boolean;
@@ -41,7 +41,7 @@ export default function AddTeacherPage() {
     try {
       const res = await addTeacher.mutateAsync({
         ...data,
-        material: data?.material,
+        material: data?.materials,
       });
       if (res?.status) {
         toast.success("تم إضافة المعلم بنجاح");
@@ -163,7 +163,7 @@ export default function AddTeacherPage() {
           </label>
           <div className="space-y-3">
             <Controller
-              name="material" // same name as old select
+              name="materials" // same name as old select
               control={control}
               defaultValue={[]}
               rules={{
@@ -178,7 +178,7 @@ export default function AddTeacherPage() {
                   onChange={(ids) => {
                     field.onChange(ids);
                     // Manually trigger validation after state update
-                    setTimeout(() => trigger("material"), 0);
+                    setTimeout(() => trigger("materials"), 0);
                   }} // updates RHF state
                   options={
                     dataMaterials?.data?.map((mat: any) => ({
@@ -191,9 +191,9 @@ export default function AddTeacherPage() {
               )}
             />
           </div>
-          {errors.material && (
+          {errors.materials && (
             <span className="text-sm text-red-500">
-              {errors.material.message}
+              {errors.materials.message}
             </span>
           )}
         </div>

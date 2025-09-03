@@ -123,7 +123,7 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
           <MultiSelectAutocomplete
             onChange={setSelectedCard}
             options={
-              filteredCards.map((s: CardPricing) => ({
+              filteredCards?.map((s: CardPricing) => ({
                 ...s,
                 title: `بطاقة ${s.price} دينار أردني`,
               })) || []

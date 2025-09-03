@@ -299,11 +299,7 @@ const TeachersPage = () => {
               }`}
               title={teacher.is_active ? "إلغاء التفعيل" : "تفعيل المعلم"}
             >
-              {teacher.is_active ? (
-                <Eye size={16} />
-              ) : (
-                <EyeOff size={16} />
-              )}
+              {teacher.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
             <button
               onClick={() => {
@@ -586,7 +582,12 @@ const TeachersPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {teacher?.material?.name || "-"}
+                        {teacher?.materials?.map(
+                          (material: any, index: number, array: any) =>
+                            `${material.name} ${
+                              index + 1 !== array.length ? " ، " : ""
+                            }`
+                        ) || "-"}
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
