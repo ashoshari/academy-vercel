@@ -606,11 +606,13 @@ const CoursesPage = () => {
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                     >
                       <option value="">اختر المعلم</option>
-                      {teacherData?.map((teacher: any) => (
-                        <option key={teacher?.id} value={teacher?.id}>
-                          {teacher.name}
-                        </option>
-                      ))}
+                      {teacherData
+                        ?.filter((t: any) => t?.is_active)
+                        .map((teacher: any) => (
+                          <option key={teacher.id} value={teacher.id}>
+                            {teacher.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 </div>
@@ -1723,9 +1725,11 @@ const CoursesPage = () => {
       ) : viewMode === "grid" ? (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courseData?.map((course: any) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
+            {courseData
+              ?.filter((course: any) => course?.teacher?.is_active === true)
+              .map((activeCourse: any) => (
+                <CourseCard key={activeCourse.id} course={activeCourse} />
+              ))}
 
             {courseData?.length === 0 && (
               <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
@@ -1796,69 +1800,66 @@ const CoursesPage = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 overflow-x-auto">
-                  {courseData?.map((course: any) => (
-                    <tr key={course?.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          {/* {course?.image && (
-                          <img
-                            loading="lazy"
-                            src={course?.image}
-                            alt={course?.name}
-                            className="w-12 h-12 rounded-lg object-cover"
-                          />
-                        )} */}
-                          <div>
-                            <div className="font-medium text-gray-900 line-clamp-1">
-                              {course?.name}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {course?.time_in_hours}h{" "}
-                              {course?.level?.name && "•" + course?.level?.name}
+                  {courseData
+                    ?.filter(
+                      (course: any) => course?.teacher?.is_active === true
+                    )
+                    .map((course: any) => (
+                      <tr key={course?.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <div className="font-medium text-gray-900 line-clamp-1">
+                                {course?.name}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {course?.time_in_hours}h{" "}
+                                {course?.level?.name &&
+                                  "•" + course?.level?.name}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-900">
-                            {course?.teacher?.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {course?.subsection?.title || "-"}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {course?.subsubsection?.title || "-"}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {course?.specialization?.name || "-"}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {course?.specialization_material?.name || "-"}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {course?.is_free
-                          ? "مجاني"
-                          : `${
-                              course?.card_price?.price
-                                ? course?.card_price?.price + " د.أ"
-                                : "-"
-                            }`}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex gap-2">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              course?.is_published
-                                ? "bg-green-100 text-green-800"
-                                : "bg-gray-100 text-gray-800"
-                            }`}
-                          >
-                            {course?.is_published ? "منشور" : "مسودة"}
-                          </span>
-                          {/* <span
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-900">
+                              {course?.teacher?.name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {course?.subsection?.title || "-"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {course?.subsubsection?.title || "-"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {course?.specialization?.name || "-"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {course?.specialization_material?.name || "-"}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {course?.is_free
+                            ? "مجاني"
+                            : `${
+                                course?.card_price?.price
+                                  ? course?.card_price?.price + " د.أ"
+                                  : "-"
+                              }`}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex gap-2">
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                course?.is_published
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}
+                            >
+                              {course?.is_published ? "منشور" : "مسودة"}
+                            </span>
+                            {/* <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             course.isActive
                               ? "bg-blue-100 text-blue-800"
@@ -1867,66 +1868,66 @@ const CoursesPage = () => {
                         >
                           {course.isActive ? "نشط" : "معطل"}
                         </span> */}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              setSelectedCourse(course);
-                              setCurrentView("content");
-                            }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                            title="إدارة المحتوى"
-                          >
-                            <Folder size={16} />
-                          </button>
-                          <button
-                            onClick={() => {
-                              toggleCourseStatus(course?.id);
-                            }}
-                            className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                              course?.is_published
-                                ? "text-blue-600"
-                                : "text-gray-400"
-                            }`}
-                            title={
-                              course?.is_published
-                                ? "إلغاء النشر"
-                                : "نشر الدورة"
-                            }
-                          >
-                            {course?.is_published ? (
-                              <Eye size={16} />
-                            ) : (
-                              <EyeOff size={16} />
-                            )}
-                          </button>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => {
+                                setSelectedCourse(course);
+                                setCurrentView("content");
+                              }}
+                              className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                              title="إدارة المحتوى"
+                            >
+                              <Folder size={16} />
+                            </button>
+                            <button
+                              onClick={() => {
+                                toggleCourseStatus(course?.id);
+                              }}
+                              className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                                course?.is_published
+                                  ? "text-blue-600"
+                                  : "text-gray-400"
+                              }`}
+                              title={
+                                course?.is_published
+                                  ? "إلغاء النشر"
+                                  : "نشر الدورة"
+                              }
+                            >
+                              {course?.is_published ? (
+                                <Eye size={16} />
+                              ) : (
+                                <EyeOff size={16} />
+                              )}
+                            </button>
 
-                          <button
-                            onClick={() => {
-                              setSelectedCourse(course);
-                              setCurrentView("edit");
-                            }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                            title="الدورة تعديل"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            onClick={() => {
-                              setCourseId(course?.id);
-                              handleDeleteCourse();
-                            }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                            title="حذف الدورة"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                            <button
+                              onClick={() => {
+                                setSelectedCourse(course);
+                                setCurrentView("edit");
+                              }}
+                              className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                              title="الدورة تعديل"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setCourseId(course?.id);
+                                handleDeleteCourse();
+                              }}
+                              className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                              title="حذف الدورة"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

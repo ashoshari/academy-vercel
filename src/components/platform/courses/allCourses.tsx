@@ -3,14 +3,9 @@ import {
   Play,
   Clock,
   BookOpen,
-  // Award,
-  // Calendar,
   Search,
   Grid,
   List,
-  Users,
-  // Download,
-  // Target,
   ArrowRight,
 } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -157,12 +152,6 @@ const AllCourses = () => {
                   {formatDateTimeSimple(course?.enrollment_created_at)}
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Users className="w-3 h-3 text-gray-500" />
-                <span className="text-xs text-gray-500">
-                  {course?.total_number_of_enrolled_students}
-                </span>
-              </div>
             </div>
 
             {/* Continue Button */}
@@ -226,7 +215,7 @@ const AllCourses = () => {
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
-                      {course?.specialization?.name}
+                      {course?.specialization?.name ?? "-"}
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300">
@@ -242,13 +231,6 @@ const AllCourses = () => {
                     <span>
                       {formatDateTimeSimple(course?.enrollment_created_at)}
                     </span>
-                  </div>
-                </div>
-
-                {/* Stats */}
-                <div className="text-right">
-                  <div className="text-sm text-gray-500">
-                    {course?.total_number_of_enrolled_students} طالب
                   </div>
                 </div>
               </div>

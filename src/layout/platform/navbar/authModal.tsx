@@ -63,28 +63,36 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   } = useForm<FormData>();
   const setTokens = useTokenStore((state) => state.setTokens);
   const onSubmit = async (data: FormData) => {
-    const IMEIResponse = await generateIMEI({});
-    const imei = IMEIResponse?.data;
-    console.log("Generated IMEI:", imei);
-    console.log("data", data);
-
     setIsLoading(true);
 
-    const formdata = new FormData();
-    formdata.append("mobile_number", formData.mobile_number);
-    formdata.append("password", formData.password);
-
-    if (!isLogin) {
-      formdata.append("name", formData.name);
-    }
-
     try {
+      // 1. Get IMEI from localStorage (or generate if not exists)
+      let imei: string | null = window.localStorage.getItem("IMEI");
+
+      if (!imei) {
+        const IMEIResponse = await generateIMEI({});
+        imei = IMEIResponse?.data ?? null;
+        if (imei) {
+          window.localStorage.setItem("IMEI", imei);
+        }
+      }
+
+      // 2. Call login or register API
       const res = isLogin
         ? await loginMutateAsync({ ...data, imei })
         : await RegisterMutateAsync({ ...data, imei });
+
+      // 3. Handle success
       if (res?.status) {
-        setTokens(`"${res.data.tokens.access}"`, res.data?.user);
-        setFormData({ mobile_number: "", password: "", name: "", otp: "" });
+        setTokens(res.data.tokens.access, res.data?.user);
+
+        setFormData({
+          mobile_number: "",
+          password: "",
+          name: "",
+          otp: "",
+        });
+
         toast.success(
           isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
         );
@@ -92,17 +100,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         onLogin();
         onClose();
         reset();
-        // if (!isLogin && !showOTP) {
-        //   setShowOTP(true);
-        // } else {
-        // }
       } else {
-        // Handle API returning success: false
+        // 4. Handle API returning success: false
         toast.error(
           res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
         );
       }
     } catch (error: any) {
+      // 5. Handle network or validation errors
       const errorData = error.response?.data?.error;
 
       if (errorData?.mobile_number?.[0]) {
@@ -116,7 +121,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
       } else {
         toast.error(isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب");
       }
-      // Handle network or other errors
     } finally {
       setIsLoading(false);
     }

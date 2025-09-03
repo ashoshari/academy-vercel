@@ -1,16 +1,17 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { RefreshCw, Save, ArrowRight } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useNavigate } from "react-router";
+import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
 
 interface FormValues {
   name: string;
   email: string;
   mobile_number: string;
-  material: string;
+  material: string[];
   experience?: number;
   location?: string;
   is_active?: boolean;
@@ -25,7 +26,9 @@ export default function AddTeacherPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    control,
     reset,
+    trigger
   } = useForm<FormValues>();
 
   const { data: dataMaterials } = useCustomQuery("core/materials/", [
@@ -153,25 +156,45 @@ export default function AddTeacherPage() {
             </span>
           )}
         </div>
-
         {/* التخصص */}
         <div className="">
           <label className="block mb-2 font-medium text-sm text-gray-700">
             التخصص *
           </label>
-          <select
-            {...register("material", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-          >
-            <option value="">اختر التخصص</option>
-            {dataMaterials?.data?.map((mat: any) => (
-              <option key={mat?.id} value={mat?.id}>
-                {mat?.name}
-              </option>
-            ))}
-          </select>
+          <div className="space-y-3">
+            <Controller
+              name="material" // same name as old select
+              control={control}
+              defaultValue={[]}
+              rules={{
+                validate: (value) =>
+                  value && value.length > 0 ? true : "اختر التخصص",
+              }}
+              render={({ field }) => (
+                <MultiSelectAutocomplete
+                  {...field}
+                  big={true}
+                  value={field.value || []}
+                  onChange={(ids) => {
+                    field.onChange(ids);
+                    // Manually trigger validation after state update
+                    setTimeout(() => trigger("material"), 0);
+                  }} // updates RHF state
+                  options={
+                    dataMaterials?.data?.map((mat: any) => ({
+                      id: mat?.id,
+                      title: mat?.name,
+                    })) || []
+                  }
+                  placeholder="اختر التخصصات..."
+                />
+              )}
+            />
+          </div>
           {errors.material && (
-            <span className="text-sm text-red-500">اختر التخصص</span>
+            <span className="text-sm text-red-500">
+              {errors.material.message}
+            </span>
           )}
         </div>
 

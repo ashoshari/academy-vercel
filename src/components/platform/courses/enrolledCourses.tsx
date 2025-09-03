@@ -1,5 +1,5 @@
 import React from "react";
-import { Play, Clock, BookOpen, ChevronRight, Users } from "lucide-react";
+import { Play, Clock, BookOpen, ChevronRight } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
@@ -183,12 +183,6 @@ const EnrolledCourses: React.FC = () => {
                         <Clock className="w-3 h-3 text-gray-500" />
                         <span className="text-gray-600">
                           {formatDateTimeSimple(course?.enrollment_created_at)}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Users className="w-3 h-3 text-gray-500" />
-                        <span className="text-xs text-gray-500">
-                          {course?.total_number_of_enrolled_students}
                         </span>
                       </div>
                     </div>
