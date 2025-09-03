@@ -28,10 +28,7 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [
-    forgetPassword,
-    // , setForgetPassword
-  ] = useState(false);
+  const [forgetPassword, setForgetPassword] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [
     // isLoading,
@@ -174,6 +171,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         >
           <X className="w-5 h-5 text-gray-600" />
         </button>
+        {forgetPassword && (
+          <button
+            onClick={() => setForgetPassword(false)}
+            className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
+          >
+            <ArrowRight className="w-5 h-5 text-white" />
+          </button>
+        )}
 
         <div className="p-6 sm:p-8">
           {/* Header */}
@@ -251,10 +256,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             {!showOTP && (
               <div className="space-y-4">
                 {forgetPassword ? (
-                  <></>
+                  <></> // empty if forget password
                 ) : (
-                  !isLogin && (
-                    <>
+                  <>
+                    {/* Show fullname only if not login */}
+                    {!isLogin && (
                       <div className="space-y-2">
                         <label className="block text-sm font-semibold text-gray-700">
                           👤 الاسم الكامل
@@ -273,66 +279,66 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                           </span>
                         )}
                       </div>
-                      {/* Mobile Number */}
-                      <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
-                          📱 رقم الهاتف
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="tel"
-                            {...register("mobile_number", {
-                              required: "رقم الهاتف مطلوب",
-                              pattern: {
-                                value: /^07[0-9]{8}$/,
-                                message:
-                                  "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
-                              },
-                            })}
-                            maxLength={10}
-                            minLength={10}
-                            onInput={(e) => {
-                              e.currentTarget.value =
-                                e.currentTarget.value.replace(/[^0-9]/g, "");
-                            }}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                            placeholder="07XXXXXXXX"
-                          />
-                          {errors.mobile_number && (
-                            <span className="text-sm text-red-500">
-                              {errors.mobile_number.message}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                    )}
 
-                      {/* Password */}
-                      <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
-                          🔒 كلمة المرور
-                        </label>
+                    {/* Mobile Number */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-semibold text-gray-700">
+                        📱 رقم الهاتف
+                      </label>
+                      <div className="relative">
                         <input
-                          type="text"
-                          {...register("password", {
-                            required: "كلمة المرور مطلوبة",
-                            minLength: {
-                              value: 6,
+                          type="tel"
+                          {...register("mobile_number", {
+                            required: "رقم الهاتف مطلوب",
+                            pattern: {
+                              value: /^07[0-9]{8}$/,
                               message:
-                                "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                                "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
                             },
                           })}
-                          minLength={6}
-                          className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                          placeholder="أدخل كلمة المرور"
+                          maxLength={10}
+                          minLength={10}
+                          onInput={(e) => {
+                            e.currentTarget.value =
+                              e.currentTarget.value.replace(/[^0-9]/g, "");
+                          }}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                          placeholder="07XXXXXXXX"
                         />
-                        {errors.password && (
+                        {errors.mobile_number && (
                           <span className="text-sm text-red-500">
-                            {errors.password.message}
+                            {errors.mobile_number.message}
                           </span>
                         )}
                       </div>
-                    </>
-                  )
+                    </div>
+
+                    {/* Password */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-semibold text-gray-700">
+                        🔒 كلمة المرور
+                      </label>
+                      <input
+                        type="password"
+                        {...register("password", {
+                          required: "كلمة المرور مطلوبة",
+                          minLength: {
+                            value: 6,
+                            message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                          },
+                        })}
+                        minLength={6}
+                        className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                        placeholder="أدخل كلمة المرور"
+                      />
+                      {errors.password && (
+                        <span className="text-sm text-red-500">
+                          {errors.password.message}
+                        </span>
+                      )}
+                    </div>
+                  </>
                 )}
               </div>
             )}
@@ -370,12 +376,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   ? "🆕 لا تملك حساب؟ إنشاء حساب جديد"
                   : "👋 لديك حساب؟ تسجيل الدخول"}
               </button>
-              {/* <button
-                onClick={() => setForgetPassword(true)}
-                className="cursor-pointer text-gray-400 hover:text-gray-800 text-sm font-semibold transition-all duration-300"
-              >
-                هل نسيت كلمة السر
-              </button> */}
+              {!forgetPassword && (
+                <button
+                  onClick={() => setForgetPassword(true)}
+                  className="cursor-pointer text-gray-400 hover:text-gray-800 text-sm font-semibold transition-all duration-300"
+                >
+                  هل نسيت كلمة السر
+                </button>
+              )}
             </div>
           )}
         </div>
