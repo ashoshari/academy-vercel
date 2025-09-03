@@ -153,7 +153,7 @@ const TeacherProfile: React.FC = () => {
       //   error?.response?.data?.detail ===
       //     "Authentication credentials were not provided."
       // );
-      toast.error(error?.response?.data?.error);
+      toast.error(error?.response?.data?.detail || "حدث خطاء");
     }
   };
   const handleCourseClick = (course: any) => {
