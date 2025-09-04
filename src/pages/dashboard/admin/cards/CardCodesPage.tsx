@@ -15,7 +15,6 @@ import {
   CheckCircle,
   User,
   Clock,
-  // MapPin,
   Target,
   Globe,
   Folder,
@@ -24,6 +23,7 @@ import {
   ChevronUp,
   Users,
   Monitor,
+  Download,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -33,7 +33,8 @@ import handleErrorAlerts from "@/utils/showErrorMessages";
 import Pagination from "@/components/dashboard/core/Pagination";
 import Spinner from "@/components/dashboard/Spinner";
 import { formatDate } from "@/services/date";
-
+import { useQueryClient } from "@tanstack/react-query";
+import { get } from "@/api";
 export interface CardCode {
   id: number;
   code: string;
@@ -72,8 +73,8 @@ export interface CodeBatch {
 }
 
 const CardCodesPage = () => {
+  const queryClient = useQueryClient();
   const cardPricing: any = [];
-
   const [page, setPage] = useState(1);
   const [codePage, setCodePage] = useState(1);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
@@ -95,7 +96,10 @@ const CardCodesPage = () => {
     "card-codes-statistics",
   ]);
 
-  const cardCodes = useCustomQuery(`cards/codes/?page=${codePage}`, ["card-codes",codePage]);
+  const cardCodes = useCustomQuery(`cards/codes/?page=${codePage}`, [
+    "card-codes",
+    codePage,
+  ]);
   const subsections = useCustomQuery("training/admin/subsections/", [
     "subsections",
   ]);
@@ -133,7 +137,6 @@ const CardCodesPage = () => {
     "codes-generated",
     "main-statistics",
   ]);
-
   const [generateForm, setGenerateForm] = useState({
     name: "",
     card: "",
@@ -146,42 +149,7 @@ const CardCodesPage = () => {
     specializations: [],
     specialization_material: [],
   });
-
-  // Build tree structure for subsection selection
-  // const buildSubsectionTree = (
-  //   items: any[],
-  //   parentId: number | null = null
-  // ): any[] => {
-  //   return items
-  //     ?.filter((item) => item.order === parentId)
-  //     .sort((a, b) => a.title.localeCompare(b.title))
-  //     .map((item) => ({
-  //       ...item,
-  //       children: buildSubsectionTree(items, item.id),
-  //     })) as any[];
-  // };
-
-  // const subsectionTree = buildSubsectionTree(subsections?.data?.data);
   const subsectionTree = subsections?.data?.data;
-
-  // const generateRandomCode = (prefix: string, price: number) => {
-  //   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  //   let result = "";
-  //   for (let i = 0; i < 6; i++) {
-  //     result += chars.charAt(Math.floor(Math.random() * chars.length));
-  //   }
-  //   return `${prefix}-${price}-${result}`;
-  // };
-
-  // const getCurrentUserInfo = () => {
-  //   // Simulate getting current user info
-  //   return {
-  //     name: "المدير الحالي",
-  //     role: "مدير النظام",
-  //     ip: "192.168.1.100",
-  //     device: "Windows 11 - Chrome",
-  //   };
-  // };
 
   const getSubsectionName = (id: number) => {
     const subsection = subsections?.data?.data?.find((s: any) => s.id === id);
@@ -226,7 +194,7 @@ const CardCodesPage = () => {
         return v !== null && v !== undefined && v !== "";
       })
     );
-  };  
+  };
   const parser = new UAParser();
   console.log("result", parser.getResult());
 
@@ -329,6 +297,41 @@ const CardCodesPage = () => {
         err?.message ??
         "حدث خطأ أثناء تحديث حالة البطاقة";
       handleErrorAlerts(msg);
+    }
+  };
+  const handleDownload = async (codeId: string) => {
+    try {
+      // Download Codes File
+      const res = await get(`/cards/codes-generated/${codeId}/?export=pdf`, {
+      responseType: "blob",
+    });
+
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+
+      // Create a hidden <a> element and click it
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `code_${codeId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      queryClient.invalidateQueries({
+        queryKey: [
+          "codes-generated",
+          searchTerm,
+          codesFilter,
+          isUsed,
+          statusFilter,
+          page,
+        ],
+      });
+    } catch (error: any) {
+      console.error("Download failed:", error);
+      toast.error(error?.response?.data?.error ?? "فشل تحميل الكود");
     }
   };
 
@@ -921,7 +924,7 @@ const CardCodesPage = () => {
                           {formatDate(code.created_at)}
                         </td>
 
-                        <td className="px-4 py-3 whitespace-nowrap">
+                        <td className="px-4 py-3 whitespace-nowrap flex gap-2">
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => toggleCodeStatus(code.id)}
@@ -939,6 +942,19 @@ const CardCodesPage = () => {
                               ) : (
                                 <EyeOff size={16} />
                               )}
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleDownload(code?.id)}
+                              className={`cursor-pointer p-1 rounded transition-colors ${
+                                code.is_downloaded
+                                  ? "text-blue-600 hover:bg-green-50"
+                                  : "text-gray-400 hover:bg-gray-50"
+                              }`}
+                              title={"تحميل الكود"}
+                            >
+                              <Download size={16} />
                             </button>
                           </div>
                         </td>
