@@ -303,8 +303,8 @@ const CardCodesPage = () => {
     try {
       // Download Codes File
       const res = await get(`/cards/codes-generated/${codeId}/?export=pdf`, {
-      responseType: "blob",
-    });
+        responseType: "blob",
+      });
 
       // Create a URL for the blob
       const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -909,6 +909,15 @@ const CardCodesPage = () => {
                             >
                               {code.is_active ? "مفعل" : "معطل"}
                             </span>
+                            {code?.is_downloaded && (
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium
+                                  bg-yellow-100 text-yellow-800
+                              `}
+                              >
+                                تم التحميل
+                              </span>
+                            )}
                           </div>
                         </td>
 
