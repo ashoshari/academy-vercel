@@ -107,7 +107,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
           }}
           readOnly={disabled}
           aria-disabled={disabled}
-          className="flex-1 min-w-[80px] bg-transparent outline-none text-sm"
+          className="flex-1 min-w-[80px] bg-transparent outline-none text-sm read-only:cursor-not-allowed"
           placeholder={placeholder}
           dir="rtl"
         />

@@ -11,13 +11,15 @@ import useTokenStore from "@/store/platform/useToken";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 // import { storeTokens } from "@/services/platform/userAuth";
 import { toast } from "react-hot-toast";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 
 interface FormData {
   name: string;
   mobile_number: string;
   password: string;
-  otp: string;
+  new_password: string;
+  confirm_password: string;
+  otp: string[];
 }
 
 interface AuthModalProps {
@@ -29,6 +31,7 @@ interface AuthModalProps {
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [forgetPassword, setForgetPassword] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [
     // isLoading,
@@ -39,7 +42,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     name: "",
     mobile_number: "",
     password: "",
-    otp: "",
+    new_password: "",
+    confirm_password: "",
+    otp: [],
   });
 
   // POST Login
@@ -60,25 +65,79 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     "/account/students/reset-password-otp/",
     ["forget-password-otp"]
   );
+  // POST Reset Password OTP Check
+  const { mutateAsync: postForgetPasswordOtpCheck } = useCustomPost(
+    "account/students/reset-password-otp/check/",
+    ["forget-password-otp-check"]
+  );
+  // POST Reset Password OTP Confirm
+  const { mutateAsync: postResetPasswordConfirm } = useCustomPost(
+    "/account/students/reset-password-confirm/",
+    ["reset-password-confirm"]
+  );
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     // setValue,
+    watch,
+    control,
     reset,
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+      mobile_number: "",
+      password: "",
+      new_password: "",
+      confirm_password: "",
+      otp: ["","","",""],
+    },
+  });
+  const newPassword = watch("new_password");
+
   const setTokens = useTokenStore((state) => state.setTokens);
   const onSubmit = async (data: FormData) => {
+    console.log("data", data);
     setIsLoading(true);
-
     try {
-      if (forgetPassword) {
+      if (resetPassword) {
+        const res = await postResetPasswordConfirm({
+          mobile_number: formData.mobile_number,
+          new_password: data.new_password,
+        });
+        if (!res?.status) {
+          toast.error(res?.data);
+          return;
+        } else {
+          toast.success(res?.data || "تم تغيير كلمة السر");
+          setResetPassword(false);
+          setIsLogin(true);
+          setForgetPassword(false);
+          setShowOTP(false);
+          reset();
+        }
+      } else if (forgetPassword && !showOTP) {
         const res = await postForgetPasswordOtp({
           mobile_number: data.mobile_number,
         });
+        setFormData({ ...data, otp: [] });
         if (res?.status) {
           setShowOTP(true);
           toast.success(res?.data);
+        }
+      } else if (showOTP) {
+        const res = await postForgetPasswordOtpCheck({
+          otp: data.otp.join(""),
+          mobile_number: data.mobile_number,
+        });
+        if (!res?.status) {
+          toast.error(res?.data);
+          return;
+        } else {
+          toast.success(res?.data || "رقم التحقق صحيح");
+          // setForgetPassword(false);
+          setShowOTP(false);
+          setResetPassword(true);
         }
       } else {
         let imei: string | null = window.localStorage.getItem("IMEI");
@@ -101,8 +160,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
           setFormData({
             mobile_number: "",
             password: "",
+            new_password: "",
+            confirm_password: "",
             name: "",
-            otp: "",
+            otp: [],
           });
 
           toast.success(
@@ -137,36 +198,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     }
   };
 
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-
-  //   // Simulate API call
-  //   setTimeout(() => {
-  //     if (!isLogin && !showOTP) {
-  //       setShowOTP(true);
-  //     } else {
-  //       // Handle login or OTP verification
-  //       onLogin();
-  //       onClose();
-  //     }
-  //     setIsLoading(false);
-  //   }, 1500);
-  // };
-
-  // const resetForm = () => {
-
-  //   setFormData({
-  //     name: "",
-  //     mobile_number: "",
-  //     password: "",
-  //     otp: "",
-  //   });
-  //   setShowOTP(false);
+  // const handleInputChange = (field: keyof FormData, value: string) => {
+  //   setFormData((prev) => ({ ...prev, [field]: value }));
   // };
 
   const switchMode = () => {
@@ -188,7 +221,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         </button>
         {forgetPassword && (
           <button
-            onClick={() => setForgetPassword(false)}
+            onClick={() => {
+              reset();
+              setForgetPassword(false);
+            }}
             className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
           >
             <ArrowRight className="w-5 h-5 text-white" />
@@ -203,7 +239,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {forgetPassword
+              {forgetPassword && !showOTP
                 ? "نسيت كلمة السر "
                 : showOTP
                 ? "📱 تأكيد رقم الهاتف"
@@ -212,7 +248,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                 : "🚀 إنشاء حساب جديد"}
             </h2>
             <p className="text-gray-600 text-sm">
-              {forgetPassword
+              {forgetPassword && !showOTP
                 ? "أدخل رقم الهاتف ليتم ارسال كود التحقق "
                 : showOTP
                 ? `تم إرسال رمز التحقق إلى ${formData.mobile_number} 📲`
@@ -223,7 +259,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
           </div>
 
           {/* Back Button for OTP */}
-          {showOTP && (
+          {/* {showOTP && (
             <button
               onClick={() => setShowOTP(false)}
               className="flex items-center cursor-pointer text-gray-600 hover:text-gray-900 mb-6 transition-all duration-300 hover:translate-x-1 group"
@@ -231,11 +267,64 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               <ArrowRight className="w-5 h-5 mr-2 group-hover:animate-bounce" />
               <span className="font-medium">العودة</span>
             </button>
-          )}
+          )} */}
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {forgetPassword ? (
+            {resetPassword ? (
+              <>
+                {/* Password */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    🔒 كلمة المرور الجديدة
+                  </label>
+                  <input
+                    type="password"
+                    {...register("new_password", {
+                      required: "كلمة المرور مطلوبة",
+                      minLength: {
+                        value: 6,
+                        message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                      },
+                    })}
+                    minLength={6}
+                    className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                    placeholder="أدخل كلمة المرور"
+                  />
+                  {errors.new_password && (
+                    <span className="text-sm text-red-500">
+                      {errors.new_password.message}
+                    </span>
+                  )}
+                </div>
+                {/* Confirm Password */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    🔒 تأكيد كلمة المرور الجديدة
+                  </label>
+                  <input
+                    type="password"
+                    {...register("confirm_password", {
+                      required: "كلمة المرور مطلوبة",
+                      minLength: {
+                        value: 6,
+                        message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                      },
+                      validate: (value) =>
+                        value === newPassword || "كلمة المرور غير متطابقة",
+                    })}
+                    minLength={6}
+                    className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                    placeholder="أدخل كلمة المرور"
+                  />
+                  {errors.confirm_password && (
+                    <span className="text-sm text-red-500">
+                      {errors.confirm_password.message}
+                    </span>
+                  )}
+                </div>
+              </>
+            ) : forgetPassword && !showOTP ? (
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700">
                   أدخل رقم الهاتف
@@ -243,7 +332,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                 <input
                   {...register("mobile_number", {
                     required: "رقم الهاتف مطلوب",
+                    pattern: {
+                      value: /^07[0-9]{8}$/,
+                      message:
+                        "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
+                    },
                   })}
+                  maxLength={10}
+                  minLength={10}
+                  onInput={(e) => {
+                    e.currentTarget.value = e.currentTarget.value.replace(
+                      /[^0-9]/g,
+                      ""
+                    );
+                  }}
                   type="text"
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
                   placeholder="ادخل رقم الهاتف"
@@ -259,13 +361,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                 <label className="block text-sm font-semibold text-gray-700 text-center">
                   أدخل رمز التحقق المكون من 4 أرقام
                 </label>
-                <div className="flex gap-3 justify-center">
+                {/* <div className="flex gap-3 justify-center">
                   {[0, 1, 2, 3].map((index) => (
                     <input
                       {...register("otp", { required: "الرمز مطلوب" })}
                       key={index}
                       type="text"
-                      maxLength={1}
+                      minLength={4}
                       className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
                       onChange={(e) => {
                         const value = formData.otp;
@@ -285,6 +387,35 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                       }}
                     />
                   ))}
+                </div> */}
+                <div className="flex gap-3 justify-center">
+                  {[0, 1, 2, 3].map((index) => (
+                    <Controller
+                      key={index}
+                      name={`otp.${index}`} // register each index in array
+                      control={control}
+                      rules={{ required: "الرمز مطلوب" }}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          maxLength={1}
+                          className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
+                          onChange={(e) => {
+                            const val = e.target.value.slice(-1); // keep only last digit
+                            field.onChange(val);
+
+                            // Auto-focus next input
+                            if (val && index < 3) {
+                              const nextInput = e.target.parentElement
+                                ?.children[index + 1] as HTMLInputElement;
+                              nextInput?.focus();
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                  ))}
                 </div>
               </div>
             ) : (
@@ -297,7 +428,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                     <input
                       {...register("mobile_number", {
                         required: "رقم الهاتف مطلوب",
+                        pattern: {
+                          value: /^07[0-9]{8}$/,
+                          message:
+                            "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
+                        },
                       })}
+                      maxLength={10}
+                      minLength={10}
+                      onInput={(e) => {
+                        e.currentTarget.value = e.currentTarget.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                      }}
                       type="text"
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
                       placeholder="ادخل رقم الهاتف"
@@ -407,7 +551,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   </div>
                 ) : showOTP ? (
                   <div className="flex items-center space-x-2">
-                    <Check className="w-5 h-5" />
+                    {/* <Check className="w-5 h-5" /> */}
                     <span>✅ تأكيد الرمز</span>
                   </div>
                 ) : forgetPassword ? (
@@ -454,7 +598,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               </button>
               {!forgetPassword && (
                 <button
-                  onClick={() => setForgetPassword(true)}
+                  onClick={() => {
+                    reset();
+                    setForgetPassword(true);
+                  }}
                   className="cursor-pointer text-gray-400 hover:text-gray-800 text-sm font-semibold transition-all duration-300"
                 >
                   هل نسيت كلمة السر

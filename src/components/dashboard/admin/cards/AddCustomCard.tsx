@@ -45,7 +45,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
   const filteredCards: CardPricing[] = dataCards?.data?.data?.filter(
     (c: CardPricing) => c.is_active
   );
-
+  console.log("filteredCards",filteredCards)
   const targetCard: CardPricing = dataCards?.data?.data?.find(
     (c: CardPricing) => c.id === selectedCard[0]
   );
