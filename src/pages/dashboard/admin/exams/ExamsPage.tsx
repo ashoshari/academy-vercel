@@ -35,6 +35,7 @@ import Spinner from "@/components/dashboard/Spinner";
 import Pagination from "@/components/dashboard/core/Pagination";
 import { useQueryClient } from "@tanstack/react-query";
 import { readUserFromStorage, roleOf } from "@/services/auth";
+import { isArray } from "lodash";
 export interface Exam {
   id: string;
   title: string;
@@ -273,8 +274,9 @@ const ExamsPage = () => {
         );
       });
   };
+  console.log("data?.data?.data", data?.data?.data);
   const handleEditExam = () => {
-    role !== "teacher" && (selectedExam.teacher = selectedExam?.teacher?.id);
+    selectedExam.teacher = selectedExam?.teacher?.id;
     selectedExam.subsection = selectedExam?.subsection?.id;
     selectedExam.subsubsection = selectedExam?.subsubsection?.id;
     selectedExam.specialization = selectedExam?.specialization?.id;
@@ -1751,7 +1753,14 @@ const ExamsPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {exam?.specialization_material?.name ?? "-"}
+                        {isArray(exam?.specialization_material)
+                          ? exam?.specialization_material?.map(
+                              (m: any, index: number, array: any) =>
+                                `${m.title}${
+                                  index === array.length - 1 ? "" : ", "
+                                }`
+                            )
+                          : exam?.specialization_material?.title ?? "-"}
                       </td>
                       {role !== "teacher" && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

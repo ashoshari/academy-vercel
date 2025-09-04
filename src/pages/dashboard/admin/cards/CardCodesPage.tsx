@@ -41,6 +41,7 @@ export interface CardCode {
   card: string;
   price: number;
   isUsed: boolean;
+  isDownloadeded: boolean;
   isActive: boolean;
   usedBy?: string;
   usedAt?: string;
@@ -86,6 +87,9 @@ const CardCodesPage = () => {
   // ] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
+  const [isDownloaded, setisDownloaded] = useState<"all" | "true" | "false">(
+    "all"
+  );
   const [codesFilter, setCodesFilter] = useState();
   const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
     "all"
@@ -108,6 +112,8 @@ const CardCodesPage = () => {
   if (codesFilter) queryParams.append("code_name", codesFilter);
   if (isUsed !== null && isUsed !== undefined)
     queryParams.append("is_used", isUsed);
+  if (isDownloaded !== null && isDownloaded !== undefined)
+    queryParams.append("is_downloaded", isDownloaded);
   if (statusFilter) queryParams.append("is_active", statusFilter);
   if (page) queryParams.append("page", page.toString());
 
@@ -115,7 +121,15 @@ const CardCodesPage = () => {
 
   const generateCodes = useCustomQuery(
     `cards/codes-generated/?${queryString}`,
-    ["codes-generated", searchTerm, codesFilter, isUsed, statusFilter, page]
+    [
+      "codes-generated",
+      searchTerm,
+      codesFilter,
+      isUsed,
+      isDownloaded,
+      statusFilter,
+      page,
+    ]
   );
 
   const cards = useCustomQuery("cards/", ["cards"]);
@@ -325,6 +339,7 @@ const CardCodesPage = () => {
           searchTerm,
           codesFilter,
           isUsed,
+          isDownloaded,
           statusFilter,
           page,
         ],
@@ -772,6 +787,17 @@ const CardCodesPage = () => {
             <option value="all">جميع حالات الاستخدام</option>
             <option value="false">متاح</option>
             <option value="true">مستخدم</option>
+          </select>
+
+          {/* Download Filter */}
+          <select
+            value={isDownloaded || ""}
+            onChange={(e) => setisDownloaded(e.target.value as any)}
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+          >
+            <option value="all">جميع حالات التحميل</option>
+            <option value="true">تم التحميل</option>
+            <option value="false">لم يتم التحميل</option>
           </select>
 
           {/* Status Filter */}
