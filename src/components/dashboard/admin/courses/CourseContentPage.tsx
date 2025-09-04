@@ -121,6 +121,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
     if (selectedItem && selectedItem?.resources) {
       setSelectedResources(selectedItem?.resources?.map((res: any) => res?.id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem?.id]);
   useEffect(() => {
     if (selectedItem) {
@@ -134,6 +135,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         resources: selectedResources,
       }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedResources]);
   // فلترة المحتوى
   const filterContent = (items: any) => {
@@ -148,7 +150,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
             )
         );
 
-        let children = childKey ? filterContent(item[childKey]) : [];
+        const children = childKey ? filterContent(item[childKey]) : [];
 
         const matchesSearch =
           item?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -170,6 +172,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   useEffect(() => {
     const result = filterContent(contentTree ? contentTree : []);
     setFilteredContent(result);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentTree, searchTerm, showUnpublished]);
 
   const toggleExpanded = (id: any) => {
@@ -999,7 +1002,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     <option value="">اختر الامتحان</option>
                     {examData
                       ?.filter(
-                        (exam: any) => exam?.teacher?.id === course?.teacher?.id
+                        (exam: any) =>
+                          exam?.teacher?.id === course?.teacher?.id &&
+                          exam?.is_free === course?.is_free
                       )
                       ?.map((filteredExam: any) => (
                         <option key={filteredExam?.id} value={filteredExam?.id}>

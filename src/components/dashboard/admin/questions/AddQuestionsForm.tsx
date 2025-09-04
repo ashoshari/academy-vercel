@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useId, useMemo, useState } from "react";
 import { Plus, Save, Trash2, CheckCircle } from "lucide-react";
 import { useCustomPost } from "@/hooks/useMutation";
@@ -66,6 +65,16 @@ const AddQuestionsForm: React.FC<Props> = ({
   };
 
   const onAddToBatch = () => {
+    if (remainingQuestions <= 0) {
+      toast.error(
+        "لا يمكنك إضافة أسئلة أخرى — الحد الأقصى لعدد الأسئلة تم بلوغه"
+      );
+      return;
+    }
+    if (remainingMarks <= 0 || draft.marks > remainingMarks) {
+      toast.error("لا توجد درجات كافية لإضافة هذا السؤال");
+      return;
+    }
     if (!draft.question_text.trim()) {
       toast.error("أدخل نص السؤال");
       return;
@@ -88,9 +97,12 @@ const AddQuestionsForm: React.FC<Props> = ({
   };
 
   const onSubmitAll = async () => {
-    const payload = pending.length ? pending : [draft];
+    const currentHasText = !!draft.question_text.trim();
+    const payload = pending.length
+      ? [...pending, ...(currentHasText ? [draft] : [])]
+      : [draft];
 
-    if (payload.length === 1 && !payload[0].question_text.trim()) {
+    if (!payload.length || !payload[0].question_text.trim()) {
       toast.error("أدخل بيانات السؤال أولاً");
       return;
     }
@@ -101,10 +113,30 @@ const AddQuestionsForm: React.FC<Props> = ({
         toast.error("يجب اختيار إجابة صحيحة واحدة فقط لكل سؤال");
         return;
       }
+      if (q.marks <= 0) {
+        toast.error("الدرجات يجب أن تكون أكبر من 0");
+        return;
+      }
     }
 
-    const json = await buildQuestionsJson(examId, payload);
+    const totalAfterQuestions = existingQuestionsCount + payload.length;
+    if (totalAfterQuestions > questionsCount) {
+      toast.error("إجمالي عدد الأسئلة سيتجاوز المسموح");
+      return;
+    }
+
+    const payloadMarks = payload.reduce(
+      (s, q) => s + (Number(q.marks) || 0),
+      0
+    );
+    const totalAfterMarks = existingMarksSum + payloadMarks;
+    if (totalAfterMarks > totalMarks) {
+      toast.error("إجمالي الدرجات سيتجاوز المسموح");
+      return;
+    }
+
     try {
+      const json = await buildQuestionsJson(examId, payload);
       const res = await addQuestion.mutateAsync(json as any);
       if (res?.status) {
         toast.success("تم حفظ الأسئلة بنجاح");

@@ -47,7 +47,10 @@ const CoursesPage = () => {
   // >("all");
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const [courseId, setCourseId] = useState<any>(null);
-  const [page, setPage] = useState(1);
+  const [paginationFilter, setPaginationFilter] = useState({
+    page: 1,
+    page_size: 6,
+  });
   const queryClient = useQueryClient();
 
   const queryParams = new URLSearchParams();
@@ -58,12 +61,21 @@ const CoursesPage = () => {
   if (freeFilter !== null && freeFilter !== undefined)
     queryParams.append("is_free", freeFilter);
   if (statusFilter) queryParams.append("is_published", statusFilter);
-  if (page) queryParams.append("page", page.toString());
+  queryParams.append("page", String(paginationFilter?.page));
+  queryParams.append("page_size", String(paginationFilter?.page_size));
   const queryString = queryParams.toString();
   // GET courses
   const { data, isLoading } = useCustomQuery(
     `/training/admin/courses/?${queryString}`,
-    ["courses", page, searchTerm, teacherFilter, freeFilter, statusFilter]
+    [
+      "courses",
+      paginationFilter,
+      searchTerm,
+      teacherFilter,
+      freeFilter,
+      statusFilter,
+      role,
+    ]
   );
 
   const courseData = data?.data;
@@ -71,12 +83,15 @@ const CoursesPage = () => {
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
-    ["courses-stats"]
+    ["courses-stats", role]
   );
   // GET teachers
-  const { data: teachers } = useCustomQuery("/account/admin/teachers/", [
-    "teachers",
-  ]);
+  const { data: teachers } = useCustomQuery(
+    "/account/admin/teachers/",
+    ["teachers"],
+    undefined,
+    !["teacher", "library"].includes(role.toLowerCase())
+  );
 
   const teacherData = teachers?.data;
   // GET Specializations
@@ -149,35 +164,37 @@ const CoursesPage = () => {
   );
   const handleCreateCourse = async () => {
     const formData = new FormData();
-    newCourse.name && formData.append("name", newCourse.name);
-    newCourse.short_description &&
+    if (newCourse.name) formData.append("name", newCourse.name);
+    if (newCourse.short_description)
       formData.append("short_description", newCourse.short_description);
-    newCourse.long_description &&
+    if (newCourse.long_description)
       formData.append("long_description", newCourse.long_description);
-    role !== "teacher" &&
-      newCourse.teacher &&
+    if (role !== "teacher" && newCourse.teacher)
       formData.append("teacher", newCourse.teacher);
     // newCourse.level && formData.append("level", newCourse?.level);
-    newCourse.time_in_hours &&
+    if (newCourse.time_in_hours)
       formData.append("time_in_hours", newCourse.time_in_hours);
-    newCourse.is_free && formData.append("is_free", newCourse.is_free || false);
-    newCourse.card_price &&
+    if (newCourse.is_free)
+      formData.append("is_free", newCourse.is_free || false);
+    if (newCourse.card_price)
       formData.append("card_price", newCourse.card_price || null);
-    newCourse.start_date && formData.append("start_date", newCourse.start_date);
-    newCourse.end_date && formData.append("end_date", newCourse.end_date);
-    newCourse.subsection && formData.append("subsection", newCourse.subsection);
-    newCourse.subsubsection &&
+    if (newCourse.start_date)
+      formData.append("start_date", newCourse.start_date);
+    if (newCourse.end_date) formData.append("end_date", newCourse.end_date);
+    if (newCourse.subsection)
+      formData.append("subsection", newCourse.subsection);
+    if (newCourse.subsubsection)
       formData.append("subsubsection", newCourse.subsubsection);
-    newCourse.specialization &&
+    if (newCourse.specialization)
       formData.append("specialization", newCourse.specialization);
-    newCourse.specialization_material &&
+    if (newCourse.specialization_material)
       formData.append(
         "specialization_material",
         newCourse.specialization_material
       );
-    newCourse.is_published &&
+    if (newCourse.is_published)
       formData.append("is_published", newCourse.is_published ?? true);
-    newCourse.is_special &&
+    if (newCourse.is_special)
       formData.append("is_special", newCourse.is_special || false);
     if (newCourse.image instanceof File && newCourse.image) {
       formData.append("image", newCourse.image);
@@ -193,7 +210,7 @@ const CoursesPage = () => {
       queryClient.invalidateQueries({
         queryKey: [
           "courses",
-          page,
+          paginationFilter,
           searchTerm,
           teacherFilter,
           freeFilter,
@@ -284,7 +301,8 @@ const CoursesPage = () => {
       await editCourse({ is_published: newStatus });
       toast.success("تم تعديل حالة الدورة بنجاح");
       queryClient.invalidateQueries({ queryKey: ["courses"] });
-    } catch (error) {
+    } catch (error: any) {
+      console.log(error);
       toast.error("حدث خطاء في تعديل حالة الدورة");
       setCourses((prevCourses: any) =>
         prevCourses.map((course: any) =>
@@ -904,8 +922,8 @@ const CoursesPage = () => {
                     >
                       <option value="">اختر مادة التخصص</option>
                       {(spec?.specialization_materials.length > 0
-                        ? spec?.specialization_materials
-                        : subsub?.specialization_materials
+                        ? spec?.specialization_materials ?? []
+                        : subsub?.specialization_materials ?? []
                       ).map((specialization_material: any) => (
                         <option
                           key={specialization_material.id}
@@ -1432,8 +1450,8 @@ const CoursesPage = () => {
                         >
                           <option value="">اختر مادة التخصص</option>
                           {(spec?.specialization_materials.length > 0
-                            ? spec?.specialization_materials
-                            : subsub?.specialization_materials
+                            ? spec?.specialization_materials ?? []
+                            : subsub?.specialization_materials ?? []
                           ).map((specialization_material: any) => (
                             <option
                               key={specialization_material.id}
@@ -1766,9 +1784,12 @@ const CoursesPage = () => {
             )}
           </div>
           <Pagination
-            currentPage={page}
+            currentPage={paginationFilter.page}
+            onPageChange={(page: any) =>
+              setPaginationFilter((prev) => ({ ...prev, page }))
+            }
             count={paginationData?.count}
-            onPageChange={setPage}
+            pageSize={paginationFilter.page_size}
           />
         </>
       ) : (
@@ -1942,9 +1963,12 @@ const CoursesPage = () => {
             </div>
           </div>
           <Pagination
-            currentPage={page}
+            currentPage={paginationFilter.page}
+            onPageChange={(page: any) =>
+              setPaginationFilter((prev) => ({ ...prev, page }))
+            }
             count={paginationData?.count}
-            onPageChange={setPage}
+            pageSize={paginationFilter.page_size}
           />
         </>
       )}
