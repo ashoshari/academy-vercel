@@ -33,7 +33,7 @@ const AllCourses = () => {
   if (page) queryParams.append("page", page.toString());
   const queryString = queryParams.toString();
   // GET MY COURSES
-  const { data } = useCustomQuery(
+  const { data, error } = useCustomQuery(
     `/training/students/my-courses/?${queryString}`,
     ["myAllCourses", page, debouncedSearch]
   );
@@ -295,116 +295,142 @@ const AllCourses = () => {
             </div>
 
             {/* Overall Stats */}
-            <div className="grid grid-cols-3 gap-6 text-center text-white">
-              <div>
-                <div className="text-3xl font-bold mb-1">
-                  {myCoursesStats?.number_of_completed_lessons ?? "-"}
+            {!error && myCoursesData?.length !== 0 && (
+              <div className="grid grid-cols-3 gap-6 text-center text-white">
+                <div>
+                  <div className="text-3xl font-bold mb-1">
+                    {myCoursesStats?.number_of_completed_lessons ?? "-"}
+                  </div>
+                  <div className="text-blue-100 text-sm">دروس مكتملة</div>
                 </div>
-                <div className="text-blue-100 text-sm">دروس مكتملة</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold mb-1">
-                  {myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(
-                    2
-                  ) ?? "-"}
-                  %
+                <div>
+                  <div className="text-3xl font-bold mb-1">
+                    {myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(
+                      2
+                    ) ?? "-"}
+                    %
+                  </div>
+                  <div className="text-blue-100 text-sm">متوسط التقدم</div>
                 </div>
-                <div className="text-blue-100 text-sm">متوسط التقدم</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold mb-1">
-                  {myCoursesStats?.number_of_active_enrolled_courses ?? "-"}
+                <div>
+                  <div className="text-3xl font-bold mb-1">
+                    {myCoursesStats?.number_of_active_enrolled_courses ?? "-"}
+                  </div>
+                  <div className="text-blue-100 text-sm">دورات نشطة</div>
                 </div>
-                <div className="text-blue-100 text-sm">دورات نشطة</div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Filters and Controls */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-6">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="البحث في الدورات..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300"
-              />
-            </div>
-            {/* View Mode */}
-            <div className="flex items-center bg-gray-100 rounded-xl p-1">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-all cursor-pointer duration-200 ${
-                  viewMode === "grid"
-                    ? "bg-white shadow-sm text-blue-600"
-                    : "text-gray-600"
-                }`}
-              >
-                <Grid className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-all cursor-pointer duration-200 ${
-                  viewMode === "list"
-                    ? "bg-white shadow-sm text-blue-600"
-                    : "text-gray-600"
-                }`}
-              >
-                <List className="w-5 h-5" />
-              </button>
+      {!error && myCoursesData?.length !== 0 ? (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
+            <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-6">
+              {/* Search */}
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="البحث في الدورات..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300"
+                />
+              </div>
+              {/* View Mode */}
+              <div className="flex items-center bg-gray-100 rounded-xl p-1">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-2 rounded-lg transition-all cursor-pointer duration-200 ${
+                    viewMode === "grid"
+                      ? "bg-white shadow-sm text-blue-600"
+                      : "text-gray-600"
+                  }`}
+                >
+                  <Grid className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-2 rounded-lg transition-all cursor-pointer duration-200 ${
+                    viewMode === "list"
+                      ? "bg-white shadow-sm text-blue-600"
+                      : "text-gray-600"
+                  }`}
+                >
+                  <List className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Results Count */}
-        <div className="mb-6">
+          {/* Results Count */}
+          {!error && myCoursesData?.length !== 0 && (
+            <div className="mb-6">
+              <p className="text-gray-600">
+                عرض{" "}
+                <span className="font-semibold">
+                  {myCoursesStats?.number_of_active_enrolled_courses ?? "-"}
+                </span>{" "}
+                من أصل{" "}
+                <span className="font-semibold">
+                  {myCoursesData?.length ?? "-"}
+                </span>{" "}
+                دورة
+              </p>
+            </div>
+          )}
+
+          {/* Courses Display */}
+
+          {/* Empty State */}
+          {myCoursesData?.length === 0 || !myCoursesData ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <BookOpen className="w-12 h-12 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                لا توجد دورات
+              </h3>
+              <p className="text-gray-600">
+                لم يتم العثور على دورات تطابق معايير البحث
+              </p>
+            </div>
+          ) : viewMode === "grid" ? (
+            <>
+              {renderCourseCard()}
+              <Pagination
+                currentPage={page}
+                count={paginationData?.count}
+                onPageChange={setPage}
+              />
+            </>
+          ) : (
+            <>
+              <div className="space-y-6">{renderCourseList()}</div>
+              <Pagination
+                currentPage={page}
+                count={paginationData?.count}
+                onPageChange={setPage}
+              />
+            </>
+          )}
+        </div>
+      ) : (
+        <div className="text-center py-16">
+          <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <BookOpen className="w-12 h-12 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            لا توجد دورات
+          </h3>
           <p className="text-gray-600">
-            عرض{" "}
-            <span className="font-semibold">
-              {myCoursesStats?.number_of_active_enrolled_courses ?? "-"}
-            </span>{" "}
-            من أصل{" "}
-            <span className="font-semibold">
-              {myCoursesData?.length ?? "-"}
-            </span>{" "}
-            دورة
+            لم يتم العثور على دورات تطابق معايير البحث
           </p>
         </div>
-
-        {/* Courses Display */}
-        {viewMode === "grid" ? (
-          renderCourseCard()
-        ) : (
-          <div className="space-y-6">{renderCourseList()}</div>
-        )}
-        <Pagination
-          currentPage={page}
-          count={paginationData?.count}
-          onPageChange={setPage}
-        />
-
-        {/* Empty State */}
-        {myCoursesData?.length === 0 || !myCoursesData && (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <BookOpen className="w-12 h-12 text-gray-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              لا توجد دورات
-            </h3>
-            <p className="text-gray-600">
-              لم يتم العثور على دورات تطابق معايير البحث
-            </p>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };
