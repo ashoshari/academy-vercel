@@ -24,7 +24,6 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   single = false,
   disabled = false,
 }) => {
-  console.log("value", value);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -62,7 +61,9 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   return (
     <div className="relative" ref={containerRef}>
       <div
-        className={`flex flex-wrap items-center gap-2 px-3 ${big ? "py-[17px]" : "py-[9px]"} border rounded-lg
+        className={`flex flex-wrap items-center gap-2 px-3 ${
+          big ? "py-[17px]" : "py-[9px]"
+        } border rounded-lg
           ${
             open
               ? "border-orange-500 ring-1 ring-orange-500"

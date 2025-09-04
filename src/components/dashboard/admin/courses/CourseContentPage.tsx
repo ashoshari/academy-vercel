@@ -745,6 +745,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
   // Add Content View
   if (currentView === "add") {
+    console.log(courseContentData);
+
     return (
       <div className="space-y-6">
         {/* Header */}
@@ -991,12 +993,12 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   </label>
                   <select
                     value={newItem.examId || ""}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setNewItem({
                         ...newItem,
                         examId: e.target.value,
-                      })
-                    }
+                      });
+                    }}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   >
                     <option value="">اختر الامتحان</option>
@@ -1004,7 +1006,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       ?.filter(
                         (exam: any) =>
                           exam?.teacher?.id === course?.teacher?.id &&
-                          exam?.is_free === course?.is_free
+                          exam?.is_free === courseContentData?.is_free
                       )
                       ?.map((filteredExam: any) => (
                         <option key={filteredExam?.id} value={filteredExam?.id}>
