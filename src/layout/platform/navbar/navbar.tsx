@@ -70,16 +70,18 @@ const Navbar: React.FC = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-8">
-              <Link
-                to="/all-courses"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/all-courses", { replace: false });
-                }}
-                className=" text-white bg-gradient-to-r from-purple-400 to-blue-500 rounded-xl px-4 py-2 font-medium transition-colors duration-200"
-              >
-                دوراتي
-              </Link>
+              {isLoggedIn && (
+                <Link
+                  to="/all-courses"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/all-courses", { replace: false });
+                  }}
+                  className=" text-white bg-gradient-to-r from-purple-400 to-blue-500 rounded-xl px-4 py-2 font-medium transition-colors duration-200"
+                >
+                  دوراتي
+                </Link>
+              )}
               {footerData?.links?.slice(0, 3).map((item: any) => (
                 <button
                   key={item.id}
