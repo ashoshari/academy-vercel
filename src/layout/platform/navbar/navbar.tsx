@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Menu, X } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import useTokenStore from "@/store/platform/useToken";
@@ -8,12 +8,13 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import toast from "react-hot-toast";
 
 const Navbar: React.FC = () => {
-  const { data } = useCustomQuery("/core/footer/", ["footer"]);
+  const { data, isLoading } = useCustomQuery("/core/footer/", ["footer"]);
   const { data: footer, isLoading: footerLoading } = useCustomQuery(
     "/core/footer/",
     ["footer"]
   );
   const headerData = data?.data;
+  console.log("headerData", headerData);
   const footerData = footer?.data;
   const navigate = useNavigate();
   const clearTokens = useToken((state) => state.clearTokens);
@@ -33,6 +34,21 @@ const Navbar: React.FC = () => {
   const handleLoginClick = () => {
     setShowAuthModal(true);
   };
+
+  useEffect(() => {
+    if (headerData) {
+      document.title = headerData?.platform_name;
+
+      const link =
+        document.querySelector("link[rel='icon']") ||
+        document.createElement("link");
+
+      link.setAttribute("rel", "icon");
+      link.setAttribute("href", headerData?.logo);
+      document.head.appendChild(link);
+    }
+  }, [headerData, isLoading]);
+
   if (footerLoading) return null;
   return (
     <>
