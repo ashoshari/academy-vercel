@@ -9,9 +9,20 @@ const axiosInstance = axios.create({
   // baseURL: "https://lms.vision-jo.com/",
 });
 
+const getBaseURL = () => {
+  const hostname = window.location.hostname;
+
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return "http://lms.vision-jo.com/"; // 🛠️ عدل البورت حسب الباك اند عندك
+  }
+
+  const cleanHost = hostname.replace(/^www\./, "");
+  return `https://back.${cleanHost}/`;
+};
+
 axiosInstance.interceptors.request.use(
   (config) => {
-    config.baseURL = "https://lms.vision-jo.com/";
+    config.baseURL = getBaseURL();
 
     const token = getStoredTokens();
     if (token) {
