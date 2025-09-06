@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
   if (footerLoading) return null;
   return (
     <>
-      <nav className="h-[8vh] bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
+      <nav className="h-[80px] bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
         <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-full">
             {/* Logo */}
@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
             >
               <div className="flex items-center space-x-3">
                 {headerData?.logo ? (
-                  <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl">
+                  <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
                     <img
                       loading="lazy"
                       className="rounded-xl w-10 h-10 text-white"
