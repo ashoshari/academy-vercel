@@ -71,7 +71,7 @@ const Layout = () => {
     "sub-sections",
     "card-pricing",
     "custom-card-pricing",
-    "card-codes"
+    "card-codes",
   ]);
 
   const filteredMenuItems =
@@ -80,6 +80,18 @@ const Layout = () => {
       : role === "teacher"
       ? menuItems.filter((i) => !TEACHER_DISALLOWED.has(i.id))
       : menuItems;
+
+  useEffect(() => {
+    document.title = "داش بورد";
+
+    // const link =
+    //   document.querySelector("link[rel='icon']") ||
+    //   document.createElement("link");
+
+    // link.setAttribute("rel", "icon");
+    // link.setAttribute("href", "/favicon.ico");
+    // document.head.appendChild(link);
+  }, []);
 
   return (
     <div className="min-h-screen flex" dir="rtl">

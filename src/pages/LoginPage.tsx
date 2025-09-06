@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, Phone, Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router";
 import AnimatedBackground from "@/components/login/AnimatedBackground";
@@ -57,6 +57,18 @@ const LoginPage = () => {
         setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    document.title = "تسجيل الدخول";
+
+    // const link =
+    //   document.querySelector("link[rel='icon']") ||
+    //   document.createElement("link");
+
+    // link.setAttribute("rel", "icon");
+    // link.setAttribute("href", "/favicon.ico");
+    // document.head.appendChild(link);
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden" dir="rtl">
