@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
+import ErrorIllustration from "@/assets/illustration/Error_illustration.svg";
 
 const Discover: React.FC = () => {
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
@@ -53,68 +54,75 @@ const Discover: React.FC = () => {
         </div>
 
         {/* Sections Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sections?.data?.map((section: any, index: number) => {
-            return (
-              <div
-                key={index}
-                className={`justify-between group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 transform hover:scale-105 hover:-translate-y-2`}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {/* Card Background Gradient */}
+        {sections?.data?.length === 0 || !sections?.data ? (
+          <div className="h-full flex flex-col justify-center items-center">
+            <img src={ErrorIllustration} className="h-80 w-80" alt="Error" />
+            <h2 className="text-gray-800 text-2xl">لا يوجد أقسام لعرضها</h2>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {sections?.data?.map((section: any, index: number) => {
+              return (
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${section.color?.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
-                ></div>
+                  key={index}
+                  className={`justify-between group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 transform hover:scale-105 hover:-translate-y-2`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {/* Card Background Gradient */}
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${section.color?.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+                  ></div>
 
-                {/* Card Content */}
-                <div className="relative p-8 flex flex-col justify-between h-full">
-                  <div>
-                    {/* Icon */}
-                    <div
-                      className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${section.color?.color} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
-                    >
-                      <img
-                        loading="lazy"
-                        className="w-8 h-8 text-white"
-                        src={
-                          section.icon.icon ||
-                          "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                        }
-                        alt={section.icon.name || "icon"}
-                      />
+                  {/* Card Content */}
+                  <div className="relative p-8 flex flex-col justify-between h-full">
+                    <div>
+                      {/* Icon */}
+                      <div
+                        className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${section.color?.color} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
+                      >
+                        <img
+                          loading="lazy"
+                          className="w-8 h-8 text-white"
+                          src={
+                            section.icon.icon ||
+                            "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                          }
+                          alt={section.icon.name || "icon"}
+                        />
+                      </div>
+
+                      {/* Title and Description */}
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors duration-300">
+                        {section?.title}
+                      </h3>
+                      <p className="text-gray-600 mb-6 leading-relaxed">
+                        {section?.description}
+                      </p>
                     </div>
 
-                    {/* Title and Description */}
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors duration-300">
-                      {section?.title}
-                    </h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
-                      {section?.description}
-                    </p>
+                    {/* CTA Button */}
+                    {/* temporary route until i got the proper routing */}
+                    <button
+                      onClick={() => discoverNavHandler(section.id)}
+                      style={{ backgroundColor: section.color?.color }}
+                      className={`cursor-pointer w-full bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
+                    >
+                      <span>استكشف الآن</span>
+                      <ArrowLeft className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                    </button>
                   </div>
 
-                  {/* CTA Button */}
-                  {/* temporary route until i got the proper routing */}
-                  <button
-                    onClick={() => discoverNavHandler(section.id)}
-                    style={{ backgroundColor: section.color?.color }}
-                    className={`cursor-pointer w-full bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
-                  >
-                    <span>استكشف الآن</span>
-                    <ArrowLeft className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                  </button>
+                  {/* Hover Effect Decoration */}
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div
+                      className={`w-3 h-3 bg-gradient-to-r ${section.color.color} rounded-full animate-ping`}
+                    ></div>
+                  </div>
                 </div>
-
-                {/* Hover Effect Decoration */}
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div
-                    className={`w-3 h-3 bg-gradient-to-r ${section.color.color} rounded-full animate-ping`}
-                  ></div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Bottom CTA */}
         {!isLoggedIn && (

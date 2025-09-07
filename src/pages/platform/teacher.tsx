@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BookOpen,
   Monitor,
@@ -28,8 +28,8 @@ import AuthModal from "@/layout/platform/navbar/authModal";
 import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
-import { useQueryClient } from "@tanstack/react-query";
 import ErrorIllustration from "@/assets/illustration/Error_illustration.svg";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TeacherProfile: React.FC = () => {
   const navigate = useNavigate();
@@ -41,12 +41,17 @@ const TeacherProfile: React.FC = () => {
   const [activationCode, setActivationCode] = useState("");
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // Whenever login state changes, refetch teacher queries
+    queryClient.invalidateQueries({ queryKey: ["teachers"] });
+  }, [isLoggedIn, queryClient]);
   // Get Teacher
   const { data, isLoading, error } = useCustomQuery(
     `/training/students/teacher/${id}/`,
     ["teachers", id]
   );
-  const queryClient = useQueryClient();
   // Handle Download
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
@@ -134,7 +139,6 @@ const TeacherProfile: React.FC = () => {
       course_id: selectedCourse?.id,
       generated_code: activationCode,
     };
-
     try {
       await postActivation(addCourse);
       setShowActivationModal(false);
@@ -157,18 +161,18 @@ const TeacherProfile: React.FC = () => {
     }
   };
   const handleCourseClick = (course: any) => {
-    if (course?.is_enrolled && course?.is_enrollment_active) {
-      if (!isMoblieOrTablet) {
-        if (isLoggedIn) {
+    if (isLoggedIn) {
+      if (course?.is_enrolled && course?.is_enrollment_active) {
+        if (!isMoblieOrTablet) {
           navigate(`/coursePage/${course?.id}`);
         } else {
-          handleLoginClick();
+          navigate(`/phone-user`);
         }
       } else {
-        navigate(`/phone-user`);
+        handleCourseActivation(course);
       }
     } else {
-      handleCourseActivation(course);
+      handleLoginClick();
     }
   };
   const handleExamsClick = (exam: any) => {
@@ -754,31 +758,39 @@ const TeacherProfile: React.FC = () => {
 
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Tabs */}
-          <div className="flex flex-wrap gap-y-2 justify-between mb-8">
-            {tabs.map((tab) => {
-              const IconComponent = tab?.icon;
-              return (
-                <button
-                  key={tab?.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`cursor-pointer flex items-center justify-between w-full md:w-[13rem] h-[4rem] mx-[5px] space-x-2 px-10 md:px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
-                    activeTab === tab.id
-                      ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
-                      : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
-                  }`}
-                >
-                  <IconComponent className="w-5 h-5" />
-                  <span>{tab.title}</span>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      activeTab === tab.id ? "bg-white/20" : "bg-gray-200"
+          <div
+            className={`grid grid-cols-1 md:grid-cols-${
+              tabs?.filter((tab) => tab?.count > 0)?.length / 2
+            } lg:grid-cols-${
+              tabs?.filter((tab) => tab?.count > 0)?.length
+            } gap-2 mb-8`}
+          >
+            {tabs
+              ?.filter((tab) => tab?.count > 0)
+              ?.map((tab) => {
+                const IconComponent = tab?.icon;
+                return (
+                  <button
+                    key={tab?.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`cursor-pointer flex items-center justify-between w-full h-[4rem] mx-[5px] space-x-2 px-10 md:px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
+                      activeTab === tab.id
+                        ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
+                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                     }`}
                   >
-                    {tab.count}
-                  </span>
-                </button>
-              );
-            })}
+                    <IconComponent className="w-5 h-5" />
+                    <span>{tab.title}</span>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        activeTab === tab.id ? "bg-white/20" : "bg-gray-200"
+                      }`}
+                    >
+                      {tab.count}
+                    </span>
+                  </button>
+                );
+              })}
           </div>
 
           {/* Content */}

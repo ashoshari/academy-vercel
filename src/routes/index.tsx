@@ -14,6 +14,7 @@ import ContactPage from "@/pages/Contact";
 // Platform
 import { PlatformLayout } from "@/layout/platform/layout";
 import Home from "@/pages/platform/Home";
+import Profile from "@/pages/platform/profile";
 import TreePage from "@/pages/platform/treePage";
 import TermsAndConditions from "@/pages/platform/termsAndConditions";
 import PrivacyPolicy from "@/pages/platform/privacyPolicy";
@@ -74,6 +75,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/" element={<PlatformLayout />}>
           <Route index element={<Home />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="sections/:navHeaderId" element={<TreePage />} />
           <Route path="all-courses" element={<AllCourses />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />

@@ -107,7 +107,8 @@ const TextNotes = () => {
       } catch (error:any) {
         console.error("حدث خطأ في إضافة الملاحظة:", error);
       }
-      setEditNote("");
+      setNewNote("")
+      // setAddNote("");
       setShowAddNote(false);
     }
   };

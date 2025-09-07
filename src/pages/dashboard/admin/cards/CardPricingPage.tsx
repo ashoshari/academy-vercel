@@ -434,7 +434,7 @@ const CardPricingPage = () => {
               {/* Price */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  السعر (دينار أردني)
+                  السعر (دينار أردني) *
                 </label>
                 <div className="relative">
                   <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -466,7 +466,7 @@ const CardPricingPage = () => {
               {/* teacher_price */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  سعر البيع للمدرس
+                  سعر البيع للمدرس *
                 </label>
                 <div className="relative">
                   <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -495,7 +495,7 @@ const CardPricingPage = () => {
               {/* library_price */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  سعر البيع للمكتبة
+                  سعر البيع للمكتبة *
                 </label>
                 <div className="relative">
                   <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />

@@ -6,12 +6,15 @@ import {
   Sparkles,
   GraduationCap,
   ArrowRight,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 // import { storeTokens } from "@/services/platform/userAuth";
 import { toast } from "react-hot-toast";
 import { useForm, Controller } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 interface FormData {
   name: string;
@@ -29,6 +32,8 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [forgetPassword, setForgetPassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
@@ -90,7 +95,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
       password: "",
       new_password: "",
       confirm_password: "",
-      otp: ["","","",""],
+      otp: ["", "", "", ""],
     },
   });
   const newPassword = watch("new_password");
@@ -149,11 +154,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             window.localStorage.setItem("IMEI", imei);
           }
         }
-
-        const res = isLogin
-          ? await loginMutateAsync({ ...data, imei })
-          : await RegisterMutateAsync({ ...data, imei });
-
+        let res;
+        if (isLogin) {
+          const loginData = {
+            mobile_number: data.mobile_number,
+            password: data.password,
+            imei: imei,
+          };
+          res = await loginMutateAsync(loginData);
+        } else {
+          const registerData = {
+            name: data.name,
+            mobile_number: data.mobile_number,
+            password: data.password,
+            imei: imei,
+          };
+          res = await RegisterMutateAsync(registerData);
+        }
+        // const res = isLogin
+        //   ? await loginMutateAsync({ ...data, imei })
+        //   : await RegisterMutateAsync({ ...data, imei });
         if (res?.status) {
           setTokens(res.data.tokens.access, res.data?.user);
 
@@ -169,9 +189,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
           toast.success(
             isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
           );
-
           onLogin();
           onClose();
+          navigate("/")
           reset();
         } else {
           toast.error(
@@ -205,6 +225,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const switchMode = () => {
     setIsLogin(!isLogin);
     reset();
+    setShowPassword(false);
   };
 
   if (!isOpen) return null;
@@ -214,7 +235,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto relative">
         {/* Close Button */}
         <button
-          onClick={onClose}
+          onClick={() => {
+            setShowPassword(false);
+            reset();
+            onClose();
+          }}
           className="cursor-pointer absolute top-4 left-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 z-10"
         >
           <X className="w-5 h-5 text-gray-600" />
@@ -278,19 +303,34 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   <label className="block text-sm font-semibold text-gray-700">
                     🔒 كلمة المرور الجديدة
                   </label>
-                  <input
-                    type="password"
-                    {...register("new_password", {
-                      required: "كلمة المرور مطلوبة",
-                      minLength: {
-                        value: 6,
-                        message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-                      },
-                    })}
-                    minLength={6}
-                    className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                    placeholder="أدخل كلمة المرور"
-                  />
+                  <div className="relative">
+                    <input
+                      type="password"
+                      {...register("new_password", {
+                        required: "كلمة المرور مطلوبة",
+                        minLength: {
+                          value: 6,
+                          message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                        },
+                      })}
+                      minLength={6}
+                      className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      placeholder="أدخل كلمة المرور"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowPassword(!showPassword);
+                      }}
+                      className="absolute cursor-pointer top-[40%] left-4"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="text-gray-500" size={14} />
+                      ) : (
+                        <Eye className="text-gray-500" size={14} />
+                      )}
+                    </button>
+                  </div>
                   {errors.new_password && (
                     <span className="text-sm text-red-500">
                       {errors.new_password.message}
@@ -302,21 +342,36 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   <label className="block text-sm font-semibold text-gray-700">
                     🔒 تأكيد كلمة المرور الجديدة
                   </label>
-                  <input
-                    type="password"
-                    {...register("confirm_password", {
-                      required: "كلمة المرور مطلوبة",
-                      minLength: {
-                        value: 6,
-                        message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-                      },
-                      validate: (value) =>
-                        value === newPassword || "كلمة المرور غير متطابقة",
-                    })}
-                    minLength={6}
-                    className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                    placeholder="أدخل كلمة المرور"
-                  />
+                  <div className="relative">
+                    <input
+                      type="password"
+                      {...register("confirm_password", {
+                        required: "كلمة المرور مطلوبة",
+                        minLength: {
+                          value: 6,
+                          message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                        },
+                        validate: (value) =>
+                          value === newPassword || "كلمة المرور غير متطابقة",
+                      })}
+                      minLength={6}
+                      className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      placeholder="أدخل كلمة المرور"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowPassword(!showPassword);
+                      }}
+                      className="absolute cursor-pointer top-[40%] left-4"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="text-gray-500" size={14} />
+                      ) : (
+                        <Eye className="text-gray-500" size={14} />
+                      )}
+                    </button>
+                  </div>
                   {errors.confirm_password && (
                     <span className="text-sm text-red-500">
                       {errors.confirm_password.message}
@@ -361,33 +416,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                 <label className="block text-sm font-semibold text-gray-700 text-center">
                   أدخل رمز التحقق المكون من 4 أرقام
                 </label>
-                {/* <div className="flex gap-3 justify-center">
-                  {[0, 1, 2, 3].map((index) => (
-                    <input
-                      {...register("otp", { required: "الرمز مطلوب" })}
-                      key={index}
-                      type="text"
-                      minLength={4}
-                      className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
-                      onChange={(e) => {
-                        const value = formData.otp;
-                        const newValue =
-                          value.substring(0, index) +
-                          e.target.value +
-                          value.substring(index + 1);
-                        handleInputChange("otp", newValue);
-
-                        // Auto-focus next input
-                        if (e.target.value && index < 3) {
-                          const nextInput = e.target.parentElement?.children[
-                            index + 1
-                          ] as HTMLInputElement;
-                          nextInput?.focus();
-                        }
-                      }}
-                    />
-                  ))}
-                </div> */}
                 <div className="flex gap-3 justify-center">
                   {[0, 1, 2, 3].map((index) => (
                     <Controller
@@ -514,19 +542,35 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                       <label className="block text-sm font-semibold text-gray-700">
                         🔒 كلمة المرور
                       </label>
-                      <input
-                        type="password"
-                        {...register("password", {
-                          required: "كلمة المرور مطلوبة",
-                          minLength: {
-                            value: 6,
-                            message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-                          },
-                        })}
-                        minLength={6}
-                        className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                        placeholder="أدخل كلمة المرور"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          {...register("password", {
+                            required: "كلمة المرور مطلوبة",
+                            minLength: {
+                              value: 6,
+                              message:
+                                "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+                            },
+                          })}
+                          minLength={6}
+                          className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                          placeholder="أدخل كلمة المرور"
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowPassword(!showPassword);
+                          }}
+                          className="absolute cursor-pointer top-[40%] left-4"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="text-gray-500" size={14} />
+                          ) : (
+                            <Eye className="text-gray-500" size={14} />
+                          )}
+                        </button>
+                      </div>
                       {errors.password && (
                         <span className="text-sm text-red-500">
                           {errors.password.message}

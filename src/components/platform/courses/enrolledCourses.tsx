@@ -4,6 +4,7 @@ import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
+import { isArray } from "lodash";
 
 const EnrolledCourses: React.FC = () => {
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
@@ -69,9 +70,9 @@ const EnrolledCourses: React.FC = () => {
 
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
                 <div className="text-2xl font-bold text-purple-600 mb-1">
-                  {
-                    myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(2)
-                  }
+                  {myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(
+                    2
+                  )}
                   %
                 </div>
                 <div className="text-sm text-gray-600">متوسط التقدم</div>
@@ -98,9 +99,22 @@ const EnrolledCourses: React.FC = () => {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
-                            {course?.specialization?.name || "-"}
-                          </span>
+                          {isArray(course?.specialization_material) ? (
+                            course?.specialization_material?.map(
+                              (material: any, index: number) => (
+                                <span
+                                  key={index}
+                                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium"
+                                >
+                                  {material?.name}
+                                </span>
+                              )
+                            )
+                          ) : (
+                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
+                              {course?.specialization_material?.name || "-"}
+                            </span>
+                          )}
                         </div>
                         <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
                           {course?.course_name || "-"}
@@ -189,7 +203,9 @@ const EnrolledCourses: React.FC = () => {
 
                     {/* Continue Button */}
                     <button
-                      onClick={() => navigate(`/coursePage/${course?.course_id}`)}
+                      onClick={() =>
+                        navigate(`/coursePage/${course?.course_id}`)
+                      }
                       className="w-full cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
                     >
                       <Play className="w-4 h-4" />

@@ -979,7 +979,7 @@ const ExamsPage = () => {
       />
     );
   }
-
+console.log(data?.data?.data);
   if (currentView === "results" && selectedExam) {
     return (
       <div className="space-y-6">
@@ -1760,7 +1760,7 @@ const ExamsPage = () => {
                                   index === array.length - 1 ? "" : ", "
                                 }`
                             )
-                          : exam?.specialization_material?.title ?? "-"}
+                          : (exam?.specialization_material?.title || exam?.specialization_material?.name) ?? "-"}
                       </td>
                       {role !== "teacher" && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

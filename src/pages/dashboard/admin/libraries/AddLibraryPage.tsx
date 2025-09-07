@@ -91,7 +91,7 @@ export default function AddLibraryPage() {
 
       if (res?.status === false) {
         applyServerErrors(res?.error as ServerErr, setError, setFocus);
-        handleErrorAlerts("فشل في إضافة المكتبة");
+        handleErrorAlerts(res?.error || "فشل في إضافة المكتبة");
         return;
       }
 
@@ -102,7 +102,7 @@ export default function AddLibraryPage() {
     } catch (error: any) {
       const payload = error?.response?.data;
       applyServerErrors(payload?.error as ServerErr, setError, setFocus);
-      handleErrorAlerts(payload?.message || "حدث خطأ أثناء إضافة المكتبة");
+      handleErrorAlerts(error?.response?.data?.error || payload?.message || "حدث خطأ أثناء إضافة المكتبة");
     }
   };
 

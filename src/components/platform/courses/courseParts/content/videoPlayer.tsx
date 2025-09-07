@@ -13,8 +13,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
       await downloadFiles({
         resource_id: resourceId,
       });
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   console.log("currentLesson", currentLesson);
   return (
@@ -23,15 +22,27 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
         <iframe
           width="100%"
           height="100%"
-          src={
-            "https://www.youtube.com/embed/" + currentLesson?.link
-          }
+          src="https://www.dailymotion.com/embed/video/x8y9uzc?queue-enable=false&endscreen-enable=false&ui-start-screen-info=false"
           title={currentLesson?.title}
           frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allow="autoplay; fullscreen; picture-in-picture"
           referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
         ></iframe>
+        {/* <iframe
+          width="100%"
+          height="100%"
+          src={
+            "https://www.dailymotion.com/embed/video/x8inged?ui-start-screen-info=false&queue-enable=false&endscreen-enable=false"
+            // "https://www.youtube.com/embed/" + currentLesson?.link
+          }
+          title={currentLesson?.title}
+          frameBorder="0"
+          // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allow="autoplay; fullscreen; picture-in-picture"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        ></iframe> */}
       </div>
 
       <div className="p-6">

@@ -202,7 +202,7 @@ const CoursesPage = () => {
     try {
       const res = await createCourse(formData);
       toast.success(res.message ?? "تم الحفظ بنجاح");
-      setNewCourse({});
+      setNewCourse({ is_free: true, is_published: true, is_special: false });
       setSelectedSubSection("");
       setSelectedSubSub("");
       setSelectedSpec("");
@@ -710,7 +710,7 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={newCourse?.is_free == true}
+                      checked={newCourse?.is_free === true}
                       onChange={() =>
                         setNewCourse({
                           ...newCourse,
@@ -726,7 +726,7 @@ const CoursesPage = () => {
                     <input
                       type="radio"
                       name="pricing"
-                      checked={newCourse?.is_free == false}
+                      checked={newCourse?.is_free === false}
                       onChange={() =>
                         setNewCourse({ ...newCourse, is_free: false })
                       }

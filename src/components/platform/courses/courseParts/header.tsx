@@ -16,7 +16,7 @@ const Header = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(`/teacher/${courseData?.teacher.id}`)}
               className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl cursor-pointer flex items-center justify-center transition-colors duration-200"
             >
               <ArrowRight className="w-5 h-5 text-gray-600" />

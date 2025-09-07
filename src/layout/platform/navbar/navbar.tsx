@@ -87,22 +87,34 @@ const Navbar: React.FC = () => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-8">
               {isLoggedIn && (
-                <Link
-                  to="/all-courses"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/all-courses", { replace: false });
-                  }}
-                  className=" text-white bg-gradient-to-r from-purple-400 to-blue-500 rounded-xl px-4 py-2 font-medium transition-colors duration-200"
-                >
-                  دوراتي
-                </Link>
+                <>
+                  <Link
+                    to="/profile"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/profile", { replace: false });
+                    }}
+                    className="cursor-pointer px-5 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium shadow-sm hover:shadow-md hover:from-purple-600 hover:to-blue-600 transition-all"
+                  >
+                    الملف الشخصي
+                  </Link>
+                  <Link
+                    to="/all-courses"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/all-courses", { replace: false });
+                    }}
+                    className="cursor-pointer px-5 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium shadow-sm hover:shadow-md hover:from-purple-600 hover:to-blue-600 transition-all"
+                  >
+                    دوراتي
+                  </Link>
+                </>
               )}
               {footerData?.links?.slice(0, 3).map((item: any) => (
                 <button
                   key={item.id}
                   onClick={() => navigate(`/sections/${item?.id}`)}
-                  className="cursor-pointer text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
+                  className="cursor-pointer px-5 py-2 rounded-xl bg-gray-100 text-gray-700 font-medium shadow-sm hover:bg-yellow-100 hover:text-yellow-700 transition-all duration-200"
                 >
                   {item.title}
                 </button>
@@ -119,7 +131,7 @@ const Navbar: React.FC = () => {
                       if (el) el.scrollIntoView({ behavior: "smooth" });
                     }, 100);
                   }}
-                  className=" text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl px-4 py-2 font-medium transition-colors duration-200"
+                  className="cursor-pointer px-5 py-2 rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-sm hover:shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all"
                 >
                   عرض الكل
                 </Link>

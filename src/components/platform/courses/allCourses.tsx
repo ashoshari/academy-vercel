@@ -74,7 +74,7 @@ const AllCourses = () => {
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
-                    {course?.specialization?.name || "-"}
+                    {course?.specialization_material?.name || "-"}
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
@@ -223,7 +223,7 @@ const AllCourses = () => {
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
-                      {course?.specialization?.name ?? "-"}
+                      {course?.specialization_material?.name ?? "-"}
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300">
