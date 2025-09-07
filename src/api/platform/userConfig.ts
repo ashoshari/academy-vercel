@@ -13,7 +13,7 @@ const getBaseURL = () => {
   const hostname = window.location.hostname;
 
   if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return "https://back.manasati-jo.com/"; // 🛠️ عدل البورت حسب الباك اند عندك
+    return "https://Demo.manasati-jo.com/";
   }
 
   const cleanHost = hostname.replace(/^www\./, "");
