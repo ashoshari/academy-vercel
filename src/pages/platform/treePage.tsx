@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  ChevronDown,
-  ChevronRight,
-  Home,
-  ArrowRight,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Home, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useParams } from "react-router";
@@ -19,6 +14,7 @@ const TreePage: React.FC = () => {
   const navigate = useNavigate();
 
   const data = treeData?.data.find((node: any) => node.id === navHeaderId);
+  console.log("data", data);
   const toggleNode = (nodeId: string) => {
     const newExpanded = new Set(expandedNodes);
     if (newExpanded.has(nodeId)) {
@@ -86,6 +82,7 @@ const TreePage: React.FC = () => {
     </div>
   );
   const renderNode = (node: any, level: number = 0) => {
+    console.log("node", node);
     const isExpanded = expandedNodes.has(node?.id);
 
     const childKey = Object.keys(node).find(
@@ -94,12 +91,22 @@ const TreePage: React.FC = () => {
         node[key].length > 0 &&
         node[key].every((item: any) => typeof item === "object" && "id" in item)
     );
-
     const hasChildren = !!childKey && hasValidChildren(node, childKey);
     const hasTeachers =
       node.teachers && Array.isArray(node.teachers) && node.teachers.length > 0;
     if (!hasChildren && !hasTeachers) {
-      return null;
+      return (
+        <div className="relative flex flex-col items-center">
+          <img
+            className="absolute top-0 w-[700px] h-[650px] z-0"
+            src={errorIllustation}
+            alt="error"
+          />
+          <h1 className="pt-[50px] absolute text-[2rem] top-[500px] z-[1]">
+            لا يوجد محتوى لعرضه
+          </h1>
+        </div>
+      );
     }
     return (
       <div key={node?.id} className="mb-4">
@@ -252,7 +259,9 @@ const TreePage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <div className="space-y-6">
           {Array.isArray(data?.subsections) && data.subsections.length > 0 ? (
-            data?.subsections.map((node: any) => renderNode(node))
+            data?.subsections?.map((node: any) => (
+              <React.Fragment key={node.id}>{renderNode(node)}</React.Fragment>
+            ))
           ) : (
             <div className="relative flex flex-col items-center">
               <img
