@@ -123,6 +123,8 @@ const CoreExam = ({
     }
     setOpenExam(false);
   };
+  console.log(answers);
+  console.log(examData?.questions[0]?.answers[2].id);
   return (
     <section>
       {examError ? (
@@ -139,17 +141,17 @@ const CoreExam = ({
         </div>
       ) : !examData?.questions || examData?.questions?.length === 0 ? (
         <>
-          <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
-            <div className="px-4 sm:px-6 lg:px-8 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4 w-full">
-                  <button
-                    onClick={() => window.history.back()}
-                    className="cursor-pointer w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors duration-200"
-                  >
-                    <ArrowRight className="w-5 h-5 text-gray-600 cursor-pointer" />
-                  </button>
-                  {!isPassed && !course && (
+          {!isPassed && !course && (
+            <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
+              <div className="px-4 sm:px-6 lg:px-8 py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4 w-full">
+                    <button
+                      onClick={() => window.history.back()}
+                      className="cursor-pointer w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors duration-200"
+                    >
+                      <ArrowRight className="w-5 h-5 text-gray-600 cursor-pointer" />
+                    </button>
                     <div className="flex justify-between w-full">
                       <div>
                         <h1 className="text-xl font-bold text-gray-900">
@@ -168,12 +170,12 @@ const CoreExam = ({
                         </p>
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="min-h-screen  p-3 bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center">
+          )}
+          <div className="h-[400px]  p-3 bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center">
             <img
               loading="lazy"
               src={errorIllustation}
@@ -284,7 +286,7 @@ const CoreExam = ({
                     <img
                       src={examData?.questions?.[currentQuestionIndex]?.image}
                       alt="Question"
-                      className="mb-4 rounded-lg"
+                      className="w-[450px] mb-4 rounded-lg"
                     />
                   )}
                   {examData?.questions?.[currentQuestionIndex]?.question_text}
@@ -326,7 +328,7 @@ const CoreExam = ({
                               <img
                                 src={answer?.image}
                                 alt="Answer"
-                                className="mb-2 rounded-lg max-w-100 max-h-100"
+                                className="w-[250px] mb-2 rounded-lg max-w-100 max-h-100"
                               />
                             )}
                             {answer?.answer_text}
@@ -472,7 +474,7 @@ const CoreExam = ({
                                 <img
                                   src={question?.image}
                                   alt="Question"
-                                  className="mb-4 rounded-lg"
+                                  className="w-[250px] mb-4 rounded-lg"
                                 />
                               )}
                             </div>
@@ -483,7 +485,7 @@ const CoreExam = ({
                                 <div
                                   key={answerIndex}
                                   className={`w-full p-4 text-right rounded-xl border-2 transition-all duration-200 ${
-                                    correctAnswerId === answer?.id
+                                    answer?.id === userAnswerId && isCorrect
                                       ? "border-green-500 bg-green-50 text-green-900"
                                       : answer?.id === userAnswerId
                                       ? "border-red-500 bg-red-100 text-red-900"
@@ -491,7 +493,7 @@ const CoreExam = ({
                                   }`}
                                 >
                                   <div className="flex items-center space-x-3">
-                                    {answer?.id === correctAnswerId ? (
+                                    {answer?.id === userAnswerId && isCorrect ? (
                                       <CircleCheckBig className="w-6 h-6" />
                                     ) : (
                                       answer?.id === userAnswerId && (
@@ -503,7 +505,7 @@ const CoreExam = ({
                                         <img
                                           src={answer?.image}
                                           alt="Answer"
-                                          className="mb-2 rounded-lg max-w-100 max-h-100"
+                                          className="w-[250px] mb-2 rounded-lg max-w-100 max-h-100"
                                         />
                                       )}
                                       {answer?.answer_text}

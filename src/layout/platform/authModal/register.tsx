@@ -17,6 +17,7 @@ const Register = ({
   control,
   setShowOTP,
   showOTP,
+  isLogin
 }: any) => {
   // POST Register
   const { mutateAsync: RegisterMutateAsync } = useCustomPost(
@@ -33,7 +34,6 @@ const Register = ({
   ]);
   const onsubmit = async (data: any) => {
     let imei: string | null = window.localStorage.getItem("IMEI");
-    console.log("data",data)
     try {
       if (showOTP) {
         const otpData = {
@@ -52,7 +52,7 @@ const Register = ({
           onLogin();
           onClose();
           setShowOTP(false);
-          
+          isLogin(true);
           navigate("/");
           reset();
         } else {

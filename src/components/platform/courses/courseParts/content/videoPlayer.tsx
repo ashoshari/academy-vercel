@@ -22,7 +22,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
         <iframe
           width="100%"
           height="100%"
-          src="https://www.dailymotion.com/embed/video/x8y9uzc?queue-enable=false&endscreen-enable=false&ui-start-screen-info=false"
+          src={`https://www.dailymotion.com/embed/video/${currentLesson?.link}?queue-enable=false&endscreen-enable=false&ui-start-screen-info=false`}
           title={currentLesson?.title}
           frameBorder="0"
           allow="autoplay; fullscreen; picture-in-picture"
