@@ -16,7 +16,7 @@ export const PlatformLayout = () => {
 
   const isProduction = import.meta.env.MODE === "production"; // ✅ check env
 
-  if (isProduction ? (dataSearch.inspect === true ? true : false) : false) {
+  if (isProduction ? (dataSearch.inspect === "true" ? true : false) : false) {
     document.onkeydown = function (e: any) {
       if (e.ctrlKey && e.shiftKey && e.keyCode == "I".charCodeAt(0)) {
         return false;
