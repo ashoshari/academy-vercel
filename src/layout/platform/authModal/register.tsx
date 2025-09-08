@@ -51,6 +51,8 @@ const Register = ({
           );
           onLogin();
           onClose();
+          setShowOTP(false);
+          
           navigate("/");
           reset();
         } else {

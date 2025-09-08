@@ -55,6 +55,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         <button
           onClick={() => {
             setShowPassword(false);
+            setForgetPassword(false);
+            setShowResetOTP(false);
+            setShowRegisterOTP(false);
+            setIsLogin(true);
             reset();
             onClose();
           }}
@@ -62,21 +66,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         >
           <X className="w-5 h-5 text-gray-600" />
         </button>
-        {forgetPassword || showRegisterOTP && (
-          <button
-            onClick={() => {
-              reset();
-              setShowRegisterOTP(false);
-              setShowResetOTP(false);
-              setResetPassword(false);
-              setShowPassword(false);
-              setForgetPassword(false);
-            }}
-            className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
-          >
-            <ArrowRight className="w-5 h-5 text-white" />
-          </button>
-        )}
+        {(forgetPassword || showRegisterOTP) && (
+            <button
+              onClick={() => {
+                setShowRegisterOTP(false);
+                setShowResetOTP(false);
+                setResetPassword(false);
+                setShowPassword(false);
+                setForgetPassword(false);
+                reset();
+              }}
+              className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
+            >
+              <ArrowRight className="w-5 h-5 text-white" />
+            </button>
+          )}
 
         <div className="p-6 sm:p-8">
           {/* Header */}
@@ -157,7 +161,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
           )}
 
           {/* Switch Mode */}
-          {!showResetOTP && !showRegisterOTP && (
+          {!showResetOTP && !showRegisterOTP && !forgetPassword && (
             <div className="mt-6 text-center flex gap-x-[10px]">
               <button
                 onClick={switchMode}
