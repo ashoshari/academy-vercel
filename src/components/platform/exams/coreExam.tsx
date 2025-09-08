@@ -446,7 +446,7 @@ const CoreExam = ({
                         (a: any) => a?.question_id === question?.id
                       );
                       const isCorrect = matchedAnswer?.is_correct;
-                      const correctAnswerId = matchedAnswer?.correct_answer_id;
+                      // const correctAnswerId = matchedAnswer?.correct_answer_id;
                       const userAnswerId = matchedAnswer?.user_answer_id;
                       const currentAnswer = answers?.[questionIndex];
                       return (
@@ -493,7 +493,8 @@ const CoreExam = ({
                                   }`}
                                 >
                                   <div className="flex items-center space-x-3">
-                                    {answer?.id === userAnswerId && isCorrect ? (
+                                    {answer?.id === userAnswerId &&
+                                    isCorrect ? (
                                       <CircleCheckBig className="w-6 h-6" />
                                     ) : (
                                       answer?.id === userAnswerId && (
