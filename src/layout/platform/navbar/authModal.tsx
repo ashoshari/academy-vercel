@@ -157,6 +157,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               control={control}
               setShowOTP={setShowRegisterOTP}
               showOTP={showRegisterOTP}
+              isLogin={isLogin}
             />
           )}
 
