@@ -122,11 +122,11 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
             }
 
             {/* Navigation Controls */}
-            <div className="flex items-center justify-between bg-white rounded-2xl shadow-lg p-6">
+            <div className={`flex flex-col lg:flex-row gap-5 items-center justify-between bg-white rounded-2xl shadow-lg p-6`}>
               <button
                 onClick={() => navigateLesson("prev")}
                 disabled={currentLessonIndex === 0}
-                className="flex items-center space-x-2 px-6 py-3 cursor-pointer border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center w-full md:w-fit justify-center space-x-2 px-6 py-3 cursor-pointer border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronRight className="w-5 h-5" />
                 <span>الدرس السابق</span>
@@ -136,9 +136,9 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
                 <div className="text-sm text-gray-600 mb-1">
                   الدرس {currentLessonIndex + 1} من {allLessons.length}
                 </div>
-                <div className="w-48 bg-gray-200 rounded-full h-2">
+                <div className="w-full md:w-48 bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-gradient-to-r justify-center from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
                     style={{
                       width: `${
                         ((currentLessonIndex + 1) / allLessons.length) * 100
@@ -154,7 +154,7 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
                   currentLessonIndex === allLessons.length - 1 ||
                   allLessons[currentLessonIndex + 1]?.isLocked
                 }
-                className="flex items-center space-x-2 cursor-pointer px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center w-full md:w-fit justify-center space-x-2 cursor-pointer px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>الدرس التالي</span>
                 <ChevronLeft className="w-5 h-5" />
