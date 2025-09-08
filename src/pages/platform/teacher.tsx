@@ -82,9 +82,9 @@ const TeacherProfile: React.FC = () => {
   const ministerial_questions = data?.data?.ministerial_questions;
   const freeExamsData = data?.data?.free_exams;
 
-  const isMoblieOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(
-    navigator.userAgent
-  );
+  // const isMoblieOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(
+  //   navigator.userAgent
+  // );
 
   const tabs = [
     {
@@ -163,11 +163,11 @@ const TeacherProfile: React.FC = () => {
   const handleCourseClick = (course: any) => {
     if (isLoggedIn) {
       if (course?.is_enrolled && course?.is_enrollment_active) {
-        if (!isMoblieOrTablet) {
+        // if (!isMoblieOrTablet) {
           navigate(`/coursePage/${course?.id}`);
-        } else {
-          navigate(`/phone-user`);
-        }
+        // } else {
+          // navigate(`/phone-user`);
+        // }
       } else {
         handleCourseActivation(course);
       }
