@@ -1,227 +1,45 @@
 import { useState } from "react";
-import {
-  X,
-  Check,
-  Loader2,
-  Sparkles,
-  GraduationCap,
-  ArrowRight,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { X, Sparkles, GraduationCap, ArrowRight } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
-import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
-// import { storeTokens } from "@/services/platform/userAuth";
-import { toast } from "react-hot-toast";
-import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router";
-
-interface FormData {
-  name: string;
-  mobile_number: string;
-  password: string;
-  new_password: string;
-  confirm_password: string;
-  otp: string[];
-}
-
+import Register from "../authModal/register";
+import Login from "../authModal/login";
+import ForgetPassword from "../authModal/forgetPassword";
+import { useForm, Controller } from "react-hook-form";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLogin: () => void;
 }
-
+interface formData {
+  name?: string;
+  mobile_number?: string;
+  password?: string;
+  new_password?: string;
+  confirm_password?: string;
+  registerOTP: string[];
+  resetOTP: string[];
+}
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [forgetPassword, setForgetPassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
-  const [showOTP, setShowOTP] = useState(false);
-  const [
-    // isLoading,
-    _,
-    setIsLoading,
-  ] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    mobile_number: "",
-    password: "",
-    new_password: "",
-    confirm_password: "",
-    otp: [],
-  });
-
-  // POST Login
-  const { mutateAsync: loginMutateAsync } = useCustomPost("/account/login/", [
-    "login",
-  ]);
-  // POST Register
-  const { mutateAsync: RegisterMutateAsync } = useCustomPost(
-    "/account/register/",
-    ["register"]
-  );
-  // POST Generate IMEI
-  const { mutateAsync: generateIMEI } = useCustomPost("/account/imei-string/", [
-    "generateIMEI",
-  ]);
-  // POST Reset Password OTP
-  const { mutateAsync: postForgetPasswordOtp } = useCustomPost(
-    "/account/students/reset-password-otp/",
-    ["forget-password-otp"]
-  );
-  // POST Reset Password OTP Check
-  const { mutateAsync: postForgetPasswordOtpCheck } = useCustomPost(
-    "account/students/reset-password-otp/check/",
-    ["forget-password-otp-check"]
-  );
-  // POST Reset Password OTP Confirm
-  const { mutateAsync: postResetPasswordConfirm } = useCustomPost(
-    "/account/students/reset-password-confirm/",
-    ["reset-password-confirm"]
-  );
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    // setValue,
-    watch,
-    control,
-    reset,
-  } = useForm<FormData>({
-    defaultValues: {
-      name: "",
-      mobile_number: "",
-      password: "",
-      new_password: "",
-      confirm_password: "",
-      otp: ["", "", "", ""],
-    },
-  });
-  const newPassword = watch("new_password");
-
+  const [showResetOTP, setShowResetOTP] = useState(false);
+  const [showRegisterOTP, setShowRegisterOTP] = useState(false);
   const setTokens = useTokenStore((state) => state.setTokens);
-  const onSubmit = async (data: FormData) => {
-    console.log("data", data);
-    setIsLoading(true);
-    try {
-      if (resetPassword) {
-        const res = await postResetPasswordConfirm({
-          mobile_number: formData.mobile_number,
-          new_password: data.new_password,
-        });
-        if (!res?.status) {
-          toast.error(res?.data);
-          return;
-        } else {
-          toast.success(res?.data || "تم تغيير كلمة السر");
-          setResetPassword(false);
-          setIsLogin(true);
-          setForgetPassword(false);
-          setShowOTP(false);
-          reset();
-        }
-      } else if (forgetPassword && !showOTP) {
-        const res = await postForgetPasswordOtp({
-          mobile_number: data.mobile_number,
-        });
-        setFormData({ ...data, otp: [] });
-        if (res?.status) {
-          setShowOTP(true);
-          toast.success(res?.data);
-        }
-      } else if (showOTP) {
-        const res = await postForgetPasswordOtpCheck({
-          otp: data.otp.join(""),
-          mobile_number: data.mobile_number,
-        });
-        if (!res?.status) {
-          toast.error(res?.data);
-          return;
-        } else {
-          toast.success(res?.data || "رقم التحقق صحيح");
-          // setForgetPassword(false);
-          setShowOTP(false);
-          setResetPassword(true);
-        }
-      } else {
-        let imei: string | null = window.localStorage.getItem("IMEI");
 
-        if (!imei) {
-          const IMEIResponse = await generateIMEI({});
-          imei = IMEIResponse?.data ?? null;
-          if (imei) {
-            window.localStorage.setItem("IMEI", imei);
-          }
-        }
-        let res;
-        if (isLogin) {
-          const loginData = {
-            mobile_number: data.mobile_number,
-            password: data.password,
-            imei: imei,
-          };
-          res = await loginMutateAsync(loginData);
-        } else {
-          const registerData = {
-            name: data.name,
-            mobile_number: data.mobile_number,
-            password: data.password,
-            imei: imei,
-          };
-          res = await RegisterMutateAsync(registerData);
-        }
-        // const res = isLogin
-        //   ? await loginMutateAsync({ ...data, imei })
-        //   : await RegisterMutateAsync({ ...data, imei });
-        if (res?.status) {
-          setTokens(res.data.tokens.access, res.data?.user);
-
-          setFormData({
-            mobile_number: "",
-            password: "",
-            new_password: "",
-            confirm_password: "",
-            name: "",
-            otp: [],
-          });
-
-          toast.success(
-            isLogin ? "تم تسجيل الدخول بنجاح" : "تم إنشاء الحساب بنجاح"
-          );
-          onLogin();
-          onClose();
-          navigate("/")
-          reset();
-        } else {
-          toast.error(
-            res.error || (isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب")
-          );
-        }
-      }
-    } catch (error: any) {
-      const errorData = error.response?.data?.error;
-
-      if (errorData?.mobile_number?.[0]) {
-        toast.error(errorData.mobile_number[0]);
-      } else if (errorData?.full_name?.[0]) {
-        toast.error(errorData.full_name[0]);
-      } else if (errorData?.password?.[0]) {
-        toast.error(errorData.password[0]);
-      } else if (typeof errorData === "string") {
-        toast.error(errorData);
-      } else {
-        toast.error(isLogin ? "فشل تسجيل الدخول" : "فشل إنشاء الحساب");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // const handleInputChange = (field: keyof FormData, value: string) => {
-  //   setFormData((prev) => ({ ...prev, [field]: value }));
-  // };
-
+  const { register, handleSubmit, watch, control, reset, formState } =
+    useForm<formData>({
+      defaultValues: {
+        mobile_number: "",
+        new_password: "",
+        confirm_password: "",
+        registerOTP: ["", "", "", ""],
+        resetOTP: ["", "", "", ""],
+      },
+    });
   const switchMode = () => {
     setIsLogin(!isLogin);
     reset();
@@ -244,10 +62,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         >
           <X className="w-5 h-5 text-gray-600" />
         </button>
-        {forgetPassword && (
+        {forgetPassword || showRegisterOTP && (
           <button
             onClick={() => {
               reset();
+              setShowRegisterOTP(false);
+              setShowResetOTP(false);
+              setResetPassword(false);
+              setShowPassword(false);
               setForgetPassword(false);
             }}
             className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
@@ -264,373 +86,78 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {forgetPassword && !showOTP
+              {forgetPassword && !showResetOTP
                 ? "نسيت كلمة السر "
-                : showOTP
+                : showResetOTP
                 ? "📱 تأكيد رقم الهاتف"
                 : isLogin
                 ? "🔐 تسجيل الدخول"
                 : "🚀 إنشاء حساب جديد"}
             </h2>
             <p className="text-gray-600 text-sm">
-              {forgetPassword && !showOTP
+              {forgetPassword && !showResetOTP
                 ? "أدخل رقم الهاتف ليتم ارسال كود التحقق "
-                : showOTP
-                ? `تم إرسال رمز التحقق إلى ${formData.mobile_number} 📲`
+                : showResetOTP || showRegisterOTP
+                ? `تم إرسال رمز التحقق إلى هاتفك 📲`
                 : isLogin
                 ? "أدخل بياناتك للوصول إلى دوراتك المفضلة 📚"
                 : "ابدأ رحلتك نحو التفوق في التوجيهي 🌟"}
             </p>
           </div>
-
-          {/* Back Button for OTP */}
-          {/* {showOTP && (
-            <button
-              onClick={() => setShowOTP(false)}
-              className="flex items-center cursor-pointer text-gray-600 hover:text-gray-900 mb-6 transition-all duration-300 hover:translate-x-1 group"
-            >
-              <ArrowRight className="w-5 h-5 mr-2 group-hover:animate-bounce" />
-              <span className="font-medium">العودة</span>
-            </button>
-          )} */}
-
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {resetPassword ? (
-              <>
-                {/* Password */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
-                    🔒 كلمة المرور الجديدة
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="password"
-                      {...register("new_password", {
-                        required: "كلمة المرور مطلوبة",
-                        minLength: {
-                          value: 6,
-                          message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-                        },
-                      })}
-                      minLength={6}
-                      className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                      placeholder="أدخل كلمة المرور"
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowPassword(!showPassword);
-                      }}
-                      className="absolute cursor-pointer top-[40%] left-4"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="text-gray-500" size={14} />
-                      ) : (
-                        <Eye className="text-gray-500" size={14} />
-                      )}
-                    </button>
-                  </div>
-                  {errors.new_password && (
-                    <span className="text-sm text-red-500">
-                      {errors.new_password.message}
-                    </span>
-                  )}
-                </div>
-                {/* Confirm Password */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
-                    🔒 تأكيد كلمة المرور الجديدة
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="password"
-                      {...register("confirm_password", {
-                        required: "كلمة المرور مطلوبة",
-                        minLength: {
-                          value: 6,
-                          message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-                        },
-                        validate: (value) =>
-                          value === newPassword || "كلمة المرور غير متطابقة",
-                      })}
-                      minLength={6}
-                      className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                      placeholder="أدخل كلمة المرور"
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowPassword(!showPassword);
-                      }}
-                      className="absolute cursor-pointer top-[40%] left-4"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="text-gray-500" size={14} />
-                      ) : (
-                        <Eye className="text-gray-500" size={14} />
-                      )}
-                    </button>
-                  </div>
-                  {errors.confirm_password && (
-                    <span className="text-sm text-red-500">
-                      {errors.confirm_password.message}
-                    </span>
-                  )}
-                </div>
-              </>
-            ) : forgetPassword && !showOTP ? (
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
-                  أدخل رقم الهاتف
-                </label>
-                <input
-                  {...register("mobile_number", {
-                    required: "رقم الهاتف مطلوب",
-                    pattern: {
-                      value: /^07[0-9]{8}$/,
-                      message:
-                        "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
-                    },
-                  })}
-                  maxLength={10}
-                  minLength={10}
-                  onInput={(e) => {
-                    e.currentTarget.value = e.currentTarget.value.replace(
-                      /[^0-9]/g,
-                      ""
-                    );
-                  }}
-                  type="text"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
-                  placeholder="ادخل رقم الهاتف"
-                />
-                {errors.mobile_number && (
-                  <span className="text-sm text-red-500">
-                    {errors.mobile_number.message}
-                  </span>
-                )}
-              </div>
-            ) : showOTP ? (
-              <div className="space-y-4">
-                <label className="block text-sm font-semibold text-gray-700 text-center">
-                  أدخل رمز التحقق المكون من 4 أرقام
-                </label>
-                <div className="flex gap-3 justify-center">
-                  {[0, 1, 2, 3].map((index) => (
-                    <Controller
-                      key={index}
-                      name={`otp.${index}`} // register each index in array
-                      control={control}
-                      rules={{ required: "الرمز مطلوب" }}
-                      render={({ field }) => (
-                        <input
-                          {...field}
-                          type="text"
-                          maxLength={1}
-                          className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
-                          onChange={(e) => {
-                            const val = e.target.value.slice(-1); // keep only last digit
-                            field.onChange(val);
+          {forgetPassword ? (
+            <ForgetPassword
+              resetPassword={resetPassword}
+              forgetPassword={forgetPassword}
+              setResetPassword={setResetPassword}
+              setIsLogin={setIsLogin}
+              setForgetPassword={setForgetPassword}
+              showOTP={showResetOTP}
+              setShowOTP={setShowResetOTP}
+              setShowPassword={setShowPassword}
+              showPassword={showPassword}
+              formState={formState}
+              register={register}
+              handleSubmit={handleSubmit}
+              reset={reset}
+              watch={watch}
+              Controller={Controller}
+              control={control}
+            />
+          ) : isLogin ? (
+            <Login
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              onLogin={onLogin}
+              onClose={onClose}
+              navigate={navigate}
+              setTokens={setTokens}
+              register={register}
+              handleSubmit={handleSubmit}
+              reset={reset}
+              formState={formState}
+            />
+          ) : (
+            <Register
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              onLogin={onLogin}
+              onClose={onClose}
+              navigate={navigate}
+              setTokens={setTokens}
+              register={register}
+              handleSubmit={handleSubmit}
+              reset={reset}
+              formState={formState}
+              Controller={Controller}
+              control={control}
+              setShowOTP={setShowRegisterOTP}
+              showOTP={showRegisterOTP}
+            />
+          )}
 
-                            // Auto-focus next input
-                            if (val && index < 3) {
-                              const nextInput = e.target.parentElement
-                                ?.children[index + 1] as HTMLInputElement;
-                              nextInput?.focus();
-                            }
-                          }}
-                        />
-                      )}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {forgetPassword ? (
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      أدخل رقم الهاتف
-                    </label>
-                    <input
-                      {...register("mobile_number", {
-                        required: "رقم الهاتف مطلوب",
-                        pattern: {
-                          value: /^07[0-9]{8}$/,
-                          message:
-                            "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
-                        },
-                      })}
-                      maxLength={10}
-                      minLength={10}
-                      onInput={(e) => {
-                        e.currentTarget.value = e.currentTarget.value.replace(
-                          /[^0-9]/g,
-                          ""
-                        );
-                      }}
-                      type="text"
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
-                      placeholder="ادخل رقم الهاتف"
-                    />
-                    {errors.mobile_number && (
-                      <span className="text-sm text-red-500">
-                        {errors.mobile_number.message}
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <>
-                    {/* Show fullname only if not login */}
-                    {!isLogin && (
-                      <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
-                          👤 الاسم الكامل
-                        </label>
-                        <input
-                          {...register("name", {
-                            required: "الاسم الكامل مطلوب",
-                          })}
-                          type="text"
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
-                          placeholder="أدخل اسمك الكامل"
-                        />
-                        {errors.name && (
-                          <span className="text-sm text-red-500">
-                            {errors.name.message}
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Mobile Number */}
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700">
-                        📱 رقم الهاتف
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="tel"
-                          {...register("mobile_number", {
-                            required: "رقم الهاتف مطلوب",
-                            pattern: {
-                              value: /^07[0-9]{8}$/,
-                              message:
-                                "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
-                            },
-                          })}
-                          maxLength={10}
-                          minLength={10}
-                          onInput={(e) => {
-                            e.currentTarget.value =
-                              e.currentTarget.value.replace(/[^0-9]/g, "");
-                          }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                          placeholder="07XXXXXXXX"
-                        />
-                        {errors.mobile_number && (
-                          <span className="text-sm text-red-500">
-                            {errors.mobile_number.message}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Password */}
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700">
-                        🔒 كلمة المرور
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          {...register("password", {
-                            required: "كلمة المرور مطلوبة",
-                            minLength: {
-                              value: 6,
-                              message:
-                                "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-                            },
-                          })}
-                          minLength={6}
-                          className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
-                          placeholder="أدخل كلمة المرور"
-                        />
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setShowPassword(!showPassword);
-                          }}
-                          className="absolute cursor-pointer top-[40%] left-4"
-                        >
-                          {showPassword ? (
-                            <EyeOff className="text-gray-500" size={14} />
-                          ) : (
-                            <Eye className="text-gray-500" size={14} />
-                          )}
-                        </button>
-                      </div>
-                      {errors.password && (
-                        <span className="text-sm text-red-500">
-                          {errors.password.message}
-                        </span>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-            {forgetPassword ? (
-              // Forget Password
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="cursor-pointer w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center space-x-2">
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>جاري المعالجة...</span>
-                  </div>
-                ) : showOTP ? (
-                  <div className="flex items-center space-x-2">
-                    {/* <Check className="w-5 h-5" /> */}
-                    <span>✅ تأكيد الرمز</span>
-                  </div>
-                ) : forgetPassword ? (
-                  "ارسال كود التحقق"
-                ) : (
-                  <span>{isLogin ? "🚀 تسجيل الدخول" : "✨ إنشاء الحساب"}</span>
-                )}
-              </button>
-            ) : (
-              // Submit Button
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="cursor-pointer w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center space-x-2">
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>جاري المعالجة...</span>
-                  </div>
-                ) : showOTP ? (
-                  <div className="flex items-center space-x-2">
-                    <Check className="w-5 h-5" />
-                    <span>✅ تأكيد الرمز</span>
-                  </div>
-                ) : forgetPassword ? (
-                  "ارسال كود التحقق"
-                ) : (
-                  <span>{isLogin ? "🚀 تسجيل الدخول" : "✨ إنشاء الحساب"}</span>
-                )}
-              </button>
-            )}
-          </form>
           {/* Switch Mode */}
-          {!showOTP && (
+          {!showResetOTP && !showRegisterOTP && (
             <div className="mt-6 text-center flex gap-x-[10px]">
               <button
                 onClick={switchMode}
