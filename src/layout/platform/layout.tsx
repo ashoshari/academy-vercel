@@ -11,8 +11,6 @@ import devtools from "devtools-detect";
 export const PlatformLayout = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const dataSearch: any = Object.fromEntries(searchParams.entries());
-  console.log("searchParams", dataSearch);
-  // const { i18n } = useTranslation();
 
   const isProduction = import.meta.env.MODE === "production"; // ✅ check env
 
