@@ -30,6 +30,7 @@ const Navbar: React.FC = () => {
     clearTokens();
     navigate("/");
     toast.success("تم تسجيل الخروج بنجاح");
+    window.location.reload();
   };
   const handleLoginClick = () => {
     setShowAuthModal(true);

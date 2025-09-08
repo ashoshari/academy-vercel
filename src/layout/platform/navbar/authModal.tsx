@@ -30,7 +30,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [showRegisterOTP, setShowRegisterOTP] = useState(false);
   const setTokens = useTokenStore((state) => state.setTokens);
 
-  const { register, handleSubmit, watch, control, reset, formState } =
+  const { register, handleSubmit, watch, control, reset,setValue, formState } =
     useForm<formData>({
       defaultValues: {
         mobile_number: "",
@@ -158,6 +158,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               setShowOTP={setShowRegisterOTP}
               showOTP={showRegisterOTP}
               isLogin={isLogin}
+              setValue={setValue}
             />
           )}
 
