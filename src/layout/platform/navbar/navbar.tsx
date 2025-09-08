@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
                   </Link>
                 </>
               )}
-              {footerData?.links?.slice(0, 3).map((item: any) => (
+              {footerData?.links?.slice(0, 2).map((item: any) => (
                 <button
                   key={item.id}
                   onClick={() => navigate(`/sections/${item?.id}`)}

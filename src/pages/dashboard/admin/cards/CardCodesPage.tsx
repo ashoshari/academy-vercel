@@ -313,7 +313,7 @@ const CardCodesPage = () => {
       handleErrorAlerts(msg);
     }
   };
-  const handleDownload = async (codeId: string) => {
+  const handleCodeDownload = async (codeId: string) => {
     try {
       // Download Codes File
       const res = await get(`/cards/codes-generated/${codeId}/?export=pdf`, {
@@ -321,8 +321,7 @@ const CardCodesPage = () => {
       });
 
       // Create a URL for the blob
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-
+      const url = window.URL.createObjectURL(new Blob([res]));
       // Create a hidden <a> element and click it
       const link = document.createElement("a");
       link.href = url;
@@ -347,6 +346,41 @@ const CardCodesPage = () => {
     } catch (error: any) {
       console.error("Download failed:", error);
       toast.error(error?.response?.data?.error ?? "فشل تحميل الكود");
+    }
+  };
+  const handleBatchDownload = async (batchId: string) => {
+    try {
+      // Download Codes File
+      const res = await get(`/cards/codes/${batchId}/?export=pdf`, {
+        responseType: "blob",
+      });
+
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(new Blob([res]));
+      // Create a hidden <a> element and click it
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `code_${batchId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      queryClient.invalidateQueries({
+        queryKey: [
+          "codes-generated",
+          searchTerm,
+          codesFilter,
+          isUsed,
+          isDownloaded,
+          statusFilter,
+          page,
+        ],
+      });
+    } catch (error: any) {
+      console.error("Download failed:", error);
+      toast.error(error?.response?.data?.error ?? "فشل تحميل مجموعة الكودات");
     }
   };
 
@@ -668,44 +702,6 @@ const CardCodesPage = () => {
                           </div>
                         </div>
                       )}
-
-                      {/* {batch.security_information && (
-                        <div className="bg-blue-50 p-3 rounded-lg">
-                          <div className="text-xs text-blue-600 font-medium mb-1">
-                            معلومات الأمان :
-                          </div>
-                          <div className="text-xs text-blue-700 space-y-1">
-                            <div className="flex items-center gap-2">
-                              <User size={12} />
-                              <span>
-                                المنشئ: {batch?.generated_by?.name}
-                                {" - "}
-                                {batch?.generated_by?.type?.name}
-                              </span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <Smartphone size={12} />
-                              <span>
-                                الجهاز:{" "}
-                                {batch?.security_information?.device?.vendor}
-                                {" - "}
-                                {batch?.security_information?.device?.model}
-                                {" - "}
-                                {batch?.security_information?.device?.type}
-                                {" - "}
-                                {batch?.security_information?.browser?.name}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Clock size={12} />
-                              <span>
-                                التاريخ: {formatDate(batch.created_at)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      )} */}
                     </div>
                   </div>
 
@@ -727,6 +723,17 @@ const CardCodesPage = () => {
                       ) : (
                         <ToggleLeft size={20} />
                       )}
+                    </button>
+                    <button
+                      onClick={() => handleBatchDownload(batch?.id)}
+                      className={`cursor-pointer p-1 rounded transition-colors ${
+                        batch.is_downloaded
+                          ? "text-blue-600 hover:bg-green-50"
+                          : "text-gray-400 hover:bg-gray-50"
+                      }`}
+                      title={"تحميل الكود"}
+                    >
+                      <Download size={16} />
                     </button>
 
                     {/* <button
@@ -981,7 +988,7 @@ const CardCodesPage = () => {
                           </div>
                           <div className="flex items-center gap-2">
                             <button
-                              onClick={() => handleDownload(code?.id)}
+                              onClick={() => handleCodeDownload(code?.id)}
                               className={`cursor-pointer p-1 rounded transition-colors ${
                                 code.is_downloaded
                                   ? "text-blue-600 hover:bg-green-50"

@@ -22,6 +22,7 @@ import { formatDateTimeSimple } from "@/utils/formatDateTime";
 export interface CardPricing {
   id: string;
   price: number;
+  image: File;
   default_teacher_price: number;
   default_library_price: number;
   is_active: boolean;
@@ -54,14 +55,39 @@ const CardPricingPage = () => {
       toast.error("يرجى تحديد سعر البطاقة");
       return;
     }
+    // If image exists → use FormData
+    let payload: any;
+    let options: any = {};
 
-    addCard
-      .mutateAsync({
+    if (newCard.image) {
+      const formData = new FormData();
+      formData.append("price", String(newCard.price));
+      if (newCard.default_teacher_price)
+        formData.append(
+          "default_teacher_price",
+          String(newCard.default_teacher_price)
+        );
+      if (newCard.default_library_price)
+        formData.append(
+          "default_library_price",
+          String(newCard.default_library_price)
+        );
+      formData.append("is_active", String(newCard.is_active));
+      formData.append("image", newCard.image); // 👈 file object
+
+      payload = formData;
+      options = { headers: { "Content-Type": "multipart/form-data" } };
+    } else {
+      // Fallback to JSON
+      payload = {
         price: newCard.price,
         default_teacher_price: newCard.default_teacher_price,
         default_library_price: newCard.default_library_price,
         is_active: newCard.is_active,
-      })
+      };
+    }
+    addCard
+      .mutateAsync(payload, options)
       .then(() => {
         setNewCard({
           price: 0,
@@ -422,7 +448,13 @@ const CardPricingPage = () => {
                   إضافة سعر جديد
                 </h2>
                 <button
-                  onClick={() => setShowAddModal(false)}
+                  onClick={() => {
+                    setNewCard({
+                      price: 0,
+                      is_active: true,
+                    });
+                    setShowAddModal(false);
+                  }}
                   className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <X size={20} />
@@ -519,7 +551,55 @@ const CardPricingPage = () => {
                   />
                 </div>
               </div>
-              {/* library_price */}
+              {/* Media */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="imageUpload"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  الصورة المصغرة
+                </label>
+                <div className="flex items-center gap-2">
+                  <label
+                    htmlFor="imageUpload"
+                    className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                  >
+                    اختر الصورة المصغرة
+                  </label>
+
+                  <input
+                    id="imageUpload"
+                    type="file"
+                    className="invisible w-0 h-0"
+                    onChange={(e) => {
+                      setNewCard({
+                        ...newCard,
+                        image: e.target.files?.[0],
+                      });
+                    }}
+                    accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, image/svg+xml"
+                  />
+
+                  <span id="fileName" className="text-sm text-gray-500">
+                    {newCard?.image
+                      ? newCard?.image?.name
+                      : "لم يتم اختيار صورة"}
+                  </span>
+                  {(typeof newCard?.image === "string" ||
+                    newCard?.image instanceof File) && (
+                    <img
+                      loading="lazy"
+                      src={
+                        newCard?.image instanceof File
+                          ? URL.createObjectURL(newCard.image)
+                          : newCard?.image
+                      }
+                      alt="Preview"
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                  )}
+                </div>
+              </div>
 
               {/* Status Toggle */}
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -546,7 +626,13 @@ const CardPricingPage = () => {
 
             <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
               <button
-                onClick={() => setShowAddModal(false)}
+                onClick={() => {
+                  setNewCard({
+                    price: 0,
+                    is_active: true,
+                  });
+                  setShowAddModal(false);
+                }}
                 className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 إلغاء
@@ -557,6 +643,7 @@ const CardPricingPage = () => {
                   !newCard.price ||
                   newCard.price <= 0 ||
                   !newCard.default_teacher_price ||
+                  !newCard.image ||
                   newCard.default_teacher_price <= 0 ||
                   !newCard.default_library_price ||
                   newCard.default_library_price <= 0
@@ -566,6 +653,7 @@ const CardPricingPage = () => {
                   !newCard.price ||
                   newCard.price <= 0 ||
                   !newCard.default_teacher_price ||
+                  !newCard.image ||
                   newCard.default_teacher_price <= 0 ||
                   !newCard.default_library_price ||
                   newCard.default_library_price <= 0
