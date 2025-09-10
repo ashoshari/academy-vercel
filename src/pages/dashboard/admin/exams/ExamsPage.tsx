@@ -145,7 +145,7 @@ const ExamsPage = () => {
   const [newExam, setNewExam] = useState<any>({
     title: "",
     description: "",
-    time_in_minutes: 60,
+    time_in_minutes: 0,
     number_of_questions: 10,
     subsection: "",
     subsubsection: "",
@@ -179,7 +179,9 @@ const ExamsPage = () => {
   const materials = useCustomQuery("/core/materials/", ["materials"]);
 
   const materialsData = materials?.data?.data;
-  const teachers = useCustomQuery("account/admin/teachers/", ["teachers"]);
+  const teachers = useCustomQuery("account/admin/teachers/?page_size=9999", [
+    "teachers",
+  ]);
   const addExam = useCustomPost("training/admin/exams/", [
     "addExams",
     "exams-statistics",
@@ -262,7 +264,28 @@ const ExamsPage = () => {
           toast.success("تم إضافة الاختبار بنجاح");
           setCurrentView("table");
           setSelectedExam(null);
-          setNewExam(null);
+          setSelectedSubSection("");
+          setSelectedSubSub("");
+          setSelectedSpec("");
+          setNewExam({
+            title: "",
+            description: "",
+            time_in_minutes: 0,
+            number_of_questions: 10,
+            subsection: "",
+            subsubsection: "",
+            specialization: "",
+            specialization_material: "",
+            total_marks: 50,
+            passing_marks: 30,
+            is_published: true,
+            is_free: true,
+            ...(role !== "teacher" && { teacher: "" }),
+            enable_countdown: false,
+            show_correct_answers: false,
+            shuffle_questions: false,
+            shuffle_answers: false,
+          });
           queryClient.invalidateQueries({ queryKey: ["exams"] });
         } else {
           handleErrorAlerts(res?.error);
@@ -274,7 +297,6 @@ const ExamsPage = () => {
         );
       });
   };
-  console.log("data?.data?.data", data?.data?.data);
   const handleEditExam = () => {
     selectedExam.teacher = selectedExam?.teacher?.id;
     selectedExam.subsection = selectedExam?.subsection?.id;
@@ -979,7 +1001,6 @@ const ExamsPage = () => {
       />
     );
   }
-console.log(data?.data?.data);
   if (currentView === "results" && selectedExam) {
     return (
       <div className="space-y-6">
@@ -1530,7 +1551,7 @@ console.log(data?.data?.data);
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">إدارة الامتحانات</h1>
           <p className="text-gray-600 text-sm">
@@ -1760,7 +1781,9 @@ console.log(data?.data?.data);
                                   index === array.length - 1 ? "" : ", "
                                 }`
                             )
-                          : (exam?.specialization_material?.title || exam?.specialization_material?.name) ?? "-"}
+                          : (exam?.specialization_material?.title ||
+                              exam?.specialization_material?.name) ??
+                            "-"}
                       </td>
                       {role !== "teacher" && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

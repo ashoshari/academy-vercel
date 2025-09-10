@@ -63,7 +63,6 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
       price: amount ?? 0,
     };
 
-    console.log(body);
 
     try {
       const res = await editPrice.mutateAsync(body);

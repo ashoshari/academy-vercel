@@ -65,7 +65,6 @@ const SliderPage = () => {
     if (slidersData?.data?.data) setSliderItems(slidersData?.data?.data);
   }, [slidersData?.data?.data]);
 
-  console.log("sliderItems", sliderItems);
   const sorted = useMemo(
     () => [...(sliderItems ?? [])].sort((a, b) => a.order - b.order),
     [sliderItems]
@@ -167,7 +166,7 @@ const SliderPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">إدارة السلايدر</h1>
           <p className="text-gray-600 text-sm">

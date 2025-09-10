@@ -17,7 +17,6 @@ const CoursePage = () => {
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   // const currentLesson = useLesson((state) => state.currentLesson);
-  console.log("currentLessonIndex", currentLessonIndex);
   const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
   const { data, error } = useCustomQuery(
@@ -30,7 +29,6 @@ const CoursePage = () => {
     }
   );
   const courseData = data?.data;
-  console.log("error", error);
   const sidebarCollapseHandler = (state: boolean) => {
     setSidebarCollapsed(state);
   };
@@ -56,7 +54,6 @@ const CoursePage = () => {
 
   useEffect(() => {
     const activeLesson = allLessons[currentLessonIndex];
-    console.log("allLessons", allLessons);
     if (activeLesson) {
       setCurrentLesson(activeLesson);
     }
@@ -73,7 +70,6 @@ const CoursePage = () => {
     });
     setAllLessons(lessons);
   }, [courseData]);
-  console.log("currentLessonIndex", currentLessonIndex);
   const typedError = error as any;
   if (
     typedError &&
@@ -133,7 +129,7 @@ const CoursePage = () => {
         setCurrentLessonIndex={setCurrentLessonIndex}
         courseData={courseData}
       />
-      <CourseContent allLessons={allLessons} />
+      <CourseContent courseData={courseData} allLessons={allLessons} />
     </div>
   );
 };

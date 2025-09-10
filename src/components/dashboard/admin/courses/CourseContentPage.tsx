@@ -3,7 +3,6 @@ import {
   Plus,
   Search,
   Edit,
-  // Trash2,
   ArrowRight,
   ArrowUp,
   ArrowDown,
@@ -745,7 +744,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
   // Add Content View
   if (currentView === "add") {
-    console.log(courseContentData);
 
     return (
       <div className="space-y-6">
@@ -980,7 +978,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       setNewItem({ ...newItem, videoUrl: e.target.value })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="https://example.com/video.mp4"
+                    placeholder="أدخل ال ID الخاص بالفيديو..."
                   />
                 </div>
               )}
@@ -1066,6 +1064,25 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     </div>
                   </div>
                 )}
+
+              {/* Order */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  الترتيب
+                </label>
+                <input
+                  type="number"
+                  value={newItem.order ?? ""}
+                  onChange={(e) =>
+                    setNewItem({
+                      ...newItem,
+                      order: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  placeholder="أدخل الترتيب..."
+                />
+              </div>
 
               {/* Preview */}
               {newItem.title && (
@@ -1227,7 +1244,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         })
                       }
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                      placeholder="https://example.com/video.mp4"
+                      placeholder="أدخل ال ID الخاص بالفيديو..."
                     />
                   </div>
                 )}
@@ -1357,6 +1374,24 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     </div>
                   </div>
                 )}
+              {/* Order */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  الترتيب
+                </label>
+                <input
+                  type="number"
+                  value={selectedItem.order ?? ""}
+                  onChange={(e) =>
+                    setSelectedItem({
+                      ...selectedItem,
+                      order: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  placeholder="أدخل الترتيب..."
+                />
+              </div>
             </div>
           </div>
 
@@ -1389,7 +1424,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 //   });
                 // };
                 // setContentTree(updateInTree(contentTree));
-
                 handleEditItem();
               }}
               disabled={!selectedItem.title}

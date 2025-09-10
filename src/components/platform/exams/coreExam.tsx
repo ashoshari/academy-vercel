@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 import { useExam } from "@/store/platform/useExam";
 import { useState, useEffect, useRef } from "react";
-// import { useLesson } from "@/store/platform/useLesson";
 import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
+
 
 interface ExamProps {
   examData: any;
@@ -123,8 +123,6 @@ const CoreExam = ({
     }
     setOpenExam(false);
   };
-  console.log(answers);
-  console.log(examData?.questions[0]?.answers[2].id);
   return (
     <section>
       {examError ? (
@@ -291,6 +289,7 @@ const CoreExam = ({
                   )}
                   {examData?.questions?.[currentQuestionIndex]?.question_text}
                 </h3>
+                {/* Answers */}
                 <div className="space-y-3">
                   {examData?.questions?.[currentQuestionIndex]?.answers?.map(
                     (answer: any, index: any) => (
@@ -323,15 +322,17 @@ const CoreExam = ({
                               <div className="w-3 h-3 bg-white rounded-full"></div>
                             )}
                           </div>
-                          <span className="flex items-center gap-x-[20px] font-medium">
+                          <span className="flex md:flex-row flex-col items-center gap-x-[20px] font-medium">
                             {answer?.image && (
                               <img
                                 src={answer?.image}
                                 alt="Answer"
-                                className="w-[250px] mb-2 rounded-lg max-w-100 max-h-100"
+                                className="w-[150px] md:w-[250px] mb-2 rounded-lg max-w-100 max-h-100"
                               />
                             )}
+                            <p className="w-full">
                             {answer?.answer_text}
+                            </p>
                           </span>
                         </div>
                       </button>
@@ -341,7 +342,7 @@ const CoreExam = ({
               </div>
 
               {/* Navigation */}
-              <div className="flex items-center justify-between">
+              <div className="flex md:flex-row flex-col gap-y-5 items-center justify-between">
                 <button
                   onClick={() =>
                     setCurrentQuestionIndex(
@@ -446,7 +447,7 @@ const CoreExam = ({
                         (a: any) => a?.question_id === question?.id
                       );
                       const isCorrect = matchedAnswer?.is_correct;
-                      // const correctAnswerId = matchedAnswer?.correct_answer_id;
+                      const correctAnswerId = matchedAnswer?.correct_answer_id;
                       const userAnswerId = matchedAnswer?.user_answer_id;
                       const currentAnswer = answers?.[questionIndex];
                       return (
@@ -485,16 +486,19 @@ const CoreExam = ({
                                 <div
                                   key={answerIndex}
                                   className={`w-full p-4 text-right rounded-xl border-2 transition-all duration-200 ${
-                                    answer?.id === userAnswerId && isCorrect
+                                    answer?.id === correctAnswerId ||
+                                    (answer?.id === userAnswerId && isCorrect)
                                       ? "border-green-500 bg-green-50 text-green-900"
-                                      : answer?.id === userAnswerId
+                                      : answer?.id === userAnswerId &&
+                                        !isCorrect
                                       ? "border-red-500 bg-red-100 text-red-900"
                                       : "border-gray-200"
                                   }`}
                                 >
                                   <div className="flex items-center space-x-3">
-                                    {answer?.id === userAnswerId &&
-                                    isCorrect ? (
+                                    {answer?.id === correctAnswerId ||
+                                    (answer?.id === userAnswerId &&
+                                      isCorrect) ? (
                                       <CircleCheckBig className="w-6 h-6" />
                                     ) : (
                                       answer?.id === userAnswerId && (

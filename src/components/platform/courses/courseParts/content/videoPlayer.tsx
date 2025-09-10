@@ -1,6 +1,7 @@
 import { CheckCircle, FileText, Download, Clock } from "lucide-react";
 import { useLesson } from "@/store/platform/useLesson";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
+// import { useState, useEffect } from "react";
 
 const VideoPlayer = ({ markLessonComplete }: any) => {
   const currentLesson = useLesson((state) => state.currentLesson);
@@ -8,6 +9,17 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
     "/training/students/resources-download/",
     ["downloadFiles"]
   );
+  // const [isFullscreen, setIsFullscreen] = useState(false);
+  // useEffect(() => {
+  //   const handleFullscreenChange = () => {
+  //     setIsFullscreen(!!document.fullscreenElement);
+  //   };
+
+  //   document.addEventListener("fullscreenchange", handleFullscreenChange);
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  //   };
+  // }, []);
   const handleDownload = async (resourceId: any) => {
     try {
       await downloadFiles({
@@ -15,31 +27,56 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
       });
     } catch (error) {}
   };
-  console.log("currentLesson", currentLesson);
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video bg-black rounded-t-2xl overflow-hidden">
-        <iframe
-          width="100%"
-          height="100%"
-          src={`https://www.dailymotion.com/embed/video/${currentLesson?.link}?queue-enable=false&endscreen-enable=false&ui-start-screen-info=false`}
-          title={currentLesson?.title}
-          frameBorder="0"
-          allow="autoplay; fullscreen; picture-in-picture"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-        ></iframe>
+        {/* <iframe
+          {...({
+            width: "100%",
+            height: "100%",
+            src: `https://www.dailymotion.com/embed/video/${currentLesson?.link}`,
+            title: currentLesson?.title,
+            frameBorder: "0",
+            allow: "autoplay; fullscreen; picture-in-picture",
+            allowFullScreen: true,
+            webkitallowfullscreen: "true",
+            mozallowfullscreen: "true",
+            referrerPolicy: "strict-origin-when-cross-origin",
+          } as any)}
+        /> */}
+        <div className="relative aspect-video bg-black rounded-t-2xl overflow-hidden">
+          <iframe
+            src={`https://player.mux.com/${currentLesson?.link}?metadata-video-title=%${currentLesson?.title}&video-title=${currentLesson?.title}`}
+            className="w-full border-none aspect-video"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+
+          {/* Overlays – positions in percentages so they always match */}
+          {/* {isFullscreen ? (
+            <>
+              <div className="absolute top-[0%] left-[0%] w-[100%] h-[30%] bg-black"></div>
+              <div className="absolute top-[35%] left-[55%] w-[25%] md:w-[20%] lg:w-[15%] h-[30%] bg-transparent"></div>
+              <div className="absolute bottom-[0%] left-[0%] w-[14%] sm:w-[12%] md:w-[9.8%] lg:w-[8.4%] xl:w-[6.3%] 2xl:w-[4.85%] h-[25%] bg-transparent"></div>
+            </>
+          ) : (
+            <>
+              <div className="absolute top-[0%] left-[0%] w-[100%] sm:w-[92.5%] md:w-[94%] lg:w-[96%] xl:w-[96%] 2xl:w-[96.5%] h-[30%] lg:h-[15%] bg-transparent"></div>
+              <div className="absolute top-[35%] left-[55%] w-[25%] md:w-[20%] lg:w-[15%] h-[30%] bg-transparent"></div>
+              <div className="absolute bottom-[0%] left-[0%] w-[14%] sm:w-[12%] md:w-[9.8%] lg:w-[8.4%] xl:w-[6.3%] 2xl:w-[4.85%] h-[25%] bg-transparent"></div>
+            </>
+          )} */}
+        </div>
+
         {/* <iframe
           width="100%"
           height="100%"
           src={
-            "https://www.dailymotion.com/embed/video/x8inged?ui-start-screen-info=false&queue-enable=false&endscreen-enable=false"
             // "https://www.youtube.com/embed/" + currentLesson?.link
           }
           title={currentLesson?.title}
           frameBorder="0"
           // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allow="autoplay; fullscreen; picture-in-picture"
           referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
         ></iframe> */}

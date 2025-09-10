@@ -14,6 +14,7 @@ interface Props {
 
 export default function AddCustomCard({ setShowAddModal }: Props) {
   const [amount, setAmount] = useState<number | "">("");
+  // const [image, setImage] = useState<any>();
   const [selectedLibrary, setSelectedLibrary] = useState<string[]>([]);
   const [selectedTeacher, setSelectedTeacher] = useState<string[]>([]);
   const [selectedCard, setSelectedCard] = useState<string[]>([]);
@@ -45,7 +46,6 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
   const filteredCards: CardPricing[] = dataCards?.data?.data?.filter(
     (c: CardPricing) => c.is_active
   );
-  console.log("filteredCards",filteredCards)
   const targetCard: CardPricing = dataCards?.data?.data?.find(
     (c: CardPricing) => c.id === selectedCard[0]
   );
@@ -55,6 +55,13 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
       toast.error("لا يمكن تخصيص سعر أعلي من السعر الأصلي للبطاقة");
       return;
     }
+    // const formData = new FormData();
+    // image && formData.append("image", image);
+    // amount && formData.append("price", String(amount ?? 0));
+    // selectedCard[0] && formData.append("card", String(selectedCard[0]));
+    // selectedLibrary[0] && formData.append("user", String(selectedLibrary[0]));
+    // selectedTeacher[0] && formData.append("user", String(selectedTeacher[0]));
+
     const body = {
       user:
         selectedLibrary.length > 0 ? selectedLibrary[0] : selectedTeacher[0],
@@ -148,6 +155,47 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
               }
             }}
           />
+          {/* Media */}
+          {/* <div className="flex flex-col gap-2">
+            <label
+              htmlFor="imageUpload"
+              className="block text-sm font-medium text-gray-700"
+            >
+              الصورة المصغرة
+            </label>
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="imageUpload"
+                className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+              >
+                اختر الصورة المصغرة
+              </label>
+
+              <input
+                id="imageUpload"
+                type="file"
+                className="invisible w-0 h-0"
+                onChange={(e) => {
+                  setImage(e.target.files?.[0]);
+                }}
+                accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, image/svg+xml"
+              />
+
+              <span id="fileName" className="text-sm text-gray-500">
+                {image ? image?.name : "لم يتم اختيار صورة"}
+              </span>
+              {(typeof image === "string" || image instanceof File) && (
+                <img
+                  loading="lazy"
+                  src={
+                    image instanceof File ? URL.createObjectURL(image) : image
+                  }
+                  alt="Preview"
+                  className="w-10 h-10 object-cover rounded"
+                />
+              )}
+            </div>
+          </div> */}
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setShowAddModal(false)}

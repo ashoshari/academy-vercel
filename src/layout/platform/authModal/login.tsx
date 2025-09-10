@@ -18,14 +18,25 @@ const Login = ({
   const { mutateAsync: loginMutateAsync } = useCustomPost("/account/login/", [
     "login",
   ]);
+  // POST Generate IMEI
+  const { mutateAsync: generateIMEI } = useCustomPost("/account/imei-string/", [
+    "generateIMEI",
+  ]);
   const onsubmit = async (data: any) => {
     let imei: string | null = window.localStorage.getItem("IMEI");
     try {
+      if (!imei) {
+        const IMEIResponse = await generateIMEI({});
+        imei = IMEIResponse?.data ?? null;
+        if (imei) {
+          window.localStorage.setItem("IMEI", imei);
+        }
+      }
       const loginData = {
         mobile_number: data.mobile_number,
         password: data.password,
         imei,
-      }
+      };
       const res = await loginMutateAsync(loginData);
       if (res?.status) {
         setTokens(res.data.tokens.access, res.data?.user);

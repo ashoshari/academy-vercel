@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Play,
   BarChart3,
@@ -21,7 +21,33 @@ import Exam from "./content/exam";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import toast from "react-hot-toast";
-const CourseContent = ({ allLessons }: { allLessons: any }) => {
+
+interface teacher {
+  id: string;
+  name: string;
+  image: string
+}
+interface CourseData {
+  id: string;
+  is_show_general_questions: boolean;
+  is_special: boolean;
+  name: string;
+  notes: [];
+  progress_bar: number;
+  questions: [];
+  resources: [];
+  semesters: [];
+  teacher: teacher;
+  total_number_of_enrolled_students: number;
+
+}
+interface CourseContnetProps {
+  allLessons: any[];
+  courseData: CourseData;
+}
+const CourseContent = ({ allLessons, 
+  courseData 
+}: CourseContnetProps) => {
   const queryClient = useQueryClient();
   const { courseId } = useParams();
   const [activeTab, setActiveTab] = useState("content");
@@ -32,6 +58,13 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
   const setCurrentLessonIndex = useLesson(
     (state) => state.setCurrentLessonIndex
   );
+  useEffect(() => {
+    if (currentLesson?.type == "video") {
+      setIsExamMode(false);
+    } else {
+      setIsExamMode(true);
+    }
+  }, [isExamMode]);
   const { mutateAsync: completeMutateAsync } = useCustomPost(
     "/training/students/lesson/complete/",
     ["complete"]
@@ -40,7 +73,6 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
       const prevLesson = allLessons[currentLessonIndex - 1];
-      console.log("prevLesson", prevLesson);
 
       prevLesson?.type == "video" ? setIsExamMode(false) : setIsExamMode(true);
     } else if (
@@ -48,7 +80,6 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
       currentLessonIndex < allLessons.length - 1
     ) {
       const nextLesson = allLessons[currentLessonIndex + 1];
-      console.log("nextLesson", nextLesson);
       setCurrentLessonIndex(currentLessonIndex + 1);
       nextLesson?.type == "video" ? setIsExamMode(false) : setIsExamMode(true);
     }
@@ -64,16 +95,6 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
       toast.error(error?.response?.data?.error || "حدث خطأ أثناء إكمال الدرس");
     }
   };
-  // exam
-  //     const startExam = () => {
-  //     setIsExamMode(true);
-  //     // setCurrentExam(sampleExam);
-  //     setCurrentQuestionIndex(0);
-  //     setSelectedAnswers({});
-  //     // setTimeRemaining(sampleExam.duration * 60);
-  //     setExamSubmitted(false);
-  //     setExamResults(null);
-  //   };
   return (
     <>
       <div className="p-4 sm:p-6 lg:p-8">
@@ -85,13 +106,13 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
             { id: "files", title: "ملفات الدورة", icon: FolderOpen },
             { id: "notes", title: "الملاحظات", icon: StickyNote },
             { id: "questions", title: "الأسئلة", icon: MessageSquare },
-          ].map((tab) => {
+          ].filter((tab) => tab.id !== "questions" || courseData?.is_show_general_questions)?.map((tab) => {
             const IconComponent = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
+                className={`cursor-pointer flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
                   activeTab === tab.id
                     ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
                     : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
@@ -114,15 +135,12 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
               ) : (
                 <VideoPlayer markLessonComplete={markLessonComplete} />
               )
-              //  : (
-              //   <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-              //     <p className="text-gray-500">نوع الدرس غير مدعوم</p>
-              //   </div>
-              // )
             }
 
             {/* Navigation Controls */}
-            <div className={`flex flex-col lg:flex-row gap-5 items-center justify-between bg-white rounded-2xl shadow-lg p-6`}>
+            <div
+              className={`flex flex-col lg:flex-row gap-5 items-center justify-between bg-white rounded-2xl shadow-lg p-6`}
+            >
               <button
                 onClick={() => navigateLesson("prev")}
                 disabled={currentLessonIndex === 0}
@@ -166,7 +184,9 @@ const CourseContent = ({ allLessons }: { allLessons: any }) => {
         {activeTab === "progress" && <ProgressTab />}
         {activeTab === "files" && <FilesTab />}
         {activeTab === "notes" && <NotesTab />}
-        {activeTab === "questions" && <QuestionsTab />}
+        {
+        courseData?.is_show_general_questions &&
+        activeTab === "questions" && <QuestionsTab />}
       </div>
     </>
   );

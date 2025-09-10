@@ -14,7 +14,6 @@ const TreePage: React.FC = () => {
   const navigate = useNavigate();
 
   const data = treeData?.data.find((node: any) => node.id === navHeaderId);
-  console.log("data", data);
   const toggleNode = (nodeId: string) => {
     const newExpanded = new Set(expandedNodes);
     if (newExpanded.has(nodeId)) {
@@ -82,7 +81,6 @@ const TreePage: React.FC = () => {
     </div>
   );
   const renderNode = (node: any, level: number = 0) => {
-    console.log("node", node);
     const isExpanded = expandedNodes.has(node?.id);
 
     const childKey = Object.keys(node).find(
@@ -95,18 +93,7 @@ const TreePage: React.FC = () => {
     const hasTeachers =
       node.teachers && Array.isArray(node.teachers) && node.teachers.length > 0;
     if (!hasChildren && !hasTeachers) {
-      return (
-        <div className="relative flex flex-col items-center">
-          <img
-            className="absolute top-0 w-[700px] h-[650px] z-0"
-            src={errorIllustation}
-            alt="error"
-          />
-          <h1 className="pt-[50px] absolute text-[2rem] top-[500px] z-[1]">
-            لا يوجد محتوى لعرضه
-          </h1>
-        </div>
-      );
+      return null;
     }
     return (
       <div key={node?.id} className="mb-4">
@@ -206,9 +193,9 @@ const TreePage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() =>
-                  window.history.length > 1 ? navigate(-1) : navigate("/")
-                }
+                onClick={() => {
+                  window.history.length > 1 ? navigate(-1) : navigate(-1);
+                }}
                 className="w-12 h-12 cursor-pointer bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
                 <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />
@@ -259,9 +246,43 @@ const TreePage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <div className="space-y-6">
           {Array.isArray(data?.subsections) && data.subsections.length > 0 ? (
-            data?.subsections?.map((node: any) => (
-              <React.Fragment key={node.id}>{renderNode(node)}</React.Fragment>
-            ))
+            data.subsections.every((node: any) => {
+              const childKey = Object.keys(node).find(
+                (key) =>
+                  Array.isArray(node[key]) &&
+                  node[key].length > 0 &&
+                  node[key].every(
+                    (item: any) => typeof item === "object" && "id" in item
+                  )
+              );
+              const hasChildren =
+                !!childKey && hasValidChildren(node, childKey);
+              const hasTeachers =
+                node.teachers &&
+                Array.isArray(node.teachers) &&
+                node.teachers.length > 0;
+
+              return !hasChildren && !hasTeachers;
+            }) ? (
+              // Show empty state once if ALL subsections are empty
+              <div className="relative flex flex-col items-center">
+                <img
+                  className="absolute top-0 w-[700px] h-[650px] z-0"
+                  src={errorIllustation}
+                  alt="error"
+                />
+                <h1 className="pt-[50px] absolute text-[2rem] top-[500px] z-[1]">
+                  لا يوجد محتوى لعرضه
+                </h1>
+              </div>
+            ) : (
+              // Otherwise render the nodes normally
+              data.subsections.map((node: any) => (
+                <React.Fragment key={node.id}>
+                  {renderNode(node)}
+                </React.Fragment>
+              ))
+            )
           ) : (
             <div className="relative flex flex-col items-center">
               <img

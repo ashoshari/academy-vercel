@@ -91,7 +91,6 @@ const TeachersPage = () => {
     ["teachers", filters]
   );
   const dataMaterials = useCustomQuery("core/materials/", ["materials"]);
-  console.log("dataMaterials", dataMaterials?.data?.data);
 
   const teacherStatus = useCustomPost(
     `/account/admin/teachers/${selectedTeacher?.id}/activate/`,
@@ -329,7 +328,7 @@ const TeachersPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col items-center gap-5 justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">إدارة المعلمين</h1>
           <p className="text-gray-600 text-sm">
@@ -337,13 +336,6 @@ const TeachersPage = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          {/* <button
-            onClick={exportToExcel}
-            className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
-          >
-            <Download size={16} />
-            تصدير Excel
-          </button> */}
           <button
             onClick={() => navigate("/dashboard/teachers/add")}
             className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"

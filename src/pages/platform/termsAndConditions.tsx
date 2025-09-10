@@ -17,7 +17,7 @@ const termsAndConditions = () => {
           <div className="flex items-center mb-6 gap-x-[5px] p-8">
             <button
               onClick={() => {
-                navigate(-1);
+                window.history.length > 1 ? navigate(-1) : navigate(-1);
               }}
               className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >

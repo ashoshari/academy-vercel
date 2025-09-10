@@ -72,7 +72,7 @@ export default function TreeItem({
       }}
     >
       <div className="p-4">
-        <div className="flex items-start gap-4">
+        <div className="flex md:flex-row flex-col items-start gap-4">
           {/* Expand/Collapse Button */}
           <div className="flex items-center gap-2 shrink-0">
             {hasChildren ? (
@@ -207,7 +207,7 @@ export default function TreeItem({
             </div>
 
             {/* Stats and Actions */}
-            <div className="flex items-center justify-between">
+            <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 {/* <div className="flex items-center gap-1">
                   <Users size={14} />

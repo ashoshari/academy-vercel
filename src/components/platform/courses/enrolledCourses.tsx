@@ -220,7 +220,7 @@ const EnrolledCourses: React.FC = () => {
             <div className="text-center mt-8 md:hidden">
               <button
                 onClick={() => navigate("/all-courses")}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 mx-auto"
+                className="cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 mx-auto"
               >
                 <BookOpen className="w-5 h-5" />
                 <span>عرض جميع دوراتي</span>

@@ -35,6 +35,7 @@ const Register = ({
   const onsubmit = async (data: any) => {
     let imei: string | null = window.localStorage.getItem("IMEI");
     try {
+      // With OTP
       // if (showOTP) {
       //   const otpData = {
       //       mobile_number: data.mobile_number,
@@ -59,6 +60,33 @@ const Register = ({
       //     toast.error(res?.error || "فشل إنشاء الحساب");
       //   }
       // } else {
+      //   if (!imei) {
+      //   const IMEIResponse = await generateIMEI({});
+      //   imei = IMEIResponse?.data ?? null;
+      //   if (imei) {
+      //     window.localStorage.setItem("IMEI", imei);
+      //   }
+      // }
+      // const registerData = {
+      //   name: data.name,
+      //   mobile_number: data.mobile_number,
+      //   password: data.password,
+      //   imei,
+      // };
+      // const res = await RegisterMutateAsync(registerData);
+      // if (res?.status) {
+      //   setShowOTP(true);
+      // }
+      // setTokens(res?.data.tokens.access, res.data?.user);
+      // toast.success(
+      //   res?.data?.message ||
+      //     res?.message ||
+      //     res?.data ||
+      //     "تم إنشاء الحساب بنجاح"
+      // );
+      // }
+
+      // Without OTP
       if (!imei) {
         const IMEIResponse = await generateIMEI({});
         imei = IMEIResponse?.data ?? null;
@@ -83,14 +111,12 @@ const Register = ({
           res?.data ||
           "تم إنشاء الحساب بنجاح"
       );
-      console.log("res", res);
       onLogin();
       onClose();
       setShowOTP(false);
       isLogin(true);
       navigate("/");
       reset();
-      // }
     } catch (error: any) {
       const errorData = error.response?.data?.error;
 

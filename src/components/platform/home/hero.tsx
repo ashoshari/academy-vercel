@@ -117,33 +117,21 @@ const Hero: React.FC = () => {
                       {slides[currentSlide]?.link && (
                         <>
                           {/* Video Player */}
-                          {/* <video
-                        className="w-full h-80 md:h-96 object-cover"
-                        controls
-                      >
-                        <source
-                          src={
-                            "https://www.youtube.com/embed/" +
-                              slides[currentSlide]?.link ||
-                            "https://www.w3schools.com/html/mov_bbb.mp4"
-                          }
-                          type="video/mp4"
-                        />
-                        Your browser does not support the video tag.
-                      </video> */}
-                          <iframe
+                          {/* <iframe
                             className="aspect-video h-full"
                             width="100%"
                             height="100%"
-                            src={
-                              "https://www.youtube.com/embed/" +
-                                slides[currentSlide]?.link ||
-                              "?si=3uTi5rBiWUGXQ8gT"
-                            }
+                            src={`https://www.dailymotion.com/embed/video/${slides[currentSlide]?.link}?queue-enable=false&endscreen-enable=false&ui-start-screen-info=false`}
                             title={slides[currentSlide]?.title}
                             frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allow="autoplay; fullscreen; picture-in-picture"
                             referrerPolicy="strict-origin-when-cross-origin"
+                            allowFullScreen
+                          ></iframe> */}
+                          <iframe
+                            src={`https://player.mux.com/${slides[currentSlide]?.link}?metadata-video-title=%${slides[currentSlide]?.title}&video-title=${slides[currentSlide]?.title}`}
+                            className="w-full border-none aspect-video"
+                            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
                             allowFullScreen
                           ></iframe>
                           <button
@@ -158,15 +146,6 @@ const Hero: React.FC = () => {
                           </button>
                         </>
                       )}
-                      {/* <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div> */}
-                      {/* <button
-                          onClick={handlePlay}
-                          className="absolute inset-0 flex items-center justify-center group"
-                        >
-                          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-white/30 transition-all duration-300 transform group-hover:scale-110">
-                            <Play className="w-8 h-8 text-white ml-1" />
-                          </div>
-                        </button> */}
                     </div>
 
                     {/* Floating Elements */}

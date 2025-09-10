@@ -8,7 +8,6 @@ import {
   CreditCard,
   Lock,
   Timer,
-  // Target,
   TrendingUp,
   Smile,
   Zap,
@@ -85,17 +84,16 @@ const TeacherProfile: React.FC = () => {
   // const isMoblieOrTablet = /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(
   //   navigator.userAgent
   // );
-
   const tabs = [
     {
       id: "free_courses",
-      title: "الدورات المجانية",
+      title: "دورات التأسيس",
       icon: BookOpen,
       count: freeCoursesData?.length || 0,
     },
     {
       id: "courses",
-      title: "الدورات المدفوعة",
+      title: "الدورات",
       icon: BookOpen,
       count: coursesData?.length || 0,
     },
@@ -153,7 +151,6 @@ const TeacherProfile: React.FC = () => {
           queryClient.invalidateQueries({ queryKey: ["teachers"] });
         }
       }
-      // console.log(
       //   error?.response?.data?.detail ===
       //     "Authentication credentials were not provided."
       // );
@@ -164,9 +161,9 @@ const TeacherProfile: React.FC = () => {
     if (isLoggedIn) {
       if (course?.is_enrolled && course?.is_enrollment_active) {
         // if (!isMoblieOrTablet) {
-          navigate(`/coursePage/${course?.id}`);
+        navigate(`/coursePage/${course?.id}`);
         // } else {
-          // navigate(`/phone-user`);
+        // navigate(`/phone-user`);
         // }
       } else {
         handleCourseActivation(course);
@@ -699,9 +696,9 @@ const TeacherProfile: React.FC = () => {
           <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-between mb-6">
               <button
-                onClick={() =>
-                  window.history.length > 1 ? navigate(-1) : navigate("/")
-                }
+                onClick={() => {
+                  window.history.length > 1 ? navigate(-1) : navigate(-1);
+                }}
                 className="w-12 h-12 bg-white/20 hover:bg-white/30 cursor-pointer rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
                 <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />

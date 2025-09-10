@@ -87,9 +87,12 @@ const CardCodesPage = () => {
   // ] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
-  const [isDownloaded, setisDownloaded] = useState<"all" | "true" | "false">(
-    "all"
-  );
+  // const [isBatchDownloaded, setIsBatchDownloaded] = useState<
+  //   "all" | "true" | "false"
+  // >("all");
+  const [isCodeDownloaded, setisCodeDownloaded] = useState<
+    "all" | "true" | "false"
+  >("all");
   const [codesFilter, setCodesFilter] = useState();
   const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
     "all"
@@ -112,8 +115,8 @@ const CardCodesPage = () => {
   if (codesFilter) queryParams.append("code_name", codesFilter);
   if (isUsed !== null && isUsed !== undefined)
     queryParams.append("is_used", isUsed);
-  if (isDownloaded !== null && isDownloaded !== undefined)
-    queryParams.append("is_downloaded", isDownloaded);
+  if (isCodeDownloaded !== null && isCodeDownloaded !== undefined)
+    queryParams.append("is_downloaded", isCodeDownloaded);
   if (statusFilter) queryParams.append("is_active", statusFilter);
   if (page) queryParams.append("page", page.toString());
 
@@ -126,7 +129,7 @@ const CardCodesPage = () => {
       searchTerm,
       codesFilter,
       isUsed,
-      isDownloaded,
+      isCodeDownloaded,
       statusFilter,
       page,
     ]
@@ -209,9 +212,6 @@ const CardCodesPage = () => {
       })
     );
   };
-  const parser = new UAParser();
-  console.log("result", parser.getResult());
-
   const getClientInfo = () => {
     const parser = new UAParser();
     const result = parser.getResult();
@@ -274,7 +274,7 @@ const CardCodesPage = () => {
             name: "",
             card: "",
             quantity: 0,
-            prefix: "",
+            prefix: "M",
             notes: "",
             targetingType: "all",
             subsections: [],
@@ -338,7 +338,7 @@ const CardCodesPage = () => {
           searchTerm,
           codesFilter,
           isUsed,
-          isDownloaded,
+          isCodeDownloaded,
           statusFilter,
           page,
         ],
@@ -373,7 +373,7 @@ const CardCodesPage = () => {
           searchTerm,
           codesFilter,
           isUsed,
-          isDownloaded,
+          isCodeDownloaded,
           statusFilter,
           page,
         ],
@@ -537,11 +537,15 @@ const CardCodesPage = () => {
           {isExpanded ? <ChevronDown /> : <ChevronUp />}
         </button>
         <div
-          className={`${
-            !cardCodes?.data?.data || cardCodes?.data?.data?.length === 0
-              ? "hidden"
-              : "block"
-          } ${isExpanded ? "block" : "hidden"} p-6`}
+          className={`
+    overflow-hidden transition-all duration-500 ease-in-out
+    ${
+      isExpanded &&
+      !(!cardCodes?.data?.data || cardCodes?.data?.data?.length === 0)
+        ? `max-h-[1000px] overflow-y-auto opacity-100 p-6`
+        : "max-h-0 opacity-0"
+    }
+  `}
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {cardCodes?.data?.data?.map((batch: any) => {
@@ -798,8 +802,8 @@ const CardCodesPage = () => {
 
           {/* Download Filter */}
           <select
-            value={isDownloaded || ""}
-            onChange={(e) => setisDownloaded(e.target.value as any)}
+            value={isCodeDownloaded || ""}
+            onChange={(e) => setisCodeDownloaded(e.target.value as any)}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
             <option value="all">جميع حالات التحميل</option>

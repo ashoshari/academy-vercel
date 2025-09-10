@@ -87,7 +87,7 @@ const CoursesPage = () => {
   );
   // GET teachers
   const { data: teachers } = useCustomQuery(
-    "/account/admin/teachers/",
+    "/account/admin/teachers/?page_size=9999",
     ["teachers"],
     undefined,
     !["teacher", "library"].includes(role.toLowerCase())
@@ -143,6 +143,7 @@ const CoursesPage = () => {
     is_free: true,
     is_published: true,
     is_special: false,
+    is_show_general_questions: true,
   });
 
   // PUT Course
@@ -162,6 +163,7 @@ const CoursesPage = () => {
     `/training/admin/courses/${courseId}/`,
     ["deleteCourses", courseId]
   );
+
   const handleCreateCourse = async () => {
     const formData = new FormData();
     if (newCourse.name) formData.append("name", newCourse.name);
@@ -175,7 +177,7 @@ const CoursesPage = () => {
     if (newCourse.time_in_hours)
       formData.append("time_in_hours", newCourse.time_in_hours);
     if (newCourse.is_free)
-      formData.append("is_free", newCourse.is_free || false);
+      formData.append("is_free", newCourse.is_free || true);
     if (newCourse.card_price)
       formData.append("card_price", newCourse.card_price || null);
     if (newCourse.start_date)
@@ -192,17 +194,30 @@ const CoursesPage = () => {
         "specialization_material",
         newCourse.specialization_material
       );
-    if (newCourse.is_published)
+    if (newCourse.is_published) {
       formData.append("is_published", newCourse.is_published ?? true);
-    if (newCourse.is_special)
+    }
+    if (newCourse.is_special) {
       formData.append("is_special", newCourse.is_special || false);
+    }
+    if (newCourse.is_show_general_questions) {
+      formData.append(
+        "is_show_general_questions",
+        newCourse.is_show_general_questions || true
+      );
+    }
     if (newCourse.image instanceof File && newCourse.image) {
       formData.append("image", newCourse.image);
     }
     try {
       const res = await createCourse(formData);
       toast.success(res.message ?? "تم الحفظ بنجاح");
-      setNewCourse({ is_free: true, is_published: true, is_special: false });
+      setNewCourse({
+        is_free: true,
+        is_published: true,
+        is_special: false,
+        is_show_general_questions: true,
+      });
       setSelectedSubSection("");
       setSelectedSubSub("");
       setSelectedSpec("");
@@ -302,8 +317,9 @@ const CoursesPage = () => {
       toast.success("تم تعديل حالة الدورة بنجاح");
       queryClient.invalidateQueries({ queryKey: ["courses"] });
     } catch (error: any) {
-      console.log(error);
-      toast.error("حدث خطاء في تعديل حالة الدورة");
+      toast.error(
+        error?.response?.data?.error || "حدث خطاء في تعديل حالة الدورة"
+      );
       setCourses((prevCourses: any) =>
         prevCourses.map((course: any) =>
           course.id === courseId
@@ -535,7 +551,12 @@ const CoursesPage = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => {
-              setNewCourse({});
+              setNewCourse({
+                is_free: true,
+                is_published: true,
+                is_special: false,
+                is_show_general_questions: true,
+              });
               setSelectedSubSection("");
               setSelectedSubSub("");
               setSelectedSpec("");
@@ -964,11 +985,31 @@ const CoursesPage = () => {
                   </div>
                   <input
                     type="checkbox"
-                    checked={newCourse.is_special || false}
+                    checked={newCourse.is_special ?? false}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
                         is_special: e.target.checked,
+                      })
+                    }
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                </div>
+
+                <div className="col-span-1 lg:col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-800">إظهار الأسئلة</p>
+                    <p className="text-sm text-gray-500">
+                      إظهار صفحة الأسئلة الخاصة بالدورة
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={newCourse?.is_show_general_questions ?? true}
+                    onChange={(e) =>
+                      setNewCourse({
+                        ...newCourse,
+                        is_show_general_questions: e.target.checked,
                       })
                     }
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
@@ -979,7 +1020,7 @@ const CoursesPage = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
+          <div className="flex md:flex-row flex-col gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
             <button
               onClick={() => setCurrentView("list")}
               className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
@@ -1001,7 +1042,7 @@ const CoursesPage = () => {
                   : false) ||
                 !newCourse.specialization_material
               }
-              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer md:justify-start justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الدورة
@@ -1128,26 +1169,24 @@ const CoursesPage = () => {
                   </div>
                 </div>
               )}
-              {/* Time In Minutes */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    المدة (بالساعات)
-                  </label>
-                  <input
-                    type="number"
-                    value={selectedCourse?.time_in_hours}
-                    onChange={(e) =>
-                      setSelectedCourse({
-                        ...selectedCourse,
-                        time_in_hours: parseInt(e.target.value),
-                      })
-                    }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                    placeholder="40"
-                    min="0"
-                  />
-                </div>
+              {/* Time In Hours */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  المدة (بالساعات)
+                </label>
+                <input
+                  type="number"
+                  value={selectedCourse?.time_in_hours}
+                  onChange={(e) =>
+                    setSelectedCourse({
+                      ...selectedCourse,
+                      time_in_hours: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  placeholder="40"
+                  min="0"
+                />
               </div>
 
               {/* Image */}
@@ -1504,6 +1543,26 @@ const CoursesPage = () => {
                     className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
                 </div>
+
+                <div className="flex items-center col-span-1 lg:col-span-2 justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-800">إظهار الأسئلة</p>
+                    <p className="text-sm text-gray-500">
+                      إظهار صفحة الأسئلة الخاصة بالدورة
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={selectedCourse?.is_show_general_questions}
+                    onChange={(e) =>
+                      setSelectedCourse({
+                        ...selectedCourse,
+                        is_show_general_questions: e.target.checked,
+                      })
+                    }
+                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1555,7 +1614,7 @@ const CoursesPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">إدارة الدورات</h1>
           <p className="text-gray-600 text-sm">
@@ -1940,7 +1999,7 @@ const CoursesPage = () => {
                                 setCurrentView("edit");
                               }}
                               className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
-                              title="الدورة تعديل"
+                              title="تعديل الدورة"
                             >
                               <Edit size={16} />
                             </button>

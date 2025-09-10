@@ -318,7 +318,7 @@ const StudentsPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col items-center gap-5 justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">إدارة الطلاب</h1>
           <p className="text-gray-600 text-sm">

@@ -13,7 +13,6 @@ const Exam = ({ markLessonComplete }: any) => {
     ["exams", courseId]
   );
   const examData = data?.data;
-  console.log('examData', examData);
   // POST SUBMIT EXAM
   const { mutateAsync: postExam } = useCustomPost(
     `/training/students/course/exam/${currentLesson?.exam}/${courseId}/submit/`,

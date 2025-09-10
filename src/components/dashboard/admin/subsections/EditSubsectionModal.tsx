@@ -41,7 +41,6 @@ const EditModal: React.FC<Props> = ({
       ),
     [data?.sections]
   );
-  console.log("data",data);
   /* ── mutation ──────────────────────────────────────────── */
   const mutation = useCustomUpdate(`${endpointBase}${data?.id}/`, queryKey);
 

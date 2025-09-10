@@ -40,57 +40,94 @@ const GenerateModal = ({
   cardPricing: any;
   loading: any;
 }) => {
-  const [selectedSubsections, setSelectedSubsections] = useState<any>([]);
-  const [selectedSubSubsections, setSelectedSubSubsections] = useState<any>([]);
-  const [selectedSpecializations, setSelectedSpecializations] = useState<any>(
-    []
-  );
+  const [selectedSubsections, setSelectedSubsections] = useState<string[]>([]);
+  const [selectedSubSubsections, setSelectedSubSubsections] = useState<
+    string[]
+  >([]);
+  const [selectedSpecializations, setSelectedSpecializations] = useState<
+    string[]
+  >([]);
   const [selectedSpecializationMaterial, setSelectedSpecializationMaterial] =
-    useState<any>([]);
+    useState<string[]>([]);
 
   const subsections = useCustomQuery("/training/admin/subsections/", [
     "subsections",
   ]);
 
-  const subsubsections = useCustomQuery("/training/admin/subsubsections/", [
-    "subsubsections",
-  ]);
+  // Find all subsubsections of selected subsections
+  const subsubOptions =
+    subsections?.data?.data
+      ?.filter((s: any) => selectedSubsections.includes(s.id))
+      ?.flatMap((s: any) =>
+        (s.subsubsections || []).map((ss: any) => ({
+          id: ss.id,
+          title: ss.title,
+          specializations: ss.specializations || [],
+          specialization_materials: ss.specialization_materials || [],
+        }))
+      ) || [];
 
-  const specializations = useCustomQuery("/training/admin/specializations/", [
-    "specializations",
-  ]);
+  // Find all specializations of selected subsubsections
+  const specializationOptions =
+    subsubOptions
+      ?.filter((ss: any) => selectedSubSubsections.includes(ss.id))
+      ?.flatMap((ss: any) =>
+        (ss.specializations || []).map((sp: any) => ({
+          id: sp.id,
+          title: sp.name,
+          specialization_materials: sp.specialization_materials || [],
+        }))
+      ) || [];
 
-  const specializationMaterial = useCustomQuery(
-    "/training/admin/specialization-materials/",
-    ["specialization-materials"]
-  );
+  // Find specialization materials
+  const specializationMaterialOptions = [
+    // from selected specializations
+    ...(specializationOptions
+      ?.filter((sp: any) => selectedSpecializations.includes(sp.id))
+      ?.flatMap((sp: any) =>
+        (sp.specialization_materials || []).map((sm: any) => ({
+          id: sm.id,
+          title: sm.material,
+        }))
+      ) || []),
+
+    // from selected subsubsections directly
+    ...(subsubOptions
+      ?.filter((ss: any) => selectedSubSubsections.includes(ss.id))
+      ?.flatMap((ss: any) =>
+        (ss.specialization_materials || []).map((sm: any) => ({
+          id: sm.id,
+          title: sm.material,
+        }))
+      ) || []),
+  ];
 
   useEffect(() => {
-    setGenerateForm({
-      ...generateForm,
+    setGenerateForm((prev: any) => ({
+      ...prev,
       subsections: selectedSubsections,
-    });
+    }));
   }, [selectedSubsections]);
 
   useEffect(() => {
-    setGenerateForm({
-      ...generateForm,
+    setGenerateForm((prev: any) => ({
+      ...prev,
       subsubsections: selectedSubSubsections,
-    });
+    }));
   }, [selectedSubSubsections]);
 
   useEffect(() => {
-    setGenerateForm({
-      ...generateForm,
+    setGenerateForm((prev: any) => ({
+      ...prev,
       specializations: selectedSpecializations,
-    });
+    }));
   }, [selectedSpecializations]);
 
   useEffect(() => {
-    setGenerateForm({
-      ...generateForm,
+    setGenerateForm((prev: any) => ({
+      ...prev,
       specialization_material: selectedSpecializationMaterial,
-    });
+    }));
   }, [selectedSpecializationMaterial]);
 
   const user = readUserFromStorage();
@@ -208,8 +245,18 @@ const GenerateModal = ({
                 <div className="space-y-3">
                   <MultiSelectAutocomplete
                     value={selectedSubsections}
-                    onChange={setSelectedSubsections}
-                    options={subsections?.data?.data || []}
+                    onChange={(ids) => {
+                      setSelectedSubsections(ids);
+                      setSelectedSubSubsections([]); // reset children
+                      setSelectedSpecializations([]);
+                      setSelectedSpecializationMaterial([]);
+                    }}
+                    options={
+                      subsections?.data?.data?.map((s: any) => ({
+                        id: s.id,
+                        title: s.title,
+                      })) || []
+                    }
                     placeholder="اختر الأقسام..."
                   />
                 </div>
@@ -223,53 +270,50 @@ const GenerateModal = ({
                 <div className="space-y-3">
                   <MultiSelectAutocomplete
                     value={selectedSubSubsections}
-                    onChange={setSelectedSubSubsections}
-                    options={subsubsections?.data?.data || []}
-                    placeholder="اختر الاقسام الفرعية..."
+                    onChange={(ids) => {
+                      setSelectedSubSubsections(ids);
+                      setSelectedSpecializations([]);
+                      setSelectedSpecializationMaterial([]);
+                    }}
+                    options={subsubOptions}
+                    placeholder="اختر الأقسام الفرعية..."
                   />
                 </div>
               </div>
 
               {/* specializations */}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  اختر تخصص
-                </label>
-                <div className="space-y-3">
+              {specializationOptions.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    اختر تخصص
+                  </label>
                   <MultiSelectAutocomplete
                     value={selectedSpecializations}
-                    onChange={setSelectedSpecializations}
-                    options={
-                      specializations?.data?.data.map((s: any) => ({
-                        ...s,
-                        title: s.name,
-                      })) || []
-                    }
-                    placeholder="اختر تخصص  ..."
+                    onChange={(ids) => {
+                      setSelectedSpecializations(ids);
+                      setSelectedSpecializationMaterial([]);
+                    }}
+                    options={specializationOptions}
+                    placeholder="اختر تخصص..."
                   />
                 </div>
-              </div>
+              )}
 
               {/* specialization-materials */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  اختر المواد
-                </label>
-                <div className="space-y-3">
+              {specializationMaterialOptions.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    اختر المواد
+                  </label>
                   <MultiSelectAutocomplete
                     value={selectedSpecializationMaterial}
                     onChange={setSelectedSpecializationMaterial}
-                    options={
-                      specializationMaterial?.data?.data.map((s: any) => ({
-                        ...s,
-                        title: s.name,
-                      })) || []
-                    }
-                    placeholder="اختر المواد  ..."
+                    options={specializationMaterialOptions}
+                    placeholder="اختر المواد..."
                   />
                 </div>
-              </div>
+              )}
             </>
           )}
 

@@ -180,11 +180,11 @@ const AllCourses = () => {
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group">
       {myCoursesData?.map((course: any) => (
         <div className="p-6">
-          <div className="flex items-center space-x-6">
+          <div className="flex md:flex-row flex-col items-center gap-6 w-full">
             {/* Progress Circle */}
-            <div className="relative w-12 h-12 flex-shrink-0">
+            <div className="relative w-20 h-20 md:w-12 md:h-12 flex-shrink-0">
               <svg
-                className="w-12 h-12 transform -rotate-90"
+                className=" w-20 h-20 md:w-12 md:h-12 transform -rotate-90"
                 viewBox="0 0 48 48"
               >
                 <circle
@@ -211,14 +211,14 @@ const AllCourses = () => {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-bold text-blue-600">
+                <span className="text-lg md:text-xs font-bold text-blue-600">
                   {course?.progress}%
                 </span>
               </div>
             </div>
 
             {/* Course Info */}
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
@@ -277,9 +277,9 @@ const AllCourses = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between mb-6">
             <button
-              onClick={() =>
-                window.history.length > 1 ? navigate(-1) : navigate("/")
-              }
+              onClick={() => {
+                window.history.length > 1 ? navigate(-1) : navigate(-1);
+              }}
               className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl cursor-pointer flex items-center justify-center transition-all duration-200 group"
             >
               <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform duration-200" />

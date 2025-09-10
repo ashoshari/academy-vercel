@@ -111,7 +111,7 @@ export default function RecentActivities() {
       )}
 
       {/* Activities list */}
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-auto">
         {activities.map((act) => (
           <div
             key={act.id}
@@ -132,6 +132,7 @@ export default function RecentActivities() {
       {/* Pagination */}
 
       <Pagination
+        small={true}
         count={pagination?.count ?? 0}
         currentPage={filters.page}
         onPageChange={(page: any) => setFilters((prev) => ({ ...prev, page }))}

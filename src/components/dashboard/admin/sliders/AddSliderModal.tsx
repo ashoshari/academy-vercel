@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
 import {
   FileImage,
-  // FileVideo,
   Save,
   ToggleLeft,
   ToggleRight,
@@ -179,7 +177,7 @@ export default function AddSliderModal({
                 })
               }
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-              placeholder="أدخل رابط..."
+              placeholder="أدخل الترتيب..."
             />
           </div>
           {newSlide.image && !selectedImageFile && (
@@ -215,26 +213,6 @@ export default function AddSliderModal({
 
           {/* Status Toggles */}
           <div className="grid grid-cols-2 gap-4">
-            {/* <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <p className="font-medium text-gray-800">نشط</p>
-                <p className="text-sm text-gray-500">ظهور في السلايدر</p>
-              </div>
-              <button
-                onClick={() =>
-                  setNewSlide({ ...newSlide, isActive: !newSlide.isActive })
-                }
-                className={`p-1 rounded-full transition-colors ${
-                  newSlide.isActive ? "text-green-600" : "text-gray-400"
-                }`}
-              >
-                {newSlide.isActive ? (
-                  <ToggleRight size={24} />
-                ) : (
-                  <ToggleLeft size={24} />
-                )}
-              </button>
-            </div> */}
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
                 <p className="font-medium text-gray-800">مفعل</p>

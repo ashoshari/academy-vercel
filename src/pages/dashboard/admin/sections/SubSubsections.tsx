@@ -201,7 +201,6 @@ const SubsectionsPage = () => {
   //   //     item.id === id ? { ...item, isExpanded: !item.isExpanded } : item
   //   //   )
   //   // );
-  //   console.log(id);
   // };
 
   const handleAddSubsection = () => {
@@ -232,7 +231,6 @@ const SubsectionsPage = () => {
     //   setShowAddModal(false);
     // }
 
-    // console.log("newSubsection", newSubsection);
 
     addSubSection
       .mutateAsync({
@@ -392,8 +390,6 @@ const SubsectionsPage = () => {
   //   //       : subsection
   //   //   )
   //   // );
-  //   console.log(subsectionId);
-  //   console.log(linkedSections);
   // };
 
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
@@ -407,12 +403,11 @@ const SubsectionsPage = () => {
     }));
   };
 
-  console.log("newMaterialSubSub", newMaterialSubSub);
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">الأقسام الفرعية</h1>
           <p className="text-gray-600 text-sm">

@@ -164,7 +164,7 @@ const LibrariesPage = () => {
       dir="rtl"
     >
       {/* Header */}
-      <div className="flex items-center justify-between w-full">
+      <div className="flex md:flex-row flex-col gap-5 items-center justify-between w-full">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">إدارة المكتبات</h1>
           <p className="text-gray-600 text-sm">

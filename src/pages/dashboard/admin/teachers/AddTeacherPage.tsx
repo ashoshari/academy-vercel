@@ -36,7 +36,6 @@ export default function AddTeacherPage() {
   ]);
 
   const addTeacher = useCustomPost("account/admin/teachers/", ["teachers"]);
-  console.log("dataMaterials", dataMaterials?.data);
   const onSubmit = async (data: FormValues) => {
     try {
       const res = await addTeacher.mutateAsync({

@@ -15,15 +15,13 @@ const privacyPolicy = () => {
           <div className="flex items-center mb-6 gap-x-[5px] p-8">
             <button
               onClick={() => {
-                navigate(-1);
+                window.history.length > 1 ? navigate(-1) : navigate(-1);
               }}
               className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <ArrowRight size={20} />
             </button>
-            <h2 className="text-2xl font-bold text-gray-800">
-              سياسة الخصوصية
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800">سياسة الخصوصية</h2>
           </div>
           <main
             className="px-10"

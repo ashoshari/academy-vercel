@@ -14,11 +14,11 @@ const Navbar: React.FC = () => {
     ["footer"]
   );
   const headerData = data?.data;
-  console.log("headerData", headerData);
   const footerData = footer?.data;
   const navigate = useNavigate();
   const clearTokens = useToken((state) => state.clearTokens);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -54,100 +54,124 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav className="h-[80px] bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
-        <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-full">
+        <div className="h-full max-w-[110rem] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-4 items-center h-full">
             {/* Logo */}
-            <button
-              onClick={() => navigate("/")}
-              className="cursor-pointer flex items-center space-x-2"
-            >
-              <div className="flex items-center space-x-3">
-                {headerData?.logo ? (
-                  <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
-                    <img
-                      loading="lazy"
-                      className="rounded-xl w-10 h-10 text-white"
-                      src={headerData?.logo}
-                      alt="logo"
-                    />
+            <div className="flex items-center">
+              <button
+                onClick={() => navigate("/")}
+                className="cursor-pointer flex items-center space-x-2"
+              >
+                <div className="flex items-center space-x-3">
+                  {headerData?.logo ? (
+                    <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
+                      <img
+                        loading="lazy"
+                        className="rounded-xl w-10 h-10 text-white"
+                        src={headerData?.logo}
+                        alt="logo"
+                      />
+                    </div>
+                  ) : (
+                    <Image className="rounded-xl w-10 h-10 text-gray-600" />
+                  )}
+                  <div className="text-right">
+                    <h1 className="text-xl font-bold whitespace-nowrap bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                      {headerData?.platform_name || "اسم المنصة"}
+                    </h1>
+                    <p className="text-xs text-gray-500">
+                      {headerData?.slogan || "شعار المنصة"}
+                    </p>
                   </div>
-                ) : (
-                  <Image className="rounded-xl w-10 h-10 text-gray-600" />
-                )}
-                <div className="text-right">
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                    {headerData?.platform_name || "اسم المنصة"}
-                  </h1>
-                  <p className="text-xs text-gray-500">
-                    {headerData?.slogan || "شعار المنصة"}
-                  </p>
                 </div>
-              </div>
-            </button>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {isLoggedIn && (
-                <>
-                  <Link
-                    to="/profile"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/profile", { replace: false });
-                    }}
-                    className="cursor-pointer px-5 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium shadow-sm hover:shadow-md hover:from-purple-600 hover:to-blue-600 transition-all"
-                  >
-                    الملف الشخصي
-                  </Link>
-                  <Link
-                    to="/all-courses"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/all-courses", { replace: false });
-                    }}
-                    className="cursor-pointer px-5 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium shadow-sm hover:shadow-md hover:from-purple-600 hover:to-blue-600 transition-all"
-                  >
-                    دوراتي
-                  </Link>
-                </>
-              )}
-              {footerData?.links?.slice(0, 2).map((item: any) => (
-                <button
-                  key={item.id}
-                  onClick={() => navigate(`/sections/${item?.id}`)}
-                  className="cursor-pointer px-5 py-2 rounded-xl bg-gray-100 text-gray-700 font-medium shadow-sm hover:bg-yellow-100 hover:text-yellow-700 transition-all duration-200"
-                >
-                  {item.title}
-                </button>
-              ))}
-
-              {footerData?.links?.length > 3 && (
-                <Link
-                  to="/"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/", { replace: false });
-                    setTimeout(() => {
-                      const el = document.getElementById("discover");
-                      if (el) el.scrollIntoView({ behavior: "smooth" });
-                    }, 100);
-                  }}
-                  className="cursor-pointer px-5 py-2 rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-sm hover:shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all"
-                >
-                  عرض الكل
-                </Link>
-              )}
+              </button>
             </div>
 
-            {/* Search and User Actions */}
-            <div className="flex items-center space-x-4">
+            {/* Desktop Navigation */}
+            <div className="col-span-2 flex justify-center">
+              <div className="hidden lg:flex items-center space-x-8">
+                {footerData?.links?.slice(0, 2).map((item: any) => (
+                  <button
+                    key={item.id}
+                    onClick={() => navigate(`/sections/${item?.id}`)}
+                    className="cursor-pointer px-5 py-2 rounded-xl text-gray-700 font-medium hover:bg-yellow-100 hover:text-yellow-700 transition-all duration-200"
+                  >
+                    {item.title}
+                  </button>
+                ))}
+
+                {footerData?.links?.length > 3 && (
+                  <Link
+                    to="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/", { replace: false });
+                      setTimeout(() => {
+                        const el = document.getElementById("discover");
+                        if (el) el.scrollIntoView({ behavior: "smooth" });
+                      }, 100);
+                    }}
+                    className="cursor-pointer px-5 py-2 rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-sm hover:shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all"
+                  >
+                    عرض الكل
+                  </Link>
+                )}
+              </div>
+            </div>
+
+            {/* Auth and User Actions */}
+            <div className="flex justify-end items-center space-x-4">
               {isLoggedIn ? (
-                <button
-                  onClick={handleLogout}
-                  className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:from-gray-600 hover:to-gray-500 transition-all duration-200 transform hover:scale-105 cursor-pointer"
-                >
-                  تسجيل الخروج
-                </button>
+                <div className="relative">
+                  {/* Avatar button */}
+                  <button
+                    onClick={() => {
+                      isMenuOpen && setIsMenuOpen(false);
+                      setOpen(!open);
+                    }}
+                    className="cursor-pointer w-12 h-12 text-xs rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:bg-gradient-to-r hover:from-yellow-600 hover:to-orange-600 flex items-center justify-center text-white font-bold"
+                  >
+                    حسابي
+                  </button>
+
+                  {/* Dropdown */}
+                  {open && (
+                    <div className="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50">
+                      <Link
+                        to="/profile"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate("/profile", { replace: false });
+                          setOpen(false);
+                        }}
+                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-700 transition-all"
+                      >
+                        الملف الشخصي
+                      </Link>
+
+                      <Link
+                        to="/all-courses"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate("/all-courses", { replace: false });
+                          setOpen(false);
+                        }}
+                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-700 transition-all"
+                      >
+                        دوراتي
+                      </Link>
+
+                      <div className="border-t border-gray-100" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="cursor-pointer curblock w-full text-right px-5 py-3 text-sm text-red-600 hover:bg-red-50 transition-all"
+                      >
+                        تسجيل الخروج
+                      </button>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <button
                   onClick={handleLoginClick}
@@ -160,7 +184,10 @@ const Navbar: React.FC = () => {
               {/* Mobile menu button */}
               {footerData?.links && (
                 <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  onClick={() => {
+                    setIsMenuOpen(!isMenuOpen);
+                    open && setOpen(false);
+                  }}
                   className="cursor-pointer lg:hidden p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
                 >
                   {isMenuOpen ? (
@@ -175,17 +202,21 @@ const Navbar: React.FC = () => {
 
           {/* Mobile Navigation */}
           {isMenuOpen && footerData?.links && (
-            <div className="lg:hidden py-4 border-t border-gray-100 bg-gradient-to-b from-yellow-50 to-white">
-              <div className="flex flex-col space-y-3">
+            <div className="lg:hidden py-4 border-t border-gray-100 bg-white to-white shadow-lg rounded-b-2xl animate-slideDown">
+              <div className="flex flex-col space-y-3 px-4">
                 {footerData?.links?.slice(0, 3).map((item: any) => (
                   <button
                     key={item.id}
-                    onClick={() => navigate(`/sections/${item?.id}`)}
-                    className="cursor-pointer text-gray-700 hover:text-yellow-600 font-medium transition-colors duration-200"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      navigate(`/sections/${item?.id}`);
+                    }}
+                    className="cursor-pointer w-full text-right px-4 py-3 rounded-xl bg-white shadow-sm border border-gray-100 text-gray-700 font-medium hover:bg-yellow-50 hover:text-yellow-700 transition-all duration-200"
                   >
                     {item.title}
                   </button>
                 ))}
+
                 {footerData?.links?.length > 3 && (
                   <Link
                     to="/"
@@ -196,8 +227,9 @@ const Navbar: React.FC = () => {
                         const el = document.getElementById("discover");
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                       }, 100);
+                      setIsMenuOpen(false);
                     }}
-                    className=" text-white bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl px-4 py-2 font-medium transition-colors duration-200"
+                    className="w-full text-center px-4 py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all duration-200"
                   >
                     عرض الكل
                   </Link>

@@ -23,7 +23,6 @@ const StudentDetailsPage = () => {
   ]);
 
   const selectedStudent = data?.data;
-  console.log("selectedStudent", selectedStudent);
   // const getCourseTypeIcon = (type: string) => {
   //   switch (type) {
   //     case "exam":
@@ -59,7 +58,6 @@ const StudentDetailsPage = () => {
         <Spinner size={40} thickness={4} className="text-orange-500" />
       </div>
     );
-  console.log("Student Details:", selectedStudent?.imei_info);
   return (
     <>
       {/* Header */}

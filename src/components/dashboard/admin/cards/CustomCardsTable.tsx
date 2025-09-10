@@ -38,7 +38,7 @@ const CustomCardTable = () => {
       dir="rtl"
     >
       {/* Header */}
-      <div className="flex items-center justify-between w-full">
+      <div className="flex md:flex-row flex-col gap-5 items-center justify-between w-full">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">
             إدارة البطاقات المخصصة

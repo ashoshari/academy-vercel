@@ -51,7 +51,15 @@ const ResourcesPage = () => {
   const [statusFilter, setStatusFilter] = useState<any>("all");
 
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
-  const types = ["مصادر", "الدوسيهات", "الأسئلة الوزارية", "الملفات"];
+  const types = [
+    {
+      label: "مصادر",
+      value: "resources",
+    },
+    { label: "دوسيهات", value: "bookses" },
+    { label: "أسئلة الوزارية", value: "ministerial_questions" },
+    { label: "ملفات", value: "files" },
+  ];
 
   const [uploadResources, setUploadResources] = useState<any>({
     is_published: true,
@@ -80,7 +88,7 @@ const ResourcesPage = () => {
     ["resources-stats"]
   );
   // GET teachers
-  const { data: teachers } = useCustomQuery("/account/admin/teachers/", [
+  const { data: teachers } = useCustomQuery("/account/admin/teachers/?page_size=9999", [
     "teachers",
   ]);
 
@@ -152,7 +160,9 @@ const ResourcesPage = () => {
       try {
         const response = await deleteResources(id);
         toast.success(response?.data);
-        queryClient.invalidateQueries({ queryKey: ["resources"] });
+        queryClient.invalidateQueries({
+          queryKey: ["resources", searchTerm, typeFilter, statusFilter, page],
+        });
       } catch (err: any) {
         toast.error(err?.response?.data?.message);
       }
@@ -177,9 +187,9 @@ const ResourcesPage = () => {
       formData.append("expiry_date", selectedResources.expiry_date);
     selectedResources.subsection &&
       formData.append("subsection", selectedResources.subsection);
-    selectedResources.specialization &&
-      formData.append("subsubsection", selectedResources.subsubsection);
     selectedResources.subsubsection &&
+      formData.append("subsubsection", selectedResources.subsubsection);
+    selectedResources.specialization &&
       formData.append("specialization", selectedResources.specialization);
     selectedResources.specialization_material &&
       formData.append(
@@ -189,7 +199,18 @@ const ResourcesPage = () => {
     selectedResources.lesson &&
       formData.append("lesson", selectedResources.lesson);
     selectedResources.type &&
-      formData.append("type", selectedResources.type || null);
+      formData.append(
+        "type",
+        selectedResources.type == "مصادر"
+          ? "resources"
+          : selectedResources?.type == "دوسيهات"
+          ? "bookses"
+          : selectedResources?.type == "أسئلة وزارية"
+          ? "ministerial_questions"
+          : selectedResources?.type == "ملفات"
+          ? "files"
+          : selectedResources?.type
+      );
     selectedResources.is_free &&
       formData.append("is_free", selectedResources.is_free);
     formData.append("is_published", selectedResources.is_published ?? true);
@@ -211,7 +232,7 @@ const ResourcesPage = () => {
       const response = await putResources(formData);
       toast.success(response?.message ?? "تم تعديل المحتوى بنجاح");
       queryClient.invalidateQueries({
-        queryKey: ["resources"],
+        queryKey: ["resources", searchTerm, typeFilter, statusFilter, page],
       });
       queryClient.invalidateQueries({
         queryKey: ["resources-stats"],
@@ -266,7 +287,7 @@ const ResourcesPage = () => {
         return File;
     }
   };
-  const handleResourseUpload = async () => {
+  const handleResourceUpload = async () => {
     const formData = new FormData();
     uploadResources.title && formData.append("title", uploadResources.title);
     uploadResources.description &&
@@ -277,7 +298,7 @@ const ResourcesPage = () => {
       formData.append("expiry_date", uploadResources.expiry_date);
     uploadResources.subsection &&
       formData.append("subsection", uploadResources.subsection);
-    uploadResources.specialization &&
+    uploadResources.subsubsection &&
       formData.append("subsubsection", uploadResources.subsubsection);
     uploadResources.specialization &&
       formData.append("specialization", uploadResources.specialization);
@@ -319,7 +340,7 @@ const ResourcesPage = () => {
       const response = await postResources(formData);
       toast.success(response?.message ?? "تم اضافة المحتوى بنجاح");
       queryClient.invalidateQueries({
-        queryKey: ["resources"],
+        queryKey: ["resources", searchTerm, typeFilter, statusFilter, page],
       });
       queryClient.invalidateQueries({
         queryKey: ["resources-stats"],
@@ -327,7 +348,7 @@ const ResourcesPage = () => {
       setSelectedSubSection("");
       setSelectedSubSub("");
       setSelectedSpec("");
-      setUploadResources({});
+      setUploadResources({ is_published: true });
       setShowCreateModal(false);
     } catch (error: any) {
       toast.error(error?.response?.data?.error);
@@ -343,7 +364,7 @@ const ResourcesPage = () => {
     // });
     // setShowCreateModal(false);
   };
-  const ResourseCard = ({ resource }: { resource: any }) => {
+  const ResourceCard = ({ resource }: { resource: any }) => {
     const IconComponent = getFileIcon(resource);
     const iconColor = getFileTypeColor(resource);
     return (
@@ -906,7 +927,7 @@ const ResourcesPage = () => {
               إلغاء
             </button>
             <button
-              onClick={handleResourseUpload}
+              onClick={handleResourceUpload}
               disabled={
                 !uploadResources?.title ||
                 !uploadResources?.file ||
@@ -1131,7 +1152,17 @@ const ResourcesPage = () => {
                   نوع الملف *
                 </label>
                 <select
-                  value={selectedResources?.type || ""}
+                  value={
+                    selectedResources?.type == "مصادر"
+                      ? "resources"
+                      : selectedResources?.type == "دوسيهات"
+                      ? "bookses"
+                      : selectedResources?.type == "أسئلة وزارية"
+                      ? "ministerial_questions"
+                      : selectedResources?.type == "ملفات"
+                      ? "files"
+                      : selectedResources?.type
+                  }
                   onChange={(e) =>
                     setSelectedResources({
                       ...selectedResources,
@@ -1142,9 +1173,9 @@ const ResourcesPage = () => {
                 >
                   <option value="">اختر نوع الملف</option>
                   <option value="resources">مصادر</option>
-                  <option value="files">ملفات</option>
                   <option value="bookses">دوسيهات</option>
                   <option value="ministerial_questions">أسئلة وزارية</option>
+                  <option value="files">ملفات</option>
                 </select>
               </div>
               {/* Teacher */}
@@ -1410,7 +1441,7 @@ const ResourcesPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">إدارة الملفات</h1>
           <p className="text-gray-600 text-sm">
@@ -1500,8 +1531,8 @@ const ResourcesPage = () => {
           >
             <option value="">جميع الأنواع</option>
             {types?.map((type: any, index: any) => (
-              <option key={index} value={type}>
-                {type}
+              <option key={index} value={type.value}>
+                {type.label}
               </option>
             ))}
           </select>
@@ -1568,7 +1599,7 @@ const ResourcesPage = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {resourcesData?.map((resource: any) => (
-              <ResourseCard key={resource.id} resource={resource} />
+              <ResourceCard key={resource.id} resource={resource} />
             ))}
           </div>
           <Pagination

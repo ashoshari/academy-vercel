@@ -77,7 +77,6 @@ const Sidebar = ({
   }
   useEffect(() => {
     const lesson = getFirstIncompleteLesson(courseData);
-    console.log("lesson", lesson);
     if (lesson) setCurrentLesson(lesson || 0);
   }, [courseData]);
   const toggleSemester = (semesterId: any) => {
@@ -164,7 +163,6 @@ const Sidebar = ({
     //   toast.error("يجب استكمال الدروس السابق");
     // }
   };
-  console.log("currentLesson", currentLesson);
   const renderSidebar = () => (
     <div
       className={`bg-white border-r border-gray-200 transition-all duration-300 ${

@@ -474,7 +474,6 @@ const SectionsPage = () => {
   ]);
 
   // const paginationData = sections.data?.pagination;
-  // console.log("paginationData", paginationData);
   const icons = useCustomQuery("/core/icons/", ["icons"]);
   const colors = useCustomQuery("/core/colors/", ["colors"]);
 
@@ -588,7 +587,7 @@ const SectionsPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">الأقسام الرئيسية</h1>
           <p className="text-gray-600 text-sm">
@@ -883,7 +882,7 @@ const SectionsPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">

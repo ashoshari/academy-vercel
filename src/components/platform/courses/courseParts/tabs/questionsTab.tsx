@@ -196,7 +196,6 @@ const QuestionsTab = () => {
         );
         queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       } catch (error) {
-        console.log(error);
       }
 
       setNewComment("");
