@@ -87,9 +87,6 @@ const CardCodesPage = () => {
   // ] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
-  const [isBatchDownloaded, setIsBatchDownloaded] = useState<
-    "all" | "true" | "false"
-  >("all");
   const [isCodeDownloaded, setisCodeDownloaded] = useState<
     "all" | "true" | "false"
   >("all");
@@ -113,10 +110,12 @@ const CardCodesPage = () => {
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
   if (codesFilter) queryParams.append("code_name", codesFilter);
-  if (isUsed !== null && isUsed !== undefined)
+  if (isUsed !== null && isUsed !== undefined) {
     queryParams.append("is_used", isUsed);
-  if (isCodeDownloaded !== null && isCodeDownloaded !== undefined)
+  }
+  if (isCodeDownloaded !== null && isCodeDownloaded !== undefined) {
     queryParams.append("is_downloaded", isCodeDownloaded);
+  }
   if (statusFilter) queryParams.append("is_active", statusFilter);
   if (page) queryParams.append("page", page.toString());
 
@@ -368,15 +367,7 @@ const CardCodesPage = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
       queryClient.invalidateQueries({
-        queryKey: [
-          "codes-generated",
-          searchTerm,
-          codesFilter,
-          isUsed,
-          isCodeDownloaded,
-          statusFilter,
-          page,
-        ],
+        queryKey: ["card-codes", codePage],
       });
     } catch (error: any) {
       console.error("Download failed:", error);
