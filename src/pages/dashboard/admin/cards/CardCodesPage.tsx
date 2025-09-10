@@ -87,9 +87,9 @@ const CardCodesPage = () => {
   // ] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
-  // const [isBatchDownloaded, setIsBatchDownloaded] = useState<
-  //   "all" | "true" | "false"
-  // >("all");
+  const [isBatchDownloaded, setIsBatchDownloaded] = useState<
+    "all" | "true" | "false"
+  >("all");
   const [isCodeDownloaded, setisCodeDownloaded] = useState<
     "all" | "true" | "false"
   >("all");
@@ -492,7 +492,7 @@ const CardCodesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الكودات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {cardCodesStatistics?.data?.data?.total_generated_codes || "-"}
+                {cardCodesStatistics?.data?.data?.total_generated_codes ?? "-"}
               </p>
             </div>
             <Hash className="w-12 h-12 text-orange-500" />
@@ -504,7 +504,7 @@ const CardCodesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الكودات المستخدمة</p>
               <p className="text-3xl font-bold text-red-600">
-                {cardCodesStatistics?.data?.data?.used_generated_codes || "-"}
+                {cardCodesStatistics?.data?.data?.used_generated_codes ?? "-"}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-red-500" />
@@ -516,7 +516,7 @@ const CardCodesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الكودات المتاحة</p>
               <p className="text-3xl font-bold text-green-600">
-                {cardCodesStatistics?.data?.data?.unused_generated_codes || "-"}
+                {cardCodesStatistics?.data?.data?.unused_generated_codes ?? "-"}
               </p>
             </div>
             <CreditCard className="w-12 h-12 text-green-500" />

@@ -65,7 +65,7 @@ const CustomCardTable = () => {
             <div className="">
               <p className="text-gray-500 text-sm">إجمالي البطاقات المخصصة</p>
               <p className="text-3xl font-bold text-gray-800">
-                {dataUserCardPrices?.data?.pagination?.count || "-"}
+                {dataUserCardPrices?.data?.pagination?.count ?? "-"}
               </p>
             </div>
             <CreditCard className="w-12 h-12 text-orange-500" />

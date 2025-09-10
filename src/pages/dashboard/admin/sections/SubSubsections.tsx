@@ -453,21 +453,21 @@ const SubsectionsPage = () => {
 
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-blue-600">
-            {dataStatistics?.data?.data?.total_subsections || "-"}
+            {dataStatistics?.data?.data?.total_subsections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأقسام</p>
         </div>
 
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-green-600">
-            {dataStatistics?.data?.data?.active_subsections || "-"}
+            {dataStatistics?.data?.data?.active_subsections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">الأقسام المفعلة</p>
         </div>
 
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-red-600">
-            {dataStatistics?.data?.data?.inactive_subsections || "-"}
+            {dataStatistics?.data?.data?.inactive_subsections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
         </div>

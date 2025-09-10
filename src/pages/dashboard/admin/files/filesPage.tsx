@@ -1464,7 +1464,7 @@ const ResourcesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الملفات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {resourcesStatsData?.total_resources || "-"}
+                {resourcesStatsData?.total_resources ?? "-"}
               </p>
             </div>
             <Files className="w-12 h-12 text-orange-500" />
@@ -1476,7 +1476,7 @@ const ResourcesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الملفات النشطة</p>
               <p className="text-3xl font-bold text-green-600">
-                {resourcesStatsData?.total_published || "-"}
+                {resourcesStatsData?.total_published ?? "-"}
               </p>
             </div>
             <CheckCircle className="w-12 h-12 text-green-500" />
@@ -1488,7 +1488,7 @@ const ResourcesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي التحميلات</p>
               <p className="text-3xl font-bold text-blue-600">
-                {resourcesStatsData?.total_downloads || "-"}
+                {resourcesStatsData?.total_downloads ?? "-"}
               </p>
             </div>
             <Download className="w-12 h-12 text-blue-500" />

@@ -30,7 +30,17 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video bg-black rounded-t-2xl overflow-hidden">
-        {/* <iframe
+        <div className="relative pb-[56.25%] h-0 overflow-hidden">
+          <iframe
+            src={`https://geo.dailymotion.com/player.html?video=${currentLesson?.link}`}
+            className="absolute top-0 left-0 w-full h-full border-none overflow-hidden"
+            allowFullScreen
+            title="Dailymotion Video Player"
+            allow="web-share"
+          ></iframe>
+        </div>
+
+        <iframe
           {...({
             width: "100%",
             height: "100%",
@@ -43,14 +53,14 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
             mozallowfullscreen: "true",
             referrerPolicy: "strict-origin-when-cross-origin",
           } as any)}
-        /> */}
+        />
         <div className="relative aspect-video bg-black rounded-t-2xl overflow-hidden">
-          <iframe
+          {/* <iframe
             src={`https://player.mux.com/${currentLesson?.link}?metadata-video-title=%${currentLesson?.title}&video-title=${currentLesson?.title}`}
             className="w-full border-none aspect-video"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
-          ></iframe>
+          ></iframe> */}
 
           {/* Overlays – positions in percentages so they always match */}
           {/* {isFullscreen ? (

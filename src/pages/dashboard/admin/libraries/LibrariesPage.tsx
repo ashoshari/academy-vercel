@@ -196,7 +196,7 @@ const LibrariesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي المكتبات</p>
               <p className="text-3xl font-bold text-gray-800">
-                {librariesStatistics?.data?.data?.total_libraries || "-"}
+                {librariesStatistics?.data?.data?.total_libraries ?? "-"}
               </p>
             </div>
             <Users className="w-12 h-12 text-orange-500" />
@@ -208,7 +208,7 @@ const LibrariesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">المكتبات النشطون</p>
               <p className="text-3xl font-bold text-green-600">
-                {librariesStatistics?.data?.data?.active_libraries || "-"}
+                {librariesStatistics?.data?.data?.active_libraries ?? "-"}
               </p>
             </div>
             <UserCheck className="w-12 h-12 text-green-500" />
@@ -220,7 +220,7 @@ const LibrariesPage = () => {
             <div>
               <p className="text-gray-500 text-sm">المكتبات غير النشطين</p>
               <p className="text-3xl font-bold text-blue-600">
-                {librariesStatistics?.data?.data?.inactive_libraries || "-"}
+                {librariesStatistics?.data?.data?.inactive_libraries ?? "-"}
               </p>
             </div>
             <CircleX className="w-12 h-12 text-blue-500" />

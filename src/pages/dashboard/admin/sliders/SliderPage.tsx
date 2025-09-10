@@ -202,21 +202,21 @@ const SliderPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 col-span-4 gap-4">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
             <p className="text-2xl font-bold text-orange-600">
-              {sliderStatisticsData?.data?.data?.total_sliders || "-"}
+              {sliderStatisticsData?.data?.data?.total_sliders ?? "-"}
             </p>
             <p className="text-sm text-gray-600">إجمالي السلايدات</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
             <p className="text-2xl font-bold text-green-600">
-              {sliderStatisticsData?.data?.data?.active_sliders || "-"}
+              {sliderStatisticsData?.data?.data?.active_sliders ?? "-"}
             </p>
             <p className="text-sm text-gray-600">السلايدات النشطة</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
             <p className="text-2xl font-bold text-gray-600">
-              {sliderStatisticsData?.data?.data?.inactive_sliders || "-"}
+              {sliderStatisticsData?.data?.data?.inactive_sliders ?? "-"}
             </p>
             <p className="text-sm text-gray-600">السلايدات الغير النشطة</p>
           </div>

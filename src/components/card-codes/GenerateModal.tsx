@@ -49,6 +49,7 @@ const GenerateModal = ({
   >([]);
   const [selectedSpecializationMaterial, setSelectedSpecializationMaterial] =
     useState<string[]>([]);
+  const [allSubsections, setAllSubstections] = useState(true);
 
   const subsections = useCustomQuery("/training/admin/subsections/", [
     "subsections",
@@ -234,8 +235,32 @@ const GenerateModal = ({
               placeholder="CARD"
             />
           </div>
-
           {role !== "library" && (
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <p className="font-medium text-gray-800">
+                  تفعيل البطاقات على جميع الأقسام
+                </p>
+                <p className="text-sm text-gray-500">
+                  البطاقات ستصبح فعّالة في كل الأقسام تلقائيًا.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={allSubsections}
+                onChange={(e) => {
+                  setSelectedSubsections([]);
+                  setSelectedSubSubsections([]);
+                  setSelectedSpecializations([]);
+                  setSelectedSpecializationMaterial([]);
+                  setAllSubstections(e.target.checked);
+                }}
+                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+              />
+            </div>
+          )}
+
+          {!allSubsections && (
             <>
               {/* subsections */}
               <div>
@@ -282,7 +307,6 @@ const GenerateModal = ({
               </div>
 
               {/* specializations */}
-
               {specializationOptions.length > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">

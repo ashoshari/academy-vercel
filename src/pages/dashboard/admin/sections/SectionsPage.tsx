@@ -645,19 +645,19 @@ const SectionsPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-orange-600">
-            {statistics?.data?.data?.total_sections || "-"}
+            {statistics?.data?.data?.total_sections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأقسام</p>
         </div>
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-green-600">
-            {statistics?.data?.data?.active_sections || "-"}
+            {statistics?.data?.data?.active_sections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">الأقسام المفعلة</p>
         </div>{" "}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-red-600">
-            {statistics?.data?.data?.inactive_sections || "-"}
+            {statistics?.data?.data?.inactive_sections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
         </div>

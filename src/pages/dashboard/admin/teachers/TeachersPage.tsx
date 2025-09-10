@@ -377,7 +377,7 @@ const TeachersPage = () => {
             <div>
               <p className="text-gray-500 text-sm">المعلمين غير النشطين</p>
               <p className="text-3xl font-bold text-blue-600">
-                {teachersStatistics?.data?.data?.inactive_teachers || "-"}
+                {teachersStatistics?.data?.data?.inactive_teachers ?? "-"}
               </p>
             </div>
             <CircleX className="w-12 h-12 text-blue-500" />

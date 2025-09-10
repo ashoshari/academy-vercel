@@ -117,6 +117,17 @@ const Hero: React.FC = () => {
                       {slides[currentSlide]?.link && (
                         <>
                           {/* Video Player */}
+                          
+                          {/* DailyMotion */}
+                          <iframe
+                            src={`https://geo.dailymotion.com/player.html?video=${slides[currentSlide]?.link}`}
+                            className="absolute top-0 left-0 w-full h-full border-none overflow-hidden"
+                            allowFullScreen
+                            title="Dailymotion Video Player"
+                            allow="web-share"
+                          ></iframe>
+
+                          {/* Old DailyMotion */}
                           {/* <iframe
                             className="aspect-video h-full"
                             width="100%"
@@ -128,12 +139,14 @@ const Hero: React.FC = () => {
                             referrerPolicy="strict-origin-when-cross-origin"
                             allowFullScreen
                           ></iframe> */}
-                          <iframe
+
+                          {/* Mux */}
+                          {/* <iframe
                             src={`https://player.mux.com/${slides[currentSlide]?.link}?metadata-video-title=%${slides[currentSlide]?.title}&video-title=${slides[currentSlide]?.title}`}
                             className="w-full border-none aspect-video"
                             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
                             allowFullScreen
-                          ></iframe>
+                          ></iframe> */}
                           <button
                             onClick={() => {
                               setStopSlider(!stopSlider);

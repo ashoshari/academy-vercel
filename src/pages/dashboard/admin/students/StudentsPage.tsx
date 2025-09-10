@@ -96,7 +96,6 @@ export interface ActivityRecord {
   timestamp: string;
   category: "login" | "course" | "payment" | "achievement" | "exam";
 }
-
 const StudentsPage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -131,6 +130,7 @@ const StudentsPage = () => {
   const dataStatistics = useCustomQuery("/account/admin/students-statistics/", [
     "students-statistics",
   ]);
+
   const studentsData = data?.data;
   const paginationData = data?.pagination;
   const coursesData = courses?.data;
@@ -343,7 +343,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
               <p className="text-3xl font-bold text-gray-800">
-                {dataStatistics?.data?.data?.total_students || "-"}
+                {dataStatistics?.data?.data?.total_students ?? "-"}
               </p>
             </div>
             <Users className="w-12 h-12 text-orange-500" />
@@ -355,7 +355,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الطلاب النشطون</p>
               <p className="text-3xl font-bold text-green-600">
-                {dataStatistics?.data?.data?.active_students || "-"}
+                {dataStatistics?.data?.data?.active_students ?? "-"}
               </p>
             </div>
             <UserCheck className="w-12 h-12 text-green-500" />
@@ -367,7 +367,7 @@ const StudentsPage = () => {
             <div>
               <p className="text-gray-500 text-sm">الطلاب الغير نشطون</p>
               <p className="text-3xl font-bold text-blue-600">
-                {dataStatistics?.data?.data?.inactive_students || "-"}
+                {dataStatistics?.data?.data?.inactive_students ?? "-"}
               </p>
             </div>
             <CircleX className="w-12 h-12 text-blue-500" />
@@ -381,7 +381,7 @@ const StudentsPage = () => {
               <p className="text-3xl font-bold text-orange-600">
                 {dataStatistics?.data?.data?.total_income
                   ? dataStatistics?.data?.data?.total_income + " د.أ"
-                  : "-"}
+                  : "0"}
               </p>
             </div>
             <DollarSign className="w-12 h-12 text-orange-500" />

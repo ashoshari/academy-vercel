@@ -262,19 +262,19 @@ const CardPricingPage = () => {
         </div> */}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-orange-600">
-            {cardStatistics?.data?.data?.total_cards || "-"}
+            {cardStatistics?.data?.data?.total_cards ?? "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأسعار</p>
         </div>
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-green-600">
-            {cardStatistics?.data?.data?.active_cards || "-"}
+            {cardStatistics?.data?.data?.active_cards ?? "-"}
           </p>
           <p className="text-sm text-gray-600"> الأسعار المفعلة</p>
         </div>{" "}
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
           <p className="text-2xl font-bold text-green-600">
-            {cardStatistics?.data?.data?.inactive_cards || "-"}
+            {cardStatistics?.data?.data?.inactive_cards ?? "-"}
           </p>
           <p className="text-sm text-gray-600"> الأسعار غير المفعلة</p>
         </div>
