@@ -230,8 +230,7 @@ const LibrariesPage = () => {
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50 w-full">
-        <div className="grid grid-cols-5 gap-4">
-          {/* Search
+        {/* Search
           <div className="col-span-2 relative min-w-0">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -245,38 +244,37 @@ const LibrariesPage = () => {
             />
           </div> */}
 
-          {/* View Mode + Count */}
-          <div className="flex justify-between items-center gap-3 mt-1 w-full">
-            {/* View Mode */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setViewMode("table")}
-                className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                  viewMode === "table"
-                    ? "bg-orange-100 text-orange-600"
-                    : "text-gray-400 hover:bg-gray-100"
-                }`}
-              >
-                <Rows size={16} />
-              </button>
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                  viewMode === "grid"
-                    ? "bg-orange-100 text-orange-600"
-                    : "text-gray-400 hover:bg-gray-100"
-                }`}
-              >
-                <Grid size={16} />
-              </button>
-            </div>
+        {/* View Mode + Count */}
+        <div className="flex justify-between items-center gap-3 mt-1 w-full">
+          {/* View Mode */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setViewMode("table")}
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                viewMode === "table"
+                  ? "bg-orange-100 text-orange-600"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+            >
+              <Rows size={16} />
+            </button>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                viewMode === "grid"
+                  ? "bg-orange-100 text-orange-600"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+            >
+              <Grid size={16} />
+            </button>
+          </div>
 
-            {/* Results Count */}
-            <div className="bg-gray-50 rounded-lg px-4 py-2">
-              <span className="text-sm text-gray-600 whitespace-nowrap">
-                {dataLibraries?.data?.pagination.count} مكتبة
-              </span>
-            </div>
+          {/* Results Count */}
+          <div className="bg-gray-50 rounded-lg px-4 py-2">
+            <span className="text-sm text-gray-600 whitespace-nowrap">
+              {dataLibraries?.data?.pagination.count} مكتبة
+            </span>
           </div>
         </div>
       </div>

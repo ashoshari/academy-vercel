@@ -67,7 +67,7 @@ const Sidebar = ({
           for (let i = 0; i < topic?.lessons?.length; i++) {
             const lesson = topic?.lessons[i];
             if (!lesson?.is_completed) {
-              return i;
+              return lesson;
             }
           }
         }
@@ -77,7 +77,11 @@ const Sidebar = ({
   }
   useEffect(() => {
     const lesson = getFirstIncompleteLesson(courseData);
-    if (lesson) setCurrentLesson(lesson || 0);
+    if (lesson) {
+      if(lesson?.type == "exam") setIsExamMode(true);
+      setCurrentLesson(lesson || 0);
+
+    }
   }, [courseData]);
   const toggleSemester = (semesterId: any) => {
     setSemesters((prev: any) =>

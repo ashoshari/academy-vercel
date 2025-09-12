@@ -60,6 +60,7 @@ const CourseContent = ({ allLessons,
   );
   useEffect(() => {
     if (currentLesson?.type == "video") {
+      console.log("currentLesson?.type", currentLesson?.type);
       setIsExamMode(false);
     } else {
       setIsExamMode(true);
