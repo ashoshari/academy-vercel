@@ -17,16 +17,10 @@ const CoursePage = () => {
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   // const currentLesson = useLesson((state) => state.currentLesson);
-  const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
   const { data, error } = useCustomQuery(
     `/training/students/course/${courseId}/`,
     ["courses", courseId],
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
   );
   const courseData = data?.data;
   const sidebarCollapseHandler = (state: boolean) => {

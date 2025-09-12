@@ -347,33 +347,33 @@ const CardCodesPage = () => {
       toast.error(error?.response?.data?.error ?? "فشل تحميل الكود");
     }
   };
-  const handleBatchDownload = async (batchId: string) => {
-    try {
-      // Download Codes File
-      const res = await get(`/cards/codes/${batchId}/?export=pdf`, {
-        responseType: "blob",
-      });
+  // const handleBatchDownload = async (batchId: string) => {
+  //   try {
+  //     // Download Codes File
+  //     const res = await get(`/cards/codes/${batchId}/?export=pdf`, {
+  //       responseType: "blob",
+  //     });
 
-      // Create a URL for the blob
-      const url = window.URL.createObjectURL(new Blob([res]));
-      // Create a hidden <a> element and click it
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `code_${batchId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
+  //     // Create a URL for the blob
+  //     const url = window.URL.createObjectURL(new Blob([res]));
+  //     // Create a hidden <a> element and click it
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.setAttribute("download", `code_${batchId}.pdf`);
+  //     document.body.appendChild(link);
+  //     link.click();
 
-      // Cleanup
-      link.remove();
-      window.URL.revokeObjectURL(url);
-      queryClient.invalidateQueries({
-        queryKey: ["card-codes", codePage],
-      });
-    } catch (error: any) {
-      console.error("Download failed:", error);
-      toast.error(error?.response?.data?.error ?? "فشل تحميل مجموعة الكودات");
-    }
-  };
+  //     // Cleanup
+  //     link.remove();
+  //     window.URL.revokeObjectURL(url);
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["card-codes", codePage],
+  //     });
+  //   } catch (error: any) {
+  //     console.error("Download failed:", error);
+  //     toast.error(error?.response?.data?.error ?? "فشل تحميل مجموعة الكودات");
+  //   }
+  // };
 
   const toggleBatchStatus = (batchId: string) => {
     setCodeBatches(batchId);
@@ -719,7 +719,7 @@ const CardCodesPage = () => {
                         <ToggleLeft size={20} />
                       )}
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => handleBatchDownload(batch?.id)}
                       className={`cursor-pointer p-1 rounded transition-colors ${
                         batch.is_downloaded
@@ -729,7 +729,7 @@ const CardCodesPage = () => {
                       title={"تحميل الكود"}
                     >
                       <Download size={16} />
-                    </button>
+                    </button> */}
 
                     {/* <button
                       onClick={() => deleteBatch(batch.id)}

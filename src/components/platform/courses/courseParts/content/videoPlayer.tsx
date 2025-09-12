@@ -39,21 +39,6 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
             allow="web-share"
           ></iframe>
         </div>
-
-        <iframe
-          {...({
-            width: "100%",
-            height: "100%",
-            src: `https://www.dailymotion.com/embed/video/${currentLesson?.link}`,
-            title: currentLesson?.title,
-            frameBorder: "0",
-            allow: "autoplay; fullscreen; picture-in-picture",
-            allowFullScreen: true,
-            webkitallowfullscreen: "true",
-            mozallowfullscreen: "true",
-            referrerPolicy: "strict-origin-when-cross-origin",
-          } as any)}
-        />
         <div className="relative aspect-video bg-black rounded-t-2xl overflow-hidden">
           {/* <iframe
             src={`https://player.mux.com/${currentLesson?.link}?metadata-video-title=%${currentLesson?.title}&video-title=${currentLesson?.title}`}

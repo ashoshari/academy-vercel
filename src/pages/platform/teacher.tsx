@@ -481,7 +481,7 @@ const TeacherProfile: React.FC = () => {
               "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
             }
             alt={book?.name}
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
         <div className="p-6">

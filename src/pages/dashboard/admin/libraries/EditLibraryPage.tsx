@@ -165,7 +165,6 @@ export default function EditLibraryPage() {
           <input
             type="email"
             {...register("email", {
-              required: "البريد الإلكتروني مطلوب",
               pattern: {
                 value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
                 message: "من فضلك ادخل بريد إلكتروني صحيح",
@@ -186,24 +185,17 @@ export default function EditLibraryPage() {
           <label className="block mb-2 font-medium text-sm text-gray-700">
             رقم الهاتف *
           </label>
-
           <input
             type="tel"
             {...register("mobile_number", {
               required: "رقم الهاتف مطلوب",
               pattern: {
-                value: /^07\d{8}$/,
+                value: /^07[0-9]{8}$/,
                 message: "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
               },
-              minLength: {
-                value: 10,
-                message: "رقم الهاتف يجب أن يتكون من 10 أرقام",
-              },
-              maxLength: {
-                value: 10,
-                message: "رقم الهاتف يجب أن يتكون من 10 أرقام",
-              },
             })}
+            maxLength={10}
+            minLength={10}
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
@@ -222,11 +214,11 @@ export default function EditLibraryPage() {
 
         <div>
           <label className="block mb-2 font-medium text-sm text-gray-700">
-            نظرة عامة *
+            نظرة عامة
           </label>
           <input
             type="text"
-            {...register("about_me", { required: "النبذة مختصرة مطلوبة" })}
+            {...register("about_me")}
             className={inputClass(!!errors.name)}
             placeholder="نبذة مختصرة عن المكتبة"
           />
@@ -256,7 +248,7 @@ export default function EditLibraryPage() {
                   shouldValidate: true,
                 })
               }
-              className={`p-1 rounded-full transition-colors ${
+              className={`cursor-pointer p-1 rounded-full transition-colors ${
                 isActive ? "text-green-600" : "text-gray-400"
               }`}
             >

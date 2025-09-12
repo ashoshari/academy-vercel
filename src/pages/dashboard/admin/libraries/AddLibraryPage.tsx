@@ -102,7 +102,11 @@ export default function AddLibraryPage() {
     } catch (error: any) {
       const payload = error?.response?.data;
       applyServerErrors(payload?.error as ServerErr, setError, setFocus);
-      handleErrorAlerts(error?.response?.data?.error || payload?.message || "حدث خطأ أثناء إضافة المكتبة");
+      handleErrorAlerts(
+        error?.response?.data?.error ||
+          payload?.message ||
+          "حدث خطأ أثناء إضافة المكتبة"
+      );
     }
   };
 
@@ -165,7 +169,6 @@ export default function AddLibraryPage() {
           <input
             type="email"
             {...register("email", {
-              required: "البريد الإلكتروني مطلوب",
               pattern: {
                 value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
                 message: "من فضلك ادخل بريد إلكتروني صحيح",
@@ -191,18 +194,12 @@ export default function AddLibraryPage() {
             {...register("mobile_number", {
               required: "رقم الهاتف مطلوب",
               pattern: {
-                value: /^07\d{8}$/,
+                value: /^07[0-9]{8}$/,
                 message: "رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام",
               },
-              minLength: {
-                value: 10,
-                message: "رقم الهاتف يجب أن يتكون من 10 أرقام",
-              },
-              maxLength: {
-                value: 10,
-                message: "رقم الهاتف يجب أن يتكون من 10 أرقام",
-              },
             })}
+            maxLength={10}
+            minLength={10}
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
@@ -222,12 +219,12 @@ export default function AddLibraryPage() {
         {/* نظرة عامة */}
         <div>
           <label className="block mb-2 font-medium text-sm text-gray-700">
-            نبذة عامة *
+            نبذة عامة
           </label>
           <input
             type="text"
-            {...register("about_me", { required: "النبذة مختصرة مطلوبة" })}
-            className={inputClass(!!errors.name)}
+            {...register("about_me")}
+            className={inputClass(!!errors.about_me)}
             placeholder="نبذة مختصرة عن المكتبة"
           />
           {errors.about_me && (
@@ -252,7 +249,7 @@ export default function AddLibraryPage() {
             <button
               type="button"
               onClick={handleGeneratePassword}
-              className="px-5 py-4 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+              className="cursor-pointer px-5 py-4 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
               title="توليد كلمة مرور"
             >
               <RefreshCw size={16} />
@@ -283,7 +280,7 @@ export default function AddLibraryPage() {
                   shouldValidate: true,
                 })
               }
-              className={`p-1 rounded-full transition-colors ${
+              className={`cursor-pointer p-1 rounded-full transition-colors ${
                 isActive ? "text-green-600" : "text-gray-400"
               }`}
             >
@@ -340,7 +337,7 @@ export default function AddLibraryPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-orange-500 text-white rounded-lg cursor-pointer hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
+            className="curosor-pointer px-6 py-3 bg-orange-500 text-white rounded-lg cursor-pointer hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
           >
             <Save size={16} />
             إضافة المكتبة
