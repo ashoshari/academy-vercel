@@ -25,7 +25,7 @@ import toast from "react-hot-toast";
 interface teacher {
   id: string;
   name: string;
-  image: string
+  image: string;
 }
 interface CourseData {
   id: string;
@@ -39,15 +39,12 @@ interface CourseData {
   semesters: [];
   teacher: teacher;
   total_number_of_enrolled_students: number;
-
 }
 interface CourseContnetProps {
   allLessons: any[];
   courseData: CourseData;
 }
-const CourseContent = ({ allLessons, 
-  courseData 
-}: CourseContnetProps) => {
+const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
   const queryClient = useQueryClient();
   const { courseId } = useParams();
   const [activeTab, setActiveTab] = useState("content");
@@ -60,12 +57,11 @@ const CourseContent = ({ allLessons,
   );
   useEffect(() => {
     if (currentLesson?.type == "video") {
-      console.log("currentLesson?.type", currentLesson?.type);
       setIsExamMode(false);
     } else {
       setIsExamMode(true);
     }
-  }, [isExamMode]);
+  }, [isExamMode, currentLesson]);
   const { mutateAsync: completeMutateAsync } = useCustomPost(
     "/training/students/lesson/complete/",
     ["complete"]
@@ -107,36 +103,39 @@ const CourseContent = ({ allLessons,
             { id: "files", title: "ملفات الدورة", icon: FolderOpen },
             { id: "notes", title: "الملاحظات", icon: StickyNote },
             { id: "questions", title: "الأسئلة", icon: MessageSquare },
-          ].filter((tab) => tab.id !== "questions" || courseData?.is_show_general_questions)?.map((tab) => {
-            const IconComponent = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`cursor-pointer flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
-                  activeTab === tab.id
-                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
-                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
-                }`}
-              >
-                <IconComponent className="w-4 h-4" />
-                <span>{tab?.title}</span>
-              </button>
-            );
-          })}
+          ]
+            .filter(
+              (tab) =>
+                tab.id !== "questions" || courseData?.is_show_general_questions
+            )
+            ?.map((tab) => {
+              const IconComponent = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`cursor-pointer flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
+                    activeTab === tab.id
+                      ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
+                      : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                  }`}
+                >
+                  <IconComponent className="w-4 h-4" />
+                  <span>{tab?.title}</span>
+                </button>
+              );
+            })}
         </div>
 
         {/* Tab Content */}
         {activeTab === "content" && (
           <div className="space-y-8">
             {/* Main Content */}
-            {
-              isExamMode ? (
-                <Exam markLessonComplete={markLessonComplete} />
-              ) : (
-                <VideoPlayer markLessonComplete={markLessonComplete} />
-              )
-            }
+            {isExamMode ? (
+              <Exam markLessonComplete={markLessonComplete} />
+            ) : (
+              <VideoPlayer markLessonComplete={markLessonComplete} />
+            )}
 
             {/* Navigation Controls */}
             <div
@@ -185,9 +184,9 @@ const CourseContent = ({ allLessons,
         {activeTab === "progress" && <ProgressTab />}
         {activeTab === "files" && <FilesTab />}
         {activeTab === "notes" && <NotesTab />}
-        {
-        courseData?.is_show_general_questions &&
-        activeTab === "questions" && <QuestionsTab />}
+        {courseData?.is_show_general_questions && activeTab === "questions" && (
+          <QuestionsTab />
+        )}
       </div>
     </>
   );

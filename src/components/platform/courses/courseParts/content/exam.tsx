@@ -7,7 +7,6 @@ const Exam = ({ markLessonComplete }: any) => {
   // const setStartExam = useExam((state) => state.setStartExam);
   const { courseId } = useParams();
   const currentLesson = useLesson((state) => state.currentLesson);
-  console.log("currentLesson", currentLesson);
   // GET EXAM
   const { data, error } = useCustomQuery(
     `/training/students/course/exam/${currentLesson?.exam}/${courseId}/`,

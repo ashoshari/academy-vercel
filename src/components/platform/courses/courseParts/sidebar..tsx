@@ -78,9 +78,8 @@ const Sidebar = ({
   useEffect(() => {
     const lesson = getFirstIncompleteLesson(courseData);
     if (lesson) {
-      if(lesson?.type == "exam") setIsExamMode(true);
+      lesson?.type == "exam" ? setIsExamMode(true) : setIsExamMode(false);
       setCurrentLesson(lesson || 0);
-
     }
   }, [courseData]);
   const toggleSemester = (semesterId: any) => {
