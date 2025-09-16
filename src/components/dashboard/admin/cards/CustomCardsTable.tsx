@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Plus, Edit, Users, Grid, Rows, CreditCard } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useNavigate } from "react-router";
 import Pagination from "@/components/dashboard/core/Pagination";
 import Spinner from "@/components/dashboard/Spinner";
 import { CustomCard } from "@/pages/dashboard/admin/cards/CardCustomPrice";
@@ -13,8 +12,6 @@ const CustomCardTable = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedCard, setSelectedCard] = useState<CustomCard | null>(null);
-
-  const navigate = useNavigate();
   // filter
   const [filters, setFilters] = useState({
     page: 1,
@@ -129,7 +126,7 @@ const CustomCardTable = () => {
           </p>
 
           <button
-            onClick={() => navigate("/dashboard/libraries/add")}
+            onClick={() => setShowAddModal(true)}
             className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
@@ -157,7 +154,7 @@ const CustomCardTable = () => {
 
                 {
                   <button
-                    onClick={() => navigate("/dashboard/libraries/add")}
+                    onClick={() => setShowAddModal(true)}
                     className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />

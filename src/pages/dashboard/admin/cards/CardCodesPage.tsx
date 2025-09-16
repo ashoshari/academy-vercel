@@ -11,7 +11,7 @@ import {
   ToggleLeft,
   ToggleRight,
   CreditCard,
-  Copy,
+  // Copy,
   CheckCircle,
   User,
   Clock,
@@ -25,6 +25,7 @@ import {
   Monitor,
   Download,
 } from "lucide-react";
+import { readUserFromStorage, roleOf } from "@/services/auth";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
@@ -80,7 +81,8 @@ const CardCodesPage = () => {
   const [codePage, setCodePage] = useState(1);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const user = readUserFromStorage();
+  const role = roleOf(user) ?? "";
   // const [
   //   selectedPriceFilter,
   //   // , setSelectedPriceFilter
@@ -387,9 +389,9 @@ const CardCodesPage = () => {
     });
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
+  // const copyToClipboard = (text: string) => {
+  //   navigator.clipboard.writeText(text);
+  // };
 
   // const exportToExcel = () => {
   //   // Enhanced CSV export with batch info and targeting
@@ -701,25 +703,26 @@ const CardCodesPage = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-                    <button
-                      onClick={() => toggleBatchStatus(batch.id)}
-                      className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                        batch.is_active
-                          ? "text-green-600 bg-green-50 hover:bg-green-100"
-                          : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-                      }`}
-                      title={
-                        batch.is_active ? "تعطيل المجموعة" : "تفعيل المجموعة"
-                      }
-                    >
-                      {batch.is_active ? (
-                        <ToggleRight size={20} />
-                      ) : (
-                        <ToggleLeft size={20} />
-                      )}
-                    </button>
-                    {/* <button
+                  {role === "admin" && (
+                    <div className="p-4 border-t border-gray-200 flex items-center justify-between">
+                      <button
+                        onClick={() => toggleBatchStatus(batch.id)}
+                        className={`cursor-pointer p-2 rounded-lg transition-colors ${
+                          batch.is_active
+                            ? "text-green-600 bg-green-50 hover:bg-green-100"
+                            : "text-gray-400 bg-gray-50 hover:bg-gray-100"
+                        }`}
+                        title={
+                          batch.is_active ? "تعطيل المجموعة" : "تفعيل المجموعة"
+                        }
+                      >
+                        {batch.is_active ? (
+                          <ToggleRight size={20} />
+                        ) : (
+                          <ToggleLeft size={20} />
+                        )}
+                      </button>
+                      {/* <button
                       onClick={() => handleBatchDownload(batch?.id)}
                       className={`cursor-pointer p-1 rounded transition-colors ${
                         batch.is_downloaded
@@ -731,14 +734,15 @@ const CardCodesPage = () => {
                       <Download size={16} />
                     </button> */}
 
-                    {/* <button
+                      {/* <button
                       onClick={() => deleteBatch(batch.id)}
                       className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="حذف المجموعة"
                     >
                       <Trash2 size={16} />
                     </button> */}
-                  </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -857,9 +861,9 @@ const CardCodesPage = () => {
               <table className="min-w-[1000px] w-full text-sm bg-white">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    {/* <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       الكود
-                    </th>
+                    </th> */}
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       السعر
                     </th>
@@ -888,7 +892,7 @@ const CardCodesPage = () => {
                   {generateCodes?.data?.data?.map((code: any) => {
                     return (
                       <tr key={code.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 whitespace-nowrap">
+                        {/* <td className="px-4 py-3 whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-xs font-medium text-gray-900 truncate max-w-[100px]">
                               {code.code_string}
@@ -901,21 +905,20 @@ const CardCodesPage = () => {
                               <Copy size={14} />
                             </button>
                           </div>
-                        </td>
-
-                        <td className="px-4 py-3 text-gray-900">
-                          {code.code.card.price} د.أ
-                        </td>
+                        </td> */}
 
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
                             {code.code.name}
                           </div>
+                        </td>
+                        <td className="px-4 py-3 text-gray-900">
+                          {code.code.card.price} د.أ
+                        </td>
 
-                          {/* <div className="text-xs text-gray-500">
+                        {/* <div className="text-xs text-gray-500">
                             بواسطة: {code.code.generated_by}
                           </div> */}
-                        </td>
 
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div className="flex gap-2">
@@ -962,25 +965,27 @@ const CardCodesPage = () => {
                         </td>
 
                         <td className="px-4 py-3 whitespace-nowrap flex gap-2">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => toggleCodeStatus(code.id)}
-                              className={`cursor-pointer p-1 rounded transition-colors ${
-                                code.is_active
-                                  ? "text-green-600 hover:bg-green-50"
-                                  : "text-gray-400 hover:bg-gray-50"
-                              }`}
-                              title={
-                                code.is_active ? "تعطيل الكود" : "تفعيل الكود"
-                              }
-                            >
-                              {code.is_active ? (
-                                <Eye size={16} />
-                              ) : (
-                                <EyeOff size={16} />
-                              )}
-                            </button>
-                          </div>
+                          {role === "admin" && (
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => toggleCodeStatus(code.id)}
+                                className={`cursor-pointer p-1 rounded transition-colors ${
+                                  code.is_active
+                                    ? "text-green-600 hover:bg-green-50"
+                                    : "text-gray-400 hover:bg-gray-50"
+                                }`}
+                                title={
+                                  code.is_active ? "تعطيل الكود" : "تفعيل الكود"
+                                }
+                              >
+                                {code.is_active ? (
+                                  <Eye size={16} />
+                                ) : (
+                                  <EyeOff size={16} />
+                                )}
+                              </button>
+                            </div>
+                          )}
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleCodeDownload(code?.id)}

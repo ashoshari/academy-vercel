@@ -200,7 +200,10 @@ export default function EditSliderModal({
                 الترتيب
               </label>
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
+                pattern="[0-9]*"
+                lang="en"
                 value={selectedSlide.order ?? ""}
                 onChange={(e) =>
                   setSelectedSlide({

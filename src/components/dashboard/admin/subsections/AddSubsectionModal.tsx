@@ -142,7 +142,10 @@ const AddSubsectionModal = ({
                 الترتيب
               </label>
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
+                pattern="[0-9]*"
+                lang="en"
                 value={data.order || 0}
                 onChange={(e) => onChange({ ...data, order: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"

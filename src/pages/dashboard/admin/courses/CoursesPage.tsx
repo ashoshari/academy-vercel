@@ -30,11 +30,12 @@ import Pagination from "@/components/dashboard/core/Pagination";
 import Spinner from "@/components/dashboard/Spinner";
 import { useQueryClient } from "@tanstack/react-query";
 import { readUserFromStorage, roleOf } from "@/services/auth";
+import CourseActivation from "./CourseActivation";
 const CoursesPage = () => {
   const user = readUserFromStorage();
   const role = roleOf(user) ?? "";
   const [currentView, setCurrentView] = useState<
-    "list" | "create" | "edit" | "content"
+    "list" | "create" | "edit" | "content" | "activate"
   >("list");
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -542,7 +543,6 @@ const CoursesPage = () => {
       />
     );
   }
-
   // Create Course View
   if (currentView === "create") {
     return (
@@ -665,6 +665,27 @@ const CoursesPage = () => {
                   </div>
                 </div>
               )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  المدة (بالساعات)
+                </label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  lang="en"
+                  value={newCourse?.time_in_hours || 0}
+                  onChange={(e) =>
+                    setNewCourse({
+                      ...newCourse,
+                      time_in_hours: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  placeholder="40"
+                  min="0"
+                />
+              </div>
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="imageUpload"
@@ -1175,7 +1196,10 @@ const CoursesPage = () => {
                   المدة (بالساعات)
                 </label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  lang="en"
                   value={selectedCourse?.time_in_hours}
                   onChange={(e) =>
                     setSelectedCourse({
@@ -1613,6 +1637,12 @@ const CoursesPage = () => {
   // Default List View
   return (
     <div className="space-y-6">
+      {currentView === "activate" && selectedCourse && (
+        <CourseActivation
+          setCurrentView={setCurrentView}
+          selectedCourse={selectedCourse}
+        />
+      )}
       {/* Header */}
       <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
         <div>
@@ -1970,6 +2000,16 @@ const CoursesPage = () => {
                               title="إدارة المحتوى"
                             >
                               <Folder size={16} />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedCourse(course);
+                                setCurrentView("activate");
+                              }}
+                              className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                              title="تفعيل دورة"
+                            >
+                              <CheckCircle size={16} />
                             </button>
                             <button
                               onClick={() => {

@@ -230,7 +230,10 @@ const AddQuestionsForm: React.FC<Props> = ({
                   الدرجات *
                 </label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  lang="en"
                   min={1}
                   value={draft.marks}
                   onChange={(e) =>

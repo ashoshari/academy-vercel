@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  FileImage,
-  Save,
-  ToggleLeft,
-  ToggleRight,
-  X,
-} from "lucide-react";
+import { FileImage, Save, ToggleLeft, ToggleRight, X } from "lucide-react";
 import { useMemo } from "react";
 
 interface ModalProps {
@@ -168,7 +162,10 @@ export default function AddSliderModal({
               الترتيب
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]*"
+              lang="en"
               value={newSlide.order ?? ""}
               onChange={(e) =>
                 setNewSlide({

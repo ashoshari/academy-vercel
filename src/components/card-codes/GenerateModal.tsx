@@ -205,7 +205,10 @@ const GenerateModal = ({
               عدد الكودات
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]*"
+              lang="en"
               value={generateForm.quantity}
               onChange={(e) =>
                 setGenerateForm({

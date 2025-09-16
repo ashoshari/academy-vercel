@@ -14,14 +14,11 @@ type ChartPoint = {
 const BAR_MIN_PX = 4;
 const CHART_HEIGHT_PX = 240;
 
-const MAX_YEAR = 2060;
-const MIN_YEAR = 2022;
-
-function formatMoney(n: number) {
-  return new Intl.NumberFormat("ar-EG", {
-    maximumFractionDigits: 2,
-  }).format(n);
-}
+// function formatMoney(n: number) {
+//   return new Intl.NumberFormat("ar-EG", {
+//     maximumFractionDigits: 2,
+//   }).format(n);
+// }
 
 export default function RevenueChart() {
   const user = readUserFromStorage();
@@ -30,7 +27,8 @@ export default function RevenueChart() {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth() + 1;
-
+  const MAX_YEAR = currentYear + 2;
+  const MIN_YEAR = currentYear -2;
   const [year, setYear] = useState<number>(currentYear);
   const [selectedMonth, setSelectedMonth] = useState<number>(currentMonth);
 
@@ -76,7 +74,7 @@ export default function RevenueChart() {
 
   const years = useMemo(() => {
     const arr: number[] = [];
-    for (let y = MAX_YEAR; y >= MIN_YEAR; y--) arr.push(y);
+    for (let y = MIN_YEAR; y <= MAX_YEAR; y++) arr.push(y);
     return arr;
   }, []);
 
@@ -94,7 +92,6 @@ export default function RevenueChart() {
   }, []);
 
   const loading = !res?.data && !res?.error;
-
   return (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
       {/* Header */}
@@ -154,7 +151,7 @@ export default function RevenueChart() {
             <span className="mx-2">•</span>
             الإيراد:{" "}
             <strong className="text-gray-900">
-              {formatMoney(selectedPoint.total_income)}
+              {selectedPoint.total_income.toFixed(2)}
             </strong>
           </>
         ) : (
@@ -192,7 +189,7 @@ export default function RevenueChart() {
                 key={p.month_number}
                 onClick={() => setSelectedMonth(p.month_number)}
                 className="cursor-pointer flex-1 flex flex-col items-center group focus:outline-none"
-                title={`${p.month}: ${formatMoney(p.total_income)}`}
+                title={`${p.month}: ${p.total_income.toFixed(2)}`}
               >
                 <div
                   className={`w-full rounded-t-lg transition-all duration-300 ${

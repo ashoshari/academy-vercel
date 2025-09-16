@@ -760,7 +760,10 @@ const ExamsPage = () => {
                     عدد الأسئلة *
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
                     value={newExam?.number_of_questions || ""}
                     onChange={(e) =>
                       setNewExam({
@@ -778,7 +781,10 @@ const ExamsPage = () => {
                     إجمالي الدرجات *
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
                     value={newExam?.total_marks}
                     onChange={(e) =>
                       setNewExam({
@@ -798,7 +804,10 @@ const ExamsPage = () => {
                     درجة النجاح *
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
                     value={newExam?.passing_marks || ""}
                     onChange={(e) =>
                       setNewExam({
@@ -816,7 +825,10 @@ const ExamsPage = () => {
                     المدة (بالدقائق)
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
                     value={newExam?.time_in_minutes || ""}
                     onChange={(e) =>
                       setNewExam({
@@ -1317,7 +1329,10 @@ const ExamsPage = () => {
                     عدد الأسئلة *
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
                     value={selectedExam?.number_of_questions}
                     onChange={(e) =>
                       setSelectedExam({
@@ -1335,7 +1350,10 @@ const ExamsPage = () => {
                     إجمالي الدرجات *
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
                     value={selectedExam?.total_marks}
                     onChange={(e) =>
                       setSelectedExam({
@@ -1356,7 +1374,10 @@ const ExamsPage = () => {
                     درجة النجاح *
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
                     value={selectedExam?.passing_marks}
                     onChange={(e) =>
                       setSelectedExam({
@@ -1374,7 +1395,10 @@ const ExamsPage = () => {
                     المدة (بالدقائق)
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
                     value={selectedExam?.time_in_minutes}
                     onChange={(e) =>
                       setSelectedExam({

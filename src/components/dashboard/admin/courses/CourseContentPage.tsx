@@ -17,14 +17,26 @@ import {
   ChevronDown,
   CheckCircle,
   Target,
+  Trash2,
 } from "lucide-react";
 import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
+import {
+  useCustomPost,
+  useCustomRemove,
+  useCustomUpdate,
+} from "@/hooks/useMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import Spinner from "@/components/dashboard/Spinner";
 
+interface TreeItem {
+  id: string | number;
+  title?: string;
+  description?: string;
+  children?: TreeItem[];
+  [key: string]: any;
+}
 const CourseContentPage = ({ course, onBack }: any) => {
   const queryClient = useQueryClient();
   const [selectedResources, setSelectedResources] = useState<any>([]);
@@ -116,6 +128,32 @@ const CourseContentPage = ({ course, onBack }: any) => {
     type: "semester",
   });
 
+  // Delete Course Semester
+  const { mutateAsync: deleteContentSemester } = useCustomRemove(
+    `/training/admin/semesters/${selectedItem?.id}/`,
+    ["deleteCourseContent"]
+  );
+  // Delete Course Contnet Unit
+  const { mutateAsync: deleteContentUnit } = useCustomRemove(
+    `/training/admin/units/${selectedItem?.id}/`,
+    ["deleteCourseContent"]
+  );
+  // Delete Course Contnet Topic
+  const { mutateAsync: deleteContentTopic } = useCustomRemove(
+    `/training/admin/topics/${selectedItem?.id}/`,
+    ["deleteCourseContent"]
+  );
+  // Delete Course Contnet Lesson
+  const { mutateAsync: deleteContentLesson } = useCustomRemove(
+    `/training/admin/lessons/${selectedItem?.id}/`,
+    ["deleteCourseContent"]
+  );
+
+  // Move Course Contnet Item
+  const { mutateAsync: moveContentItem } = useCustomUpdate(
+    `/training/admin/course-content/${selectedItem?.id}/`,
+    ["reOrderCourseContent"]
+  );
   useEffect(() => {
     if (selectedItem && selectedItem?.resources) {
       setSelectedResources(selectedItem?.resources?.map((res: any) => res?.id));
@@ -291,74 +329,112 @@ const CourseContentPage = ({ course, onBack }: any) => {
       toast.error(err?.response?.data?.error);
     }
   };
-
-  // const handleDeleteItem = (id: any) => {
-  //   if (
-  //     !confirm(
-  //       "هل أنت متأكد من حذف هذا العنصر؟ سيتم حذف جميع العناصر التابعة له."
-  //     )
-  //   )
-  //     return;
-
-  //   const deleteFromTree = (items: any) => {
-  //     return items.filter((item:any) => {
-  //       if (item.id === id) return false;
-  //       if (item.children) {
-  //         item.children = deleteFromTree(item.children);
-  //       }
-  //       return true;
-  //     });
-  //   };
-
-  //   setContentTree(deleteFromTree(contentTree));
-  // };
-
-  const moveItem = (id: any, direction: "up" | "down") => {
-    const moveInTree = (items: any) => {
-      const index = items.findIndex((item: any) => item?.id === id);
-      if (index !== -1) {
-        // Found the item here → move it
-        const newItems = [...items];
-        const targetIndex = direction === "up" ? index - 1 : index + 1;
-
-        if (targetIndex >= 0 && targetIndex < newItems.length) {
-          [newItems[index], newItems[targetIndex]] = [
-            newItems[targetIndex],
-            newItems[index],
-          ];
-
-          // Update order
-          newItems.forEach((item, idx) => {
-            item.order = idx + 1;
-          });
-        }
-
-        return newItems;
+  const handleDeleteItem = async (itemData: any) => {
+    if (
+      !confirm(
+        "هل أنت متأكد من حذف هذا العنصر؟ سيتم حذف جميع العناصر التابعة له."
+      )
+    )
+      return;
+    console.log("itemData", itemData);
+    try {
+      let response;
+      if (itemData?.course) {
+        console.log("itemData", itemData);
+        response = await deleteContentSemester(itemData?.id);
+      } else if (itemData?.semester) {
+        console.log("itemData", itemData);
+        response = await deleteContentUnit(itemData?.id);
+      } else if (itemData?.unit) {
+        console.log("itemData", itemData);
+        response = await deleteContentTopic(itemData?.id);
+      } else {
+        console.log("itemData", itemData);
+        response = await deleteContentLesson(itemData?.id);
       }
+      toast.success(response?.message || "تم حذف المحتوى بنجاح");
+      const deleteFromTree = (items: TreeItem[]): TreeItem[] => {
+        return items
+          .filter((item) => item.id !== itemData?.id)
+          .map((item) => {
+            const childKey = Object.keys(item).find(
+              (key) =>
+                key !== "resources" &&
+                key !== "مصادر" &&
+                Array.isArray(item[key]) &&
+                item[key].length > 0 &&
+                item[key].every(
+                  (child: any) => typeof child === "object" && "id" in child
+                )
+            );
 
-      // Not found here → search in children dynamically
-      return items.map((item: any) => {
-        const childKey = Object.keys(item).find(
-          (key) =>
-            Array.isArray(item[key]) &&
-            item[key].length > 0 &&
-            item[key].every(
-              (child: any) => typeof child === "object" && "id" in child
-            )
-        );
+            if (childKey) {
+              return {
+                ...item,
+                [childKey]: deleteFromTree(item[childKey]),
+              };
+            }
 
-        if (childKey) {
-          return {
-            ...item,
-            [childKey]: moveInTree(item[childKey]),
-          };
+            return { ...item };
+          });
+      };
+      setContentTree(deleteFromTree(contentTree));
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error || "حدث خطأ اثناء حذف العنصر");
+    }
+  };
+
+  const moveItem = async (id: any, direction: "up" | "down") => {
+    try {
+      await moveContentItem({ id, direction });
+      const moveInTree = (items: any) => {
+        const index = items.findIndex((item: any) => item?.id === id);
+        if (index !== -1) {
+          // Found the item here → move it
+          const newItems = [...items];
+          const targetIndex = direction === "up" ? index - 1 : index + 1;
+
+          if (targetIndex >= 0 && targetIndex < newItems.length) {
+            [newItems[index], newItems[targetIndex]] = [
+              newItems[targetIndex],
+              newItems[index],
+            ];
+
+            // Update order
+            newItems.forEach((item, idx) => {
+              item.order = idx + 1;
+            });
+          }
+
+          return newItems;
         }
+        // Not found here → search in children dynamically
+        return items.map((item: any) => {
+          const childKey = Object.keys(item).find(
+            (key) =>
+              Array.isArray(item[key]) &&
+              item[key].length > 0 &&
+              item[key].every(
+                (child: any) => typeof child === "object" && "id" in child
+              )
+          );
 
-        return item;
-      });
-    };
+          if (childKey) {
+            return {
+              ...item,
+              [childKey]: moveInTree(item[childKey]),
+            };
+          }
 
-    setContentTree(moveInTree(contentTree));
+          return item;
+        });
+      };
+      setContentTree(moveInTree(contentTree));
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.error || "حدث خطأ في تغيير ترتيب المحتوى"
+      );
+    }
   };
 
   const renderTreeItem = (item: any, depth: any = 0) => {
@@ -503,13 +579,16 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       </button>
 
                       {/* Delete */}
-                      {/* <button
-                        onClick={() => handleDeleteItem(item.id)}
+                      <button
+                        onClick={() => {
+                          setSelectedItem(item);
+                          handleDeleteItem(item);
+                        }}
                         className="cursor-pointer p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                         title="حذف"
                       >
                         <Trash2 size={14} />
-                      </button> */}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -669,6 +748,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
             {/* Expand All */}
             <div className="flex gap-2">
               <button
+                disabled={isLoading}
                 onClick={() => {
                   const allIds: any[] = [];
                   const collectIds = (items: any[]) => {
@@ -695,13 +775,14 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   collectIds(contentTree);
                   setExpandedItems(allIds);
                 }}
-                className="cursor-pointer px-3 py-1 text-sm bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-200 transition-colors"
+                className="cursor-pointer px-3 py-1 text-sm bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 توسيع الكل
               </button>
               <button
+                disabled={isLoading}
                 onClick={() => setExpandedItems([])}
-                className="cursor-pointer px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                className="cursor-pointer px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 طي الكل
               </button>
@@ -744,7 +825,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
   // Add Content View
   if (currentView === "add") {
-
     return (
       <div className="space-y-6">
         {/* Header */}
@@ -897,7 +977,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   المدة المقدرة (بالدقائق)
                 </label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  lang="en"
                   value={newItem.estimatedDuration || ""}
                   onChange={(e) =>
                     setNewItem({
@@ -1071,7 +1154,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   الترتيب
                 </label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  lang="en"
                   value={newItem.order ?? ""}
                   onChange={(e) =>
                     setNewItem({
@@ -1213,7 +1299,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   المدة المقدرة (بالدقائق)
                 </label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  lang="en"
                   value={selectedItem?.time_in_minutes}
                   onChange={(e) =>
                     setSelectedItem({
@@ -1380,7 +1469,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   الترتيب
                 </label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  lang="en"
                   value={selectedItem.order ?? ""}
                   onChange={(e) =>
                     setSelectedItem({

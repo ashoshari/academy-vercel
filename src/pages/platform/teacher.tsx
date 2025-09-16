@@ -58,11 +58,15 @@ const TeacherProfile: React.FC = () => {
   );
   const handleDownload = async (resourceId: any) => {
     try {
-      const response = await downloadFiles({
-        resource_id: resourceId,
-      });
-      toast.success(response?.message ?? "تم تحميل الملف بنجاح");
-      queryClient.invalidateQueries({ queryKey: ["teachers", id] });
+      if (isLoggedIn) {
+        const response = await downloadFiles({
+          resource_id: resourceId,
+        });
+        toast.success(response?.message ?? "تم تحميل الملف بنجاح");
+        queryClient.invalidateQueries({ queryKey: ["teachers", id] });
+      } else {
+        handleLoginClick();
+      }
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "حدث خطأ");
     }
@@ -455,11 +459,11 @@ const TeacherProfile: React.FC = () => {
 
       <div className="flex w-full items-center justify-start">
         <a
-          href={file?.file}
+          href={isLoggedIn && file?.file}
           target="_blank"
           onClick={() => handleDownload(file?.id)}
           download
-          className="bg-gradient-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+          className="cursor-pointer bg-gradient-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
         >
           <Download className="w-4 h-4" />
           <p className="">تحميل</p>
@@ -524,11 +528,11 @@ const TeacherProfile: React.FC = () => {
           </div>
           <div className="flex w-full items-center justify-start">
             <a
-              href={book?.file}
+              href={isLoggedIn && book?.file}
               target="_blank"
               onClick={() => handleDownload(book?.id)}
               download
-              className="bg-gradient-to-r w-full justify-center from-yellow-500 to-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+              className="cursor-pointer bg-gradient-to-r w-full justify-center from-yellow-500 to-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
               <p className="">تحميل</p>
@@ -597,11 +601,11 @@ const TeacherProfile: React.FC = () => {
           </div>
           <div className="flex w-full items-center justify-start">
             <a
-              href={question?.file}
+              href={isLoggedIn && question?.file}
               target="_blank"
               onClick={() => handleDownload(question?.id)}
               download
-              className="bg-gradient-to-r w-full justify-center from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+              className="cursor-pointer bg-gradient-to-r w-full justify-center from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
               <p className="">تحميل</p>

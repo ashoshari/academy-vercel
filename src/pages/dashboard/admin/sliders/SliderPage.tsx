@@ -292,7 +292,10 @@ const SliderPage = () => {
               سرعة التبديل (ثانية)
             </label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]*"
+              lang="en"
               defaultValue="5"
               className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
             />
