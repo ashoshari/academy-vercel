@@ -162,10 +162,7 @@ export default function AddSliderModal({
               الترتيب
             </label>
             <input
-              type="text"
-              inputMode="decimal"
-              pattern="[0-9]*"
-              lang="en"
+              type="number"
               value={newSlide.order ?? ""}
               onChange={(e) =>
                 setNewSlide({

@@ -39,7 +39,12 @@ const EditCardPricing = ({
       setShowEditModal(false);
       setSelectedCard(null);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "حدث خطأ");
+      console.log(error?.response);
+      toast.error(
+        error?.response?.data?.default_library_price ||
+          error?.response?.data?.default_teacher_price ||
+          "حدث خطأ"
+      );
     }
   };
 

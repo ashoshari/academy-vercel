@@ -95,10 +95,7 @@ const AddCardPricing = ({
             <div className="relative">
               <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
-                type="text"
-                inputMode="decimal"
-                pattern="[0-9]*"
-                lang="en"
+                type="number"
                 value={newCard.price || ""}
                 onChange={(e) => {
                   const value = parseFloat(e.target.value) || 0;
@@ -130,10 +127,7 @@ const AddCardPricing = ({
             <div className="relative">
               <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
-                type="text"
-                inputMode="decimal"
-                pattern="[0-9]*"
-                lang="en"
+                type="number"
                 value={newCard.default_teacher_price || ""}
                 onChange={(e) => {
                   const value = parseFloat(e.target.value) || 0;
@@ -158,10 +152,7 @@ const AddCardPricing = ({
             <div className="relative">
               <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
-                type="text"
-                inputMode="decimal"
-                pattern="[0-9]*"
-                lang="en"
+                type="number"
                 value={newCard.default_library_price || ""}
                 onChange={(e) => {
                   const value = parseFloat(e.target.value) || 0;

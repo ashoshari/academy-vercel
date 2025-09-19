@@ -138,10 +138,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
           />
 
           <input
-            type="text"
-            inputMode="decimal"
-            pattern="[0-9]*"
-            lang="en"
+            type="number"
             value={amount}
             onChange={(e) =>
               setAmount(e.target.value ? Number(e.target.value) : "")

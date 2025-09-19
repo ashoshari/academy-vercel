@@ -150,10 +150,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
   );
 
   // Move Course Contnet Item
-  const { mutateAsync: moveContentItem } = useCustomUpdate(
-    `/training/admin/course-content/${selectedItem?.id}/`,
-    ["reOrderCourseContent"]
-  );
+  // const { mutateAsync: moveContentItem } = useCustomUpdate(
+  //   `/training/admin/course-content/${selectedItem?.id}/`,
+  //   ["reOrderCourseContent"]
+  // );
   useEffect(() => {
     if (selectedItem && selectedItem?.resources) {
       setSelectedResources(selectedItem?.resources?.map((res: any) => res?.id));
@@ -386,7 +386,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
   const moveItem = async (id: any, direction: "up" | "down") => {
     try {
-      await moveContentItem({ id, direction });
+      // await moveContentItem({ id, direction });
       const moveInTree = (items: any) => {
         const index = items.findIndex((item: any) => item?.id === id);
         if (index !== -1) {
@@ -552,14 +552,20 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     <div className="flex items-center gap-1">
                       {/* Move Up/Down */}
                       <button
-                        onClick={() => moveItem(item?.id, "up")}
+                        onClick={() => {
+                          setSelectedItem(item);
+                          moveItem(item?.id, "up");
+                        }}
                         className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأعلى"
                       >
                         <ArrowUp size={14} />
                       </button>
                       <button
-                        onClick={() => moveItem(item?.id, "down")}
+                        onClick={() => {
+                          setSelectedItem(item);
+                          moveItem(item?.id, "down");
+                        }}
                         className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأسفل"
                       >
@@ -980,7 +986,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   type="text"
                   inputMode="decimal"
                   pattern="[0-9]*"
-                  lang="en"
                   value={newItem.estimatedDuration || ""}
                   onChange={(e) =>
                     setNewItem({
@@ -1302,7 +1307,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   type="text"
                   inputMode="decimal"
                   pattern="[0-9]*"
-                  lang="en"
                   value={selectedItem?.time_in_minutes}
                   onChange={(e) =>
                     setSelectedItem({
@@ -1312,7 +1316,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="30"
-                  min="0"
                 />
               </div>
 
