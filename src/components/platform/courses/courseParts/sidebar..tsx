@@ -172,7 +172,7 @@ const Sidebar = ({
         sidebarCollapsed ? "w-16" : "w-80"
       } ${
         sidebarVisible ? "translate-x-0" : "-translate-x-full"
-      } fixed left-0 top-[8vh] h-full z-40 overflow-y-auto`}
+      } fixed left-0 top-[8vh] h-[calc(100vh-8vh)] z-40 overflow-y-auto`}
     >
       {/* Sidebar Header */}
       <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
@@ -224,7 +224,7 @@ const Sidebar = ({
       </div>
 
       {/* Course Content */}
-      <div className="p-2">
+      <div className="p-2 overflow-y-auto">
         {semesters?.map((semester: any) => (
           <div key={semester?.id} className="mb-2">
             <button
