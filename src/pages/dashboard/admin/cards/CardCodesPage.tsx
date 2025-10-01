@@ -42,6 +42,7 @@ export interface CardCode {
   card: string;
   price: number;
   isUsed: boolean;
+  is_installment: boolean;
   isDownloadeded: boolean;
   isActive: boolean;
   usedBy?: string;
@@ -162,6 +163,7 @@ const CardCodesPage = () => {
     prefix: "M",
     notes: "",
     targetingType: "all" as "all" | "specific",
+    is_installment: false,
     subsections: [],
     subsubsections: [],
     specializations: [],
@@ -258,6 +260,7 @@ const CardCodesPage = () => {
       card: generateForm.card,
       number_of_codes: generateForm.quantity,
       prefix: generateForm.prefix,
+      is_installment: generateForm.is_installment,
       subsections: generateForm?.subsections,
       subsubsections: generateForm?.subsubsections,
       specializations: generateForm?.specializations,
@@ -278,13 +281,14 @@ const CardCodesPage = () => {
             prefix: "M",
             notes: "",
             targetingType: "all",
+            is_installment: false,
             subsections: [],
             subsubsections: [],
             specializations: [],
             specialization_material: [],
           });
           setShowGenerateModal(false);
-          toast.success("تم تحديث حالة البطاقة بنجاح");
+          toast.success(res?.data || "تم تحديث حالة البطاقة بنجاح");
         } else {
           toast.error("حدث خطاء في تحديث حالة البطاقة");
         }

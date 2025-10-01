@@ -262,6 +262,29 @@ const GenerateModal = ({
               />
             </div>
           )}
+          {role !== "teacher" && (
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <p className="font-medium text-gray-800">
+                  تفعيل خيار الدفع بالتقسيط
+                </p>
+                <p className="text-sm text-gray-500">
+                  يمكنك تفعيل أو إلغاء خيار الدفع بالتقسيط لهذه الكودات يدويًا.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={generateForm.is_installment}
+                onChange={(e) => {
+                  setGenerateForm({
+                    ...generateForm,
+                    is_installment: e.target.checked,
+                  });
+                }}
+                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+              />
+            </div>
+          )}
 
           {!allSubsections && (
             <>
