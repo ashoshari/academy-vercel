@@ -36,6 +36,8 @@ import Spinner from "@/components/dashboard/Spinner";
 import { formatDate } from "@/services/date";
 import { useQueryClient } from "@tanstack/react-query";
 import { get } from "@/api";
+import { formatDateTimeSimple } from "@/utils/formatDateTime";
+import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
 export interface CardCode {
   id: number;
   code: string;
@@ -93,7 +95,10 @@ const CardCodesPage = () => {
   const [isCodeDownloaded, setisCodeDownloaded] = useState<
     "all" | "true" | "false"
   >("all");
-  const [codesFilter, setCodesFilter] = useState();
+  const [codesFilter, setCodesFilter] = useState<string[]>([]);
+  const [teachersFilter, setTeachersFilter] = useState<string[]>([]);
+  const [librariesFilter, setLibrariesFilter] = useState<string[]>([]);
+  const [installmentFilter, setInstallmentFilter] = useState<any>("");
   const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
     "all"
   );
@@ -110,9 +115,36 @@ const CardCodesPage = () => {
   const subsections = useCustomQuery("training/admin/subsections/", [
     "subsections",
   ]);
+  // GET Teachers
+  const { data: teachers } = useCustomQuery(
+    "/account/admin/teachers/?pagination=false",
+    ["teachers"]
+  );
+  const teacherData = teachers?.data;
+  // GET Libraries
+  const { data: libraries } = useCustomQuery("/account/admin/libraries/", [
+    "libraries",
+  ]);
+  const libraryData = libraries?.data;
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
-  if (codesFilter) queryParams.append("code_name", codesFilter);
+  if (codesFilter)
+    queryParams.append(
+      "code",
+      `${codesFilter?.map((id: string) => id).join(",")}`
+    );
+  if (teachersFilter)
+    queryParams.append(
+      "generated_by",
+      teachersFilter?.map((id: string) => id).join(",")
+    );
+  if (librariesFilter)
+    queryParams.append(
+      "generated_by",
+      librariesFilter?.map((id: string) => id).join(",")
+    );
+  if (installmentFilter)
+    queryParams.append("is_installment", installmentFilter);
   if (isUsed !== null && isUsed !== undefined) {
     queryParams.append("is_used", isUsed);
   }
@@ -130,6 +162,9 @@ const CardCodesPage = () => {
       "codes-generated",
       searchTerm,
       codesFilter,
+      teachersFilter,
+      librariesFilter,
+      installmentFilter,
       isUsed,
       isCodeDownloaded,
       statusFilter,
@@ -342,6 +377,9 @@ const CardCodesPage = () => {
           "codes-generated",
           searchTerm,
           codesFilter,
+          teachersFilter,
+          librariesFilter,
+          installmentFilter,
           isUsed,
           isCodeDownloaded,
           statusFilter,
@@ -563,15 +601,27 @@ const CardCodesPage = () => {
                       <h3 className="font-bold text-lg">
                         {batch?.name || "-"}
                       </h3>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          batch.card.is_active
-                            ? "bg-green-400/20 text-green-100"
-                            : "bg-red-400/20 text-red-100"
-                        }`}
-                      >
-                        {batch?.is_active ? "مفعل" : "معطل"}
-                      </span>
+                      <div className="flex justify-center items-center gap-1">
+                        {/* Installment */}
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            batch?.card?.is_installment &&
+                            "bg-green-400/20 text-green-100"
+                          }`}
+                        >
+                          {batch?.is_installment && "أقساط"}
+                        </span>
+                        {/* Active */}
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            batch.card.is_active
+                              ? "bg-green-400/20 text-green-100"
+                              : "bg-red-400/20 text-red-100"
+                          }`}
+                        >
+                          {batch?.is_active ? "مفعل" : "معطل"}
+                        </span>
+                      </div>
                     </div>
                     <div className="text-2xl font-bold">
                       {batch?.card?.price} د.أ
@@ -761,7 +811,7 @@ const CardCodesPage = () => {
 
       {/* Enhanced Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-3">
           {/* Search */}
           <div className="relative col-span-1 lg:col-span-2">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -774,18 +824,56 @@ const CardCodesPage = () => {
             />
           </div>
 
-          {/* Group Filter */}
+          {/* Patchs Filter */}
+          <div className="space-y-3">
+            <MultiSelectAutocomplete
+              value={codesFilter}
+              onChange={setCodesFilter}
+              options={cardCodes?.data?.data?.map((card: any) => ({
+                id: card?.id,
+                title: `${card?.name} - ${
+                  card?.card?.price
+                } - ${formatDateTimeSimple(card?.created_at)}`,
+              }))}
+              placeholder="جميع المجموعات"
+            />
+          </div>
+
+          {/* Teachers Filter */}
+          <div className="space-y-3">
+            <MultiSelectAutocomplete
+              value={teachersFilter}
+              onChange={setTeachersFilter}
+              options={teacherData?.map((teacher: any) => ({
+                id: teacher.id,
+                title: teacher.name,
+              }))}
+              placeholder="جميع المعلمين"
+            />
+          </div>
+
+          {/* Libraries Filter */}
+          <div className="space-y-3">
+            <MultiSelectAutocomplete
+              value={librariesFilter}
+              onChange={setLibrariesFilter}
+              options={libraryData?.map((library: any) => ({
+                id: library.id,
+                title: library.name,
+              }))}
+              placeholder="جميع المكتبات"
+            />
+          </div>
+
+          {/* Installment Filter */}
           <select
-            value={codesFilter}
-            onChange={(e) => setCodesFilter(e.target.value as any)}
+            value={installmentFilter}
+            onChange={(e) => setInstallmentFilter(e.target.value as any)}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
           >
-            <option value="">جميع المجموعات</option>
-            {cardCodes?.data?.data.map((card: any) => (
-              <option key={card.id} value={card.name}>
-                {card.name || "-"}
-              </option>
-            ))}
+            <option value="">جميع حالات التقسيط</option>
+            <option value="true">يوجد تقسيط</option>
+            <option value="false">لا يوجد تقسيط</option>
           </select>
 
           {/* Batch Filter */}
@@ -819,12 +907,10 @@ const CardCodesPage = () => {
             <option value="all">جميع حالات التفعيل</option>
             <option value="true">مفعل</option>
             <option value="false">غير مفعل</option>
-            {/* <option value="active">مفعل</option>
-            <option value="inactive">معطل</option> */}
           </select>
 
           {/* Results Count */}
-          <div className="flex items-center justify-center bg-gray-50 rounded-lg px-4 py-2">
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 flex items-center justify-center bg-gray-50 rounded-lg px-4 py-2">
             <span className="text-sm text-gray-600">
               {generateCodes?.data?.pagination?.count} كود
             </span>
@@ -869,12 +955,14 @@ const CardCodesPage = () => {
                       الكود
                     </th> */}
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      المجموعة
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       السعر
                     </th>
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      المجموعة
+                      بادئة الكود
                     </th>
-
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       الحالة
                     </th>
@@ -911,13 +999,29 @@ const CardCodesPage = () => {
                           </div>
                         </td> */}
 
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
+                        <td className="px-4 py-3 whitespace-nowrap relative">
+                          <div className="group text-sm font-medium text-gray-900 cursor-default inline-block">
                             {code.code.name}
+
+                            {/* Tooltip */}
+                            <div
+                              className="fixed z-[9999] opacity-0 group-hover:opacity-100 transition-all duration-200 
+                            bg-gray-800 text-white text-xs rounded-md px-2 py-1 whitespace-nowrap 
+                              pointer-events-none shadow-lg"
+                              style={{
+                                transform: "translateY(-8px)",
+                              }}
+                            >
+                              ID: {code.code.id}
+                            </div>
                           </div>
                         </td>
+
                         <td className="px-4 py-3 text-gray-900">
                           {code.code.card.price} د.أ
+                        </td>
+                        <td className="px-4 py-3 text-gray-900">
+                          {code.code_string.split("-")[0]}
                         </td>
 
                         {/* <div className="text-xs text-gray-500">
@@ -959,13 +1063,21 @@ const CardCodesPage = () => {
                         <td className="px-4 py-3 text-sm text-gray-900">
                           {code.used_by?.user?.name ?? "-"}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-900">
+                        <td
+                          dir="ltr"
+                          className="px-4 py-3 text-end text-sm text-gray-900"
+                        >
                           {code.used_by?.user?.created_at
-                            ? formatDate(code.used_by?.user?.created_at)
+                            ? formatDateTimeSimple(
+                                code.used_by?.user?.created_at
+                              )
                             : "-"}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-900">
-                          {formatDate(code.created_at)}
+                        <td
+                          dir="ltr"
+                          className="px-4 py-3 text-end text-sm w-fit text-gray-900"
+                        >
+                          {formatDateTimeSimple(code.created_at)}
                         </td>
 
                         <td className="px-4 py-3 whitespace-nowrap flex gap-2">
@@ -1024,6 +1136,7 @@ const CardCodesPage = () => {
             </div>
           </div>
           <Pagination
+            small={true}
             count={generateCodes?.data?.pagination?.count}
             currentPage={page}
             onPageChange={setPage}

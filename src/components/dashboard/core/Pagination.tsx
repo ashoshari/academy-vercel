@@ -32,70 +32,84 @@ export default function Pagination({
   currentPage,
   count,
   onPageChange,
-  pageSize,
+  pageSize = 20,
 }: PaginationProps) {
-  const [isSmall, setIsSmall] = useState(false);
-  useEffect(() => setIsSmall(window.innerWidth < 568), [window.innerWidth]);
-  const totalPages = Math.ceil(count / (pageSize || 20));
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
+  // Detect small screens dynamically
+  useEffect(() => {
+    const handleResize = () => setIsSmallScreen(window.innerWidth < 640);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const totalPages = Math.ceil(count / pageSize);
   if (totalPages <= 1) return null;
 
   const pages = getPageRange(currentPage, totalPages);
 
+  // Combine conditions (screen small OR prop small)
+  const compact = small || isSmallScreen;
+
   return (
-    <div className="flex justify-center items-center gap-2 self-center mt-10 rtl:flex-row-reverse">
+    <div className="flex justify-center items-center gap-1.5 sm:gap-2 self-center mt-8 rtl:flex-row-reverse">
       {/* Previous */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`${
-          small && isSmall ? "px-1 py-1" : "px-3 py-2"
-        } bg-white border rounded-xl text-gray-600 hover:bg-gray-100 disabled:opacity-50`}
+        className={`flex items-center justify-center ${
+          compact
+            ? "px-2 py-1.5 text-xs rounded-lg"
+            : "px-3 py-2 text-sm rounded-xl"
+        } bg-white border text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition-colors`}
       >
-        <ChevronRight className="rtl:hidden" />
-        <ChevronLeft className="hidden rtl:inline" />
+        <ChevronRight className="rtl:hidden w-4 h-4" />
+        <ChevronLeft className="hidden rtl:inline w-4 h-4" />
       </button>
 
       {/* Page Numbers */}
-      {pages.map((page) =>
-        !isSmall ? (
-          page === "..." ? (
-            <span
-              key={page}
-              className={`${
-                small && isSmall ? "px-2 py-1" : "px-3 py-2"
-              } text-gray-400 select-none pointer-events-none`}
-            >
-              <MoreHorizontal size={16} />
-            </span>
-          ) : (
-            <button
-              key={page}
-              onClick={() => onPageChange(Number(page))}
-              className={`${
-                small && isSmall ? "px-2 py-1" : "px-4 py-2"
-              } rounded-xl border font-medium ${
-                page === currentPage
-                  ? "bg-orange-500 text-white border-orange-500"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              {page}
-            </button>
-          )
-        ) : null
+      {pages.map((page, idx) =>
+        page === "..." ? (
+          <span
+            key={`ellipsis-${idx}`}
+            className={`flex items-center justify-center text-gray-400 ${
+              compact ? "px-2 py-1.5" : "px-3 py-2"
+            }`}
+          >
+            <MoreHorizontal size={compact ? 14 : 16} />
+          </span>
+        ) : (
+          <button
+            key={page}
+            onClick={() => onPageChange(Number(page))}
+            className={`border font-medium transition-all ${
+              compact
+                ? "px-2.5 py-1.5 text-xs rounded-lg"
+                : "px-4 py-2 text-sm rounded-xl"
+            } ${
+              page === currentPage
+                ? "bg-orange-500 text-white border-orange-500"
+                : "bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            {page}
+          </button>
+        )
       )}
 
       {/* Next */}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`${
-          small && isSmall ? "px-1 py-1" : "px-3 py-2"
-        } bg-white border rounded-xl text-gray-600 hover:bg-gray-100 disabled:opacity-50`}
+        className={`flex items-center justify-center ${
+          compact
+            ? "px-2 py-1.5 text-xs rounded-lg"
+            : "px-3 py-2 text-sm rounded-xl"
+        } bg-white border text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition-colors`}
       >
-        <ChevronLeft className="rtl:hidden" />
-        <ChevronRight className="hidden rtl:inline" />
+        <ChevronLeft className="rtl:hidden w-4 h-4" />
+        <ChevronRight className="hidden rtl:inline w-4 h-4" />
       </button>
     </div>
   );

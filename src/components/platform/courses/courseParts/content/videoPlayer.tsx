@@ -1,9 +1,14 @@
 import { CheckCircle, FileText, Download, Clock } from "lucide-react";
 import { useLesson } from "@/store/platform/useLesson";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
+import AppLogo from "@/assets/manasaty-logo.jpg";
 // import { useState, useEffect } from "react";
 
 const VideoPlayer = ({ markLessonComplete }: any) => {
+  const user = JSON.parse(localStorage.getItem("platform_user") || "{}");
+  const isAllowToUseWeb = user.is_allow_to_use_web;
+  console.log(isAllowToUseWeb);
+  const PROVIDER = "dailymotion";
   const currentLesson = useLesson((state) => state.currentLesson);
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
@@ -29,16 +34,55 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
   };
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div className="aspect-video bg-black rounded-t-2xl overflow-hidden">
-        <div className="relative pb-[56.25%] h-0 overflow-hidden">
-          <iframe
-            src={`https://geo.dailymotion.com/player.html?video=${currentLesson?.link}`}
-            className="absolute top-0 left-0 w-full h-full border-none overflow-hidden"
-            allowFullScreen
-            title="Dailymotion Video Player"
-            allow="web-share"
-          ></iframe>
-        </div>
+      <div className="aspect-video rounded-t-2xl overflow-hidden">
+        {isAllowToUseWeb ? (
+          // Dailymotion
+          <div className="relative pb-[56.25%] h-0 overflow-hidden">
+            <iframe
+              src={`https://geo.dailymotion.com/player.html?video=${currentLesson?.link}`}
+              className="absolute top-0 left-0 w-full h-full border-none overflow-hidden"
+              allowFullScreen
+              title="Dailymotion Video Player"
+              allow="web-share"
+            />
+          </div>
+        ) : (
+          // Application
+          <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-2xl group shadow-md">
+            {/* Background placeholder image */}
+            <img
+              src={AppLogo}
+              alt="Video Placeholder"
+              className="absolute top-0 left-0 w-full h-full object-cover bg-gray-900"
+            />
+
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all duration-300"></div>
+
+            {/* Button overlay */}
+            <a
+              href={`manasaty://open?provider=${PROVIDER}&video_id=${currentLesson?.link}`}
+              className="absolute inset-0 flex flex-col items-center justify-center text-white no-underline"
+            >
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-10 h-10 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+                <span className="text-lg font-semibold tracking-wide drop-shadow-md">
+                  فتح الفيديو في التطبيق
+                </span>
+              </div>
+            </a>
+          </div>
+        )}
+        {/* Mux */}
         <div className="relative aspect-video bg-black rounded-t-2xl overflow-hidden">
           {/* <iframe
             src={`https://player.mux.com/${currentLesson?.link}?metadata-video-title=%${currentLesson?.title}&video-title=${currentLesson?.title}`}
@@ -62,19 +106,21 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
             </>
           )} */}
         </div>
-
-        {/* <iframe
+        {/* Youtube */}
+        <div>
+          {/* <iframe
           width="100%"
           height="100%"
           src={
             // "https://www.youtube.com/embed/" + currentLesson?.link
-          }
-          title={currentLesson?.title}
-          frameBorder="0"
-          // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-        ></iframe> */}
+            }
+            title={currentLesson?.title}
+            frameBorder="0"
+            // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            ></iframe> */}
+        </div>
       </div>
 
       <div className="p-6">

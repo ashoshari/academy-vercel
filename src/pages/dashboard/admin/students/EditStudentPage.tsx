@@ -7,16 +7,19 @@ import { useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useCustomQuery } from "@/hooks/useQuery";
 import Spinner from "@/components/dashboard/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface FormValues {
   name: string;
   mobile_number: string;
-  password: string;
+  password?: string;
+  is_allow_to_use_web: boolean;
 }
 
 const EditStudentPage = () => {
   const { id } = useParams(); // جلب الـ id من الـ URL
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -41,6 +44,7 @@ const EditStudentPage = () => {
         name: studentData?.data?.data?.name,
         mobile_number: studentData?.data?.data?.mobile_number,
         password: "",
+        is_allow_to_use_web: studentData?.data?.data?.is_allow_to_use_web,
       });
     }
   }, [studentData?.data, reset]);
@@ -61,10 +65,16 @@ const EditStudentPage = () => {
   };
   const onSubmit = async (data: FormValues) => {
     try {
-      const res = await updateStudent.mutateAsync(data);
+      const payload = { ...data };
+      if(!data.password || data.password.trim() === ""){
+        delete payload.password;
+      }
+      const res = await updateStudent.mutateAsync(payload);
       if (res?.status) {
         toast.success("تم تعديل الطالب بنجاح");
         navigate("/dashboard/students");
+        queryClient.invalidateQueries({ queryKey: ["student"] });
+        queryClient.invalidateQueries({ queryKey: ["students"] });
       } else {
         handleErrorAlerts(res?.error);
       }
@@ -148,7 +158,7 @@ const EditStudentPage = () => {
         </div>
 
         {/* كلمة المرور */}
-        <div>
+        <div className="md:col-span-2">
           <label className="block mb-2 font-medium text-sm text-gray-700">
             كلمة المرور ( اتركه فارغا اذا لم ترد تغييره )
           </label>
@@ -168,6 +178,21 @@ const EditStudentPage = () => {
               <RefreshCw size={16} />
             </button>
           </div>
+        </div>
+        <div className="md:col-span-2 flex items-center gap-4 justify-between p-4 bg-gray-50 rounded-lg">
+          <div>
+            <p className="font-medium text-gray-800">
+              السماح بالمشاهدة على الويب
+            </p>
+            <p className="text-sm text-gray-500">
+              يسمح الطالب بمشاهدة المحتوى على الويب
+            </p>
+          </div>
+          <input
+            type="checkbox"
+            {...register("is_allow_to_use_web")}
+            className="rounded border-gray-300 w-6 h-6 text-orange-600 focus:ring-orange-500"
+          />
         </div>
 
         {/* زر الحفظ */}

@@ -33,8 +33,8 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   }, [disabled]);
 
   const available = options
-    .filter((o) => !value?.includes(o.id))
-    .filter((o) => o.title.toLowerCase().includes(query.toLowerCase()));
+    ?.filter((o) => !value?.includes(o.id))
+    .filter((o) => o.title?.toLowerCase().includes(query.toLowerCase()));
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -45,6 +45,8 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   }, []);
 
   const add = (id: string) => {
+    console.log("id", id);
+    console.log("value", value);
     if (disabled) return;
     onChange(single ? [id] : [...value, id]);
     setQuery("");

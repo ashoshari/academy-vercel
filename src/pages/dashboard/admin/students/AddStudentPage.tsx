@@ -65,9 +65,7 @@ const AddStudentPage = () => {
         >
           <ArrowRight size={20} />
         </button>
-        <h2 className="text-2xl font-bold text-gray-800">
-          إضافة طالب جديد
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-800">إضافة طالب جديد</h2>
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -126,7 +124,7 @@ const AddStudentPage = () => {
           <label className="block mb-2 font-medium text-sm text-gray-700">
             كلمة المرور *
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               {...register("password", {
@@ -144,7 +142,7 @@ const AddStudentPage = () => {
             <button
               type="button"
               onClick={handleGeneratePassword}
-              className="cursor-pointer px-4 py-3 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+              className="cursor-pointer w-fit px-4 py-3 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
               title="توليد كلمة مرور"
             >
               <RefreshCw size={16} />

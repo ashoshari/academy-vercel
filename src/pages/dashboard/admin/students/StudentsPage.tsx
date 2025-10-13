@@ -211,6 +211,15 @@ const StudentsPage = () => {
                     : "bg-red-400/20 text-red-100"
                 }`}
               >
+                {student?.is_allow_to_use_web ? "متاح للمشاهدة على الويب" : "غير متاح للمشاهدة على الويب"}
+              </span>
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  student?.is_active
+                    ? "bg-green-400/20 text-green-100"
+                    : "bg-red-400/20 text-red-100"
+                }`}
+              >
                 {student?.is_active ? "نشط" : "غير نشط"}
               </span>
             </div>
@@ -604,6 +613,15 @@ const StudentsPage = () => {
                             }`}
                           >
                             {student?.is_active ? "نشط" : "غير نشط"}
+                          </span>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              student?.is_allow_to_use_web
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {student?.is_allow_to_use_web ? "ويب" : "تطبيق"}
                           </span>
                         </div>
                       </td>

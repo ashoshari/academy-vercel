@@ -386,7 +386,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
   const moveItem = async (id: any, direction: "up" | "down") => {
     try {
-      // await moveContentItem({ id, direction });
+      // await  moveContent ({ id, direction });
       const moveInTree = (items: any) => {
         const index = items.findIndex((item: any) => item?.id === id);
         if (index !== -1) {
