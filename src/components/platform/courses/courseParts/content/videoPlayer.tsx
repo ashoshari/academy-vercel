@@ -35,18 +35,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video rounded-t-2xl overflow-hidden">
-        {isAllowToUseWeb ? (
-          // Dailymotion
-          <div className="relative pb-[56.25%] h-0 overflow-hidden">
-            <iframe
-              src={`https://geo.dailymotion.com/player.html?video=${currentLesson?.link}`}
-              className="absolute top-0 left-0 w-full h-full border-none overflow-hidden"
-              allowFullScreen
-              title="Dailymotion Video Player"
-              allow="web-share"
-            />
-          </div>
-        ) : (
+        {isAllowToUseWeb === false || isAllowToUseWeb === "false" ? (
           // Application
           <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-2xl group shadow-md">
             {/* Background placeholder image */}
@@ -81,6 +70,19 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
               </div>
             </a>
           </div>
+        ) : (
+          // Dailymotion
+          <>
+            <div className="relative pb-[56.25%] h-0 overflow-hidden">
+              <iframe
+                src={`https://geo.dailymotion.com/player.html?video=${currentLesson?.link}`}
+                className="absolute top-0 left-0 w-full h-full border-none overflow-hidden"
+                allowFullScreen
+                title="Dailymotion Video Player"
+                allow="web-share"
+              />
+            </div>
+          </>
         )}
         {/* Mux */}
         <div className="relative aspect-video bg-black rounded-t-2xl overflow-hidden">
