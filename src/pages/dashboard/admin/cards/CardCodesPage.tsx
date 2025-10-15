@@ -128,11 +128,13 @@ const CardCodesPage = () => {
   const libraryData = libraries?.data;
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
-  if (codesFilter)
+  if (codesFilter) {
+    queryParams.append("page_size", "9999999");
     queryParams.append(
       "code",
       `${codesFilter?.map((id: string) => id).join(",")}`
     );
+  }
   if (teachersFilter)
     queryParams.append(
       "generated_by",
