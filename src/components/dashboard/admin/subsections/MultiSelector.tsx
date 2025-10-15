@@ -13,6 +13,7 @@ interface Props {
   single?: boolean;
   disabled?: boolean;
   big?: boolean;
+  fullHeight?: boolean;
 }
 
 const MultiSelectAutocomplete: React.FC<Props> = ({
@@ -22,6 +23,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   onChange,
   placeholder = "اختر...",
   single = false,
+  fullHeight = false,
   disabled = false,
 }) => {
   const [query, setQuery] = useState("");
@@ -61,7 +63,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   };
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className={`relative ${fullHeight && "h-full"}`} ref={containerRef}>
       <div
         className={`flex flex-wrap items-center gap-2 px-3 ${
           big ? "py-[17px]" : "py-[9px]"
@@ -71,7 +73,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
               ? "border-orange-500 ring-1 ring-orange-500"
               : "border-gray-200"
           }
-          focus-within:border-orange-500`}
+          focus-within:border-orange-500 ${fullHeight && "h-full"}`}
         onClick={() => {
           if (disabled) return;
           setOpen(true);

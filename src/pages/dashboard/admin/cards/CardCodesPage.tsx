@@ -128,7 +128,7 @@ const CardCodesPage = () => {
   const libraryData = libraries?.data;
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
-  if (codesFilter) {
+  if (codesFilter && codesFilter.length > 0) {
     queryParams.append("page_size", "9999999");
     queryParams.append(
       "code",
@@ -837,6 +837,7 @@ const CardCodesPage = () => {
                   card?.card?.price
                 } - ${formatDateTimeSimple(card?.created_at)}`,
               }))}
+              fullHeight={true}
               placeholder="جميع المجموعات"
             />
           </div>
@@ -850,6 +851,7 @@ const CardCodesPage = () => {
                 id: teacher.id,
                 title: teacher.name,
               }))}
+              fullHeight={true}
               placeholder="جميع المعلمين"
             />
           </div>
@@ -863,6 +865,7 @@ const CardCodesPage = () => {
                 id: library.id,
                 title: library.name,
               }))}
+              fullHeight={true}
               placeholder="جميع المكتبات"
             />
           </div>
