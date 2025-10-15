@@ -14,6 +14,11 @@ const CoursePage = () => {
   const setCurrentLessonIndex = useLesson(
     (state) => state.setCurrentLessonIndex
   );
+  useEffect(() => {
+    if(window.innerWidth < 770){
+      setSidebarVisible(false);
+    }
+  }, []);
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   // const currentLesson = useLesson((state) => state.currentLesson);
