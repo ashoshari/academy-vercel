@@ -128,11 +128,9 @@ export default function AppRoutes() {
             </Route>
 
             <Route element={<RequireRole exclude={["teacher"]} />}>
-            
               {/* Codes */}
               <Route path="card-codes" element={<CardCodesPage />} />
               {/* Codes */}
-
             </Route>
 
             <Route element={<RequireRole exclude={["library"]} />}>

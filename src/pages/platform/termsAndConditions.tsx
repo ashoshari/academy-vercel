@@ -3,7 +3,7 @@ import ErrorIllustration from "@/assets/illustration/Error_illustration.svg";
 import { ArrowRight } from "lucide-react";
 
 import { useNavigate } from "react-router";
-const termsAndConditions = () => {
+const TermsAndConditions = () => {
   const navigate = useNavigate();
   const { data: terms } = useCustomQuery(
     "/core/web-views/terms_and_conditions/",
@@ -17,7 +17,11 @@ const termsAndConditions = () => {
           <div className="flex items-center mb-6 gap-x-[5px] p-8">
             <button
               onClick={() => {
-                window.history.length > 1 ? navigate(-1) : navigate(-1);
+                if (window.history.length > 1) {
+                  navigate(-1);
+                } else {
+                  navigate(-1);
+                }
               }}
               className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
@@ -29,7 +33,7 @@ const termsAndConditions = () => {
           </div>
           <main
             className="px-10"
-            dir="ltr"
+            dir="rtl"
             dangerouslySetInnerHTML={{ __html: terms.data.value }}
           />
         </>
@@ -42,4 +46,4 @@ const termsAndConditions = () => {
     </>
   );
 };
-export default termsAndConditions;
+export default TermsAndConditions;
