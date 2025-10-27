@@ -37,6 +37,9 @@ interface TreeItem {
   children?: TreeItem[];
   [key: string]: any;
 }
+
+type ContentType = "semester" | "unit" | "topic" | "lesson";
+
 const CourseContentPage = ({ course, onBack }: any) => {
   const queryClient = useQueryClient();
   const [selectedResources, setSelectedResources] = useState<any>([]);
@@ -91,6 +94,26 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const { mutateAsync: postLessons } = useCustomPost(
     "/training/admin/lessons/",
     ["postLessons"]
+  );
+
+  const { mutateAsync: reorderSemesters } = useCustomPost(
+    "/training/admin/semesters/order/",
+    ["course-content", "resources", course?.id]
+  );
+
+  const { mutateAsync: reorderUnits } = useCustomPost(
+    "/training/admin/units/order/",
+    ["course-content", "resources", course?.id]
+  );
+
+  const { mutateAsync: reorderTopics } = useCustomPost(
+    "/training/admin/topics/order/",
+    ["course-content", "resources", course?.id]
+  );
+
+  const { mutateAsync: reorderLessons } = useCustomPost(
+    "/training/admin/lessons/order/",
+    ["course-content", "resources", course?.id]
   );
 
   // PUT Semester
@@ -384,52 +407,102 @@ const CourseContentPage = ({ course, onBack }: any) => {
     }
   };
 
-  const moveItem = async (id: any, direction: "up" | "down") => {
+  const deriveTypeAndParent = (
+    item: any
+  ): { type: ContentType; parent: string | number | null } => {
+    if (Array.isArray(item?.units)) return { type: "semester", parent: null };
+    if (Array.isArray(item?.topics))
+      return { type: "unit", parent: item?.semester };
+    if (Array.isArray(item?.lessons))
+      return { type: "topic", parent: item?.unit };
+    return { type: "lesson", parent: item?.topic };
+  };
+
+  const handleItemsReorder = async (
+    ct: { type: ContentType; parent: string | number | null },
+    tree: any[]
+  ) => {
+    if (ct.type === "semester") {
+      const payload = tree.map((sem: any) => ({
+        id: sem.id,
+        order: sem.order,
+      }));
+      return await reorderSemesters({ semesters: payload });
+    }
+
+    if (ct.type === "unit") {
+      const sem = tree.find((s: any) => s.id === ct.parent);
+      const payload =
+        sem?.units?.map((u: any) => ({ id: u.id, order: u.order })) ?? [];
+      return await reorderUnits({ units: payload });
+    }
+
+    if (ct.type === "topic") {
+      const unit = tree
+        .flatMap((s: any) => s.units ?? [])
+        .find((u: any) => u.id === ct.parent);
+      const payload =
+        unit?.topics?.map((t: any) => ({ id: t.id, order: t.order })) ?? [];
+      return await reorderTopics({ topics: payload });
+    }
+
+    // lesson
+    const topic = tree
+      .flatMap((s: any) => s.units ?? [])
+      .flatMap((u: any) => u.topics ?? [])
+      .find((t: any) => t.id === ct.parent);
+
+    const payload =
+      topic?.lessons?.map((l: any) => ({ id: l.id, order: l.order })) ?? [];
+    return await reorderLessons({ lessons: payload });
+  };
+
+  const moveItem = async (target: any, direction: "up" | "down") => {
     try {
       // await  moveContent ({ id, direction });
-      const moveInTree = (items: any) => {
-        const index = items.findIndex((item: any) => item?.id === id);
-        if (index !== -1) {
-          // Found the item here → move it
-          const newItems = [...items];
-          const targetIndex = direction === "up" ? index - 1 : index + 1;
+      const ct = deriveTypeAndParent(target);
 
-          if (targetIndex >= 0 && targetIndex < newItems.length) {
-            [newItems[index], newItems[targetIndex]] = [
-              newItems[targetIndex],
-              newItems[index],
-            ];
-
-            // Update order
-            newItems.forEach((item, idx) => {
-              item.order = idx + 1;
+      const moveInTree = (items: any[]): any[] => {
+        // recursive, returns a *new* array with updated orders
+        const idx = items.findIndex((n: any) => n?.id === target?.id);
+        if (idx !== -1) {
+          const arr = [...items];
+          const target = direction === "up" ? idx - 1 : idx + 1;
+          if (target >= 0 && target < arr.length) {
+            [arr[idx], arr[target]] = [arr[target], arr[idx]];
+            arr.forEach((n, i) => {
+              n.order = i + 1;
             });
           }
-
-          return newItems;
+          return arr;
         }
-        // Not found here → search in children dynamically
-        return items.map((item: any) => {
-          const childKey = Object.keys(item).find(
-            (key) =>
-              Array.isArray(item[key]) &&
-              item[key].length > 0 &&
-              item[key].every(
-                (child: any) => typeof child === "object" && "id" in child
+        return items.map((n: any) => {
+          const childKey = Object.keys(n).find(
+            (k) =>
+              k !== "resources" &&
+              k !== "مصادر" &&
+              Array.isArray((n as any)[k]) &&
+              (n as any)[k].every(
+                (c: any) => c && typeof c === "object" && "id" in c
               )
           );
-
-          if (childKey) {
-            return {
-              ...item,
-              [childKey]: moveInTree(item[childKey]),
-            };
-          }
-
-          return item;
+          if (!childKey) return n;
+          return { ...n, [childKey]: moveInTree((n as any)[childKey]) };
         });
       };
-      setContentTree(moveInTree(contentTree));
+
+      // build the *latest* tree first
+      const newTree = moveInTree(contentTree ?? []);
+      // persist using that same snapshot
+      const res = await handleItemsReorder(ct, newTree);
+
+      if (!res?.status) {
+        toast.error(res?.message || "حدث خطأ في الترتيب");
+        return;
+      }
+
+      // only now commit it to state
+      setContentTree(newTree);
     } catch (error: any) {
       toast.error(
         error?.response?.data?.error || "حدث خطأ في تغيير ترتيب المحتوى"
@@ -554,7 +627,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       <button
                         onClick={() => {
                           setSelectedItem(item);
-                          moveItem(item?.id, "up");
+                          moveItem(item, "up");
                         }}
                         className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأعلى"
@@ -564,7 +637,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       <button
                         onClick={() => {
                           setSelectedItem(item);
-                          moveItem(item?.id, "down");
+                          moveItem(item, "down");
                         }}
                         className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأسفل"

@@ -211,7 +211,9 @@ const StudentsPage = () => {
                     : "bg-red-400/20 text-red-100"
                 }`}
               >
-                {student?.is_allow_to_use_web ? "متاح للمشاهدة على الويب" : "غير متاح للمشاهدة على الويب"}
+                {student?.is_allow_to_use_web
+                  ? "متاح للمشاهدة على الويب"
+                  : "غير متاح للمشاهدة على الويب"}
               </span>
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -505,6 +507,7 @@ const StudentsPage = () => {
         </div>
       ) : viewMode === "grid" ? (
         <>
+          {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {studentsData?.map((student: any) => (
               <StudentCard key={student.id} student={student} />
@@ -538,6 +541,7 @@ const StudentsPage = () => {
         </>
       ) : (
         <>
+          {/* Table */}
           <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">

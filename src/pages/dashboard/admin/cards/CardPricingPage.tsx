@@ -75,7 +75,6 @@ const CardPricingPage = () => {
         handleErrorAlerts(err?.response?.data?.message || "حدث خطأ");
       });
   };
-  console.log("cardPricing", cardPricing);
   return (
     <div className="space-y-6">
       {/* Header */}
