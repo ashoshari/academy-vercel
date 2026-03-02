@@ -38,6 +38,16 @@ import { useQueryClient } from "@tanstack/react-query";
 import { get } from "@/api";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
+
+const DOWNLOAD_RESTRICTION_DATE = new Date("2026-03-01T00:00:00Z");
+
+const isCodeDownloadAllowed = (createdAt: string) => {
+  const created = new Date(createdAt);
+
+  if (Number.isNaN(created.getTime())) return true;
+
+  return created >= DOWNLOAD_RESTRICTION_DATE;
+};
 export interface CardCode {
   id: number;
   code: string;
@@ -86,11 +96,12 @@ const CardCodesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const user = readUserFromStorage();
   const role = roleOf(user) ?? "";
+  const canAddCode = import.meta.env.VITE_ADD_CODE === "true";
   // const [
   //   selectedPriceFilter,
   //   // , setSelectedPriceFilter
   // ] = useState<string | null>(null);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
   const [isCodeDownloaded, setisCodeDownloaded] = useState<
     "all" | "true" | "false"
@@ -512,13 +523,15 @@ const CardCodesPage = () => {
             <FileText size={16} />
             تصدير PDF
           </button> */}
-          <button
-            onClick={() => setShowGenerateModal(true)}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
-          >
-            <Plus size={16} />
-            إضافة كودات
-          </button>
+          {canAddCode && (
+            <button
+              onClick={() => setShowGenerateModal(true)}
+              className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            >
+              <Plus size={16} />
+              إضافة كودات
+            </button>
+          )}
         </div>
       </div>
 
@@ -937,13 +950,15 @@ const CardCodesPage = () => {
           </h3>
           <p className="text-gray-500 mb-6">ابدأ بإضافة كودات جديدة للمنصة</p>
 
-          <button
-            onClick={() => setShowGenerateModal(true)}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
-          >
-            <Plus size={16} />
-            إضافة كودات جديدة
-          </button>
+          {canAddCode && (
+            <button
+              onClick={() => setShowGenerateModal(true)}
+              className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            >
+              <Plus size={16} />
+              إضافة كودات جديدة
+            </button>
+          )}
         </div>
       ) : (
         <>
@@ -987,6 +1002,10 @@ const CardCodesPage = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {generateCodes?.data?.data?.map((code: any) => {
+                    const isDownloadAllowed = isCodeDownloadAllowed(
+                      code.created_at
+                    );
+
                     return (
                       <tr key={code.id} className="hover:bg-gray-50">
                         {/* <td className="px-4 py-3 whitespace-nowrap">
@@ -1108,17 +1127,19 @@ const CardCodesPage = () => {
                             </div>
                           )}
                           <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleCodeDownload(code?.id)}
-                              className={`cursor-pointer p-1 rounded transition-colors ${
-                                code.is_downloaded
-                                  ? "text-blue-600 hover:bg-green-50"
-                                  : "text-gray-400 hover:bg-gray-50"
-                              }`}
-                              title={"تحميل الكود"}
-                            >
-                              <Download size={16} />
-                            </button>
+                            {isDownloadAllowed && (
+                              <button
+                                onClick={() => handleCodeDownload(code?.id)}
+                                className={`cursor-pointer p-1 rounded transition-colors ${
+                                  code.is_downloaded
+                                    ? "text-blue-600 hover:bg-green-50"
+                                    : "text-gray-400 hover:bg-gray-50"
+                                }`}
+                                title={"تحميل الكود"}
+                              >
+                                <Download size={16} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
