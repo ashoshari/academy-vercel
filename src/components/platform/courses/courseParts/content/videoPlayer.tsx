@@ -2,18 +2,20 @@ import { CheckCircle, FileText, Download, Clock } from "lucide-react";
 import { useLesson } from "@/store/platform/useLesson";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import AppLogo from "@/assets/manasaty-logo.jpg";
+import { getYoutubeVideoId } from "@/utils/getYoutubeVideoId";
 // import { useState, useEffect } from "react";
 
 const VideoPlayer = ({ markLessonComplete }: any) => {
   const user = JSON.parse(localStorage.getItem("platform_user") || "{}");
   const isAllowToUseWeb = user.is_allow_to_use_web;
   console.log(isAllowToUseWeb);
-  const PROVIDER = "dailymotion";
+  const PROVIDER = "youtube";
   const currentLesson = useLesson((state) => state.currentLesson);
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
     ["downloadFiles"],
   );
+  const youtubeVideoId = getYoutubeVideoId(currentLesson?.link);
   // const [isFullscreen, setIsFullscreen] = useState(false);
   // useEffect(() => {
   //   const handleFullscreenChange = () => {
@@ -73,15 +75,16 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
             </a>
           </div>
         ) : (
-          // Dailymotion
+          // Youtube
           <>
             <div className="relative pb-[56.25%] h-0 overflow-hidden">
               <iframe
-                src={`https://geo.dailymotion.com/player.html?video=${currentLesson?.link}`}
+                src={`https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1&playsinline=1`}
                 className="absolute top-0 left-0 w-full h-full border-none overflow-hidden"
                 allowFullScreen
-                title="Dailymotion Video Player"
-                allow="web-share"
+                title={currentLesson?.title ?? "YouTube Video Player"}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
               />
             </div>
           </>

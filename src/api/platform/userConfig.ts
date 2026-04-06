@@ -13,7 +13,7 @@ const getBaseURL = () => {
   const hostname = window.location.hostname;
 
   if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return "https://Demo.manasati-jo.com/";
+    return "https://back.manasati-jo.com/";
   }
 
   const cleanHost = hostname.replace(/^www\./, "");
@@ -33,7 +33,7 @@ axiosInstance.interceptors.request.use(
   (error) => {
     console.log("Request Error:", error);
     return Promise.reject(error);
-  }
+  },
 );
 
 axiosInstance.interceptors.response.use(
@@ -55,7 +55,7 @@ axiosInstance.interceptors.response.use(
 
     console.error("Response Error:", error);
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;
