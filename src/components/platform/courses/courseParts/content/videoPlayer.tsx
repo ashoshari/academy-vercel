@@ -12,7 +12,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
   const currentLesson = useLesson((state) => state.currentLesson);
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
-    ["downloadFiles"]
+    ["downloadFiles"],
   );
   // const [isFullscreen, setIsFullscreen] = useState(false);
   // useEffect(() => {
@@ -30,7 +30,9 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
       await downloadFiles({
         resource_id: resourceId,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -46,7 +48,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
             />
 
             {/* Dark overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all duration-300"></div>
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all duration-300"></div>
 
             {/* Button overlay */}
             <a
@@ -185,7 +187,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
             className={`cursor-pointer disabled:cursor-not-allowed px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
               currentLesson?.is_completed
                 ? "bg-green-100 text-green-800 cursor-not-allowed"
-                : "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+                : "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
             }`}
           >
             <CheckCircle className="w-5 h-5" />

@@ -50,12 +50,12 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
 
   const questionsData = useCustomQuery(
     `/training/admin/exams/${exam.id}/questions/`,
-    ["exam-questions", exam.id]
+    ["exam-questions", exam.id],
   );
 
   const deleteQuestion = useCustomRemove(
     `/training/admin/exams-questions/${selected?.id}/`,
-    ["exam-questions", exam.id]
+    ["exam-questions", exam.id],
   );
   const handleDelete = async () => {
     await deleteQuestion
@@ -87,13 +87,13 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
 
   const selectedDraft: (DraftQuestion & { index: number }) | null = useMemo(
     () => (selected ? toDraft(selected) : null),
-    [selected]
+    [selected],
   );
 
   const existingQuestionsCount = questions.length;
   const existingMarksSum = questions.reduce(
     (sum, q) => sum + (Number(q.marks) || 0),
-    0
+    0,
   );
 
   return (
@@ -118,12 +118,12 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
               {view === "list"
                 ? "إدارة أسئلة الامتحان"
                 : view === "add"
-                ? "اضافة سؤال جديد"
-                : view === "edit"
-                ? "تعديل السؤال"
-                : view === "preview"
-                ? "معاينة السؤال"
-                : ""}
+                  ? "اضافة سؤال جديد"
+                  : view === "edit"
+                    ? "تعديل السؤال"
+                    : view === "preview"
+                      ? "معاينة السؤال"
+                      : ""}
             </h1>
             <p className="text-gray-600 text-sm">
               {view === "list"
@@ -138,7 +138,7 @@ const ExamQuestionsPage: React.FC<Props> = ({ exam, onBack }) => {
               onClick={() => {
                 setView("edit");
               }}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+              className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
             >
               <Edit size={16} />
               تعديل السؤال

@@ -83,21 +83,21 @@ const TeachersPage = () => {
 
   const teachersStatistics = useCustomQuery(
     "account/admin/teachers-statistics/",
-    ["teachers-statistics"]
+    ["teachers-statistics"],
   );
 
   const dataTeachers = useCustomQuery(
     `account/admin/teachers/?${queryParams.toString()}`,
-    ["teachers", filters]
+    ["teachers", filters],
   );
   const dataMaterials = useCustomQuery("core/materials/", ["materials"]);
 
   const teacherStatus = useCustomPost(
     `/account/admin/teachers/${selectedTeacher?.id}/activate/`,
-    ["teachers", "teachers-statistics"]
+    ["teachers", "teachers-statistics"],
   );
   const resetAccountPassword = useCustomUpdate(
-    `/account/admin/teachers/${selectedTeacher?.id}/reset-password/`
+    `/account/admin/teachers/${selectedTeacher?.id}/reset-password/`,
   );
 
   // const handleDeleteTeacher = () => {
@@ -114,13 +114,15 @@ const TeachersPage = () => {
     teacherStatus
       ?.mutateAsync({})
       .then((res) => {
-        res?.status
-          ? toast.success(res?.data)
-          : toast.error("فشل تحديث حالة المعلم");
+        if (res?.status) {
+          toast.success(res?.data);
+        } else {
+          toast.error("فشل تحديث حالة المعلم");
+        }
       })
       .catch((error) => {
         handleErrorAlerts(
-          error?.response?.data?.message || "حدث خطأ أثناء تحديث الحالة"
+          error?.response?.data?.message || "حدث خطأ أثناء تحديث الحالة",
         );
       });
   };
@@ -172,14 +174,14 @@ const TeachersPage = () => {
   const TeacherCard = ({ teacher }: { teacher: any }) => (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+      <div className="p-6 bg-linear-to-r from-orange-500 to-orange-600 text-white">
         <div className="flex items-center gap-4">
           <div className="relative">
             <img
               src={
                 teacher?.image ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  teacher?.name
+                  teacher?.name,
                 )}&background=ffffff&color=f97316&size=64`
               }
               alt={teacher?.name}
@@ -338,7 +340,7 @@ const TeachersPage = () => {
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/dashboard/teachers/add")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة معلم
@@ -490,7 +492,7 @@ const TeachersPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/teachers/add")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة معلم جديد
@@ -513,7 +515,7 @@ const TeachersPage = () => {
                 {
                   <button
                     onClick={() => navigate("/dashboard/teachers/add")}
-                    className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة معلم جديد
@@ -533,7 +535,7 @@ const TeachersPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -579,7 +581,7 @@ const TeachersPage = () => {
                           (material: any, index: number, array: any) =>
                             `${material.name} ${
                               index + 1 !== array.length ? " ، " : ""
-                            }`
+                            }`,
                         ) || "-"}
                       </td>
 
@@ -662,7 +664,7 @@ const TeachersPage = () => {
                           <button
                             onClick={() => {
                               navigate(
-                                `/dashboard/teachers/edit/${teacher.id}`
+                                `/dashboard/teachers/edit/${teacher.id}`,
                               );
                             }}
                             className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"

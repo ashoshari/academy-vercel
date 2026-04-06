@@ -35,7 +35,7 @@ const AllCourses = () => {
   // GET MY COURSES
   const { data, error } = useCustomQuery(
     `/training/students/my-courses/?${queryString}`,
-    ["myAllCourses", page, debouncedSearch]
+    ["myAllCourses", page, debouncedSearch],
   );
   const paginationData = data?.my_courses?.pagination;
   const myCoursesData = data?.my_courses?.data;
@@ -86,7 +86,7 @@ const AllCourses = () => {
               </div>
 
               {/* Circular Progress */}
-              <div className="relative w-12 h-12 flex-shrink-0">
+              <div className="relative w-12 h-12 shrink-0">
                 <svg
                   className="w-12 h-12 transform -rotate-90"
                   viewBox="0 0 48 48"
@@ -133,14 +133,14 @@ const AllCourses = () => {
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                  className="bg-linear-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${course?.progress}%` }}
                 ></div>
               </div>
             </div>
 
             {/* Next Lesson */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
+            <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
               <div className="flex items-center space-x-2 mb-1">
                 <Play className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-gray-900">
@@ -165,7 +165,7 @@ const AllCourses = () => {
             {/* Continue Button */}
             <button
               onClick={() => navigate(`/coursePage/${course?.course_id}`)}
-              className="w-full cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
+              className="w-full cursor-pointer bg-linear-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
             >
               <Play className="w-4 h-4" />
               <span>متابعة التعلم</span>
@@ -182,7 +182,7 @@ const AllCourses = () => {
         <div className="p-6">
           <div className="flex md:flex-row flex-col items-center gap-6 w-full">
             {/* Progress Circle */}
-            <div className="relative w-20 h-20 md:w-12 md:h-12 flex-shrink-0">
+            <div className="relative w-20 h-20 md:w-12 md:h-12 shrink-0">
               <svg
                 className=" w-20 h-20 md:w-12 md:h-12 transform -rotate-90"
                 viewBox="0 0 48 48"
@@ -247,7 +247,7 @@ const AllCourses = () => {
               <div className="mt-4">
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                    className="bg-linear-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${course?.progress}%` }}
                   ></div>
                 </div>
@@ -255,10 +255,10 @@ const AllCourses = () => {
             </div>
 
             {/* Action Button */}
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <button
                 onClick={() => navigate(`/coursePage/${course?.id}`)}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white cursor-pointer px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+                className="bg-linear-to-r from-blue-500 to-purple-500 text-white cursor-pointer px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
               >
                 <Play className="w-5 h-5" />
                 <span>متابعة</span>
@@ -271,14 +271,18 @@ const AllCourses = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
+      <div className="bg-linear-to-r from-blue-600 to-purple-600 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={() => {
-                window.history.length > 1 ? navigate(-1) : navigate(-1);
+                if (window.history.length > 1) {
+                  navigate(-1);
+                } else {
+                  navigate("/");
+                }
               }}
               className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl cursor-pointer flex items-center justify-center transition-all duration-200 group"
             >
@@ -306,7 +310,7 @@ const AllCourses = () => {
                 <div>
                   <div className="text-3xl font-bold mb-1">
                     {myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(
-                      2
+                      2,
                     ) ?? "-"}
                     %
                   </div>

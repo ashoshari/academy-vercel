@@ -36,7 +36,7 @@ const AddStudentPage = () => {
       }
     } catch (error: any) {
       handleErrorAlerts(
-        error?.response?.data?.error || "حدث خطأ أثناء إضافة الطالب"
+        error?.response?.data?.error || "حدث خطأ أثناء إضافة الطالب",
       );
     }
   };
@@ -56,7 +56,7 @@ const AddStudentPage = () => {
   };
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
-      <div className="flex items-center mb-6 gap-x-[5px]">
+      <div className="flex items-center mb-6 gap-x-1.25">
         <button
           onClick={() => {
             navigate(-1);
@@ -106,7 +106,7 @@ const AddStudentPage = () => {
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
-                ""
+                "",
               );
             }}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
@@ -160,7 +160,7 @@ const AddStudentPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50"
+            className="px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50"
           >
             <Save size={16} />
             إضافة الطالب

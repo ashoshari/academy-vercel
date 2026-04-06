@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* SectionEditModal.tsx
    one component for sub & sub-sub */
 import { useCustomUpdate } from "@/hooks/useMutation";
@@ -37,9 +36,9 @@ const EditModal: React.FC<Props> = ({
   const sectionIds = React.useMemo(
     () =>
       (data?.sections || []).map((s: any) =>
-        typeof s === "string" ? s : s.id
+        typeof s === "string" ? s : s.id,
       ),
-    [data?.sections]
+    [data?.sections],
   );
   /* ── mutation ──────────────────────────────────────────── */
   const mutation = useCustomUpdate(`${endpointBase}${data?.id}/`, queryKey);
@@ -54,35 +53,35 @@ const EditModal: React.FC<Props> = ({
             subsubsections: data.specialization,
           }
         : level === "sub"
-        ? {
-            title: data.title,
-            description: data.description,
-            sections: sectionIds,
-            is_published: data.is_published,
-            order: Number(data.order) || 0,
-          }
-        : level === "subsub"
-        ? {
-            title: data.title,
-            description: data.description,
-            is_published: data.is_published,
-            order: Number(data.order) || 0,
-            subsection: data.subsection,
-          }
-        : level === "spec"
-        ? {
-            name: data.name,
-            description: data.description,
-            is_published: data.is_published,
-            order: Number(data.order) || 0,
-            subsubsection: data.subsubsection,
-          }
-        : {
-            name: data.material,
-            // material: data.material,
-            is_published: data.is_published,
-            // specialization: data.specialization,
-          };
+          ? {
+              title: data.title,
+              description: data.description,
+              sections: sectionIds,
+              is_published: data.is_published,
+              order: Number(data.order) || 0,
+            }
+          : level === "subsub"
+            ? {
+                title: data.title,
+                description: data.description,
+                is_published: data.is_published,
+                order: Number(data.order) || 0,
+                subsection: data.subsection,
+              }
+            : level === "spec"
+              ? {
+                  name: data.name,
+                  description: data.description,
+                  is_published: data.is_published,
+                  order: Number(data.order) || 0,
+                  subsubsection: data.subsubsection,
+                }
+              : {
+                  name: data.material,
+                  // material: data.material,
+                  is_published: data.is_published,
+                  // specialization: data.specialization,
+                };
 
     await mutation
       .mutateAsync(payload)
@@ -106,8 +105,8 @@ const EditModal: React.FC<Props> = ({
               {level === "spec"
                 ? "تعديل التخصص"
                 : level === "mat"
-                ? "تعديل المادة"
-                : "تعديل القسم"}
+                  ? "تعديل المادة"
+                  : "تعديل القسم"}
             </h2>
             <button
               onClick={onClose}
@@ -299,7 +298,7 @@ const EditModal: React.FC<Props> = ({
           </button>
           <button
             onClick={save}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-2 text-white hover:from-orange-600 hover:to-orange-700"
+            className="flex items-center gap-2 rounded-lg bg-linear-to-r from-orange-500 to-orange-600 px-6 py-2 text-white hover:from-orange-600 hover:to-orange-700"
           >
             <Save size={16} />
             حفظ التغييرات

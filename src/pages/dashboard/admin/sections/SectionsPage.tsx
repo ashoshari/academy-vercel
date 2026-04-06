@@ -120,7 +120,7 @@ const AddSectionModal = ({
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <img src={option.icon} className="w-[20px]" />
+                  <img src={option.icon} className="w-5" />
                   <span>{option.name}</span>
                 </button>
               ))}
@@ -192,7 +192,7 @@ const AddSectionModal = ({
           </button>
           <button
             onClick={handleAddSection}
-            className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
           >
             <Save size={16} />
             حفظ القسم
@@ -293,11 +293,7 @@ const EditSectionModal = ({
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <img
-                    src={option.icon}
-                    className="w-[20px]"
-                    alt={option.name}
-                  />
+                  <img src={option.icon} className="w-5" alt={option.name} />
                   <span>{option.name}</span>
                 </button>
               ))}
@@ -373,7 +369,7 @@ const EditSectionModal = ({
         </button>
         <button
           onClick={handleEditSection}
-          className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+          className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
         >
           <Save size={16} />
           حفظ التغييرات
@@ -444,7 +440,7 @@ const SectionsPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedSection, setSelectedSection] = useState<MainSection | null>(
-    null
+    null,
   );
   const [confirmToggleModal, setConfirmToggleModal] = useState(false);
 
@@ -484,7 +480,7 @@ const SectionsPage = () => {
 
   const editSection = useCustomUpdate(
     `/training/admin/sections/${selectedSection?.id}/`,
-    ["sections", "sections-statistics"]
+    ["sections", "sections-statistics"],
   );
 
   const handleAddSection = () => {
@@ -515,7 +511,7 @@ const SectionsPage = () => {
       })
       .catch((error) => {
         handleErrorAlerts(
-          error?.response?.data?.error || "حدث خطاء في اضافة القسم"
+          error?.response?.data?.error || "حدث خطاء في اضافة القسم",
         );
       });
   };
@@ -545,7 +541,7 @@ const SectionsPage = () => {
       })
       .catch((error) => {
         handleErrorAlerts(
-          error?.response?.data?.error || "حدث خطاء في اضافة القسم"
+          error?.response?.data?.error || "حدث خطاء في اضافة القسم",
         );
       });
   };
@@ -580,7 +576,7 @@ const SectionsPage = () => {
       })
       .catch((error) => {
         handleErrorAlerts(
-          error?.response?.data?.error || "حدث خطاء في اضافة القسم"
+          error?.response?.data?.error || "حدث خطاء في اضافة القسم",
         );
       });
   };
@@ -596,16 +592,16 @@ const SectionsPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة قسم رئيسي جديد
         </button>
       </div>
-      <div className="flex gap-x-[10px]">
+      <div className="flex gap-x-2.5">
         {/* Search and Stats */}
         <div className="w-full">
-          <div className="flex gap-x-[10px] bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+          <div className="flex gap-x-2.5 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
             <div className="w-full relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -679,7 +675,7 @@ const SectionsPage = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة قسم رئيسي جديد
@@ -870,7 +866,7 @@ const SectionsPage = () => {
               {/* {!searchTerm && ( */}
               <button
                 onClick={() => setShowAddModal(true)}
-                className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
               >
                 <Plus size={16} />
                 إضافة قسم جديد
@@ -882,7 +878,7 @@ const SectionsPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -945,7 +941,7 @@ const SectionsPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-[20px]">
+                        <div className="flex items-center gap-5">
                           <button
                             onClick={() => {
                               setSelectedSection({

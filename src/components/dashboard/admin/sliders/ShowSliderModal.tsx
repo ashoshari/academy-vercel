@@ -152,7 +152,7 @@ export default function ShowSliderModal({
                   setShowDetailsModal(false);
                   setShowEditModal(true);
                 }}
-                className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
               >
                 <Edit size={16} />
                 تعديل السلايد

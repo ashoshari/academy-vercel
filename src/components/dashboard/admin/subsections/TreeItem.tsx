@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatDate } from "@/services/date";
 import {
   Calendar,
@@ -128,8 +127,8 @@ export default function TreeItem({
                   {type === "subsections"
                     ? " 1"
                     : type === "subsubsections"
-                    ? " 2"
-                    : " 3"}
+                      ? " 2"
+                      : " 3"}
                 </span>
               </div>
             </div>
@@ -142,7 +141,7 @@ export default function TreeItem({
                   <div className="flex gap-1 flex-wrap">
                     {item?.sections?.map((sec: any) => {
                       const section = item?.sections?.find(
-                        (s: any) => s.id === sec.id
+                        (s: any) => s.id === sec.id,
                       );
                       if (!section) return null;
 
@@ -184,10 +183,10 @@ export default function TreeItem({
                   {type === "subsections"
                     ? "إضافة قسم فرعي"
                     : type === "subsubsections"
-                    ? "إضافة تخصص"
-                    : type === "specializations"
-                    ? "إضافة مواد"
-                    : ""}
+                      ? "إضافة تخصص"
+                      : type === "specializations"
+                        ? "إضافة مواد"
+                        : ""}
                 </button>
               )}
               {type === "subsubsections" && (

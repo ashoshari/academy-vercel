@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { Save, X } from "lucide-react";
@@ -25,14 +24,14 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
   const linkedIds: string[] = React.useMemo(
     () =>
       (selectedSubsection.sections || []).map((s: any) =>
-        typeof s === "string" || typeof s === "number" ? String(s) : s.id
+        typeof s === "string" || typeof s === "number" ? String(s) : s.id,
       ),
-    [selectedSubsection.sections]
+    [selectedSubsection.sections],
   );
 
   const editSubSection = useCustomUpdate(
     `/training/admin/subsections/${selectedSubsection.id}/`,
-    ["subsections"]
+    ["subsections"],
   );
 
   const handleSave = async () => {
@@ -153,7 +152,7 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-2 text-white transition-all hover:from-orange-600 hover:to-orange-700"
+            className="flex items-center gap-2 rounded-lg bg-linear-to-r from-orange-500 to-orange-600 px-6 py-2 text-white transition-all hover:from-orange-600 hover:to-orange-700"
           >
             <Save size={16} />
             حفظ الروابط

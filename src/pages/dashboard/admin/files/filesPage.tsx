@@ -78,26 +78,27 @@ const ResourcesPage = () => {
   // GET resourcess
   const { data, isLoading } = useCustomQuery(
     `/training/admin/resources/?${queryString}`,
-    ["resources", searchTerm, typeFilter, statusFilter, page]
+    ["resources", searchTerm, typeFilter, statusFilter, page],
   );
   const resourcesData = data?.data;
   const paginationData = data?.pagination;
   // GET resourcess stats
   const { data: resourcesStats } = useCustomQuery(
     "/training/admin/resource-statistics/",
-    ["resources-stats"]
+    ["resources-stats"],
   );
   // GET teachers
-  const { data: teachers } = useCustomQuery("/account/admin/teachers/?page_size=9999", [
-    "teachers",
-  ]);
+  const { data: teachers } = useCustomQuery(
+    "/account/admin/teachers/?page_size=9999",
+    ["teachers"],
+  );
 
   const teacherData = teachers?.data;
 
   // GET SubSection
   const { data: subsections } = useCustomQuery(
     "/training/admin/subsections-ids/",
-    ["subsections"]
+    ["subsections"],
   );
   const subsectionData = subsections?.data;
 
@@ -118,13 +119,13 @@ const ResourcesPage = () => {
   const [selectedSubSub, setSelectedSubSub] = useState<string>("");
   const [selectedSpec, setSelectedSpec] = useState<string>("");
   const subSection = subsectionData?.find(
-    (s: any) => s.id === selectedSubSection
+    (s: any) => s.id === selectedSubSection,
   );
   const subsub = subSection?.subsubsections?.find(
-    (ss: any) => ss.id === selectedSubSub
+    (ss: any) => ss.id === selectedSubSub,
   );
   const spec = subsub?.specializations?.find(
-    (sp: any) => sp.id === selectedSpec
+    (sp: any) => sp.id === selectedSpec,
   );
   // const specializationData = specializations?.data;
   const resourcesStatsData = resourcesStats?.data;
@@ -132,13 +133,13 @@ const ResourcesPage = () => {
   // POST New resources
   const { mutateAsync: postResources } = useCustomPost(
     "/training/admin/resources/",
-    ["postResources"]
+    ["postResources"],
   );
 
   // PUT Resources
   const { mutateAsync: putResources } = useCustomUpdate(
     `/training/admin/resources/${resourceId}/`,
-    ["putResources", resourceId]
+    ["putResources", resourceId],
   );
   // DELETE Resources
   const { mutateAsync: deleteResources, isPending: isDeleting } =
@@ -181,7 +182,7 @@ const ResourcesPage = () => {
         "teacher",
         selectedResources.teacher.id
           ? selectedResources.teacher.id
-          : selectedResources.teacher
+          : selectedResources.teacher,
       );
     selectedResources.expiry_date &&
       formData.append("expiry_date", selectedResources.expiry_date);
@@ -194,7 +195,7 @@ const ResourcesPage = () => {
     selectedResources.specialization_material &&
       formData.append(
         "specialization_material",
-        selectedResources.specialization_material
+        selectedResources.specialization_material,
       );
     selectedResources.lesson &&
       formData.append("lesson", selectedResources.lesson);
@@ -204,12 +205,12 @@ const ResourcesPage = () => {
         selectedResources.type == "مصادر"
           ? "resources"
           : selectedResources?.type == "دوسيهات"
-          ? "bookses"
-          : selectedResources?.type == "أسئلة وزارية"
-          ? "ministerial_questions"
-          : selectedResources?.type == "ملفات"
-          ? "files"
-          : selectedResources?.type
+            ? "bookses"
+            : selectedResources?.type == "أسئلة وزارية"
+              ? "ministerial_questions"
+              : selectedResources?.type == "ملفات"
+                ? "files"
+                : selectedResources?.type,
       );
     selectedResources.is_free &&
       formData.append("is_free", selectedResources.is_free);
@@ -305,7 +306,7 @@ const ResourcesPage = () => {
     uploadResources.specialization_material &&
       formData.append(
         "specialization_material",
-        uploadResources.specialization_material
+        uploadResources.specialization_material,
       );
     uploadResources.lesson && formData.append("lesson", uploadResources.lesson);
     uploadResources.type &&
@@ -517,7 +518,7 @@ const ResourcesPage = () => {
               {/* Upload File */}
               <div className="w-full">
                 <div className="relative flex flex-col justify-center items-center h-full">
-                  <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                  <h2 className="text-lg font-bold text-gray-800 text-center mb-1.25">
                     {!uploadResources?.file ? "رفع الملف *" : "تم رفع الملف"}
                   </h2>
                   <div
@@ -559,7 +560,7 @@ const ResourcesPage = () => {
               <div className="w-full">
                 {uploadResources?.image ? (
                   <div className="relative flex flex-col justify-center items-center h-full">
-                    <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                    <h2 className="text-lg font-bold text-gray-800 text-center mb-1.25">
                       صورة الملف
                     </h2>
                     <XSquare
@@ -575,12 +576,12 @@ const ResourcesPage = () => {
                     <img
                       loading="lazy"
                       src={URL.createObjectURL(uploadResources?.image)}
-                      className="h-[200px] w-[250px] object-cover rounded-lg"
+                      className="h-50 w-62.5 object-cover rounded-lg"
                     />
                   </div>
                 ) : (
                   <>
-                    <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                    <h2 className="text-lg font-bold text-gray-800 text-center mb-1.25">
                       رفع صورة الملف *
                     </h2>
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors">
@@ -730,7 +731,7 @@ const ResourcesPage = () => {
                           <option key={teacher?.id} value={teacher?.id}>
                             {teacher?.name}
                           </option>
-                        )
+                        ),
                     )}
                   </select>
                 </div>
@@ -941,7 +942,7 @@ const ResourcesPage = () => {
                   : false) ||
                 !uploadResources.specialization_material
               }
-              className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Upload size={16} />
               رفع الملف
@@ -979,7 +980,7 @@ const ResourcesPage = () => {
               {/* Upload File */}
               <div className="w-full">
                 <div className="relative flex flex-col justify-center items-center h-full">
-                  <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                  <h2 className="text-lg font-bold text-gray-800 text-center mb-1.25">
                     {!selectedResources?.file ? "رفع الملف" : "تم رفع الملف"}
                   </h2>
                   <div
@@ -1020,7 +1021,7 @@ const ResourcesPage = () => {
               <div className="w-full">
                 {selectedResources?.image ? (
                   <div className="relative flex flex-col justify-center items-center h-full">
-                    <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                    <h2 className="text-lg font-bold text-gray-800 text-center mb-1.25">
                       صورة الملف
                     </h2>
                     <XSquare
@@ -1036,12 +1037,12 @@ const ResourcesPage = () => {
                     <img
                       loading="lazy"
                       src={selectedResources?.image}
-                      className="h-[200px] w-[250px] object-cover rounded-lg"
+                      className="h-50 w-62.5 object-cover rounded-lg"
                     />
                   </div>
                 ) : (
                   <>
-                    <h2 className="text-lg font-bold text-gray-800 text-center mb-[5px]">
+                    <h2 className="text-lg font-bold text-gray-800 text-center mb-1.25">
                       رفع صورة الملف
                     </h2>
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors">
@@ -1156,12 +1157,12 @@ const ResourcesPage = () => {
                     selectedResources?.type == "مصادر"
                       ? "resources"
                       : selectedResources?.type == "دوسيهات"
-                      ? "bookses"
-                      : selectedResources?.type == "أسئلة وزارية"
-                      ? "ministerial_questions"
-                      : selectedResources?.type == "ملفات"
-                      ? "files"
-                      : selectedResources?.type
+                        ? "bookses"
+                        : selectedResources?.type == "أسئلة وزارية"
+                          ? "ministerial_questions"
+                          : selectedResources?.type == "ملفات"
+                            ? "files"
+                            : selectedResources?.type
                   }
                   onChange={(e) =>
                     setSelectedResources({
@@ -1190,7 +1191,7 @@ const ResourcesPage = () => {
                       const teacherId = e.target.value;
                       // Find the teacher object by id
                       const selectedTeacher = teacherData?.find(
-                        (t: any) => t.id === teacherId
+                        (t: any) => t.id === teacherId,
                       );
                       setSelectedResources({
                         ...selectedResources,
@@ -1213,7 +1214,7 @@ const ResourcesPage = () => {
                 <div className="flex justify-start items-end w-full">
                   <button
                     onClick={() => setEditSections(!editSections)}
-                    className="cursor-pointer justify-center w-full h-[58px] px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                    className="cursor-pointer justify-center w-full h-14.5 px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
                   >
                     تعديل الأقسام
                   </button>
@@ -1280,7 +1281,7 @@ const ResourcesPage = () => {
                               >
                                 {subSubSection?.title}
                               </option>
-                            )
+                            ),
                           )}
                         </select>
                       </div>
@@ -1315,7 +1316,7 @@ const ResourcesPage = () => {
                               >
                                 {specialization?.name}
                               </option>
-                            )
+                            ),
                           )}
                         </select>
                       </div>
@@ -1428,7 +1429,7 @@ const ResourcesPage = () => {
                   : false) ||
                 !selectedResources.specialization_material
               }
-              className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Upload size={16} />
               تعديل الملف
@@ -1450,7 +1451,7 @@ const ResourcesPage = () => {
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Upload size={16} />
           رفع ملف{" "}
@@ -1589,7 +1590,7 @@ const ResourcesPage = () => {
 
           <button
             onClick={() => setShowCreateModal(true)}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة ملف جديد
@@ -1611,7 +1612,7 @@ const ResourcesPage = () => {
       ) : (
         <>
           {/* List View */}
-          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">

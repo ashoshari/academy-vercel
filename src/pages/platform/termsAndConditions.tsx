@@ -7,14 +7,14 @@ const TermsAndConditions = () => {
   const navigate = useNavigate();
   const { data: terms } = useCustomQuery(
     "/core/web-views/terms_and_conditions/",
-    ["termsAndConditions"]
+    ["termsAndConditions"],
   );
 
   return (
     <>
       {terms ? (
         <>
-          <div className="flex items-center mb-6 gap-x-[5px] p-8">
+          <div className="flex items-center mb-6 gap-x-1.25 p-8">
             <button
               onClick={() => {
                 if (window.history.length > 1) {

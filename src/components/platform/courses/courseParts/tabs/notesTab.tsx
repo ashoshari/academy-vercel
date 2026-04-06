@@ -42,7 +42,7 @@ const TextNotes = () => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   const [notes, setNotes] = useState<any>([]);
 
@@ -58,7 +58,7 @@ const TextNotes = () => {
   // DELETE NOTE
   const { mutateAsync: deleteNote } = useCustomRemove(
     `/training/students/notes/${noteId}/`,
-    ["delNotes"]
+    ["delNotes"],
   );
 
   const handleDeleteNote = async (noteId: any) => {
@@ -67,13 +67,14 @@ const TextNotes = () => {
       setNotes((prev: any) => prev.filter((note: any) => note.id !== noteId));
       queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
     } catch (error) {
+      console.log(error);
       handleErrorAlerts("حدث خطأ في حذف الملاحظة");
     }
   };
   // PUT NOTE
   const { mutateAsync: putNote } = useCustomUpdate(
     `/training/students/notes/${noteId}/`,
-    ["putNotes"]
+    ["putNotes"],
   );
   const handleEditNote = async () => {
     if (editNote.trim()) {
@@ -83,11 +84,13 @@ const TextNotes = () => {
       try {
         const response = await putNote(note);
         setNotes((prev: any) =>
-          prev.map((note: any) => (note.id === noteId ? response?.data : note))
+          prev.map((note: any) => (note.id === noteId ? response?.data : note)),
         );
         queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
-      } catch (error:any) {
-        handleErrorAlerts(error?.response?.data?.message || "حدث خطاء في تعديل الملاحظة");
+      } catch (error: any) {
+        handleErrorAlerts(
+          error?.response?.data?.message || "حدث خطاء في تعديل الملاحظة",
+        );
       }
       setEditNote("");
       setEditingNoteId(null);
@@ -103,10 +106,10 @@ const TextNotes = () => {
         const response = await postNote(note);
         setNotes((prev: any) => [response.data, ...prev]);
         queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
-      } catch (error:any) {
+      } catch (error: any) {
         console.error("حدث خطأ في إضافة الملاحظة:", error);
       }
-      setNewNote("")
+      setNewNote("");
       // setAddNote("");
       setShowAddNote(false);
     }
@@ -117,7 +120,7 @@ const TextNotes = () => {
         <h2 className="text-2xl font-bold text-gray-900">الملاحظات</h2>
         <button
           onClick={() => setShowAddNote(true)}
-          className="cursor-pointer bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 flex items-center space-x-2"
+          className="cursor-pointer bg-linear-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 flex items-center space-x-2"
         >
           <Plus className="w-4 h-4" />
           <span>إضافة ملاحظة</span>
@@ -147,7 +150,7 @@ const TextNotes = () => {
               <button
                 onClick={handleAddNote}
                 disabled={!newNote.trim()}
-                className="cursor-pointer bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer bg-linear-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 حفظ
               </button>
@@ -215,7 +218,7 @@ const TextNotes = () => {
                     onClick={() => {
                       setEditNote("");
                       setEditingNoteId(
-                        editingNoteId === note?.id ? null : note?.id
+                        editingNoteId === note?.id ? null : note?.id,
                       );
                       setNoteId(note?.id);
                     }}
@@ -252,7 +255,7 @@ const TextNotes = () => {
                       <button
                         onClick={handleEditNote}
                         disabled={!editNote.trim()}
-                        className="cursor-pointer bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="cursor-pointer bg-linear-to-r from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         حفظ
                       </button>

@@ -30,7 +30,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [showRegisterOTP, setShowRegisterOTP] = useState(false);
   const setTokens = useTokenStore((state) => state.setTokens);
 
-  const { register, handleSubmit, watch, control, reset,setValue, formState } =
+  const { register, handleSubmit, watch, control, reset, setValue, formState } =
     useForm<formData>({
       defaultValues: {
         mobile_number: "",
@@ -67,25 +67,25 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
           <X className="w-5 h-5 text-gray-600" />
         </button>
         {(forgetPassword || showRegisterOTP) && (
-            <button
-              onClick={() => {
-                setShowRegisterOTP(false);
-                setShowResetOTP(false);
-                setResetPassword(false);
-                setShowPassword(false);
-                setForgetPassword(false);
-                reset();
-              }}
-              className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
-            >
-              <ArrowRight className="w-5 h-5 text-white" />
-            </button>
-          )}
+          <button
+            onClick={() => {
+              setShowRegisterOTP(false);
+              setShowResetOTP(false);
+              setResetPassword(false);
+              setShowPassword(false);
+              setForgetPassword(false);
+              reset();
+            }}
+            className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-linear-to-r from-yellow-400 to-orange-500 text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
+          >
+            <ArrowRight className="w-5 h-5 text-white" />
+          </button>
+        )}
 
         <div className="p-6 sm:p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-r from-yellow-400 to-orange-500 rounded-2xl mb-4">
               <GraduationCap className="w-8 h-8 text-white" />
               <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
             </div>
@@ -93,19 +93,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               {forgetPassword && !showResetOTP
                 ? "نسيت كلمة السر "
                 : showResetOTP
-                ? "📱 تأكيد رقم الهاتف"
-                : isLogin
-                ? "🔐 تسجيل الدخول"
-                : "🚀 إنشاء حساب جديد"}
+                  ? "📱 تأكيد رقم الهاتف"
+                  : isLogin
+                    ? "🔐 تسجيل الدخول"
+                    : "🚀 إنشاء حساب جديد"}
             </h2>
             <p className="text-gray-600 text-sm">
               {forgetPassword && !showResetOTP
                 ? "أدخل رقم الهاتف ليتم ارسال كود التحقق "
                 : showResetOTP || showRegisterOTP
-                ? `تم إرسال رمز التحقق إلى هاتفك 📲`
-                : isLogin
-                ? "أدخل بياناتك للوصول إلى دوراتك المفضلة 📚"
-                : "ابدأ رحلتك نحو التفوق في التوجيهي 🌟"}
+                  ? `تم إرسال رمز التحقق إلى هاتفك 📲`
+                  : isLogin
+                    ? "أدخل بياناتك للوصول إلى دوراتك المفضلة 📚"
+                    : "ابدأ رحلتك نحو التفوق في التوجيهي 🌟"}
             </p>
           </div>
           {/* Form */}
@@ -164,7 +164,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
           {/* Switch Mode */}
           {!showResetOTP && !showRegisterOTP && !forgetPassword && (
-            <div className="mt-6 text-center flex gap-x-[10px]">
+            <div className="mt-6 text-center flex gap-x-2.5">
               <button
                 onClick={switchMode}
                 className="cursor-pointer text-yellow-600 hover:text-yellow-700 text-sm font-semibold transition-all duration-300"

@@ -14,25 +14,31 @@ export function getStoredTokens(): string | null {
 export async function storeTokens(
   tokens: string,
   navigate?: NavigateFunction,
-  setIsAuthenticated?: () => void
+  setIsAuthenticated?: () => void,
 ): Promise<void> {
   await localStorage.setItem(TOKEN_KEY, JSON.stringify(tokens));
 
-  setIsAuthenticated && setIsAuthenticated();
-
-  navigate && navigate("/dashboard");
+  if (setIsAuthenticated) {
+    setIsAuthenticated();
+  }
+  if (navigate) {
+    navigate("/dashboard");
+  }
 }
 
 export async function removeTokens(
   navigate?: NavigateFunction,
-  setIsAuthenticated?: () => void
+  setIsAuthenticated?: () => void,
 ): Promise<void> {
   await localStorage.removeItem(TOKEN_KEY);
   await localStorage.removeItem("company_domian");
 
-  setIsAuthenticated && setIsAuthenticated();
-
-  navigate && navigate("/", { replace: true });
+  if (setIsAuthenticated) {
+    setIsAuthenticated();
+  }
+  if (navigate) {
+    navigate("/", { replace: true });
+  }
 }
 
 export function isAuthenticated(): boolean {

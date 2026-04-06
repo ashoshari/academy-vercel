@@ -11,7 +11,7 @@ const Navbar: React.FC = () => {
   const { data, isLoading } = useCustomQuery("/core/footer/", ["footer"]);
   const { data: footer, isLoading: footerLoading } = useCustomQuery(
     "/core/footer/",
-    ["footer"]
+    ["footer"],
   );
   const headerData = data?.data;
   const footerData = footer?.data;
@@ -53,8 +53,8 @@ const Navbar: React.FC = () => {
   if (footerLoading) return null;
   return (
     <>
-      <nav className="h-[80px] bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
-        <div className="h-full max-w-[110rem] mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="h-20 bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100 sticky top-0 z-50">
+        <div className="h-full max-w-440 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-4 items-center h-full">
             {/* Logo */}
             <div className="flex items-center">
@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
                     <Image className="rounded-xl w-10 h-10 text-gray-600" />
                   )}
                   <div className="text-right">
-                    <h1 className="text-xl font-bold whitespace-nowrap bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                    <h1 className="text-xl font-bold whitespace-nowrap bg-linear-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
                       {headerData?.platform_name || "اسم المنصة"}
                     </h1>
                     <p className="text-xs text-gray-500">
@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                       }, 100);
                     }}
-                    className="cursor-pointer px-5 py-2 rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-sm hover:shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all"
+                    className="cursor-pointer px-5 py-2 rounded-lg bg-linear-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-sm hover:shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all"
                   >
                     عرض الكل
                   </Link>
@@ -126,10 +126,12 @@ const Navbar: React.FC = () => {
                   {/* Avatar button */}
                   <button
                     onClick={() => {
-                      isMenuOpen && setIsMenuOpen(false);
+                      if (isMenuOpen) {
+                        setIsMenuOpen(false);
+                      }
                       setOpen(!open);
                     }}
-                    className="cursor-pointer w-12 h-12 text-xs rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:bg-gradient-to-r hover:from-yellow-600 hover:to-orange-600 flex items-center justify-center text-white font-bold"
+                    className="cursor-pointer w-12 h-12 text-xs rounded-full bg-linear-to-r from-yellow-500 to-orange-500 hover:bg-linear-to-r hover:from-yellow-600 hover:to-orange-600 flex items-center justify-center text-white font-bold"
                   >
                     حسابي
                   </button>
@@ -144,7 +146,7 @@ const Navbar: React.FC = () => {
                           navigate("/profile", { replace: false });
                           setOpen(false);
                         }}
-                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-700 transition-all"
+                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-linear-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-700 transition-all"
                       >
                         الملف الشخصي
                       </Link>
@@ -156,7 +158,7 @@ const Navbar: React.FC = () => {
                           navigate("/all-courses", { replace: false });
                           setOpen(false);
                         }}
-                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-700 transition-all"
+                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-linear-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-700 transition-all"
                       >
                         دوراتي
                       </Link>
@@ -175,7 +177,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <button
                   onClick={handleLoginClick}
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 cursor-pointer"
+                  className="bg-linear-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 cursor-pointer"
                 >
                   تسجيل الدخول
                 </button>
@@ -186,7 +188,7 @@ const Navbar: React.FC = () => {
                 <button
                   onClick={() => {
                     setIsMenuOpen(!isMenuOpen);
-                    open && setOpen(false);
+                    if (open) setOpen(false);
                   }}
                   className="cursor-pointer lg:hidden p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
                 >
@@ -229,7 +231,7 @@ const Navbar: React.FC = () => {
                       }, 100);
                       setIsMenuOpen(false);
                     }}
-                    className="w-full text-center px-4 py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all duration-200"
+                    className="w-full text-center px-4 py-3 rounded-xl bg-linear-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all duration-200"
                   >
                     عرض الكل
                   </Link>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { LucideIcon } from "lucide-react";
 
 export type StatItem<T extends object> = {
@@ -18,7 +17,7 @@ export interface StatisticsCardsProps<T extends object> {
 
 function getValue<T extends object, K extends Extract<keyof T, string>>(
   data: T,
-  key: K
+  key: K,
 ): T[K] {
   return (data as any)[key] as T[K];
 }
@@ -43,7 +42,7 @@ export default function StatisticsCards<T extends object>({
         {Array.from({ length: Math.max(4, items.length || 1) }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl p-6 border border-orange-100/50 shadow-lg bg-white animate-pulse h-[110px]"
+            className="rounded-xl p-6 border border-orange-100/50 shadow-lg bg-white animate-pulse h-27.5"
           />
         ))}
       </div>
@@ -70,7 +69,7 @@ export default function StatisticsCards<T extends object>({
             key={String(key)}
             className={
               isPrimary
-                ? "bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg"
+                ? "bg-linear-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg"
                 : "bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-lg border border-orange-100/50"
             }
           >

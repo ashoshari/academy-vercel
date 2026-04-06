@@ -42,6 +42,7 @@ const Layout = () => {
 
   const menuItems = [
     { id: "", label: "الرئيسية", icon: Home },
+    { id: "sales", label: "المبيعات", icon: Home },
     { id: "students", label: "الطلاب", icon: GraduationCap },
     { id: "teachers", label: "المعلمين", icon: Users },
     { id: "libraries", label: "المكتبات", icon: Library },
@@ -78,8 +79,8 @@ const Layout = () => {
     role === "library"
       ? menuItems.filter((i) => LIBRARY_ALLOWED.has(i.id))
       : role === "teacher"
-      ? menuItems.filter((i) => !TEACHER_DISALLOWED.has(i.id))
-      : menuItems;
+        ? menuItems.filter((i) => !TEACHER_DISALLOWED.has(i.id))
+        : menuItems;
 
   useEffect(() => {
     document.title = "داش بورد";
@@ -106,7 +107,7 @@ const Layout = () => {
           <div className="flex items-center justify-between mb-6">
             {sidebarOpen && (
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-linear-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
                   <Settings className="w-4 h-4 text-white" />
                 </div>
                 <div>
@@ -137,12 +138,12 @@ const Layout = () => {
                     sidebarOpen ? "p-3" : "p-1.5 my-2"
                   } rounded-lg transition-all duration-300 text-sm ${
                     isActive
-                      ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md"
+                      ? "bg-linear-to-r from-orange-500 to-orange-600 text-white shadow-md"
                       : "text-gray-600 hover:bg-orange-50 hover:text-orange-600"
                   }`
                 }
               >
-                <item.icon size={20} className="min-w-[20px]" />
+                <item.icon size={20} className="min-w-5" />
                 {sidebarOpen && (
                   <span className="font-medium">{item.label}</span>
                 )}

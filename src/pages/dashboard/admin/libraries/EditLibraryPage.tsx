@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm, useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -68,7 +67,7 @@ export default function EditLibraryPage() {
 
   const { data: libraryData, isLoading } = useCustomQuery(
     `/account/admin/libraries/${id}/`,
-    ["library", id]
+    ["library", id],
   );
 
   const updateLibrary = useCustomUpdate(`account/admin/libraries/${id}/`, [
@@ -199,7 +198,7 @@ export default function EditLibraryPage() {
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
-                ""
+                "",
               );
             }}
             className={inputClass(!!errors.mobile_number)}
@@ -259,10 +258,10 @@ export default function EditLibraryPage() {
 
         {/* الصورة و المعاينة */}
         <div className="flex w-full justify-start items-center gap-4">
-          <div className="h-[68px] flex items-center justify-center">
+          <div className="h-17 flex items-center justify-center">
             <label
               htmlFor="lib-img-edit"
-              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 cursor-pointer"
+              className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 cursor-pointer"
             >
               اضافة صورة
             </label>

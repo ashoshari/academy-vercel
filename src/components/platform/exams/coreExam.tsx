@@ -14,7 +14,6 @@ import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 
-
 interface ExamProps {
   examData: any;
   examError: any;
@@ -90,7 +89,9 @@ const CoreExam = ({
       if (exists) {
         // Update existing answer
         return prev.map((ans: any) =>
-          ans.question_id === questionId ? { ...ans, answer_id: answerId } : ans
+          ans.question_id === questionId
+            ? { ...ans, answer_id: answerId }
+            : ans,
         );
       } else {
         // Add new answer
@@ -106,8 +107,11 @@ const CoreExam = ({
   };
   const exitExam = () => {
     setIsExamMode(false);
-    window.history.length > 1 ? navigate(-1) : navigate("/");
-    // setCurrentExam(null);
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    } // setCurrentExam(null);
     // setExamResults(null);
   };
   const handleExamSubmit = async (timer?: any) => {
@@ -117,7 +121,7 @@ const CoreExam = ({
       setScore(res?.data?.percentage);
       setIsPassed(res?.data?.is_passed);
       setAnswers(res?.data?.answers);
-      !timer && toast.success("تم تقديم الامتحان بنجاح");
+      if (!timer) toast.success("تم تقديم الامتحان بنجاح");
     } catch (error: any) {
       toast.error(error?.response?.data?.error);
     }
@@ -126,12 +130,12 @@ const CoreExam = ({
   return (
     <section>
       {examError ? (
-        <div className="min-h-screen p-3 bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center">
+        <div className="min-h-screen p-3 bg-linear-to-br from-gray-50 to-white flex flex-col items-center justify-center">
           <img
             loading="lazy"
             src={errorIllustation}
             alt="404"
-            className="w-[300px] h-[300px]"
+            className="w-75 h-75"
           />
           <p className="text-gray-600 text-xl text-center">
             ليس لديك الصلاحيات لمشاهدة هذا المحتوى
@@ -173,12 +177,12 @@ const CoreExam = ({
               </div>
             </div>
           )}
-          <div className="h-[400px]  p-3 bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center">
+          <div className="h-100  p-3 bg-linear-to-br from-gray-50 to-white flex flex-col items-center justify-center">
             <img
               loading="lazy"
               src={errorIllustation}
               alt="404"
-              className="w-[300px] h-[300px]"
+              className="w-75 h-75"
             />
             <p className="text-gray-600 text-xl text-center">
               لا يوجد محتوى لعرضه
@@ -258,14 +262,14 @@ const CoreExam = ({
                     {Math.round(
                       (Object.keys(selectedAnswers).length /
                         examData?.questions?.length) *
-                        100
+                        100,
                     )}
                     %
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
+                    className="bg-linear-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
                     style={{
                       width: `${
                         (Object.keys(selectedAnswers).length /
@@ -284,7 +288,7 @@ const CoreExam = ({
                     <img
                       src={examData?.questions?.[currentQuestionIndex]?.image}
                       alt="Question"
-                      className="w-[450px] mb-4 rounded-lg"
+                      className="w-112.5 mb-4 rounded-lg"
                     />
                   )}
                   {examData?.questions?.[currentQuestionIndex]?.question_text}
@@ -298,7 +302,7 @@ const CoreExam = ({
                         onClick={() =>
                           handleAnswerSelect(
                             examData?.questions[currentQuestionIndex].id,
-                            answer?.id
+                            answer?.id,
                           )
                         }
                         className={`cursor-pointer w-full p-4 text-right rounded-xl border-2 transition-all duration-200 ${
@@ -322,21 +326,19 @@ const CoreExam = ({
                               <div className="w-3 h-3 bg-white rounded-full"></div>
                             )}
                           </div>
-                          <span className="flex md:flex-row flex-col items-center gap-x-[20px] font-medium">
+                          <span className="flex md:flex-row flex-col items-center gap-x-5 font-medium">
                             {answer?.image && (
                               <img
                                 src={answer?.image}
                                 alt="Answer"
-                                className="w-[150px] md:w-[250px] mb-2 rounded-lg max-w-100 max-h-100"
+                                className="w-37.5 md:w-62.5 mb-2 rounded-lg max-w-100 max-h-100"
                               />
                             )}
-                            <p className="w-full">
-                            {answer?.answer_text}
-                            </p>
+                            <p className="w-full">{answer?.answer_text}</p>
                           </span>
                         </div>
                       </button>
-                    )
+                    ),
                   )}
                 </div>
               </div>
@@ -346,7 +348,7 @@ const CoreExam = ({
                 <button
                   onClick={() =>
                     setCurrentQuestionIndex(
-                      Math.max(0, currentQuestionIndex - 1)
+                      Math.max(0, currentQuestionIndex - 1),
                     )
                   }
                   disabled={currentQuestionIndex === 0}
@@ -366,13 +368,15 @@ const CoreExam = ({
                 {currentQuestionIndex === examData?.questions?.length - 1 ? (
                   <button
                     onClick={() => {
-                      currentQuestionIndex !== selectedAnswers.length
-                        ? handleExamSubmit()
-                        : toast.error(
-                            "يرجى اجابة عن السؤال قبل الانتقال للسؤال التالي"
-                          );
+                      if (currentQuestionIndex !== selectedAnswers.length) {
+                        handleExamSubmit();
+                      } else {
+                        toast.error(
+                          "يرجى اجابة عن السؤال قبل الانتقال للسؤال التالي",
+                        );
+                      }
                     }}
-                    className="cursor-pointer px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
+                    className="cursor-pointer px-8 py-3 bg-linear-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
                   >
                     <CheckCircle className="w-5 h-5" />
                     <span>تسليم الامتحان</span>
@@ -380,18 +384,20 @@ const CoreExam = ({
                 ) : (
                   <button
                     onClick={() => {
-                      currentQuestionIndex !== selectedAnswers.length
-                        ? setCurrentQuestionIndex(
-                            Math.min(
-                              examData?.questions.length - 1,
-                              currentQuestionIndex + 1
-                            )
-                          )
-                        : toast.error(
-                            "يرجى اجابة عن السؤال قبل الانتقال للسؤال التالي"
-                          );
+                      if (currentQuestionIndex !== selectedAnswers.length) {
+                        setCurrentQuestionIndex(
+                          Math.min(
+                            examData?.questions.length - 1,
+                            currentQuestionIndex + 1,
+                          ),
+                        );
+                      } else {
+                        toast.error(
+                          "يرجى اجابة عن السؤال قبل الانتقال للسؤال التالي",
+                        );
+                      }
                     }}
-                    className="cursor-pointer px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
+                    className="cursor-pointer px-6 py-3 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
                   >
                     <span>التالي</span>
                     <ChevronLeft className="w-5 h-5" />
@@ -444,7 +450,7 @@ const CoreExam = ({
                   {examData?.questions?.map(
                     (question: any, questionIndex: any) => {
                       const matchedAnswer = answers?.find(
-                        (a: any) => a?.question_id === question?.id
+                        (a: any) => a?.question_id === question?.id,
                       );
                       const isCorrect = matchedAnswer?.is_correct;
                       const correctAnswerId = matchedAnswer?.correct_answer_id;
@@ -453,7 +459,7 @@ const CoreExam = ({
                       return (
                         <div
                           key={questionIndex}
-                          className={`p-6 rounded-xl border-2 my-[10px] ${
+                          className={`p-6 rounded-xl border-2 my-2.5 ${
                             isCorrect
                               ? "border-green-200 bg-green-50"
                               : "border-red-200 bg-red-50"
@@ -475,7 +481,7 @@ const CoreExam = ({
                                 <img
                                   src={question?.image}
                                   alt="Question"
-                                  className="w-[250px] mb-4 rounded-lg"
+                                  className="w-62.5 mb-4 rounded-lg"
                                 />
                               )}
                             </div>
@@ -490,9 +496,9 @@ const CoreExam = ({
                                     (answer?.id === userAnswerId && isCorrect)
                                       ? "border-green-500 bg-green-50 text-green-900"
                                       : answer?.id === userAnswerId &&
-                                        !isCorrect
-                                      ? "border-red-500 bg-red-100 text-red-900"
-                                      : "border-gray-200"
+                                          !isCorrect
+                                        ? "border-red-500 bg-red-100 text-red-900"
+                                        : "border-gray-200"
                                   }`}
                                 >
                                   <div className="flex items-center space-x-3">
@@ -510,14 +516,14 @@ const CoreExam = ({
                                         <img
                                           src={answer?.image}
                                           alt="Answer"
-                                          className="w-[250px] mb-2 rounded-lg max-w-100 max-h-100"
+                                          className="w-62.5 mb-2 rounded-lg max-w-100 max-h-100"
                                         />
                                       )}
                                       {answer?.answer_text}
                                     </span>
                                   </div>
                                 </div>
-                              )
+                              ),
                             )}
                           </div>
                           {currentAnswer?.explanation && (
@@ -532,13 +538,13 @@ const CoreExam = ({
                           )}
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
                 <div className="flex justify-center space-x-4">
                   <button
                     onClick={retryExam}
-                    className="cursor-pointer px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
+                    className="cursor-pointer px-8 py-3 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
                   >
                     إعادة المحاولة
                   </button>
@@ -549,7 +555,7 @@ const CoreExam = ({
                       className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
                         currentLesson?.is_completed
                           ? "bg-green-100 text-green-800 cursor-not-allowed"
-                          : "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+                          : "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
                       }`}
                     >
                       <CheckCircle className="w-5 h-5" />

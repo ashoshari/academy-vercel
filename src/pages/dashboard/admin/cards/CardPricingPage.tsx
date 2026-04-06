@@ -42,7 +42,7 @@ const CardPricingPage = () => {
         default_library_price: card.default_library_price,
         is_active: card.is_active,
         createdAt: card.created_at,
-      }))
+      })),
     );
   }, [cards?.data?.data]);
   const cardStatistics = useCustomQuery("/cards/statistics/", [
@@ -57,7 +57,7 @@ const CardPricingPage = () => {
   const toggleCardStatus = (id: number) => {
     setSelectedCard(id);
     const is_active = cards?.data?.data.filter(
-      (card: any) => card.id === id
+      (card: any) => card.id === id,
     )[0];
 
     updateCard
@@ -85,7 +85,7 @@ const CardPricingPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة سعر جديد
@@ -143,7 +143,7 @@ const CardPricingPage = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة سعر جديد
@@ -160,8 +160,8 @@ const CardPricingPage = () => {
               <div
                 className={`p-6 text-white relative overflow-hidden ${
                   card.is_active
-                    ? "bg-gradient-to-br from-orange-500 to-orange-600"
-                    : "bg-gradient-to-br from-gray-400 to-gray-500"
+                    ? "bg-linear-to-br from-orange-500 to-orange-600"
+                    : "bg-linear-to-br from-gray-400 to-gray-500"
                 }`}
               >
                 <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
@@ -276,7 +276,7 @@ const CardPricingPage = () => {
               {!searchTerm && (
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة سعر جديد

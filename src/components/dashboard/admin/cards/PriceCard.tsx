@@ -19,8 +19,8 @@ export default function PriceCard({
       <div
         className={`p-6 text-white relative overflow-hidden ${
           priceCard?.card?.is_active
-            ? "bg-gradient-to-br from-orange-500 to-orange-600"
-            : "bg-gradient-to-br from-gray-400 to-gray-500"
+            ? "bg-linear-to-br from-orange-500 to-orange-600"
+            : "bg-linear-to-br from-gray-400 to-gray-500"
         }`}
       >
         <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>

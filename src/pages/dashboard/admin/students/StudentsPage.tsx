@@ -117,7 +117,7 @@ const StudentsPage = () => {
   // GET Students
   const { data, isLoading } = useCustomQuery(
     `/account/admin/students/?${queryString}`,
-    ["students", page, searchTerm, courseFilter, gradeFilter, statusFilter]
+    ["students", page, searchTerm, courseFilter, gradeFilter, statusFilter],
   );
 
   // GET Courses
@@ -138,12 +138,12 @@ const StudentsPage = () => {
   // PUT Student
   const { mutateAsync: putStudent, isPending } = useCustomUpdate(
     `/account/admin/students/${studentId}/`,
-    ["putstudents"]
+    ["putstudents"],
   );
   // POST Reset IMEI
   const { mutateAsync: resetIMEI } = useCustomPost(
     `/account/admin/students/${studentId}/reset-device-sessions/`,
-    ["resetIMEI"]
+    ["resetIMEI"],
   );
   const handleResetIMEI = async (id: string) => {
     setStudentId(id);
@@ -162,7 +162,7 @@ const StudentsPage = () => {
       });
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.error ?? "حدث خطأ في إعادة تعيين IMEI"
+        error?.response?.data?.error ?? "حدث خطأ في إعادة تعيين IMEI",
       );
     }
   };
@@ -177,21 +177,21 @@ const StudentsPage = () => {
       queryClient.invalidateQueries({ queryKey: ["students-statistics"] });
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.error ?? "حدث خطأ في تحديث حالة الطالب"
+        error?.response?.data?.error ?? "حدث خطأ في تحديث حالة الطالب",
       );
     }
   };
   const StudentCard = ({ student }: { student: any }) => (
     <div className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
-      <div className="h-[30%] p-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+      <div className="h-[30%] p-6 bg-linear-to-r from-orange-500 to-orange-600 text-white">
         <div className="flex items-center gap-4">
           <div className="relative">
             <img
               src={
                 student?.image ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  student?.name
+                  student?.name,
                 )}&background=ffffff&color=f97316&size=64`
               }
               alt={student?.name}
@@ -339,7 +339,7 @@ const StudentsPage = () => {
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/dashboard/students/add")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة طالب
@@ -499,7 +499,7 @@ const StudentsPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/students/add")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة طالب جديد
@@ -525,7 +525,7 @@ const StudentsPage = () => {
 
                 <button
                   onClick={() => navigate("/dashboard/students/add")}
-                  className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة طالب جديد
@@ -542,7 +542,7 @@ const StudentsPage = () => {
       ) : (
         <>
           {/* Table */}
-          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -690,7 +690,7 @@ const StudentsPage = () => {
                           <button
                             onClick={() => {
                               navigate(
-                                `/dashboard/students/edit/${student.id}`
+                                `/dashboard/students/edit/${student.id}`,
                               );
                             }}
                             className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"

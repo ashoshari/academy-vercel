@@ -14,7 +14,7 @@ const EnrolledCourses: React.FC = () => {
   // GET MY COURSES
   const { data, error } = useCustomQuery(
     `/training/students/my-courses/?page_size=${numberOfCourses}`,
-    ["myCourses", numberOfCourses]
+    ["myCourses", numberOfCourses],
   );
   if (!isLoggedIn) {
     return null;
@@ -25,22 +25,22 @@ const EnrolledCourses: React.FC = () => {
   return (
     <>
       {!error && (
-        <section className="py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
+        <section className="py-16 bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
           {/* Background Decorations */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-100/20 to-purple-100/20 rounded-full translate-x-48 -translate-y-48 animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-indigo-100/20 to-blue-100/20 rounded-full -translate-x-36 translate-y-36 animate-pulse delay-1000"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-bl from-blue-100/20 to-purple-100/20 rounded-full translate-x-48 -translate-y-48 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-linear-to-tr from-indigo-100/20 to-blue-100/20 rounded-full -translate-x-36 translate-y-36 animate-pulse delay-1000"></div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             {/* Section Header */}
             <div className="flex items-center justify-between mb-12">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-linear-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
                   <BookOpen className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">
                     دوراتي{" "}
-                    <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                    <span className="bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                       الحالية
                     </span>
                   </h2>
@@ -71,7 +71,7 @@ const EnrolledCourses: React.FC = () => {
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
                 <div className="text-2xl font-bold text-purple-600 mb-1">
                   {myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(
-                    2
+                    2,
                   )}
                   %
                 </div>
@@ -108,7 +108,7 @@ const EnrolledCourses: React.FC = () => {
                                 >
                                   {material?.name}
                                 </span>
-                              )
+                              ),
                             )
                           ) : (
                             <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
@@ -125,7 +125,7 @@ const EnrolledCourses: React.FC = () => {
                       </div>
 
                       {/* Circular Progress */}
-                      <div className="relative w-12 h-12 flex-shrink-0">
+                      <div className="relative w-12 h-12 shrink-0">
                         <svg
                           className="w-12 h-12 transform -rotate-90"
                           viewBox="0 0 48 48"
@@ -172,14 +172,14 @@ const EnrolledCourses: React.FC = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                          className="bg-linear-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
                           style={{ width: `${course?.progress}%` }}
                         ></div>
                       </div>
                     </div>
 
                     {/* Next Lesson */}
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
+                    <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
                       <div className="flex items-center space-x-2 mb-1">
                         <Play className="w-4 h-4 text-blue-600" />
                         <span className="text-sm font-medium text-gray-900">
@@ -206,7 +206,7 @@ const EnrolledCourses: React.FC = () => {
                       onClick={() =>
                         navigate(`/coursePage/${course?.course_id}`)
                       }
-                      className="w-full cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
+                      className="w-full cursor-pointer bg-linear-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
                     >
                       <Play className="w-4 h-4" />
                       <span>متابعة التعلم</span>
@@ -220,7 +220,7 @@ const EnrolledCourses: React.FC = () => {
             <div className="text-center mt-8 md:hidden">
               <button
                 onClick={() => navigate("/all-courses")}
-                className="cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 mx-auto"
+                className="cursor-pointer bg-linear-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 mx-auto"
               >
                 <BookOpen className="w-5 h-5" />
                 <span>عرض جميع دوراتي</span>

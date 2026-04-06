@@ -26,8 +26,7 @@ const Footer: React.FC = () => {
       hover: "bg-blue-700",
       link:
         Object.entries(footerData || {}).find(
-          ([key, _value]) =>
-            key.toLowerCase().replace("_url", "") === "facebook"
+          ([key]) => key.toLowerCase().replace("_url", "") === "facebook",
         )?.[1] || null,
     },
     {
@@ -37,8 +36,7 @@ const Footer: React.FC = () => {
       hover: "opacity-90",
       link:
         Object.entries(footerData || {}).find(
-          ([key, _value]) =>
-            key.toLowerCase().replace("_url", "") === "instagram"
+          ([key]) => key.toLowerCase().replace("_url", "") === "instagram",
         )?.[1] || null,
     },
     {
@@ -48,7 +46,7 @@ const Footer: React.FC = () => {
       hover: "bg-red-700",
       link:
         Object.entries(footerData || "").find(
-          ([key, _value]) => key.toLowerCase().replace("_url", "") === "youtube"
+          ([key]) => key.toLowerCase().replace("_url", "") === "youtube",
         )?.[1] || null,
     },
     {
@@ -58,8 +56,7 @@ const Footer: React.FC = () => {
       hover: "bg-yellow-500",
       link:
         Object.entries(footerData || {}).find(
-          ([key, _value]) =>
-            key.toLowerCase().replace("_url", "") === "snapchat"
+          ([key]) => key.toLowerCase().replace("_url", "") === "snapchat",
         )?.[1] || null,
     },
     {
@@ -69,8 +66,7 @@ const Footer: React.FC = () => {
       hover: "bg-sky-600",
       link:
         Object.entries(footerData || {}).find(
-          ([key, _value]) =>
-            key.toLowerCase().replace("_url", "") === "telegram"
+          ([key]) => key.toLowerCase().replace("_url", "") === "telegram",
         )?.[1] || null,
     },
     {
@@ -80,8 +76,7 @@ const Footer: React.FC = () => {
       hover: "bg-green-600",
       link:
         Object.entries(footerData || {}).find(
-          ([key, _value]) =>
-            key.toLowerCase().replace("_url", "") === "whatsapp"
+          ([key]) => key.toLowerCase().replace("_url", "") === "whatsapp",
         )?.[1] || null,
     },
     {
@@ -91,13 +86,13 @@ const Footer: React.FC = () => {
       hover: "bg-pink-600",
       link:
         Object.entries(footerData || {}).find(
-          ([key, _value]) => key.toLowerCase().replace("_url", "") === "tiktok"
+          ([key]) => key.toLowerCase().replace("_url", "") === "tiktok",
         )?.[1] || null,
     },
   ];
 
   return (
-    <footer className="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+    <footer className="bg-linear-to-r from-gray-900 to-gray-800 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -142,7 +137,7 @@ const Footer: React.FC = () => {
                         {title}
                       </a>
                     </li>
-                  )
+                  ),
                 )}
               </ul>
             ) : (
@@ -201,7 +196,7 @@ const Footer: React.FC = () => {
                 (link: any) =>
                   link?.link &&
                   link?.link !== "null" &&
-                  link?.link.trim() !== ""
+                  link?.link.trim() !== "",
               ).length === 0 ? (
                 <p className="text-gray-300">لا توجد وسائل تواصل</p>
               ) : (
@@ -213,13 +208,13 @@ const Footer: React.FC = () => {
                       key={index}
                       target="_blank"
                       href={link?.link}
-                      className={`cursor-pointer w-[25px] h-[25px] p-[5px] ${link?.color} rounded-lg flex items-center justify-center hover:${link?.hover} transition-colors duration-200`}
+                      className={`cursor-pointer w-6.25 h-6.25 p-1.25 ${link?.color} rounded-lg flex items-center justify-center hover:${link?.hover} transition-colors duration-200`}
                     >
                       {React.createElement(link?.icon, {
                         className: "w-5 h-5",
                       })}
                     </a>
-                  ) : null
+                  ) : null,
                 )
               )}
             </div>

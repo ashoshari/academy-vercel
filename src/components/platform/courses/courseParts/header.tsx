@@ -18,7 +18,11 @@ const Header = ({
             <button
               // onClick={() => navigate(`/teacher/${courseData?.teacher.id}`)}
               onClick={() => {
-                window.history.length > 1 ? navigate(-1) : navigate(-1);
+                if (window.history.length > 1) {
+                  navigate(-1);
+                } else {
+                  navigate("/");
+                }
               }}
               className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl cursor-pointer flex items-center justify-center transition-colors duration-200"
             >

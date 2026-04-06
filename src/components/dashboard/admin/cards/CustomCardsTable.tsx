@@ -26,7 +26,7 @@ const CustomCardTable = () => {
 
   const dataUserCardPrices = useCustomQuery(
     `/cards/user-card-prices/?${queryParams.toString()}`,
-    ["user-card-prices", filters]
+    ["user-card-prices", filters],
   );
 
   return (
@@ -48,7 +48,7 @@ const CustomCardTable = () => {
           onClick={() => {
             setShowAddModal(true);
           }}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة سعر مخصص
@@ -127,7 +127,7 @@ const CustomCardTable = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة سعر مخصص جديد
@@ -155,7 +155,7 @@ const CustomCardTable = () => {
                 {
                   <button
                     onClick={() => setShowAddModal(true)}
-                    className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة سعر مخصص جديد
@@ -177,8 +177,8 @@ const CustomCardTable = () => {
         <>
           {/* Table View */}
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
-            <div className="w-full max-w-[300px] min-w-full overflow-auto pb-6">
-              <table className="min-w-[1000px] w-full text-sm bg-white">
+            <div className="w-full max-w-75 min-w-full overflow-auto pb-6">
+              <table className="min-w-250 w-full text-sm bg-white">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-right text-xs whitespace-nowrap font-medium text-gray-500 uppercase tracking-wider">

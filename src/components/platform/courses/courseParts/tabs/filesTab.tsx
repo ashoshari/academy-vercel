@@ -22,12 +22,12 @@ const FilesTab = () => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   const files = data?.data?.resources;
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
-    ["downloadFiles"]
+    ["downloadFiles"],
   );
   const handleDownload = async (resourceId: any) => {
     try {
@@ -54,7 +54,7 @@ const FilesTab = () => {
             loading="lazy"
             src={errorIllustation}
             alt="404"
-            className="w-[200px] h-[200px]"
+            className="w-50 h-50"
           />
           <p className="text-gray-600 text-xl text-center">
             لا يوجد محتوى لعرضه
@@ -111,7 +111,7 @@ const FilesTab = () => {
                 target="_blank"
                 onClick={() => handleDownload(file?.id)}
                 download
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
+                className="w-full bg-linear-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
               >
                 <Download className="w-5 h-5" />
                 <span>تحميل الملف</span>

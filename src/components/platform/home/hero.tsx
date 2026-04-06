@@ -43,7 +43,7 @@ const Hero: React.FC = () => {
   }, [nextSlide, slides.length, stopSlider]);
   return (
     <section className="relative h-[75vh] overflow-hidden bg-gray-900">
-      <section className="relative h-full overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900">
+      <section className="relative h-full overflow-hidden bg-linear-to-br from-indigo-900 via-purple-900 to-blue-900">
         {/* Background Slider  /// */}
         {slides?.length > 0 ? (
           <>
@@ -117,7 +117,7 @@ const Hero: React.FC = () => {
                       {slides[currentSlide]?.link && (
                         <>
                           {/* Video Player */}
-                          
+
                           {/* DailyMotion */}
                           <iframe
                             src={`https://geo.dailymotion.com/player.html?video=${slides[currentSlide]?.link}`}
@@ -151,7 +151,7 @@ const Hero: React.FC = () => {
                             onClick={() => {
                               setStopSlider(!stopSlider);
                             }}
-                            className={`cursor-pointer absolute bottom-12 right-2 bg-white hover:bg-gradient-to-r hover:text-white hover:from-yellow-400 hover:to-orange-500 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm`}
+                            className={`cursor-pointer absolute bottom-12 right-2 bg-white hover:bg-linear-to-r hover:text-white hover:from-yellow-400 hover:to-orange-500 text-gray-900 px-4 py-2 rounded-2xl font-bold text-sm`}
                           >
                             {!stopSlider
                               ? " ▶️ شاهد الفيديو"

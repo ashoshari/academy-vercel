@@ -20,7 +20,7 @@ const EditCardPricing = ({
 }: EditCardPricingProps) => {
   const { mutateAsync: editPrice } = useCustomUpdate(
     `/cards/${selectedCard.id}/`,
-    ["edit-cards"]
+    ["edit-cards"],
   );
   const onSubmit = async (data: FormData) => {
     try {
@@ -33,8 +33,8 @@ const EditCardPricing = ({
                 default_teacher_price: data.default_teacher_price.toFixed(2),
                 default_library_price: data.default_library_price.toFixed(2),
               }
-            : card
-        )
+            : card,
+        ),
       );
       setShowEditModal(false);
       setSelectedCard(null);
@@ -43,7 +43,7 @@ const EditCardPricing = ({
       toast.error(
         error?.response?.data?.default_library_price ||
           error?.response?.data?.default_teacher_price ||
-          "حدث خطأ"
+          "حدث خطأ",
       );
     }
   };
@@ -142,7 +142,7 @@ const EditCardPricing = ({
           </button>
           <button
             type="submit"
-            className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
           >
             <Save size={16} />
             حفظ التغييرات

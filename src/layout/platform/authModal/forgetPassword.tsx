@@ -35,17 +35,17 @@ const ForgetPassword = ({
   // POST Reset Password OTP
   const { mutateAsync: postForgetPasswordOtp } = useCustomPost(
     "/account/students/reset-password-otp/",
-    ["forget-password-otp"]
+    ["forget-password-otp"],
   );
   // POST Reset Password OTP Check
   const { mutateAsync: postForgetPasswordOtpCheck } = useCustomPost(
     "account/students/reset-password-otp/check/",
-    ["forget-password-otp-check"]
+    ["forget-password-otp-check"],
   );
   // POST Reset Password OTP Confirm
   const { mutateAsync: postResetPasswordConfirm } = useCustomPost(
     "/account/students/reset-password-confirm/",
-    ["reset-password-confirm"]
+    ["reset-password-confirm"],
   );
   const newPassword = watch("new_password");
   const onSubmit = async (data: resetData) => {
@@ -127,7 +127,7 @@ const ForgetPassword = ({
                   e.preventDefault();
                   if (showPassword.includes("new_password")) {
                     setShowPassword((prev) =>
-                      prev.filter((item) => item !== "new_password")
+                      prev.filter((item) => item !== "new_password"),
                     );
                   } else {
                     setShowPassword((prev) => [...prev, "new_password"]);
@@ -178,7 +178,7 @@ const ForgetPassword = ({
                   e.preventDefault();
                   if (showPassword.includes("confirm_password")) {
                     setShowPassword((prev) =>
-                      prev.filter((item) => item !== "confirm_password")
+                      prev.filter((item) => item !== "confirm_password"),
                     );
                   } else {
                     setShowPassword((prev) => [...prev, "confirm_password"]);
@@ -218,7 +218,7 @@ const ForgetPassword = ({
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
-                ""
+                "",
               );
             }}
             type="text"
@@ -285,7 +285,7 @@ const ForgetPassword = ({
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
-                ""
+                "",
               );
             }}
             type="text"
@@ -302,7 +302,7 @@ const ForgetPassword = ({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="cursor-pointer w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
+        className="cursor-pointer w-full bg-linear-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
       >
         {isSubmitting ? (
           <div className="flex items-center space-x-2">

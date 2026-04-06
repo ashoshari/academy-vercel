@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Library } from "@/pages/dashboard/admin/libraries/LibrariesPage";
 import { UseMutationResult } from "@tanstack/react-query";
 import {
@@ -32,14 +31,14 @@ export default function LibraryCard({
   return (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+      <div className="p-6 bg-linear-to-r from-orange-500 to-orange-600 text-white">
         <div className="flex items-center gap-4">
           <div className="relative">
             <img
               src={
                 library?.image ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  library?.name
+                  library?.name,
                 )}&background=ffffff&color=f97316&size=64`
               }
               alt={library?.name}

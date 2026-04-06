@@ -85,7 +85,7 @@ const StudentDetailsPage = () => {
                     src={
                       selectedStudent?.image ||
                       `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                        selectedStudent?.name
+                        selectedStudent?.name,
                       )}&background=f97316&color=ffffff&size=64`
                     }
                     alt={selectedStudent?.name}
@@ -96,8 +96,8 @@ const StudentDetailsPage = () => {
                       {selectedStudent?.name}
                     </h2>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 text-sm">
-                      <div className="space-y-[10px]">
-                        <div className="flex items-center gap-x-[10px]">
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-x-2.5">
                           <Award
                             size={16}
                             className="text-gray-600 text-sm font-medium text-center"
@@ -106,7 +106,7 @@ const StudentDetailsPage = () => {
                             {selectedStudent?.grade?.name || "-"}{" "}
                           </p>
                         </div>
-                        <div className="flex items-center gap-x-[10px]">
+                        <div className="flex items-center gap-x-2.5">
                           <School
                             size={16}
                             className="text-gray-600 text-sm font-medium text-center"
@@ -116,8 +116,8 @@ const StudentDetailsPage = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="space-y-[10px]">
-                        <div className="flex items-center gap-x-[10px]">
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-x-2.5">
                           <User
                             size={16}
                             className="text-gray-600 text-sm font-medium text-center"
@@ -126,7 +126,7 @@ const StudentDetailsPage = () => {
                             {selectedStudent?.gender || "-"}{" "}
                           </p>
                         </div>
-                        <div className="flex items-center gap-x-[10px]">
+                        <div className="flex items-center gap-x-2.5">
                           <Phone
                             size={16}
                             className="text-gray-600 font-medium text-center"
@@ -178,11 +178,11 @@ const StudentDetailsPage = () => {
                                       المعلم: {course?.course?.teacher?.name}
                                     </p>
                                   </div>
-                                  <div className="text-left flex items-center justify-center gap-x-[10px]">
+                                  <div className="text-left flex items-center justify-center gap-x-2.5">
                                     {course?.course?.level && (
                                       <span
                                         className={`px-2 py-2 rounded-full text-xs font-medium ${getStatusColor(
-                                          course?.course?.level?.name
+                                          course?.course?.level?.name,
                                         )}`}
                                       >
                                         {course?.course?.level?.name}
@@ -261,7 +261,7 @@ const StudentDetailsPage = () => {
                                 {formatDateTimeSimple(payment?.payment_date)}
                               </p>
                             </div>
-                            <div className="text-center flex gap-x-[10px]">
+                            <div className="text-center flex gap-x-2.5">
                               <p className="font-bold text-green-600">
                                 {payment?.amount} د.أ
                               </p>
@@ -284,7 +284,7 @@ const StudentDetailsPage = () => {
                       </h3>
                       <div className="space-y-2">
                         <div className="">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] text-center">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.75 text-center">
                             <div className="bg-gray-50 rounded-lg p-6 space-y-5">
                               <p className="text-lg text-gray-800">
                                 رمز هوية الجهاز (IMEI)
@@ -298,7 +298,7 @@ const StudentDetailsPage = () => {
                               <p className="text-sm text-gray-800">
                                 {selectedStudent?.imei_info?.accept_language.slice(
                                   0,
-                                  2
+                                  2,
                                 ) == "ar"
                                   ? "العربية"
                                   : "English"}
@@ -317,7 +317,7 @@ const StudentDetailsPage = () => {
                               <p className="text-sm text-gray-800">
                                 {selectedStudent?.imei_info?.platform.replace(
                                   /"/g,
-                                  ""
+                                  "",
                                 ) || "-"}
                               </p>
                             </div>
@@ -353,7 +353,7 @@ const StudentDetailsPage = () => {
                             {selectedStudent?.created_at === null
                               ? "-"
                               : formatDateTimeSimple(
-                                  selectedStudent?.created_at
+                                  selectedStudent?.created_at,
                                 )}
                           </p>
                         </div>
@@ -363,7 +363,7 @@ const StudentDetailsPage = () => {
                             {selectedStudent?.last_login == null
                               ? "-"
                               : formatDateTimeSimple(
-                                  selectedStudent?.last_login
+                                  selectedStudent?.last_login,
                                 )}
                           </p>
                         </div>

@@ -12,7 +12,7 @@ const PrivacyPolicy = () => {
     <>
       {terms ? (
         <>
-          <div className="flex items-center mb-6 gap-x-[5px] p-8">
+          <div className="flex items-center mb-6 gap-x-1.25 p-8">
             <button
               onClick={() => {
                 if (window.history.length > 1) {

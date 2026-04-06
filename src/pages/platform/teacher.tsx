@@ -49,12 +49,12 @@ const TeacherProfile: React.FC = () => {
   // Get Teacher
   const { data, isLoading, error } = useCustomQuery(
     `/training/students/teacher/${id}/`,
-    ["teachers", id]
+    ["teachers", id],
   );
   // Handle Download
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
-    ["downloadResources"]
+    ["downloadResources"],
   );
   const handleDownload = async (resourceId: any) => {
     try {
@@ -130,7 +130,7 @@ const TeacherProfile: React.FC = () => {
   // POST ACTIVATION
   const { mutateAsync: postActivation } = useCustomPost(
     "/training/students/course/enroll/",
-    ["postActivation"]
+    ["postActivation"],
   );
   const handleCourseActivation = (course: any) => {
     setSelectedCourse(course);
@@ -249,7 +249,7 @@ const TeacherProfile: React.FC = () => {
       </div>
 
       <div className="flex flex-col p-6">
-        <div className="flex flex-col space-between mb-4 h-[100px]">
+        <div className="flex flex-col space-between mb-4 h-25">
           <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
             {course?.name}
           </h3>
@@ -292,8 +292,8 @@ const TeacherProfile: React.FC = () => {
           onClick={() => handleCourseClick(course)}
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled
-              ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
-              : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
+              ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+              : "bg-linear-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
           }`}
         >
           {course?.is_enrolled ? (
@@ -351,7 +351,7 @@ const TeacherProfile: React.FC = () => {
       </div>
 
       <div className="flex flex-col p-6">
-        <div className="flex flex-col space-between mb-4 h-[100px]">
+        <div className="flex flex-col space-between mb-4 h-25">
           <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
             {course?.name}
           </h3>
@@ -394,8 +394,8 @@ const TeacherProfile: React.FC = () => {
           onClick={() => handleCourseClick(course)}
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled && course?.is_enrollment_active
-              ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
-              : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
+              ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+              : "bg-linear-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
           }`}
         >
           {course?.is_enrolled && course?.is_enrollment_active ? (
@@ -463,7 +463,7 @@ const TeacherProfile: React.FC = () => {
           target="_blank"
           onClick={() => handleDownload(file?.id)}
           download
-          className="cursor-pointer bg-gradient-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+          className="cursor-pointer bg-linear-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
         >
           <Download className="w-4 h-4" />
           <p className="">تحميل</p>
@@ -532,7 +532,7 @@ const TeacherProfile: React.FC = () => {
               target="_blank"
               onClick={() => handleDownload(book?.id)}
               download
-              className="cursor-pointer bg-gradient-to-r w-full justify-center from-yellow-500 to-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+              className="cursor-pointer bg-linear-to-r w-full justify-center from-yellow-500 to-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
               <p className="">تحميل</p>
@@ -605,7 +605,7 @@ const TeacherProfile: React.FC = () => {
               target="_blank"
               onClick={() => handleDownload(question?.id)}
               download
-              className="cursor-pointer bg-gradient-to-r w-full justify-center from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+              className="cursor-pointer bg-linear-to-r w-full justify-center from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
               <p className="">تحميل</p>
@@ -668,7 +668,7 @@ const TeacherProfile: React.FC = () => {
 
       <button
         onClick={() => handleExamsClick(exam)}
-        className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white cursor-pointer py-3 px-4 rounded-xl font-semibold hover:from-purple-600 hover:to-indigo-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
+        className="w-full bg-linear-to-r from-purple-500 to-indigo-500 text-white cursor-pointer py-3 px-4 rounded-xl font-semibold hover:from-purple-600 hover:to-indigo-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
       >
         <Zap className="w-5 h-5" />
         <span>ابدأ الامتحان</span>
@@ -677,9 +677,9 @@ const TeacherProfile: React.FC = () => {
   );
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-50 to-white">
+      <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-gray-50 to-white">
         <img
-          className="absolute top-0 w-[300px] h-[650px] z-0"
+          className="absolute top-0 w-75 h-162.5 z-0"
           src={ErrorIllustration}
           alt="error"
         />
@@ -694,14 +694,18 @@ const TeacherProfile: React.FC = () => {
         onClose={() => setShowAuthModal(false)}
         onLogin={handleLogin}
       />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-white">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
-          <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-linear-to-r from-blue-600 to-purple-600 shadow-lg">
+          <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-between mb-6">
               <button
                 onClick={() => {
-                  window.history.length > 1 ? navigate(-1) : navigate(-1);
+                  if (window.history.length > 1) {
+                    navigate(-1);
+                  } else {
+                    navigate("/");
+                  }
                 }}
                 className="w-12 h-12 bg-white/20 hover:bg-white/30 cursor-pointer rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
@@ -716,7 +720,7 @@ const TeacherProfile: React.FC = () => {
                   src={
                     teacherData?.image ||
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      teacherData?.name
+                      teacherData?.name,
                     )}&background=ffffff&color=f97316&size=64`
                   }
                   alt={teacherData?.name ?? "اسم المعلم"}
@@ -734,7 +738,7 @@ const TeacherProfile: React.FC = () => {
                       {material.name}
                       {index + 1 !== array.length && " ، "}
                     </p>
-                  )
+                  ),
                 )}
 
                 <p className="text-blue-100 leading-relaxed max-w-2xl">
@@ -757,7 +761,7 @@ const TeacherProfile: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Tabs */}
           <div
             className={`grid grid-cols-1 md:grid-cols-${
@@ -774,9 +778,9 @@ const TeacherProfile: React.FC = () => {
                   <button
                     key={tab?.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`cursor-pointer flex items-center justify-between w-full h-[4rem] mx-[5px] space-x-2 px-10 md:px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
+                    className={`cursor-pointer flex items-center justify-between w-full h-16 mx-1.25 space-x-2 px-10 md:px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
                       activeTab === tab.id
-                        ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
+                        ? "bg-linear-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
                         : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                     }`}
                   >
@@ -804,11 +808,11 @@ const TeacherProfile: React.FC = () => {
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
                       loading="lazy"
-                      className="absolute top-0 w-[400px] h-[350px] z-0"
+                      className="absolute top-0 w-100 h-87.5 z-0"
                       src={errorIllustation}
                       alt="error"
                     />
-                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
+                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
                       لا يوجد محتوى لعرضه
                     </h1>
                   </div>
@@ -824,11 +828,11 @@ const TeacherProfile: React.FC = () => {
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
                       loading="lazy"
-                      className="absolute top-0 w-[400px] h-[350px] z-0"
+                      className="absolute top-0 w-100 h-87.5 z-0"
                       src={errorIllustation}
                       alt="error"
                     />
-                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
+                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
                       لا يوجد محتوى لعرضه
                     </h1>
                   </div>
@@ -844,11 +848,11 @@ const TeacherProfile: React.FC = () => {
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
                       loading="lazy"
-                      className="absolute top-0 w-[400px] h-[350px] z-0"
+                      className="absolute top-0 w-100 h-87.5 z-0"
                       src={errorIllustation}
                       alt="error"
                     />
-                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
+                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
                       لا يوجد محتوى لعرضه
                     </h1>
                   </div>
@@ -863,11 +867,11 @@ const TeacherProfile: React.FC = () => {
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
                       loading="lazy"
-                      className="absolute top-0 w-[400px] h-[350px] z-0"
+                      className="absolute top-0 w-100 h-87.5 z-0"
                       src={errorIllustation}
                       alt="error"
                     />
-                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
+                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
                       لا يوجد محتوى لعرضه
                     </h1>
                   </div>
@@ -882,11 +886,11 @@ const TeacherProfile: React.FC = () => {
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
                       loading="lazy"
-                      className="absolute top-0 w-[400px] h-[350px] z-0"
+                      className="absolute top-0 w-100 h-87.5 z-0"
                       src={errorIllustation}
                       alt="error"
                     />
-                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
+                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
                       لا يوجد محتوى لعرضه
                     </h1>
                   </div>
@@ -902,11 +906,11 @@ const TeacherProfile: React.FC = () => {
                   <div className="col-span-3 relative flex flex-col items-center">
                     <img
                       loading="lazy"
-                      className="absolute top-0 w-[400px] h-[350px] z-0"
+                      className="absolute top-0 w-100 h-87.5 z-0"
                       src={errorIllustation}
                       alt="error"
                     />
-                    <h1 className="pt-[80px] absolute text-[2rem] top-[200px] z-[1]">
+                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
                       لا يوجد محتوى لعرضه
                     </h1>
                   </div>
@@ -921,7 +925,7 @@ const TeacherProfile: React.FC = () => {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-linear-to-r from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <CreditCard className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -936,7 +940,7 @@ const TeacherProfile: React.FC = () => {
                 <p className="text-gray-600">{selectedCourse?.title}</p>
               </div>
 
-              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-6">
+              <div className="bg-linear-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-700 font-medium">سعر الدورة:</span>
                   {selectedCourse?.card_price?.price ? (
@@ -982,7 +986,7 @@ const TeacherProfile: React.FC = () => {
                     disabled={
                       !selectedCourse?.is_free && !activationCode.trim()
                     }
-                    className="cursor-pointer flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="cursor-pointer flex-1 bg-linear-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     تفعيل الدورة
                   </button>

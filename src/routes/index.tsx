@@ -55,6 +55,7 @@ import ResourcesPage from "@/pages/dashboard/admin/files/filesPage";
 import SliderPage from "@/pages/dashboard/admin/sliders/SliderPage";
 import { RequireRole } from "./guards";
 import CardCustomPrice from "@/pages/dashboard/admin/cards/CardCustomPrice";
+import SalesPage from "@/pages/dashboard/admin/sales/SalesPage";
 // import { readUserFromStorage, roleOf } from "@/services/auth";
 
 // function DashboardIndexGate() {
@@ -155,6 +156,8 @@ export default function AppRoutes() {
               {/* courses */}
               <Route path="courses" element={<CoursesPage />} />
               {/* courses */}
+
+              <Route path="sales" element={<SalesPage />} />
 
               {/* exams */}
               <Route path="exams" element={<ExamsPage />} />

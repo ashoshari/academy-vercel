@@ -106,7 +106,7 @@ const FilesPage = () => {
     "all" | "public" | "students" | "teachers" | "admin"
   >("all");
   const [sortBy, setSortBy] = useState<"name" | "size" | "date" | "downloads">(
-    "name"
+    "name",
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -136,7 +136,7 @@ const FilesPage = () => {
 
   // Get current folder files
   const currentFiles = files?.filter(
-    (file: any) => file.parentId === currentPath
+    (file: any) => file.parentId === currentPath,
   );
 
   // Filter and sort files
@@ -146,7 +146,7 @@ const FilesPage = () => {
         file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         file.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         file.tags.some((tag: any) =>
-          tag.toLowerCase().includes(searchTerm.toLowerCase())
+          tag.toLowerCase().includes(searchTerm.toLowerCase()),
         );
 
       const matchesType =
@@ -192,7 +192,7 @@ const FilesPage = () => {
     totalSize: files?.reduce((sum: any, f: any) => sum + f.size, 0),
     totalDownloads: files?.reduce(
       (sum: any, f: any) => sum + f.downloadCount,
-      0
+      0,
     ),
     fileTypes: {
       documents: files?.filter((f: any) => f.fileType === "document").length,
@@ -385,8 +385,8 @@ const FilesPage = () => {
   const toggleFileFavorite = (id: number) => {
     setFiles(
       files.map((file: any) =>
-        file.id === id ? { ...file, isFavorite: !file.isFavorite } : file
-      )
+        file.id === id ? { ...file, isFavorite: !file.isFavorite } : file,
+      ),
     );
   };
 
@@ -526,16 +526,16 @@ const FilesPage = () => {
           <div className="mt-3">
             <span
               className={`px-2 py-1 rounded-full text-xs font-medium ${getAccessLevelColor(
-                file.accessLevel
+                file.accessLevel,
               )}`}
             >
               {file.accessLevel === "public"
                 ? "عام"
                 : file.accessLevel === "students"
-                ? "طلاب"
-                : file.accessLevel === "teachers"
-                ? "معلمين"
-                : "إداريين"}
+                  ? "طلاب"
+                  : file.accessLevel === "teachers"
+                    ? "معلمين"
+                    : "إداريين"}
             </span>
           </div>
 
@@ -629,7 +629,7 @@ const FilesPage = () => {
                     <button
                       onClick={() => {
                         const newFiles = uploadFiles.files.filter(
-                          (_: any, i: any) => i !== index
+                          (_: any, i: any) => i !== index,
                         );
                         setUploadFiles({ ...uploadFiles, files: newFiles });
                       }}
@@ -710,7 +710,7 @@ const FilesPage = () => {
           <button
             onClick={handleFileUpload}
             disabled={uploadFiles.files.length === 0}
-            className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Upload size={16} />
             رفع الملفات
@@ -799,7 +799,7 @@ const FilesPage = () => {
           <button
             onClick={handleCreateFolder}
             disabled={!newFolder.name}
-            className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FolderPlus size={16} />
             إنشاء المجلد
@@ -829,7 +829,7 @@ const FilesPage = () => {
           </button>
           <button
             onClick={() => setShowUploadModal(true)}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Upload size={16} />
             رفع ملفات
@@ -1031,7 +1031,7 @@ const FilesPage = () => {
                   <div className="flex gap-4 justify-center">
                     <button
                       onClick={() => setShowUploadModal(true)}
-                      className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2"
+                      className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2"
                     >
                       <Upload size={16} />
                       رفع ملفات
@@ -1104,16 +1104,16 @@ const FilesPage = () => {
                         {file.type === "folder"
                           ? "مجلد"
                           : file.fileType === "document"
-                          ? "مستند"
-                          : file.fileType === "image"
-                          ? "صورة"
-                          : file.fileType === "video"
-                          ? "فيديو"
-                          : file.fileType === "audio"
-                          ? "صوت"
-                          : file.fileType === "archive"
-                          ? "أرشيف"
-                          : "أخرى"}
+                            ? "مستند"
+                            : file.fileType === "image"
+                              ? "صورة"
+                              : file.fileType === "video"
+                                ? "فيديو"
+                                : file.fileType === "audio"
+                                  ? "صوت"
+                                  : file.fileType === "archive"
+                                    ? "أرشيف"
+                                    : "أخرى"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {formatFileSize(file.size)}
@@ -1124,16 +1124,16 @@ const FilesPage = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${getAccessLevelColor(
-                            file.accessLevel
+                            file.accessLevel,
                           )}`}
                         >
                           {file.accessLevel === "public"
                             ? "عام"
                             : file.accessLevel === "students"
-                            ? "طلاب"
-                            : file.accessLevel === "teachers"
-                            ? "معلمين"
-                            : "إداريين"}
+                              ? "طلاب"
+                              : file.accessLevel === "teachers"
+                                ? "معلمين"
+                                : "إداريين"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

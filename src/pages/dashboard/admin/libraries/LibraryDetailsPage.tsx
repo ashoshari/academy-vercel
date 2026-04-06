@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams } from "react-router";
 import { Shield, User } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -51,9 +50,9 @@ export default function LibraryDetailsPage() {
           </div>
         </div>
 
-        <div className="space-y-[30px]">
+        <div className="space-y-7.5">
           {/* Personal Info */}
-          <div className="grid grid-col-1 lg:grid-cols-2 gap-x-[10px] gap-y-[10px]">
+          <div className="grid grid-col-1 lg:grid-cols-2 gap-x-2.5 gap-y-2.5">
             <div className="bg-gray-50 rounded-xl p-6 mb-6 h-full">
               <h3 className="font-bold text-gray-800 mb-4">
                 المعلومات الشخصية
@@ -82,7 +81,7 @@ export default function LibraryDetailsPage() {
                   value={
                     selectedLibrary.last_password_change
                       ? formatDateTimeSimple(
-                          selectedLibrary.last_password_change
+                          selectedLibrary.last_password_change,
                         )
                       : "لم يتم تغييرها بعد"
                   }

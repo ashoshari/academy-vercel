@@ -56,13 +56,13 @@ const QuestionsTab = () => {
   // POST QUESTION
   const { mutateAsync: postQuestions } = useCustomPost(
     "/training/students/questions/",
-    ["questions"]
+    ["questions"],
   );
 
   // POST comments
   const { mutateAsync: postComments } = useCustomPost(
     "/training/students/questions/comments/",
-    ["comments"]
+    ["comments"],
   );
 
   useEffect(() => {
@@ -88,13 +88,13 @@ const QuestionsTab = () => {
   // POST LIKES
   const { mutateAsync: postLikes } = useCustomPost(
     "/training/students/questions/comments-like/",
-    ["likes"]
+    ["likes"],
   );
 
   // POST APPROVE
   const { mutateAsync: postApprove } = useCustomPost(
     "/training/students/questions/comments-approve/",
-    ["approve"]
+    ["approve"],
   );
 
   const handleLikecomment = async (questionId: string, commentId: string) => {
@@ -161,6 +161,7 @@ const QuestionsTab = () => {
         toast.error(response?.error);
       }
     } catch (error) {
+      console.error("Failed to send like:", error);
       handleErrorAlerts("حدث خطأ في اعتماد الإجابة");
     }
     // setCourseQuestions((prev: any) =>
@@ -191,11 +192,12 @@ const QuestionsTab = () => {
           prev.map((q: any) =>
             q.id === questionId
               ? { ...q, comments: [...q?.comments, response?.data] }
-              : q
-          )
+              : q,
+          ),
         );
         queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       } catch (error) {
+        console.log(error);
       }
 
       setNewComment("");
@@ -206,7 +208,7 @@ const QuestionsTab = () => {
   // EDIT QUESTION
   const { mutateAsync: putQuestion } = useCustomUpdate(
     `/training/students/questions/${questionId}/`,
-    ["putQuestions"]
+    ["putQuestions"],
   );
   const handleEditQuestion = async () => {
     if (editQuestionTitle.trim() || editQuestionContent.trim()) {
@@ -218,11 +220,12 @@ const QuestionsTab = () => {
         const response = await putQuestion(question);
         setCourseQuestions((prev: any) =>
           prev.map((question: any) =>
-            question.id === questionId ? response?.data : question
-          )
+            question.id === questionId ? response?.data : question,
+          ),
         );
         queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       } catch (error) {
+        console.log(error);
         handleErrorAlerts("حدث خطأ في تعديل الأسئلة");
       }
 
@@ -235,16 +238,17 @@ const QuestionsTab = () => {
   // DELETE QUESTION
   const { mutateAsync: deleteQuestion } = useCustomRemove(
     `/training/students/questions/${questionId}/`,
-    ["delQuestions"]
+    ["delQuestions"],
   );
   const handleDeleteQuestion = async (questionId: any) => {
     try {
       await deleteQuestion();
       setCourseQuestions((prev: any) =>
-        prev.filter((question: any) => question?.id !== questionId)
+        prev.filter((question: any) => question?.id !== questionId),
       );
       queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
     } catch (error) {
+      console.log(error);
       handleErrorAlerts("حدث خطأ في حذف السؤال");
     }
   };
@@ -252,7 +256,7 @@ const QuestionsTab = () => {
   // EDIT COMMENT
   const { mutateAsync: putComment } = useCustomUpdate(
     `training/students/questions/comments/${commentId}/`,
-    ["putComment"]
+    ["putComment"],
   );
   const handleEditComment = async (questionId: any, commentId: any) => {
     if (editCommentContent.trim()) {
@@ -267,15 +271,16 @@ const QuestionsTab = () => {
               return {
                 ...question,
                 comments: question.comments.map((c: any) =>
-                  c.id === commentId ? response.data : c
+                  c.id === commentId ? response.data : c,
                 ),
               };
             }
             return question;
-          })
+          }),
         );
         queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
       } catch (error) {
+        console.log(error);
         handleErrorAlerts("حدث خطأ في تعديل الأسئلة");
       }
       setEditCommentContent("");
@@ -286,7 +291,7 @@ const QuestionsTab = () => {
   // DELETE COMMENT
   const { mutateAsync: deleteComment } = useCustomRemove(
     `training/students/questions/comments/${commentId}/`,
-    ["delComment"]
+    ["delComment"],
   );
   const handleDeleteComment = async (questionId: any, commentId: any) => {
     try {
@@ -297,16 +302,18 @@ const QuestionsTab = () => {
             return {
               ...question,
               comments: question.comments.filter(
-                (comment: any) => comment.id !== commentId
+                (comment: any) => comment.id !== commentId,
               ),
             };
           }
           return question;
-        })
+        }),
       );
       queryClient.invalidateQueries({ queryKey: ["courses", courseId] });
-    } catch (error:any) {
-      handleErrorAlerts(error?.response?.data?.message || "حدث خطأ في حذف السؤال");
+    } catch (error: any) {
+      handleErrorAlerts(
+        error?.response?.data?.message || "حدث خطأ في حذف السؤال",
+      );
     }
   };
   return (
@@ -315,7 +322,7 @@ const QuestionsTab = () => {
         <h2 className="text-2xl font-bold text-gray-900">الأسئلة</h2>
         <button
           onClick={() => setShowAddQuestion(true)}
-          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
+          className="bg-linear-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
         >
           <Plus className="w-4 h-4" />
           <span>اطرح سؤالاً</span>
@@ -354,7 +361,7 @@ const QuestionsTab = () => {
                 disabled={
                   !newQuestionTitle.trim() || !newQuestionContent.trim()
                 }
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-linear-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 نشر السؤال
               </button>
@@ -400,7 +407,7 @@ const QuestionsTab = () => {
                           setEditingQuestionId(
                             editingQuetionId === question?.id
                               ? null
-                              : question?.id
+                              : question?.id,
                           );
                           setQuestionId(question?.id);
                         }}
@@ -432,7 +439,7 @@ const QuestionsTab = () => {
                       {formatDateTimeSimple(
                         question?.created_at == question?.updated_at
                           ? question?.created_at
-                          : question?.updated_at
+                          : question?.updated_at,
                       )}
                     </span>
                     {question.lesson && (
@@ -473,7 +480,7 @@ const QuestionsTab = () => {
                           !editQuestionTitle.trim() ||
                           !editQuestionContent.trim()
                         }
-                        className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-linear-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         تعديل السؤال
                       </button>
@@ -529,7 +536,7 @@ const QuestionsTab = () => {
                               setEditingCommentId(
                                 editingCommentId === comment?.id
                                   ? null
-                                  : comment?.id
+                                  : comment?.id,
                               );
                               setcommentId(comment?.id);
                             }}
@@ -596,7 +603,7 @@ const QuestionsTab = () => {
                                 handleEditComment(question.id, comment.id)
                               }
                               disabled={!editCommentContent.trim()}
-                              className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="bg-linear-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               تعديل الإجابة
                             </button>
@@ -633,7 +640,7 @@ const QuestionsTab = () => {
                       <button
                         onClick={() => handleAddcomment(question.id)}
                         disabled={!newComment.trim()}
-                        className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-linear-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         إرسال الإجابة
                       </button>

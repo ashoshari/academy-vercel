@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Search, Image as ImageIcon } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -44,17 +43,17 @@ const SliderPage = () => {
 
   const slidersData = useCustomQuery(
     `/training/admin/sliders/?${queryString}`,
-    ["sliders", searchTerm]
+    ["sliders", searchTerm],
   );
   // const paginationData = slidersData?.data?.pagination;
   const sliderStatisticsData = useCustomQuery(
     "/training/admin/sliders-statistics/",
-    ["sliders-statistics"]
+    ["sliders-statistics"],
   );
 
   const updateSlide = useCustomUpdate(
     `/training/admin/sliders/${selectedSlide?.id ?? "noop"}/`,
-    ["putSliders"]
+    ["putSliders"],
   );
 
   const addSlide = useCustomPost(`/training/admin/sliders/`, ["postSliders"]);
@@ -67,7 +66,7 @@ const SliderPage = () => {
 
   const sorted = useMemo(
     () => [...(sliderItems ?? [])].sort((a, b) => a.order - b.order),
-    [sliderItems]
+    [sliderItems],
   );
 
   const swapById = (aId: string, bId: string) => {
@@ -175,7 +174,7 @@ const SliderPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة سلايد جديد
@@ -264,7 +263,7 @@ const SliderPage = () => {
                 {!searchTerm && (
                   <button
                     onClick={() => setShowAddModal(true)}
-                    className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة سلايد جديد

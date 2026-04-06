@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   BookOpen,
   Image,
@@ -39,7 +38,7 @@ const Dashboard = () => {
     "/account/admin/main-statistics/",
     ["main-statistics", role, user?.type?.id],
     undefined,
-    !!role
+    !!role,
   );
 
   const mainStatistics: MainStatistics | undefined = data?.data;

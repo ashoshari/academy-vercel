@@ -106,7 +106,7 @@ export const PlatformLayout = () => {
         function (e) {
           e.preventDefault();
         },
-        false
+        false,
       );
     } else {
       // For very old IE browsers, fallback to setting oncontextmenu directly

@@ -26,7 +26,7 @@ const Discover: React.FC = () => {
   return (
     <section
       id="discover"
-      className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
+      className="py-20 bg-linear-to-br from-gray-50 to-white relative overflow-hidden"
     >
       {/* Auth Modal */}
       <AuthModal
@@ -35,15 +35,15 @@ const Discover: React.FC = () => {
         onLogin={handleLogin}
       />
       {/* Background Decorations */}
-      <div className="absolute top-0 left-0 w-72 h-72 bg-gradient-to-br from-yellow-100/50 to-orange-100/50 rounded-full -translate-x-36 -translate-y-36 animate-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-blue-100/50 to-purple-100/50 rounded-full translate-x-48 translate-y-48 animate-pulse delay-1000"></div>
+      <div className="absolute top-0 left-0 w-72 h-72 bg-linear-to-br from-yellow-100/50 to-orange-100/50 rounded-full -translate-x-36 -translate-y-36 animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-tl from-blue-100/50 to-purple-100/50 rounded-full translate-x-48 translate-y-48 animate-pulse delay-1000"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             اكتشف{" "}
-            <span className="bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
               أقسامنا
             </span>
           </h2>
@@ -70,7 +70,7 @@ const Discover: React.FC = () => {
                 >
                   {/* Card Background Gradient */}
                   <div
-                    className={`absolute inset-0 bg-gradient-to-br ${section.color?.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+                    className={`absolute inset-0 bg-linear-to-br ${section.color?.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
                   ></div>
 
                   {/* Card Content */}
@@ -78,7 +78,7 @@ const Discover: React.FC = () => {
                     <div>
                       {/* Icon */}
                       <div
-                        className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${section.color?.color} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
+                        className={`inline-flex items-center justify-center w-16 h-16 bg-linear-to-r ${section.color?.color} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
                       >
                         <img
                           loading="lazy"
@@ -105,7 +105,7 @@ const Discover: React.FC = () => {
                     <button
                       onClick={() => discoverNavHandler(section.id)}
                       style={{ backgroundColor: section.color?.color }}
-                      className={`cursor-pointer w-full bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
+                      className={`cursor-pointer w-full bg-linear-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
                     >
                       <span>استكشف الآن</span>
                       <ArrowLeft className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -115,7 +115,7 @@ const Discover: React.FC = () => {
                   {/* Hover Effect Decoration */}
                   <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div
-                      className={`w-3 h-3 bg-gradient-to-r ${section.color.color} rounded-full animate-ping`}
+                      className={`w-3 h-3 bg-linear-to-r ${section.color.color} rounded-full animate-ping`}
                     ></div>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ const Discover: React.FC = () => {
         {/* Bottom CTA */}
         {!isLoggedIn && (
           <div className="text-center mt-16">
-            <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-3xl p-8 text-white relative overflow-hidden">
+            <div className="bg-linear-to-r from-yellow-500 to-orange-500 rounded-3xl p-8 text-white relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10 rounded-3xl"></div>
               <div className="relative z-10">
                 <h3 className="text-2xl md:text-3xl font-bold mb-4">

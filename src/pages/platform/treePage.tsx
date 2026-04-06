@@ -32,8 +32,8 @@ const TreePage: React.FC = () => {
           Array.isArray(child[key]) &&
           child[key].length > 0 &&
           child[key].every(
-            (item: any) => typeof item === "object" && "id" in item
-          )
+            (item: any) => typeof item === "object" && "id" in item,
+          ),
       );
 
       const childHasChildren =
@@ -58,7 +58,7 @@ const TreePage: React.FC = () => {
             src={
               teacher?.image ||
               `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                teacher?.name
+                teacher?.name,
               )}&background=ffffff&color=f97316&size=64`
             }
             alt={teacher?.name}
@@ -75,7 +75,7 @@ const TreePage: React.FC = () => {
         </div>
       </div>
 
-      <button className="w-full cursor-pointer bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105">
+      <button className="w-full cursor-pointer bg-linear-to-r from-yellow-500 to-orange-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105">
         عرض الملف الشخصي
       </button>
     </div>
@@ -87,7 +87,9 @@ const TreePage: React.FC = () => {
       (key) =>
         Array.isArray(node[key]) &&
         node[key].length > 0 &&
-        node[key].every((item: any) => typeof item === "object" && "id" in item)
+        node[key].every(
+          (item: any) => typeof item === "object" && "id" in item,
+        ),
     );
     const hasChildren = !!childKey && hasValidChildren(node, childKey);
     const hasTeachers =
@@ -98,7 +100,7 @@ const TreePage: React.FC = () => {
     return (
       <div key={node?.id} className="mb-4">
         <div
-          className={`flex items-center space-x-3 p-4 rounded-xl cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-orange-50 ${
+          className={`flex items-center space-x-3 p-4 rounded-xl cursor-pointer transition-all duration-300 hover:bg-linear-to-r hover:from-yellow-50 hover:to-orange-50 ${
             level === 0
               ? "bg-white shadow-md border border-gray-100"
               : "bg-gray-50 hover:bg-gray-100"
@@ -107,7 +109,7 @@ const TreePage: React.FC = () => {
           onClick={() => toggleNode(node.id)}
         >
           {(hasChildren || hasTeachers) && (
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               {isExpanded ? (
                 <ChevronDown className="w-5 h-5 text-gray-600" />
               ) : (
@@ -120,7 +122,7 @@ const TreePage: React.FC = () => {
             <div
               className={`flex items-center justify-center w-10 h-10 rounded-xl ${
                 level === 0
-                  ? "bg-gradient-to-r from-yellow-500 to-orange-500"
+                  ? "bg-linear-to-r from-yellow-500 to-orange-500"
                   : "bg-gray-200"
               }`}
             >
@@ -171,11 +173,11 @@ const TreePage: React.FC = () => {
             {hasChildren &&
               !hasTeachers &&
               node[childKey!]?.map((child: any) =>
-                renderNode(child, level + 1)
+                renderNode(child, level + 1),
               )}
 
             {hasTeachers && (
-              <div className="ms-[50px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+              <div className="ms-12.5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
                 {node.teachers.map(renderTeacher)}
               </div>
             )}
@@ -186,15 +188,19 @@ const TreePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 shadow-lg">
+      <div className="bg-linear-to-r from-yellow-500 to-orange-500 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => {
-                  window.history.length > 1 ? navigate(-1) : navigate(-1);
+                  if (window.history.length > 1) {
+                    navigate(-1);
+                  } else {
+                    navigate("/");
+                  }
                 }}
                 className="w-12 h-12 cursor-pointer bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all duration-200 group"
               >
@@ -252,8 +258,8 @@ const TreePage: React.FC = () => {
                   Array.isArray(node[key]) &&
                   node[key].length > 0 &&
                   node[key].every(
-                    (item: any) => typeof item === "object" && "id" in item
-                  )
+                    (item: any) => typeof item === "object" && "id" in item,
+                  ),
               );
               const hasChildren =
                 !!childKey && hasValidChildren(node, childKey);
@@ -267,11 +273,11 @@ const TreePage: React.FC = () => {
               // Show empty state once if ALL subsections are empty
               <div className="relative flex flex-col items-center">
                 <img
-                  className="absolute top-0 w-[700px] h-[650px] z-0"
+                  className="absolute top-0 w-175 h-162.5 z-0"
                   src={errorIllustation}
                   alt="error"
                 />
-                <h1 className="pt-[50px] absolute text-[2rem] top-[500px] z-[1]">
+                <h1 className="pt-12.5 absolute text-[2rem] top-125 z-1">
                   لا يوجد محتوى لعرضه
                 </h1>
               </div>
@@ -286,11 +292,11 @@ const TreePage: React.FC = () => {
           ) : (
             <div className="relative flex flex-col items-center">
               <img
-                className="absolute top-0 w-[700px] h-[650px] z-0"
+                className="absolute top-0 w-175 h-162.5 z-0"
                 src={errorIllustation}
                 alt="error"
               />
-              <h1 className="pt-[50px] absolute text-[2rem] top-[500px] z-[1]">
+              <h1 className="pt-12.5 absolute text-[2rem] top-125 z-1">
                 لا يوجد محتوى لعرضه
               </h1>
             </div>

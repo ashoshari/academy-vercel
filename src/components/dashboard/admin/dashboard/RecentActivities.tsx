@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCustomQuery } from "@/hooks/useQuery";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import { useState } from "react";
@@ -70,7 +69,7 @@ export default function RecentActivities() {
 
   const { data, isLoading, isError, refetch } = useCustomQuery(
     `/account/admin/main-recent-activities/?${queryParams.toString()}`,
-    ["main-recent-activities", filters, role, user?.type?.id]
+    ["main-recent-activities", filters, role, user?.type?.id],
   );
 
   const pagination: Pagination | undefined = data?.pagination;

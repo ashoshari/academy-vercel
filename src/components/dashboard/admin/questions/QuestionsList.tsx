@@ -28,15 +28,15 @@ const QuestionsList: React.FC<Props> = ({
         </div>
         <button
           onClick={onAdd}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:from-orange-600 hover:to-orange-700"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:from-orange-600 hover:to-orange-700"
         >
           إضافة أسئلة
         </button>
       </div>
 
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
-        <div className="w-full max-w-[300px] min-w-full overflow-auto pb-6">
-          <table className="min-w-[1000px] w-full text-sm bg-white">
+        <div className="w-full max-w-75 min-w-full overflow-auto pb-6">
+          <table className="min-w-250 w-full text-sm bg-white">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500">

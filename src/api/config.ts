@@ -32,7 +32,7 @@ axiosInstance.interceptors.request.use(
   (error) => {
     console.log("Request Error:", error);
     return Promise.reject(error);
-  }
+  },
 );
 
 axiosInstance.interceptors.response.use(
@@ -52,7 +52,7 @@ axiosInstance.interceptors.response.use(
 
     console.error("Response Error:", error?.response?.data?.code);
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;

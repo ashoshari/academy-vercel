@@ -33,7 +33,7 @@ export default function EditTeacherPage() {
 
   const { data: teacherData, isLoading } = useCustomQuery(
     `/account/admin/teachers/${id}/`,
-    ["teacher", id]
+    ["teacher", id],
   );
   const { data: dataMaterials } = useCustomQuery("core/materials/", [
     "materials",
@@ -56,8 +56,8 @@ export default function EditTeacherPage() {
       const materials = Array.isArray(t.materials)
         ? t.materials.map((m: any) => m.id)
         : t.materials
-        ? [t.materials.id]
-        : [];
+          ? [t.materials.id]
+          : [];
       setValue("materials", materials);
 
       setValue("is_active", t.is_active);
@@ -76,7 +76,7 @@ export default function EditTeacherPage() {
       }
     } catch (error: any) {
       handleErrorAlerts(
-        error?.response?.data?.message || "حدث خطأ أثناء التحديث"
+        error?.response?.data?.message || "حدث خطأ أثناء التحديث",
       );
     }
   };
@@ -89,7 +89,7 @@ export default function EditTeacherPage() {
   }
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
-      <div className="flex items-center mb-6 gap-x-[5px]">
+      <div className="flex items-center mb-6 gap-x-1.25">
         <button
           onClick={() => {
             navigate(-1);
@@ -163,7 +163,7 @@ export default function EditTeacherPage() {
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
-                ""
+                "",
               );
             }}
             className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-orange-500 

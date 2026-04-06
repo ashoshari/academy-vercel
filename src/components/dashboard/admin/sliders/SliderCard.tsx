@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCustomRemove, useCustomUpdate } from "@/hooks/useMutation";
 // import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
@@ -46,7 +45,7 @@ export default function SliderCard({
   const queryClient = useQueryClient();
   const updateSlideStatus = useCustomUpdate(
     `/training/admin/sliders/${slide?.id}/`,
-    ["sliders"]
+    ["sliders"],
   );
 
   const toggleSlideStatus = async () => {
@@ -73,18 +72,18 @@ export default function SliderCard({
 
   const movePrev = useCustomUpdate(
     `/training/admin/sliders/${prevId ?? "noop"}/`,
-    ["sliders"]
+    ["sliders"],
   );
 
   const moveNext = useCustomUpdate(
     `/training/admin/sliders/${nextId ?? "noop"}/`,
-    ["sliders"]
+    ["sliders"],
   );
 
   // Delete Slides
   const { mutateAsync: deleteSlide } = useCustomRemove(
     `/training/admin/sliders/${slide?.id}/`,
-    ["deleteSliders"]
+    ["deleteSliders"],
   );
   const handleDeleteSlide = async () => {
     if (confirm("هل أنت متأكد من حذف هذا السلايد؟")) {

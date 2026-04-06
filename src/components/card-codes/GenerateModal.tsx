@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
   Clock,
-  // Folder,
   Globe,
   MapPin,
   Save,
@@ -65,7 +63,7 @@ const GenerateModal = ({
           title: ss.title,
           specializations: ss.specializations || [],
           specialization_materials: ss.specialization_materials || [],
-        }))
+        })),
       ) || [];
 
   // Find all specializations of selected subsubsections
@@ -77,7 +75,7 @@ const GenerateModal = ({
           id: sp.id,
           title: sp.name,
           specialization_materials: sp.specialization_materials || [],
-        }))
+        })),
       ) || [];
 
   // Find specialization materials
@@ -89,7 +87,7 @@ const GenerateModal = ({
         (sp.specialization_materials || []).map((sm: any) => ({
           id: sm.id,
           title: sm.material,
-        }))
+        })),
       ) || []),
 
     // from selected subsubsections directly
@@ -99,7 +97,7 @@ const GenerateModal = ({
         (ss.specialization_materials || []).map((sm: any) => ({
           id: sm.id,
           title: sm.material,
-        }))
+        })),
       ) || []),
   ];
 
@@ -463,7 +461,7 @@ const GenerateModal = ({
                   (generateForm.targetingType === "specific" &&
                     generateForm.targetedSubsections.length === 0)
             }
-            className="cursor-pointer px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
             {loading ? "جارى التحميل..." : "     إنشاء الكودات"}

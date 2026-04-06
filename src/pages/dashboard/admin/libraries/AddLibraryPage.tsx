@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { RefreshCw, Save, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
@@ -105,7 +104,7 @@ export default function AddLibraryPage() {
       handleErrorAlerts(
         error?.response?.data?.error ||
           payload?.message ||
-          "حدث خطأ أثناء إضافة المكتبة"
+          "حدث خطأ أثناء إضافة المكتبة",
       );
     }
   };
@@ -203,7 +202,7 @@ export default function AddLibraryPage() {
             onInput={(e) => {
               e.currentTarget.value = e.currentTarget.value.replace(
                 /[^0-9]/g,
-                ""
+                "",
               );
             }}
             className={inputClass(!!errors.mobile_number)}
@@ -291,10 +290,10 @@ export default function AddLibraryPage() {
 
         {/* صورة + معاينة */}
         <div className="lg:col-span-2 flex w-full items-center gap-4">
-          <div className="h-[68px] flex items-center">
+          <div className="h-17 flex items-center">
             <label
               htmlFor="library-img-add"
-              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all cursor-pointer"
+              className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all cursor-pointer"
             >
               إضافة صورة
             </label>

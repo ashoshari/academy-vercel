@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import {
   Plus,
@@ -115,7 +114,7 @@ const SubsectionsPage = () => {
   ]);
   const dataStatistics = useCustomQuery(
     "/training/admin/subsections-statistics/",
-    ["subsections-statistics"]
+    ["subsections-statistics"],
   );
   const sectionsData = useCustomQuery("/training/admin/sections/", [
     "sections",
@@ -125,7 +124,7 @@ const SubsectionsPage = () => {
   ]);
   const specializationsData = useCustomQuery(
     "/training/admin/specializations/",
-    ["specializations"]
+    ["specializations"],
   );
 
   const addSubSection = useCustomPost("/training/admin/subsections/", [
@@ -152,12 +151,12 @@ const SubsectionsPage = () => {
       "subsubsections",
       "specializations",
       "subsections-statistics",
-    ]
+    ],
   );
 
   const getMainSectionIcon = (sectionId: string) => {
     const section = data?.data?.data?.sections?.find(
-      (s: any) => s.id === sectionId
+      (s: any) => s.id === sectionId,
     );
     if (!section) return BookOpen;
 
@@ -175,7 +174,7 @@ const SubsectionsPage = () => {
 
   const getMainSectionColor = (sectionId: string) => {
     const section = data?.data?.data?.sections?.find(
-      (s: any) => s.id === sectionId
+      (s: any) => s.id === sectionId,
     );
     if (!section) return "text-blue-600";
 
@@ -230,7 +229,6 @@ const SubsectionsPage = () => {
     //   });
     //   setShowAddModal(false);
     // }
-
 
     addSubSection
       .mutateAsync({
@@ -393,7 +391,7 @@ const SubsectionsPage = () => {
   // };
 
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
-    {}
+    {},
   );
 
   const toggleExpanded = (id: string) => {
@@ -402,7 +400,6 @@ const SubsectionsPage = () => {
       [id]: !prev[id],
     }));
   };
-
 
   return (
     <div className="space-y-6">
@@ -416,7 +413,7 @@ const SubsectionsPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة قسم فرعي
@@ -488,7 +485,7 @@ const SubsectionsPage = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة قسم فرعي جديد
@@ -598,7 +595,7 @@ const SubsectionsPage = () => {
                                               type="materials"
                                             />
                                           );
-                                        }
+                                        },
                                       )}
                                   </React.Fragment>
                                 );
@@ -642,7 +639,7 @@ const SubsectionsPage = () => {
                   {data?.data?.data?.length === 0 && (
                     <button
                       onClick={() => setShowAddModal(true)}
-                      className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                      className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                     >
                       <Plus size={16} />
                       إضافة قسم فرعي

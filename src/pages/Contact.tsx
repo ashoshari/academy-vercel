@@ -79,7 +79,7 @@ const ContactPage = () => {
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="text-center mb-16 pt-20">
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl mb-8 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+              <div className="inline-flex items-center justify-center w-24 h-24 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl mb-8 shadow-2xl transform hover:scale-105 transition-transform duration-300">
                 <Building2 className="w-12 h-12 text-white" />
               </div>
               <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
@@ -193,7 +193,7 @@ const ContactPage = () => {
                 </div>
 
                 {/* About Section */}
-                <div className="bg-gradient-to-br from-orange-500/95 to-orange-600/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-white border border-orange-400/30 transform hover:scale-[1.02] transition-all duration-300">
+                <div className="bg-linear-to-br from-orange-500/95 to-orange-600/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-white border border-orange-400/30 transform hover:scale-[1.02] transition-all duration-300">
                   <h2 className="text-3xl font-bold mb-6">عن الشركة</h2>
                   <p className="text-orange-100 leading-relaxed mb-8 text-lg">
                     نحن في Supervision Software نركز على تقديم حلول تقنية متطورة
@@ -227,7 +227,7 @@ const ContactPage = () => {
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <a
                     href="tel:+962791003360"
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-[1.05] shadow-xl hover:shadow-2xl"
+                    className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-[1.05] shadow-xl hover:shadow-2xl"
                   >
                     اتصل بنا الآن
                   </a>

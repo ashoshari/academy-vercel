@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams } from "react-router";
 import { Trash2, User } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -27,7 +26,7 @@ export default function LibraryWalletPage() {
 
   const { data: paymentData } = useCustomQuery(
     `/account/admin/payments/?to=${id}`,
-    ["payment", id]
+    ["payment", id],
   );
 
   const [showAddCredit, setShowAddCredit] = useState(false);
@@ -43,7 +42,7 @@ export default function LibraryWalletPage() {
 
   const deletePayment = useCustomRemove(
     `/account/admin/payments/${selectedPayment?.id}/`,
-    ["payment", id as string]
+    ["payment", id as string],
   );
 
   const handleSaveCredit = async () => {
@@ -118,10 +117,10 @@ export default function LibraryWalletPage() {
           <h2 className="text-2xl font-bold text-gray-800">بيانات المحفظة</h2>
         </div>
 
-        <div className="space-y-[30px]">
+        <div className="space-y-7.5">
           {/* Personal Info */}
           {payments?.length && payments?.length > 0 ? (
-            <div className="grid grid-col-1 lg:grid-cols-3 gap-x-[10px] gap-y-[10px]">
+            <div className="grid grid-col-1 lg:grid-cols-3 gap-x-2.5 gap-y-2.5">
               {payments
                 .sort((a, b) => +a.old_balance - +b.old_balance)
                 .map((payment, index) => {

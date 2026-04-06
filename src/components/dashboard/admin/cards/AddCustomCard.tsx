@@ -25,12 +25,12 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
 
   const dataLibraries = useCustomQuery(
     `account/admin/libraries/?page_size=${99999}&page=1`,
-    ["libraries-custom-card"]
+    ["libraries-custom-card"],
   );
 
   const dataTeachers = useCustomQuery(
     `account/admin/teachers/?page_size=${99999}&page=1`,
-    ["teachers-custom-card"]
+    ["teachers-custom-card"],
   );
 
   const dataCards = useCustomQuery(`cards/?page_size=${99999}&page=1`, [
@@ -38,16 +38,16 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
   ]);
 
   const filteredLibraries: User[] = dataLibraries?.data?.data?.filter(
-    (u: User) => u.is_active
+    (u: User) => u.is_active,
   );
   const filteredTeachers: User[] = dataTeachers?.data?.data?.filter(
-    (u: User) => u.is_active
+    (u: User) => u.is_active,
   );
   const filteredCards: CardPricing[] = dataCards?.data?.data?.filter(
-    (c: CardPricing) => c.is_active
+    (c: CardPricing) => c.is_active,
   );
   const targetCard: CardPricing = dataCards?.data?.data?.find(
-    (c: CardPricing) => c.id === selectedCard[0]
+    (c: CardPricing) => c.id === selectedCard[0],
   );
 
   const handleSavePrice = async () => {
@@ -205,7 +205,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
             </button>
             <button
               onClick={handleSavePrice}
-              className="cursor-pointer flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-2 text-white hover:from-orange-600 hover:to-orange-700"
+              className="cursor-pointer flex items-center gap-2 rounded-lg bg-linear-to-r from-orange-500 to-orange-600 px-6 py-2 text-white hover:from-orange-600 hover:to-orange-700"
             >
               <Save size={16} />
               حفظ

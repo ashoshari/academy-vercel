@@ -26,12 +26,16 @@ const Profile = () => {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
+      <div className="bg-linear-to-r from-blue-600 to-purple-600 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center mb-6">
             <button
               onClick={() => {
-                window.history.length > 1 ? navigate(-1) : navigate(-1);
+                if (window.history.length > 1) {
+                  navigate(-1);
+                } else {
+                  navigate("/");
+                }
               }}
               className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl cursor-pointer flex items-center justify-center transition-all duration-200 group"
             >
@@ -63,7 +67,7 @@ const Profile = () => {
                 key={index}
                 className="flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition"
               >
-                <div className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg shadow-sm">
+                <div className="w-10 h-10 flex items-center justify-center bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-lg shadow-sm">
                   <item.icon size={18} />
                 </div>
                 <div className="flex flex-col">
@@ -75,7 +79,7 @@ const Profile = () => {
 
             {/* Create Date */}
             <div className="md:col-span-2 flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition">
-              <div className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-orange-400 to-red-500 text-white rounded-lg shadow-sm">
+              <div className="w-10 h-10 flex items-center justify-center bg-linear-to-r from-orange-400 to-red-500 text-white rounded-lg shadow-sm">
                 <Calendar size={18} />
               </div>
               <div className="flex flex-col">

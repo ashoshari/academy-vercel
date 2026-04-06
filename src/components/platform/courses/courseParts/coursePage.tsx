@@ -12,10 +12,10 @@ const CoursePage = () => {
   const [_, setSemesters] = useState([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const setCurrentLessonIndex = useLesson(
-    (state) => state.setCurrentLessonIndex
+    (state) => state.setCurrentLessonIndex,
   );
   useEffect(() => {
-    if(window.innerWidth < 770){
+    if (window.innerWidth < 770) {
       setSidebarVisible(false);
     }
   }, []);
@@ -75,13 +75,13 @@ const CoursePage = () => {
     typedError?.response?.data?.error != "لا يوجد عنصر بهذا المعرف"
   ) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
           <img
             loading="lazy"
             src={errorIllustation}
             alt="404"
-            className="w-[200px] h-[200px] mx-auto mb-4"
+            className="w-50 h-50 mx-auto mb-4"
           />
           <p className="text-gray-600">ليس لديك الصلاحيات لمشاهدة الدورة</p>
         </div>
@@ -89,13 +89,13 @@ const CoursePage = () => {
     );
   } else if (allLessons.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br px-2 from-gray-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br px-2 from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
           <img
             loading="lazy"
             src={errorIllustation}
             alt="404"
-            className="w-[300px] h-[250px]"
+            className="w-75 h-62.5"
           />
           <p className="text-gray-600">لا يوجد محتوى لهذه الدورة</p>
         </div>

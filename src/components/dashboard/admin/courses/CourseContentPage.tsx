@@ -50,18 +50,18 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [filteredContent, setFilteredContent] = useState<any>([]);
 
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
-    "tree"
+    "tree",
   );
   // GET courseContent
   const { data: courseContent, isLoading } = useCustomQuery(
     `/training/admin/courses/${course?.id}/`,
-    ["course-content", course?.id]
+    ["course-content", course?.id],
   );
 
   // GET Resources
   const { data: resources } = useCustomQuery(
     `/training/admin/resources/?specialization_material=${course?.specialization_material?.id}`,
-    ["resources"]
+    ["resources"],
   );
   const resourceData = resources?.data;
   // GET Exams
@@ -70,7 +70,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   // GET courseContent Statistics
   const { data: contentStatistics } = useCustomQuery(
     `/training/admin/course-content-statistics/`,
-    ["course-content-statistics"]
+    ["course-content-statistics"],
   );
 
   const courseContentData = courseContent?.data;
@@ -80,7 +80,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   // POST Semester
   const { mutateAsync: postSemesters } = useCustomPost(
     "/training/admin/semesters/",
-    ["postSemesters"]
+    ["postSemesters"],
   );
   // POST Units
   const { mutateAsync: postUnits } = useCustomPost("/training/admin/units/", [
@@ -93,51 +93,51 @@ const CourseContentPage = ({ course, onBack }: any) => {
   // POST Lesson
   const { mutateAsync: postLessons } = useCustomPost(
     "/training/admin/lessons/",
-    ["postLessons"]
+    ["postLessons"],
   );
 
   const { mutateAsync: reorderSemesters } = useCustomPost(
     "/training/admin/semesters/order/",
-    ["course-content", "resources", course?.id]
+    ["course-content", "resources", course?.id],
   );
 
   const { mutateAsync: reorderUnits } = useCustomPost(
     "/training/admin/units/order/",
-    ["course-content", "resources", course?.id]
+    ["course-content", "resources", course?.id],
   );
 
   const { mutateAsync: reorderTopics } = useCustomPost(
     "/training/admin/topics/order/",
-    ["course-content", "resources", course?.id]
+    ["course-content", "resources", course?.id],
   );
 
   const { mutateAsync: reorderLessons } = useCustomPost(
     "/training/admin/lessons/order/",
-    ["course-content", "resources", course?.id]
+    ["course-content", "resources", course?.id],
   );
 
   // PUT Semester
   const { mutateAsync: putSemesters } = useCustomUpdate(
     `/training/admin/semesters/${selectedItem?.id}/`,
-    ["putSemesters"]
+    ["putSemesters"],
   );
 
   // PUT Semester
   const { mutateAsync: putUnits } = useCustomUpdate(
     `/training/admin/units/${selectedItem?.id}/`,
-    ["putUnits"]
+    ["putUnits"],
   );
 
   // PUT Semester
   const { mutateAsync: putTopics } = useCustomUpdate(
     `/training/admin/topics/${selectedItem?.id}/`,
-    ["putTopics"]
+    ["putTopics"],
   );
 
   // PUT Semester
   const { mutateAsync: putLessons } = useCustomUpdate(
     `/training/admin/lessons/${selectedItem?.id}/`,
-    ["putLessons"]
+    ["putLessons"],
   );
 
   const [contentTree, setContentTree] = useState<any>();
@@ -154,22 +154,22 @@ const CourseContentPage = ({ course, onBack }: any) => {
   // Delete Course Semester
   const { mutateAsync: deleteContentSemester } = useCustomRemove(
     `/training/admin/semesters/${selectedItem?.id}/`,
-    ["deleteCourseContent"]
+    ["deleteCourseContent"],
   );
   // Delete Course Contnet Unit
   const { mutateAsync: deleteContentUnit } = useCustomRemove(
     `/training/admin/units/${selectedItem?.id}/`,
-    ["deleteCourseContent"]
+    ["deleteCourseContent"],
   );
   // Delete Course Contnet Topic
   const { mutateAsync: deleteContentTopic } = useCustomRemove(
     `/training/admin/topics/${selectedItem?.id}/`,
-    ["deleteCourseContent"]
+    ["deleteCourseContent"],
   );
   // Delete Course Contnet Lesson
   const { mutateAsync: deleteContentLesson } = useCustomRemove(
     `/training/admin/lessons/${selectedItem?.id}/`,
-    ["deleteCourseContent"]
+    ["deleteCourseContent"],
   );
 
   // Move Course Contnet Item
@@ -206,8 +206,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
             Array.isArray(item[key]) &&
             item[key].length > 0 &&
             item[key].every(
-              (child: any) => typeof child === "object" && "id" in child
-            )
+              (child: any) => typeof child === "object" && "id" in child,
+            ),
         );
 
         const children = childKey ? filterContent(item[childKey]) : [];
@@ -239,7 +239,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
     setExpandedItems((prev: any) =>
       prev.includes(id)
         ? prev.filter((itemId: any) => itemId !== id)
-        : [...prev, id]
+        : [...prev, id],
     );
   };
   const getItemIcon = (depth: any, item: any) => {
@@ -287,8 +287,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
       [newItem.type === "unit"
         ? "semester"
         : newItem.type === "topic"
-        ? "unit"
-        : "topic"]: newItem.parentId,
+          ? "unit"
+          : "topic"]: newItem.parentId,
       ...(newItem.type === "semester" && { course: course?.id }),
       ...(newItem.lessonType && { type: newItem.lessonType }),
       ...(newItem.videoUrl && { link: newItem.videoUrl }),
@@ -301,10 +301,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
         newItem.type === "semester"
           ? await postSemesters(addItem)
           : newItem.type === "unit"
-          ? await postUnits(addItem)
-          : newItem.type === "topic"
-          ? await postTopics(addItem)
-          : await postLessons(addItem);
+            ? await postUnits(addItem)
+            : newItem.type === "topic"
+              ? await postTopics(addItem)
+              : await postLessons(addItem);
 
       queryClient.invalidateQueries({
         queryKey: ["course-content", course?.id],
@@ -337,10 +337,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
       const response = selectedItem?.course
         ? await putSemesters(editedContent)
         : selectedItem?.semester
-        ? await putUnits(editedContent)
-        : selectedItem?.unit
-        ? await putTopics(editedContent)
-        : await putLessons(editedContent);
+          ? await putUnits(editedContent)
+          : selectedItem?.unit
+            ? await putTopics(editedContent)
+            : await putLessons(editedContent);
       queryClient.invalidateQueries({
         queryKey: ["course-content", course?.id],
       });
@@ -355,7 +355,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const handleDeleteItem = async (itemData: any) => {
     if (
       !confirm(
-        "هل أنت متأكد من حذف هذا العنصر؟ سيتم حذف جميع العناصر التابعة له."
+        "هل أنت متأكد من حذف هذا العنصر؟ سيتم حذف جميع العناصر التابعة له.",
       )
     )
       return;
@@ -387,8 +387,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 Array.isArray(item[key]) &&
                 item[key].length > 0 &&
                 item[key].every(
-                  (child: any) => typeof child === "object" && "id" in child
-                )
+                  (child: any) => typeof child === "object" && "id" in child,
+                ),
             );
 
             if (childKey) {
@@ -408,7 +408,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   };
 
   const deriveTypeAndParent = (
-    item: any
+    item: any,
   ): { type: ContentType; parent: string | number | null } => {
     if (Array.isArray(item?.units)) return { type: "semester", parent: null };
     if (Array.isArray(item?.topics))
@@ -420,7 +420,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
   const handleItemsReorder = async (
     ct: { type: ContentType; parent: string | number | null },
-    tree: any[]
+    tree: any[],
   ) => {
     if (ct.type === "semester") {
       const payload = tree.map((sem: any) => ({
@@ -483,8 +483,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
               k !== "مصادر" &&
               Array.isArray((n as any)[k]) &&
               (n as any)[k].every(
-                (c: any) => c && typeof c === "object" && "id" in c
-              )
+                (c: any) => c && typeof c === "object" && "id" in c,
+              ),
           );
           if (!childKey) return n;
           return { ...n, [childKey]: moveInTree((n as any)[childKey]) };
@@ -505,7 +505,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       setContentTree(newTree);
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.error || "حدث خطأ في تغيير ترتيب المحتوى"
+        error?.response?.data?.error || "حدث خطأ في تغيير ترتيب المحتوى",
       );
     }
   };
@@ -518,8 +518,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
         Array.isArray(item[key]) &&
         item[key].length > 0 &&
         item[key].every(
-          (child: any) => typeof child === "object" && "id" in child
-        )
+          (child: any) => typeof child === "object" && "id" in child,
+        ),
     );
     const hasChildren = Boolean(childKey);
     const children = hasChildren ? item[childKey] : [];
@@ -695,8 +695,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
             Array.isArray(item[key]) &&
             item[key].length > 0 &&
             item[key].every(
-              (child: any) => typeof child === "object" && "id" in child
-            )
+              (child: any) => typeof child === "object" && "id" in child,
+            ),
         );
         const hasChildren = Boolean(childKey);
         const children = hasChildren ? item[childKey] : [];
@@ -737,7 +737,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
           <button
             onClick={() => setCurrentView("add")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
           >
             <Plus size={16} />
             إضافة محتوى
@@ -799,7 +799,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
           <div className="flex justify-between gap-4">
             {/* Search */}
-            <div className="flex items-center w-[50%] gap-x-[20px]">
+            <div className="flex items-center w-[50%] gap-x-5">
               <div className="relative w-full">
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
@@ -838,8 +838,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           item[key].length > 0 &&
                           item[key].every(
                             (child: any) =>
-                              typeof child === "object" && "id" in child
-                          )
+                              typeof child === "object" && "id" in child,
+                          ),
                       );
 
                       const hasChildren = Boolean(childKey);
@@ -889,7 +889,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 </p>
                 <button
                   onClick={() => setCurrentView("add")}
-                  className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة محتوى جديد
@@ -994,8 +994,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     {newItem.type === "unit"
                       ? "الفصل الأب"
                       : newItem.type === "topic"
-                      ? "الوحدة الأب"
-                      : "الموضوع الأب"}{" "}
+                        ? "الوحدة الأب"
+                        : "الموضوع الأب"}{" "}
                     *
                   </label>
                   <select
@@ -1165,7 +1165,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       ?.filter(
                         (exam: any) =>
                           exam?.teacher?.id === course?.teacher?.id &&
-                          exam?.is_free === courseContentData?.is_free
+                          exam?.is_free === courseContentData?.is_free,
                       )
                       ?.map((filteredExam: any) => (
                         <option key={filteredExam?.id} value={filteredExam?.id}>
@@ -1199,7 +1199,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   (resource: any) =>
                     resource.specialization_material ==
                       course?.specialization_material?.id &&
-                    (resource?.type == "resources" || resource?.type == "مصادر")
+                    (resource?.type == "resources" ||
+                      resource?.type == "مصادر"),
                 ) && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -1217,7 +1218,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                                 course?.specialization_material?.id &&
                               resource?.teacher?.id === course?.teacher?.id &&
                               (resource?.type == "resources" ||
-                                resource?.type == "مصادر")
+                                resource?.type == "مصادر"),
                           ) || []
                         }
                         placeholder="اختر الملفات..."
@@ -1295,7 +1296,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   newItem.lessonType === "exam" &&
                   !newItem.examId)
               }
-              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إضافة المحتوى
@@ -1434,7 +1435,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       {examData
                         ?.filter(
                           (exam: any) =>
-                            exam?.teacher?.id === course?.teacher?.id
+                            exam?.teacher?.id === course?.teacher?.id,
                         )
                         ?.map((filteredExam: any) => (
                           <option
@@ -1497,12 +1498,12 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     {selectedItem?.course
                       ? "فصل"
                       : selectedItem?.semester
-                      ? "وحدة"
-                      : selectedItem?.unit
-                      ? "موضوع"
-                      : selectedItem?.type?.toLowerCase() === "video"
-                      ? "درس فيديو"
-                      : "درس امتحان"}
+                        ? "وحدة"
+                        : selectedItem?.unit
+                          ? "موضوع"
+                          : selectedItem?.type?.toLowerCase() === "video"
+                            ? "درس فيديو"
+                            : "درس امتحان"}
                   </span>
                 </div>
               </div>
@@ -1514,7 +1515,8 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   (resource: any) =>
                     resource.specialization_material ==
                       course?.specialization_material?.id &&
-                    (resource?.type == "resources" || resource?.type == "مصادر")
+                    (resource?.type == "resources" ||
+                      resource?.type == "مصادر"),
                 ) && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -1531,7 +1533,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                                 course?.specialization_material?.id &&
                               resource?.teacher?.id === course?.teacher?.id &&
                               (resource?.type == "resources" ||
-                                resource?.type == "مصادر")
+                                resource?.type == "مصادر"),
                           ) || []
                         }
                         placeholder="اختر الملفات..."
@@ -1595,7 +1597,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 handleEditItem();
               }}
               disabled={!selectedItem.title}
-              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات

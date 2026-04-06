@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Plus,
@@ -70,21 +69,21 @@ const LibrariesPage = () => {
 
   const librariesStatistics = useCustomQuery(
     "account/admin/libraries-statistics/",
-    ["libraries-statistics"]
+    ["libraries-statistics"],
   );
 
   const dataLibraries = useCustomQuery(
     `account/admin/libraries/?${queryParams.toString()}`,
-    ["libraries", filters]
+    ["libraries", filters],
   );
 
   const libraryStatus = useCustomPost(
     `/account/admin/libraries/${selectedLibrary?.id}/activate/`,
-    ["libraries", "libraries-statistics"]
+    ["libraries", "libraries-statistics"],
   );
   const resetAccountPassword = useCustomUpdate(
     `/account/admin/libraries/${selectedLibrary?.id}/reset-password/`,
-    ["libraries"]
+    ["libraries"],
   );
 
   // const handleDeletelibrary = () => {
@@ -109,7 +108,7 @@ const LibrariesPage = () => {
       })
       .catch((error) => {
         handleErrorAlerts(
-          error?.response?.data?.message || "حدث خطأ أثناء تحديث الحالة"
+          error?.response?.data?.message || "حدث خطأ أثناء تحديث الحالة",
         );
       });
   };
@@ -181,7 +180,7 @@ const LibrariesPage = () => {
           </button> */}
           <button
             onClick={() => navigate("/dashboard/libraries/add")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة مكتبة
@@ -295,7 +294,7 @@ const LibrariesPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/libraries/add")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة مكتبة جديد
@@ -325,7 +324,7 @@ const LibrariesPage = () => {
                 {
                   <button
                     onClick={() => navigate("/dashboard/libraries/add")}
-                    className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة مكتبة جديد
@@ -346,7 +345,7 @@ const LibrariesPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -451,7 +450,7 @@ const LibrariesPage = () => {
                           <button
                             onClick={() => {
                               navigate(
-                                `/dashboard/libraries/edit/${library.id}`
+                                `/dashboard/libraries/edit/${library.id}`,
                               );
                             }}
                             className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
@@ -463,7 +462,7 @@ const LibrariesPage = () => {
                           <button
                             onClick={() => {
                               navigate(
-                                `/dashboard/libraries/wallet/${library.id}`
+                                `/dashboard/libraries/wallet/${library.id}`,
                               );
                             }}
                             className="cursor-pointer p-1 text-gray-400 hover:text-green-600 transition-colors"

@@ -1,7 +1,6 @@
 import { Save, ToggleLeft, ToggleRight, X } from "lucide-react";
 import MultiSelectAutocomplete from "./MultiSelector";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const AddSubsectionModal = ({
   onSave,
   onClose,
@@ -31,8 +30,8 @@ const AddSubsectionModal = ({
             {level === "spec"
               ? "اضافة تخصص جديد"
               : level === "mat"
-              ? "اضافة مادة جديدة"
-              : "إضافة قسم فرعي جديد"}
+                ? "اضافة مادة جديدة"
+                : "إضافة قسم فرعي جديد"}
           </h2>
           <button
             onClick={() => onClose(false)}
@@ -86,8 +85,8 @@ const AddSubsectionModal = ({
             {level === "spec"
               ? "اسم التخصص"
               : level === "mat"
-              ? "اسم المادة"
-              : "اسم القسم الفرعي"}
+                ? "اسم المادة"
+                : "اسم القسم الفرعي"}
           </label>
           {level === "spec" ? (
             <input
@@ -232,14 +231,14 @@ const AddSubsectionModal = ({
         </button>
         <button
           onClick={onSave}
-          className="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+          className="px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
         >
           <Save size={16} />
           {level === "spec"
             ? "حفظ التخصص"
             : level === "mat"
-            ? "حفظ المادة"
-            : "حفظ القسم"}
+              ? "حفظ المادة"
+              : "حفظ القسم"}
         </button>
       </div>
     </div>

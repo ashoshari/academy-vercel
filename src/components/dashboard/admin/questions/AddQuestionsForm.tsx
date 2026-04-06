@@ -53,7 +53,7 @@ const AddQuestionsForm: React.FC<Props> = ({
 
   const correctCount = useMemo(
     () => draft.answers.filter((a) => a.is_correct).length,
-    [draft.answers]
+    [draft.answers],
   );
 
   const setAnswer = (idx: number, patch: Partial<DraftAnswer>) => {
@@ -67,7 +67,7 @@ const AddQuestionsForm: React.FC<Props> = ({
   const onAddToBatch = () => {
     if (remainingQuestions <= 0) {
       toast.error(
-        "لا يمكنك إضافة أسئلة أخرى — الحد الأقصى لعدد الأسئلة تم بلوغه"
+        "لا يمكنك إضافة أسئلة أخرى — الحد الأقصى لعدد الأسئلة تم بلوغه",
       );
       return;
     }
@@ -127,7 +127,7 @@ const AddQuestionsForm: React.FC<Props> = ({
 
     const payloadMarks = payload.reduce(
       (s, q) => s + (Number(q.marks) || 0),
-      0
+      0,
     );
     const totalAfterMarks = existingMarksSum + payloadMarks;
     if (totalAfterMarks > totalMarks) {
@@ -174,19 +174,19 @@ const AddQuestionsForm: React.FC<Props> = ({
 
   const pendingMarks = useMemo(
     () => pending.reduce((s, q) => s + (Number(q.marks) || 0), 0),
-    [pending]
+    [pending],
   );
 
   const remainingQuestions = Math.max(
     0,
     (Number(questionsCount) || 0) -
       (Number(existingQuestionsCount) || 0) -
-      pending.length
+      pending.length,
   );
 
   const remainingMarks = Math.max(
     0,
-    (Number(totalMarks) || 0) - (Number(existingMarksSum) || 0) - pendingMarks
+    (Number(totalMarks) || 0) - (Number(existingMarksSum) || 0) - pendingMarks,
   );
 
   return (
@@ -239,15 +239,15 @@ const AddQuestionsForm: React.FC<Props> = ({
                       marks: parseInt(e.target.value) || 1,
                     }))
                   }
-                  className="w-full min-w-[250px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full min-w-62.5 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
                 />
               </div>
 
               <div className="flex w-full justify-start items-center gap-4">
-                <div className="h-[68px] flex items-center justify-center">
+                <div className="h-17 flex items-center justify-center">
                   <label
                     htmlFor="question-img"
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 w-fit self-end hover:to-orange-700 transition-all block"
+                    className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 w-fit self-end hover:to-orange-700 transition-all block"
                   >
                     اضافة صورة
                   </label>
@@ -336,7 +336,7 @@ const AddQuestionsForm: React.FC<Props> = ({
                           <div>
                             <label
                               htmlFor={`answer_${idx}`}
-                              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all block"
+                              className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all block"
                             >
                               اضافة صورة
                             </label>

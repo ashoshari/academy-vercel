@@ -27,7 +27,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
     `/account/admin/students/?${queryParams.toString()}`,
     ["students", searchTerm, selectedCourse?.id],
     undefined,
-    !!searchTerm.trim()
+    !!searchTerm.trim(),
   );
   const studentData = data?.data;
   useEffect(() => {
@@ -38,7 +38,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
   // POST Activate Course
   const { mutateAsync: activateCourse } = useCustomPost(
     `/training/admin/courses/enroll/student/`,
-    ["activate-student"]
+    ["activate-student"],
   );
 
   const handleActivate = async (id: string) => {
@@ -63,8 +63,8 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
       const response = await activateCourse(activateData);
       setStudents((prev) =>
         prev.map((s) =>
-          s.id === id ? { ...s, is_enrolled_in_course: true } : s
-        )
+          s.id === id ? { ...s, is_enrolled_in_course: true } : s,
+        ),
       );
       toast.success(response?.data || "تم تفعيل الطالب بنجاح");
       setActivatingId(null);
@@ -203,11 +203,13 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
                           <button
                             onClick={() => {
                               setCardCode("");
-                              selectedCourse?.is_free
-                                ? handleActivate(student.id)
-                                : setActivatingId(student.id);
+                              if (selectedCourse?.is_free) {
+                                handleActivate(student.id);
+                              } else {
+                                setActivatingId(student.id);
+                              }
                             }}
-                            className="cursor-pointer px-3 py-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg text-sm hover:from-orange-600 hover:to-orange-700"
+                            className="cursor-pointer px-3 py-1 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg text-sm hover:from-orange-600 hover:to-orange-700"
                           >
                             تفعيل
                           </button>

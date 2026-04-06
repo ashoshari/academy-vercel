@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useId, useMemo, useState } from "react";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import { Save, Trash2, CheckCircle } from "lucide-react";
@@ -27,7 +26,7 @@ const QuestionEditForm: React.FC<Props> = ({
 
   const updateQuestion = useCustomUpdate(
     `/training/admin/exams-questions/${form.id}/`,
-    ["exam-questions", examId]
+    ["exam-questions", examId],
   );
 
   const setAnswer = (idx: number, patch: Partial<DraftAnswer>) => {
@@ -40,7 +39,7 @@ const QuestionEditForm: React.FC<Props> = ({
 
   const correctCount = useMemo(
     () => form.answers.filter((a) => a.is_correct).length,
-    [form.answers]
+    [form.answers],
   );
 
   const onSubmit = async () => {
@@ -123,10 +122,10 @@ const QuestionEditForm: React.FC<Props> = ({
               </div>
 
               <div className="flex w-full justify-start items-center gap-4">
-                <div className="h-[68px] flex items-center justify-center">
+                <div className="h-17 flex items-center justify-center">
                   <label
                     htmlFor="question-img-edit"
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 w-fit self-end hover:to-orange-700 transition-all block"
+                    className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 w-fit self-end hover:to-orange-700 transition-all block"
                   >
                     اضافة صورة
                   </label>
@@ -215,7 +214,7 @@ const QuestionEditForm: React.FC<Props> = ({
                           <div>
                             <label
                               htmlFor={`answer_${idx}_edit`}
-                              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all block"
+                              className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all block"
                             >
                               اضافة صورة
                             </label>

@@ -31,12 +31,12 @@ const AddCardPricing = ({
       if (newCard.default_teacher_price)
         formData.append(
           "default_teacher_price",
-          String(newCard.default_teacher_price)
+          String(newCard.default_teacher_price),
         );
       if (newCard.default_library_price)
         formData.append(
           "default_library_price",
-          String(newCard.default_library_price)
+          String(newCard.default_library_price),
         );
       formData.append("is_active", String(newCard.is_active));
       formData.append("image", newCard.image); // 👈 file object
@@ -273,7 +273,7 @@ const AddCardPricing = ({
                   !newCard.default_library_price ||
                   newCard.default_library_price <= 0
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
+                    : "cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
                 }`}
           >
             <Save size={16} />

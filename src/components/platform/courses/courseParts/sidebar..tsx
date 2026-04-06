@@ -78,7 +78,11 @@ const Sidebar = ({
   useEffect(() => {
     const lesson = getFirstIncompleteLesson(courseData);
     if (lesson) {
-      lesson?.type == "exam" ? setIsExamMode(true) : setIsExamMode(false);
+      if (lesson?.type == "exam") {
+        setIsExamMode(true);
+      } else {
+        setIsExamMode(false);
+      }
       setCurrentLesson(lesson || 0);
     }
   }, [courseData]);
@@ -101,7 +105,7 @@ const Sidebar = ({
           };
         }
         return sm;
-      })
+      }),
     );
   };
   const toggleUnit = (semesterId: any, unitId: any) => {
@@ -125,8 +129,8 @@ const Sidebar = ({
                 return unit;
               }),
             }
-          : sm
-      )
+          : sm,
+      ),
     );
   };
   const toggleTopic = (semesterId: any, unitId: any, topicId: any) => {
@@ -142,14 +146,14 @@ const Sidebar = ({
                       topics: unit?.topics.map((topic: any) =>
                         topic?.id === topicId
                           ? { ...topic, isExpanded: !topic?.isExpanded }
-                          : topic
+                          : topic,
                       ),
                     }
-                  : unit
+                  : unit,
               ),
             }
-          : sm
-      )
+          : sm,
+      ),
     );
   };
   const handleLessonClick = (lesson: any) => {
@@ -175,7 +179,7 @@ const Sidebar = ({
       } fixed left-0 top-[8vh] h-[calc(100vh-8vh)] z-40 overflow-y-auto`}
     >
       {/* Sidebar Header */}
-      <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+      <div className="p-4 border-b border-gray-200 bg-linear-to-r from-blue-50 to-purple-50">
         <div className="flex items-center justify-between">
           {!sidebarCollapsed && (
             <div className="flex-1">
@@ -215,7 +219,7 @@ const Sidebar = ({
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
-                className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
+                className="bg-linear-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${course?.progress_bar}%` }}
               ></div>
             </div>
@@ -290,23 +294,24 @@ const Sidebar = ({
 
                               {topic.isExpanded &&
                                 topic.lessons?.length > 0 && (
-                                  <div className="my-[10px] flex-col text-start w-full">
+                                  <div className="my-2.5 flex-col text-start w-full">
                                     {topic?.lessons?.map((lesson: any) => (
                                       <button
                                         onClick={() =>
                                           handleLessonClick(lesson)
                                         }
                                         key={lesson?.id}
-                                        className={`my-[10px] px-[10px] h-[50px] w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
+                                        className={`my-2.5 px-2.5 h-12.5 w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
                                              ${
                                                lesson?.is_completed &&
-                                               "bg-green-100 text-green-600 hover:bg-green-200 duration-[0.5s]"
+                                               "bg-green-100 text-green-600 hover:bg-green-200 duration-500"
                                              } py-1 hover:bg-gray-50 rounded ${
-                                          currentLesson?.id == lesson?.id &&
-                                          "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
-                                        }`}
+                                               currentLesson?.id ==
+                                                 lesson?.id &&
+                                               "bg-linear-to-r from-blue-500 to-purple-500 text-white"
+                                             }`}
                                       >
-                                        <div className="flex justify-between items-center p-[5px] w-full">
+                                        <div className="flex justify-between items-center p-1.25 w-full">
                                           <div className="text-start">
                                             <h6 className="">
                                               {lesson?.title}

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NavigateFunction } from "react-router";
 
 const TOKEN_KEY = "auth_tokens";
@@ -15,7 +14,7 @@ export function getStoredTokens(): string | null {
 export async function storeTokens(
   tokens: string,
   navigate?: NavigateFunction,
-  setIsAuthenticated?: () => void
+  setIsAuthenticated?: () => void,
 ): Promise<void> {
   await localStorage.setItem(TOKEN_KEY, JSON.stringify(tokens));
 
@@ -26,7 +25,7 @@ export async function storeTokens(
 
 export async function removeTokens(
   navigate?: NavigateFunction,
-  setIsAuthenticated?: () => void
+  setIsAuthenticated?: () => void,
 ): Promise<void> {
   await localStorage.removeItem(TOKEN_KEY);
   await localStorage.removeItem("company_domian");

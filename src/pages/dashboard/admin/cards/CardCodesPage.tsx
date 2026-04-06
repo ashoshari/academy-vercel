@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UAParser } from "ua-parser-js";
 import { useState } from "react";
 import {
@@ -111,7 +110,7 @@ const CardCodesPage = () => {
   const [librariesFilter, setLibrariesFilter] = useState<string[]>([]);
   const [installmentFilter, setInstallmentFilter] = useState<any>("");
   const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
-    "all"
+    "all",
   );
   const [codeBatches, setCodeBatches] = useState<any>();
 
@@ -129,7 +128,7 @@ const CardCodesPage = () => {
   // GET Teachers
   const { data: teachers } = useCustomQuery(
     "/account/admin/teachers/?pagination=false",
-    ["teachers"]
+    ["teachers"],
   );
   const teacherData = teachers?.data;
   // GET Libraries
@@ -143,18 +142,18 @@ const CardCodesPage = () => {
     queryParams.append("page_size", "9999999");
     queryParams.append(
       "code",
-      `${codesFilter?.map((id: string) => id).join(",")}`
+      `${codesFilter?.map((id: string) => id).join(",")}`,
     );
   }
   if (teachersFilter)
     queryParams.append(
       "generated_by",
-      teachersFilter?.map((id: string) => id).join(",")
+      teachersFilter?.map((id: string) => id).join(","),
     );
   if (librariesFilter)
     queryParams.append(
       "generated_by",
-      librariesFilter?.map((id: string) => id).join(",")
+      librariesFilter?.map((id: string) => id).join(","),
     );
   if (installmentFilter)
     queryParams.append("is_installment", installmentFilter);
@@ -182,7 +181,7 @@ const CardCodesPage = () => {
       isCodeDownloaded,
       statusFilter,
       page,
-    ]
+    ],
   );
 
   const cards = useCustomQuery("cards/", ["cards"]);
@@ -195,7 +194,7 @@ const CardCodesPage = () => {
 
   const toggleGeneratedCodeState = useCustomUpdate(
     `cards/codes-generated/${codeBatches}/`,
-    ["card-codes", "card-codes-statistics", "codes-generated"]
+    ["card-codes", "card-codes-statistics", "codes-generated"],
   );
 
   const addCode = useCustomPost(`/cards/codes/`, [
@@ -226,7 +225,7 @@ const CardCodesPage = () => {
 
   const getTargetingDisplay = (
     targetedSubsections: number[],
-    targetingType: string
+    targetingType: string,
   ) => {
     if (targetingType === "all" || targetedSubsections?.length === 0) {
       return {
@@ -260,7 +259,7 @@ const CardCodesPage = () => {
       Object.entries(obj).filter(([_, v]) => {
         if (Array.isArray(v)) return v.length > 0;
         return v !== null && v !== undefined && v !== "";
-      })
+      }),
     );
   };
   const getClientInfo = () => {
@@ -343,7 +342,7 @@ const CardCodesPage = () => {
       })
       .catch((error) => {
         handleErrorAlerts(
-          error?.response?.data?.error || "حدث خطأ أثناء تحديث حالة البطاقة"
+          error?.response?.data?.error || "حدث خطأ أثناء تحديث حالة البطاقة",
         );
       });
   };
@@ -526,7 +525,7 @@ const CardCodesPage = () => {
           {canAddCode && (
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+              className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
             >
               <Plus size={16} />
               إضافة كودات
@@ -592,7 +591,7 @@ const CardCodesPage = () => {
     ${
       isExpanded &&
       !(!cardCodes?.data?.data || cardCodes?.data?.data?.length === 0)
-        ? `max-h-[1000px] overflow-y-auto opacity-100 p-6`
+        ? `max-h-250 overflow-y-auto opacity-100 p-6`
         : "max-h-0 opacity-0"
     }
   `}
@@ -601,7 +600,7 @@ const CardCodesPage = () => {
             {cardCodes?.data?.data?.map((batch: any) => {
               const targeting = getTargetingDisplay(
                 batch.subsubsections,
-                "specific"
+                "specific",
               );
               // batch.targetingType
 
@@ -611,7 +610,7 @@ const CardCodesPage = () => {
                   className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all"
                 >
                   {/* Header */}
-                  <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4 text-white">
+                  <div className="bg-linear-to-r from-orange-500 to-orange-600 p-4 text-white">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-bold text-lg">
                         {batch?.name || "-"}
@@ -644,7 +643,7 @@ const CardCodesPage = () => {
                   </div>
 
                   {/* Targeting Info */}
-                  <div className="flex flex-col justify-center items-center p-4 bg-gradient-to-r from-blue-50 to-orange-50 h-22">
+                  <div className="flex flex-col justify-center items-center p-4 bg-linear-to-r from-blue-50 to-orange-50 h-22">
                     <div className="flex items-center gap-2 text-sm">
                       <targeting.icon size={16} className={targeting.color} />
                       <span className={`font-medium ${targeting.color}`}>
@@ -757,13 +756,13 @@ const CardCodesPage = () => {
                         </div>
                       </div>
                     )}
-                    <div className="flex flex-col gap-y-[10px] min-h-20 overflow-y-auto">
+                    <div className="flex flex-col gap-y-2.5 min-h-20 overflow-y-auto">
                       {batch.note && (
                         <div className="bg-blue-50 p-3 rounded-lg">
                           <div className="text-xs text-blue-600 font-medium mb-1">
                             ملاحظات:
                           </div>
-                          <div className="text-sm text-blue-800 mb-4 break-words">
+                          <div className="text-sm text-blue-800 mb-4 wrap-break-word">
                             {batch.note}
                           </div>
                         </div>
@@ -953,7 +952,7 @@ const CardCodesPage = () => {
           {canAddCode && (
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+              className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
             >
               <Plus size={16} />
               إضافة كودات جديدة
@@ -967,8 +966,8 @@ const CardCodesPage = () => {
               <h2 className="text-lg font-bold text-gray-800">قائمة الكودات</h2>
             </div>
             {/* Responsive Table */}
-            <div className="w-full max-w-[300px] min-w-full overflow-auto pb-6">
-              <table className="min-w-[1000px] w-full text-sm bg-white">
+            <div className="w-full max-w-75 min-w-full overflow-auto pb-6">
+              <table className="min-w-250 w-full text-sm bg-white">
                 <thead className="bg-gray-50">
                   <tr>
                     {/* <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
@@ -1003,7 +1002,7 @@ const CardCodesPage = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {generateCodes?.data?.data?.map((code: any) => {
                     const isDownloadAllowed = isCodeDownloadAllowed(
-                      code.created_at
+                      code.created_at,
                     );
 
                     return (
@@ -1029,7 +1028,7 @@ const CardCodesPage = () => {
 
                             {/* Tooltip */}
                             <div
-                              className="fixed z-[9999] opacity-0 group-hover:opacity-100 transition-all duration-200 
+                              className="fixed z-9999 opacity-0 group-hover:opacity-100 transition-all duration-200 
                             bg-gray-800 text-white text-xs rounded-md px-2 py-1 whitespace-nowrap 
                               pointer-events-none shadow-lg"
                               style={{
@@ -1093,7 +1092,7 @@ const CardCodesPage = () => {
                         >
                           {code.used_by?.user?.created_at
                             ? formatDateTimeSimple(
-                                code.used_by?.user?.created_at
+                                code.used_by?.user?.created_at,
                               )
                             : "-"}
                         </td>

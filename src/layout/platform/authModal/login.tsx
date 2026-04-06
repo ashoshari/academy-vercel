@@ -85,7 +85,7 @@ const Login = ({
               onInput={(e) => {
                 e.currentTarget.value = e.currentTarget.value.replace(
                   /[^0-9]/g,
-                  ""
+                  "",
                 );
               }}
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
@@ -141,7 +141,7 @@ const Login = ({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="cursor-pointer w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
+        className="cursor-pointer w-full bg-linear-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
       >
         {isSubmitting ? (
           <div className="flex items-center space-x-2">

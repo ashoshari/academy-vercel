@@ -1,5 +1,3 @@
-/* eslint-disable no-constant-condition */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import {
   Plus,
@@ -190,7 +188,7 @@ const ExamsPage = () => {
   // PUT Exams
   const { mutateAsync: putExam } = useCustomUpdate(
     `/training/admin/exams/${selectedExam?.id}/`,
-    ["putExams"]
+    ["putExams"],
   );
   // DELETE Exams
   // const { mutateAsync: deleteExam } = useCustomRemove(
@@ -202,14 +200,14 @@ const ExamsPage = () => {
   // const cardsData = cards?.data;
   const updateExam = useCustomUpdate(
     `/training/admin/exams/${selectedExam?.id}/`,
-    ["exams"]
+    ["exams"],
   );
 
   const singleExam = useCustomQuery(
     `/training/admin/exams/${selectedExam?.id}/`,
     ["exam", selectedExam?.id],
     {},
-    !!selectedExam
+    !!selectedExam,
   );
 
   useEffect(() => {
@@ -239,7 +237,7 @@ const ExamsPage = () => {
   // GET SubSection
   const { data: subsections } = useCustomQuery(
     "/training/admin/subsections-ids/",
-    ["subsections"]
+    ["subsections"],
   );
   const subsectionData = subsections?.data;
 
@@ -248,13 +246,13 @@ const ExamsPage = () => {
   const [selectedSubSub, setSelectedSubSub] = useState<string>("");
   const [selectedSpec, setSelectedSpec] = useState<string>("");
   const subSection = subsectionData?.find(
-    (s: any) => s.id === selectedSubSection
+    (s: any) => s.id === selectedSubSection,
   );
   const subsub = subSection?.subsubsections?.find(
-    (ss: any) => ss.id === selectedSubSub
+    (ss: any) => ss.id === selectedSubSub,
   );
   const spec = subsub?.specializations?.find(
-    (sp: any) => sp.id === selectedSpec
+    (sp: any) => sp.id === selectedSpec,
   );
   const handleCreateExam = () => {
     addExam
@@ -293,7 +291,7 @@ const ExamsPage = () => {
       })
       .catch((error: any) => {
         handleErrorAlerts(
-          error?.response?.data?.error || "حدث خطا اثناء اضافة الاختبار"
+          error?.response?.data?.error || "حدث خطا اثناء اضافة الاختبار",
         );
       });
   };
@@ -322,7 +320,7 @@ const ExamsPage = () => {
       })
       .catch((error: any) => {
         handleErrorAlerts(
-          error?.response?.data?.error || "حدث خطا اثناء تحديث الاختبار"
+          error?.response?.data?.error || "حدث خطا اثناء تحديث الاختبار",
         );
       });
   };
@@ -389,10 +387,11 @@ const ExamsPage = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+
   const ExamCard = ({ exam }: { exam: any }) => (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+      <div className="p-6 bg-linear-to-r from-blue-500 to-blue-600 text-white">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <h3 className="font-bold text-lg mb-2 line-clamp-2">
@@ -405,7 +404,7 @@ const ExamsPage = () => {
           <div className="flex gap-2 ml-4">
             <span
               className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
-                exam.examType
+                exam.examType,
               )}`}
             >
               {exam?.type?.name}
@@ -440,7 +439,7 @@ const ExamsPage = () => {
         <div className="flex items-center justify-between mb-4">
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
-              exam.level
+              exam.level,
             )}`}
           >
             {exam?.level?.name}
@@ -509,6 +508,7 @@ const ExamsPage = () => {
       </div>
     </div>
   );
+
   // Render different views
   if (currentView === "create") {
     return (
@@ -664,7 +664,7 @@ const ExamsPage = () => {
                             >
                               {subSubSection?.title}
                             </option>
-                          )
+                          ),
                         )}
                       </select>
                     </div>
@@ -991,7 +991,7 @@ const ExamsPage = () => {
                 !newExam?.total_marks ||
                 !newExam?.passing_marks
               }
-              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الامتحان
@@ -1044,7 +1044,7 @@ const ExamsPage = () => {
               القادم
             </p>
             <div className="flex gap-4 justify-center">
-              <button className="cursor-pointer bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all flex items-center gap-2">
+              <button className="cursor-pointer bg-linear-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all flex items-center gap-2">
                 <Download size={16} />
                 تصدير النتائج
               </button>
@@ -1158,7 +1158,7 @@ const ExamsPage = () => {
                   <div className="flex justify-start items-end w-full">
                     <button
                       onClick={() => setEditSections(!editSections)}
-                      className="cursor-pointer w-full justify-center h-[58px] px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                      className="cursor-pointer w-full justify-center h-14.5 px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
                     >
                       تعديل الأقسام
                     </button>
@@ -1225,7 +1225,7 @@ const ExamsPage = () => {
                                 >
                                   {subSubSection?.title}
                                 </option>
-                              )
+                              ),
                             )}
                           </select>
                         </div>
@@ -1259,7 +1259,7 @@ const ExamsPage = () => {
                                 >
                                   {specialization?.name}
                                 </option>
-                              )
+                              ),
                             )}
                           </select>
                         </div>
@@ -1560,7 +1560,7 @@ const ExamsPage = () => {
                 !selectedExam?.total_marks ||
                 !selectedExam?.passing_marks
               }
-              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               تعديل الامتحان
@@ -1584,7 +1584,7 @@ const ExamsPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء امتحان جديد
@@ -1712,7 +1712,7 @@ const ExamsPage = () => {
 
           <button
             onClick={() => setCurrentView("create")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة امتحان جديد
@@ -1751,7 +1751,7 @@ const ExamsPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -1803,11 +1803,11 @@ const ExamsPage = () => {
                               (m: any, index: number, array: any) =>
                                 `${m.title}${
                                   index === array.length - 1 ? "" : ", "
-                                }`
+                                }`,
                             )
-                          : (exam?.specialization_material?.title ||
+                          : ((exam?.specialization_material?.title ||
                               exam?.specialization_material?.name) ??
-                            "-"}
+                            "-")}
                       </td>
                       {role !== "teacher" && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

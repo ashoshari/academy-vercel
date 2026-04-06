@@ -65,16 +65,16 @@ export default function TeacherDetailsPage() {
                 <p className="text-gray-600">
                   {selectedTeacher?.materials.map(
                     (material: any, index: number, arr: any) =>
-                      `${material?.name}${index + 1 !== arr.length ? ", " : ""}`
+                      `${material?.name}${index + 1 !== arr.length ? ", " : ""}`,
                   ) || "-"}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="space-y-[30px]">
+          <div className="space-y-7.5">
             {/* Personal Info */}
-            <div className="grid grid-col-1 lg:grid-cols-3 gap-x-[10px] gap-y-[10px]">
+            <div className="grid grid-col-1 lg:grid-cols-3 gap-x-2.5 gap-y-2.5">
               <div className="bg-gray-50 rounded-xl p-6 mb-6 h-full">
                 <h3 className="font-bold text-gray-800 mb-4">
                   المعلومات الشخصية
@@ -106,7 +106,7 @@ export default function TeacherDetailsPage() {
                     value={
                       selectedTeacher.last_password_change
                         ? formatDateTimeSimple(
-                            selectedTeacher.last_password_change
+                            selectedTeacher.last_password_change,
                           )
                         : "لم يتم تغييرها بعد"
                     }

@@ -53,7 +53,7 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
   const isExamMode = useExam((state) => state.isExamMode);
   const setIsExamMode = useExam((state) => state.setIsExamMode);
   const setCurrentLessonIndex = useLesson(
-    (state) => state.setCurrentLessonIndex
+    (state) => state.setCurrentLessonIndex,
   );
   useEffect(() => {
     if (currentLesson?.type == "video") {
@@ -64,21 +64,28 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
   }, [isExamMode, currentLesson]);
   const { mutateAsync: completeMutateAsync } = useCustomPost(
     "/training/students/lesson/complete/",
-    ["complete"]
+    ["complete"],
   );
   const navigateLesson = (direction: "prev" | "next") => {
     if (direction === "prev" && currentLessonIndex > 0) {
       setCurrentLessonIndex(currentLessonIndex - 1);
       const prevLesson = allLessons[currentLessonIndex - 1];
-
-      prevLesson?.type == "video" ? setIsExamMode(false) : setIsExamMode(true);
+      if (prevLesson?.type == "video") {
+        setIsExamMode(false);
+      } else {
+        setIsExamMode(true);
+      }
     } else if (
       direction === "next" &&
       currentLessonIndex < allLessons.length - 1
     ) {
       const nextLesson = allLessons[currentLessonIndex + 1];
       setCurrentLessonIndex(currentLessonIndex + 1);
-      nextLesson?.type == "video" ? setIsExamMode(false) : setIsExamMode(true);
+      if (nextLesson?.type == "video") {
+        setIsExamMode(false);
+      } else {
+        setIsExamMode(true);
+      }
     }
   };
 
@@ -106,7 +113,7 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
           ]
             .filter(
               (tab) =>
-                tab.id !== "questions" || courseData?.is_show_general_questions
+                tab.id !== "questions" || courseData?.is_show_general_questions,
             )
             ?.map((tab) => {
               const IconComponent = tab.icon;
@@ -116,7 +123,7 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`cursor-pointer flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
                     activeTab === tab.id
-                      ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
+                      ? "bg-linear-to-r from-blue-500 to-purple-500 text-white shadow-lg"
                       : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                   }`}
                 >
@@ -156,7 +163,7 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
                 </div>
                 <div className="w-full md:w-48 bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-gradient-to-r justify-center from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-linear-to-r justify-center from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
                     style={{
                       width: `${
                         ((currentLessonIndex + 1) / allLessons.length) * 100
@@ -172,7 +179,7 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
                   currentLessonIndex === allLessons.length - 1 ||
                   allLessons[currentLessonIndex + 1]?.isLocked
                 }
-                className="flex items-center w-full md:w-fit justify-center space-x-2 cursor-pointer px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center w-full md:w-fit justify-center space-x-2 cursor-pointer px-6 py-3 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>الدرس التالي</span>
                 <ChevronLeft className="w-5 h-5" />

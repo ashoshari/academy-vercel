@@ -31,6 +31,9 @@ import Spinner from "@/components/dashboard/Spinner";
 import { useQueryClient } from "@tanstack/react-query";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import CourseActivation from "./CourseActivation";
+import DashboardStatCard, {
+  DASHBOARD_STATS_GRID_4,
+} from "@/components/dashboard/admin/cards/DashboardStatCard";
 const CoursesPage = () => {
   const user = readUserFromStorage();
   const role = roleOf(user) ?? "";
@@ -76,7 +79,7 @@ const CoursesPage = () => {
       freeFilter,
       statusFilter,
       role,
-    ]
+    ],
   );
 
   const courseData = data?.data;
@@ -84,14 +87,14 @@ const CoursesPage = () => {
   // GET courses stats
   const { data: coursesStats } = useCustomQuery(
     "/training/admin/courses-statistics/",
-    ["courses-stats", role]
+    ["courses-stats", role],
   );
   // GET teachers
   const { data: teachers } = useCustomQuery(
     "/account/admin/teachers/?page_size=9999",
     ["teachers"],
     undefined,
-    !["teacher", "library"].includes(role.toLowerCase())
+    !["teacher", "library"].includes(role.toLowerCase()),
   );
 
   const teacherData = teachers?.data;
@@ -113,7 +116,7 @@ const CoursesPage = () => {
   // GET SubSection
   const { data: subsections } = useCustomQuery(
     "/training/admin/subsections-ids/",
-    ["subsections"]
+    ["subsections"],
   );
   const subsectionData = subsections?.data;
   // const specializationData = specializations?.data;
@@ -125,13 +128,13 @@ const CoursesPage = () => {
   const [selectedSubSub, setSelectedSubSub] = useState<string>("");
   const [selectedSpec, setSelectedSpec] = useState<string>("");
   const subSection = subsectionData?.find(
-    (s: any) => s.id === selectedSubSection
+    (s: any) => s.id === selectedSubSection,
   );
   const subsub = subSection?.subsubsections?.find(
-    (ss: any) => ss.id === selectedSubSub
+    (ss: any) => ss.id === selectedSubSub,
   );
   const spec = subsub?.specializations?.find(
-    (sp: any) => sp.id === selectedSpec
+    (sp: any) => sp.id === selectedSpec,
   );
 
   const [courses, setCourses] = useState<any>();
@@ -150,19 +153,19 @@ const CoursesPage = () => {
   // PUT Course
   const { mutateAsync: editCourse, isPending: isEditing } = useCustomUpdate(
     `/training/admin/courses/${courseId}/`,
-    ["editcourses", courseId]
+    ["editcourses", courseId],
   );
 
   // POST New Course
   const { mutateAsync: createCourse } = useCustomPost(
     "/training/admin/courses/",
-    ["postCourses"]
+    ["postCourses"],
   );
 
   // DELETE Courses
   const { mutateAsync: deleteCourse, isPending: isDeleting } = useCustomRemove(
     `/training/admin/courses/${courseId}/`,
-    ["deleteCourses", courseId]
+    ["deleteCourses", courseId],
   );
 
   const handleCreateCourse = async () => {
@@ -193,7 +196,7 @@ const CoursesPage = () => {
     if (newCourse.specialization_material)
       formData.append(
         "specialization_material",
-        newCourse.specialization_material
+        newCourse.specialization_material,
       );
     if (newCourse.is_published) {
       formData.append("is_published", newCourse.is_published ?? true);
@@ -204,7 +207,7 @@ const CoursesPage = () => {
     if (newCourse.is_show_general_questions) {
       formData.append(
         "is_show_general_questions",
-        newCourse.is_show_general_questions || true
+        newCourse.is_show_general_questions || true,
       );
     }
     if (newCourse.image instanceof File && newCourse.image) {
@@ -244,7 +247,7 @@ const CoursesPage = () => {
       return;
     }
     const currentCourse = courseData?.find(
-      (course: any) => course?.id === selectedCourse?.id
+      (course: any) => course?.id === selectedCourse?.id,
     );
     if (!currentCourse) {
       toast.error("هذا الكورس غير موجود");
@@ -255,12 +258,15 @@ const CoursesPage = () => {
       .filter(
         (key) =>
           selectedCourse[key as keyof typeof selectedCourse] !==
-          currentCourse[key as keyof typeof currentCourse]
+          currentCourse[key as keyof typeof currentCourse],
       )
-      .reduce((acc, key) => {
-        acc[key] = selectedCourse[key as keyof typeof selectedCourse];
-        return acc;
-      }, {} as Record<string, any>);
+      .reduce(
+        (acc, key) => {
+          acc[key] = selectedCourse[key as keyof typeof selectedCourse];
+          return acc;
+        },
+        {} as Record<string, any>,
+      );
 
     try {
       const formData = new FormData();
@@ -289,7 +295,7 @@ const CoursesPage = () => {
   const handleDeleteCourse = async () => {
     if (
       confirm(
-        "هل أنت متأكد من حذف هذه الدورة؟ سيتم حذف جميع المحتوى المرتبط بها."
+        "هل أنت متأكد من حذف هذه الدورة؟ سيتم حذف جميع المحتوى المرتبط بها.",
       )
     ) {
       try {
@@ -307,8 +313,8 @@ const CoursesPage = () => {
       prev?.map((course: any) =>
         course?.id === courseId
           ? { ...course, is_published: !course?.is_published }
-          : course
-      )
+          : course,
+      ),
     );
     setCourseId(courseId);
     const updateCourse = courses.find((c: any) => c?.id === courseId);
@@ -319,14 +325,14 @@ const CoursesPage = () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.error || "حدث خطاء في تعديل حالة الدورة"
+        error?.response?.data?.error || "حدث خطاء في تعديل حالة الدورة",
       );
       setCourses((prevCourses: any) =>
         prevCourses.map((course: any) =>
           course.id === courseId
             ? { ...course, is_published: !course.is_published }
-            : course
-        )
+            : course,
+        ),
       );
     }
   };
@@ -356,7 +362,7 @@ const CoursesPage = () => {
           alt={course?.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
 
         {/* Status Badges */}
         <div className="absolute top-4 right-4 flex gap-2">
@@ -375,7 +381,7 @@ const CoursesPage = () => {
           <div className="absolute top-4 left-4 flex gap-2">
             <span
               className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelColor(
-                course?.level?.name
+                course?.level?.name,
               )}`}
             >
               {course?.level?.name}
@@ -416,7 +422,7 @@ const CoursesPage = () => {
                 </p>
                 <p className="text-gray-500 text-xs">
                   {course?.teacher?.materials?.map(
-                    (material: any) => `${material.name} `
+                    (material: any) => `${material.name} `,
                   )}
                 </p>
               </div>
@@ -964,8 +970,8 @@ const CoursesPage = () => {
                     >
                       <option value="">اختر مادة التخصص</option>
                       {(spec?.specialization_materials.length > 0
-                        ? spec?.specialization_materials ?? []
-                        : subsub?.specialization_materials ?? []
+                        ? (spec?.specialization_materials ?? [])
+                        : (subsub?.specialization_materials ?? [])
                       ).map((specialization_material: any) => (
                         <option
                           key={specialization_material.id}
@@ -1063,7 +1069,7 @@ const CoursesPage = () => {
                   : false) ||
                 !newCourse.specialization_material
               }
-              className="cursor-pointer md:justify-start justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer md:justify-start justify-center px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الدورة
@@ -1377,7 +1383,7 @@ const CoursesPage = () => {
               {!editSections ? (
                 <button
                   onClick={() => setEditSections(!editSections)}
-                  className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                  className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
                 >
                   تعديل الأقسام
                 </button>
@@ -1443,7 +1449,7 @@ const CoursesPage = () => {
                               >
                                 {subSubSection?.title}
                               </option>
-                            )
+                            ),
                           )}
                         </select>
                       </div>
@@ -1478,7 +1484,7 @@ const CoursesPage = () => {
                               >
                                 {specialization?.name}
                               </option>
-                            )
+                            ),
                           )}
                         </select>
                       </div>
@@ -1513,8 +1519,8 @@ const CoursesPage = () => {
                         >
                           <option value="">اختر مادة التخصص</option>
                           {(spec?.specialization_materials.length > 0
-                            ? spec?.specialization_materials ?? []
-                            : subsub?.specialization_materials ?? []
+                            ? (spec?.specialization_materials ?? [])
+                            : (subsub?.specialization_materials ?? [])
                           ).map((specialization_material: any) => (
                             <option
                               key={specialization_material.id}
@@ -1623,7 +1629,7 @@ const CoursesPage = () => {
                   : false) ||
                 !selectedCourse.specialization_material
               }
-              className="cursor-pointer px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات
@@ -1653,7 +1659,7 @@ const CoursesPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء دورة جديدة
@@ -1661,66 +1667,35 @@ const CoursesPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي الدورات</p>
-              <p className="text-3xl font-bold text-gray-800">
-                {courseStatsData?.total_courses ?? "-"}
-              </p>
-            </div>
-            <BookOpen className="w-12 h-12 text-orange-500" />
-          </div>
-        </div>
-
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">الدورات النشطة</p>
-              <p className="text-3xl font-bold text-green-600">
-                {courseStatsData?.active_courses ?? "-"}
-              </p>
-            </div>
-            <CheckCircle className="w-12 h-12 text-green-500" />
-          </div>
-        </div>
-
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">الدورات الغير نشطة</p>
-              <p className="text-3xl font-bold text-red-600">
-                {courseStatsData?.inactive_courses ?? "-"}
-              </p>
-            </div>
-            <XCircle className="w-12 h-12 text-red-500" />
-          </div>
-        </div>
-
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
-              <p className="text-3xl font-bold text-blue-600">
-                {courseStatsData?.total_students_in_enrolled_courses ?? "-"}
-              </p>
-            </div>
-            <Users className="w-12 h-12 text-blue-500" />
-          </div>
-        </div>
-
-        {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">متوسط التقييم</p>
-              <p className="text-3xl font-bold text-orange-600">
-                2
-              </p>
-            </div>
-            <Star className="w-12 h-12 text-orange-500" />
-          </div>
-        </div> */}
+      <div className={DASHBOARD_STATS_GRID_4}>
+        <DashboardStatCard
+          label="إجمالي الدورات"
+          value={courseStatsData?.total_courses ?? "-"}
+          icon={BookOpen}
+          valueClassName="text-gray-800"
+          iconClassName="text-orange-500"
+        />
+        <DashboardStatCard
+          label="الدورات النشطة"
+          value={courseStatsData?.active_courses ?? "-"}
+          icon={CheckCircle}
+          valueClassName="text-green-600"
+          iconClassName="text-green-500"
+        />
+        <DashboardStatCard
+          label="الدورات الغير نشطة"
+          value={courseStatsData?.inactive_courses ?? "-"}
+          icon={XCircle}
+          valueClassName="text-red-600"
+          iconClassName="text-red-500"
+        />
+        <DashboardStatCard
+          label="إجمالي الطلاب"
+          value={courseStatsData?.total_students_in_enrolled_courses ?? "-"}
+          icon={Users}
+          valueClassName="text-blue-600"
+          iconClassName="text-blue-500"
+        />
       </div>
 
       {/* Filters */}
@@ -1832,7 +1807,7 @@ const CoursesPage = () => {
 
           <button
             onClick={() => setCurrentView("create")}
-            className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة دورة جديدة
@@ -1863,7 +1838,7 @@ const CoursesPage = () => {
                 {!searchTerm && statusFilter === "all" && (
                   <button
                     onClick={() => setCurrentView("create")}
-                    className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إنشاء دورة جديدة
@@ -1884,7 +1859,7 @@ const CoursesPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-[200px] min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -1921,7 +1896,7 @@ const CoursesPage = () => {
                 <tbody className="bg-white divide-y divide-gray-200 overflow-x-auto">
                   {courseData
                     ?.filter(
-                      (course: any) => course?.teacher?.is_active === true
+                      (course: any) => course?.teacher?.is_active === true,
                     )
                     .map((course: any) => (
                       <tr key={course?.id} className="hover:bg-gray-50">

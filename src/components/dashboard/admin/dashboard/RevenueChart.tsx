@@ -1,5 +1,8 @@
 import { useCustomQuery } from "@/hooks/useQuery";
 import { readUserFromStorage, roleOf } from "@/services/auth";
+import SimpleBarChart, {
+  type SimpleBarPoint,
+} from "@/components/dashboard/admin/charts/SimpleBarChart";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -10,9 +13,6 @@ type ChartPoint = {
   month_number: number;
   total_income: number;
 };
-
-const BAR_MIN_PX = 4;
-const CHART_HEIGHT_PX = 240;
 
 // function formatMoney(n: number) {
 //   return new Intl.NumberFormat("ar-EG", {
@@ -28,7 +28,7 @@ export default function RevenueChart() {
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth() + 1;
   const MAX_YEAR = currentYear + 2;
-  const MIN_YEAR = currentYear -2;
+  const MIN_YEAR = currentYear - 2;
   const [year, setYear] = useState<number>(currentYear);
   const [selectedMonth, setSelectedMonth] = useState<number>(currentMonth);
 
@@ -41,7 +41,7 @@ export default function RevenueChart() {
 
   const points: ChartPoint[] = useMemo(
     () => res?.data?.data?.chart_data ?? [],
-    [res?.data?.data?.chart_data]
+    [res?.data?.data?.chart_data],
   );
 
   useEffect(() => {
@@ -62,21 +62,22 @@ export default function RevenueChart() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [points, year]);
 
-  const maxIncome = useMemo(() => {
-    const vals = points.map((p) => p.total_income);
-    return Math.max(1, ...vals, 1);
-  }, [points]);
-
-  const selectedPoint = useMemo(
-    () => points.find((p) => p.month_number === selectedMonth),
-    [points, selectedMonth]
+  const barPoints: SimpleBarPoint[] = useMemo(
+    () =>
+      points.map((p) => ({
+        id: String(p.month_number),
+        value: p.total_income,
+        labelFull: p.month,
+        labelShort: p.month_short,
+      })),
+    [points],
   );
 
   const years = useMemo(() => {
     const arr: number[] = [];
     for (let y = MIN_YEAR; y <= MAX_YEAR; y++) arr.push(y);
     return arr;
-  }, []);
+  }, [MIN_YEAR, MAX_YEAR]);
 
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -104,7 +105,7 @@ export default function RevenueChart() {
           <div ref={menuRef} className="relative">
             <button
               onClick={() => setOpen((v) => !v)}
-              className="cursor-poiner px-3 py-1.5 rounded-md border border-gray-200 text-sm flex items-center gap-1 hover:bg-gray-50 focus:ring-2 focus:ring-orange-500"
+              className="cursor-pointer px-3 py-1.5 rounded-md border border-gray-200 text-sm flex items-center gap-1 hover:bg-gray-50 focus:ring-2 focus:ring-orange-500"
               aria-haspopup="listbox"
               aria-expanded={open}
             >
@@ -143,96 +144,15 @@ export default function RevenueChart() {
         </div>
       </div>
 
-      {/* Selected month summary */}
-      <div className="mb-3 text-sm text-gray-700">
-        {selectedPoint ? (
-          <>
-            <span className="font-medium">{selectedPoint.month}</span>
-            <span className="mx-2">•</span>
-            الإيراد:{" "}
-            <strong className="text-gray-900">
-              {selectedPoint.total_income.toFixed(2)}
-            </strong>
-          </>
-        ) : (
-          "—"
-        )}
-      </div>
-
-      {/* Loading / Empty */}
-      {loading && (
-        <div className="space-y-2">
-          <div className="animate-pulse h-6 w-32 bg-gray-100 rounded-md" />
-          <div className="animate-pulse h-60 bg-gray-100 rounded-lg" />
-        </div>
-      )}
-
-      {!loading && points.length === 0 && (
-        <div className="text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
-          لا تتوفر بيانات للعرض في هذه السنة.
-        </div>
-      )}
-
-      {/* Chart */}
-      {points.length > 0 && (
-        <div
-          className="flex items-end justify-between gap-2 pt-2 pb-3"
-          style={{ height: CHART_HEIGHT_PX }}
-        >
-          {points.map((p) => {
-            const raw = (p.total_income / maxIncome) * CHART_HEIGHT_PX;
-            const heightPx = Math.max(BAR_MIN_PX, Math.round(raw));
-            const active = p.month_number === selectedMonth;
-
-            return (
-              <button
-                key={p.month_number}
-                onClick={() => setSelectedMonth(p.month_number)}
-                className="cursor-pointer flex-1 flex flex-col items-center group focus:outline-none"
-                title={`${p.month}: ${p.total_income.toFixed(2)}`}
-              >
-                <div
-                  className={`w-full rounded-t-lg transition-all duration-300 ${
-                    active
-                      ? "bg-gradient-to-t from-orange-600 to-orange-400 shadow-md"
-                      : "bg-gradient-to-t from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500"
-                  }`}
-                  style={{ height: heightPx }}
-                />
-                <span
-                  className={`text-xs mt-2 ${
-                    active ? "text-orange-700 font-semibold" : "text-gray-500"
-                  }`}
-                >
-                  {p.month_number}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/*month short names */}
-      {points.length > 0 && (
-        <div className="grid grid-cols-12 gap-2 -mt-1">
-          {points.map((p) => {
-            const active = p.month_number === selectedMonth;
-            return (
-              <button
-                key={`lbl-${p.month_number}`}
-                onClick={() => setSelectedMonth(p.month_number)}
-                className={`cursor-pointer text-[11px] py-1 rounded-md transition-colors ${
-                  active
-                    ? "bg-orange-50 text-orange-700 font-semibold"
-                    : "text-gray-400 hover:text-gray-600"
-                }`}
-              >
-                {p.month_short}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      <SimpleBarChart
+        points={barPoints}
+        selectedId={String(selectedMonth)}
+        onSelect={(id) => setSelectedMonth(Number(id))}
+        summaryPrefix="الإيراد:"
+        formatValue={(v) => v.toFixed(2)}
+        loading={loading}
+        emptyMessage="لا تتوفر بيانات للعرض في هذه السنة."
+      />
     </div>
   );
 }

@@ -66,7 +66,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
     <div className={`relative ${fullHeight && "h-full"}`} ref={containerRef}>
       <div
         className={`flex flex-wrap items-center gap-2 px-3 ${
-          big ? "py-[17px]" : "py-[9px]"
+          big ? "py-4.25" : "py-2.25"
         } border rounded-lg
           ${
             open
@@ -112,7 +112,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
           }}
           readOnly={disabled}
           aria-disabled={disabled}
-          className="flex-1 min-w-[80px] bg-transparent outline-none text-sm read-only:cursor-not-allowed"
+          className="flex-1 min-w-20 bg-transparent outline-none text-sm read-only:cursor-not-allowed"
           placeholder={placeholder}
           dir="rtl"
         />
