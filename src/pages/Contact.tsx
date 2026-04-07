@@ -79,7 +79,7 @@ const ContactPage = () => {
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="text-center mb-16 pt-20">
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl mb-8 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+              <div className="inline-flex items-center justify-center w-24 h-24 bg-linear-to-br from-(--brand) to-(--brand-light) rounded-2xl mb-8 shadow-2xl transform hover:scale-105 transition-transform duration-300">
                 <Building2 className="w-12 h-12 text-white" />
               </div>
               <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
@@ -227,13 +227,13 @@ const ContactPage = () => {
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <a
                     href="tel:+962791003360"
-                    className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-[1.05] shadow-xl hover:shadow-2xl"
+                    className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 transform hover:scale-[1.05] shadow-xl hover:shadow-2xl"
                   >
                     اتصل بنا الآن
                   </a>
                   <a
                     href="mailto:contact@vision-jo.com"
-                    className="border-2 border-orange-500 text-orange-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-50/80 transition-all duration-300 backdrop-blur-sm transform hover:scale-[1.05] shadow-lg"
+                    className="border-2 border-(--brand) text-orange-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-50/80 transition-all duration-300 backdrop-blur-sm transform hover:scale-[1.05] shadow-lg"
                   >
                     راسلنا عبر البريد
                   </a>

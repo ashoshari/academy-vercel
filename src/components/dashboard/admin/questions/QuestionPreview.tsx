@@ -11,7 +11,7 @@ type AnswerWithIdx = DraftQuestion["answers"][number] & { _idx: number };
 const QuestionPreview: React.FC<Props> = ({ question }) => {
   const qImgUrl = useMemo(
     () => (question.image ? question.image : null),
-    [question.image]
+    [question.image],
   );
 
   const { correctWithExpl, incorrectWithExpl } = useMemo(() => {
@@ -25,10 +25,10 @@ const QuestionPreview: React.FC<Props> = ({ question }) => {
 
     return {
       correctWithExpl: withIdx.filter(
-        (a) => a.is_correct && hasText(a.explanation)
+        (a) => a.is_correct && hasText(a.explanation),
       ),
       incorrectWithExpl: withIdx.filter(
-        (a) => !a.is_correct && hasText(a.explanation)
+        (a) => !a.is_correct && hasText(a.explanation),
       ),
     };
   }, [question.answers]);
@@ -110,14 +110,14 @@ const QuestionPreview: React.FC<Props> = ({ question }) => {
 
           <div className="flex flex-col items-start justify-start gap-6">
             <div className="bg-blue-50 w-full rounded-lg p-6 border border-blue-200">
-              <h3 className="font-bold text-blue-800 mb-3 flex items-center gap-2">
+              <h3 className="font-bold text-(--brand-secondary) mb-3 flex items-center gap-2">
                 <Lightbulb size={20} />
                 شرح الإجابة الصحيحة
               </h3>
               {correctWithExpl.map((a, i) => (
                 <div
                   key={a.id ?? `c-${i}`}
-                  className="w-full text-blue-800 whitespace-pre-wrap"
+                  className="w-full text-(--brand-secondary) whitespace-pre-wrap"
                 >
                   <div className="mt-1">{a.explanation}</div>
                 </div>

@@ -75,7 +75,7 @@ const TreePage: React.FC = () => {
         </div>
       </div>
 
-      <button className="w-full cursor-pointer bg-linear-to-r from-yellow-500 to-orange-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105">
+      <button className="w-full cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white py-3 px-4 rounded-xl font-semibold hover:brightness-110 transition-all duration-300 transform group-hover:scale-105">
         عرض الملف الشخصي
       </button>
     </div>
@@ -122,7 +122,7 @@ const TreePage: React.FC = () => {
             <div
               className={`flex items-center justify-center w-10 h-10 rounded-xl ${
                 level === 0
-                  ? "bg-linear-to-r from-yellow-500 to-orange-500"
+                  ? "bg-linear-to-r from-(--brand) to-(--brand-light)"
                   : "bg-gray-200"
               }`}
             >
@@ -190,7 +190,7 @@ const TreePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-white">
       {/* Header */}
-      <div className="bg-linear-to-r from-yellow-500 to-orange-500 shadow-lg">
+      <div className="bg-linear-to-r from-(--brand) to-(--brand-light) shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">

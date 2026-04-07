@@ -252,7 +252,7 @@ export default function EditTeacherPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
+            className="px-6 py-3 bg-(--brand) text-white rounded-lg hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
           >
             <Save size={16} />
             حفظ التعديلات

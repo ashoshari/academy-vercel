@@ -74,13 +74,16 @@ const Layout = () => {
     "custom-card-pricing",
     "card-codes",
   ]);
+  const ADMIN_DISALLOWED = new Set(["sales"]);
 
   const filteredMenuItems =
     role === "library"
       ? menuItems.filter((i) => LIBRARY_ALLOWED.has(i.id))
-      : role === "teacher"
-        ? menuItems.filter((i) => !TEACHER_DISALLOWED.has(i.id))
-        : menuItems;
+      : role === "admin"
+        ? menuItems.filter((i) => !ADMIN_DISALLOWED.has(i.id))
+        : role === "teacher"
+          ? menuItems.filter((i) => !TEACHER_DISALLOWED.has(i.id))
+          : menuItems;
 
   useEffect(() => {
     document.title = "داش بورد";
@@ -107,7 +110,7 @@ const Layout = () => {
           <div className="flex items-center justify-between mb-6">
             {sidebarOpen && (
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-linear-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-linear-to-br from-(--brand) to-(--brand-light) rounded-lg flex items-center justify-center">
                   <Settings className="w-4 h-4 text-white" />
                 </div>
                 <div>
@@ -138,8 +141,8 @@ const Layout = () => {
                     sidebarOpen ? "p-3" : "p-1.5 my-2"
                   } rounded-lg transition-all duration-300 text-sm ${
                     isActive
-                      ? "bg-linear-to-r from-orange-500 to-orange-600 text-white shadow-md"
-                      : "text-gray-600 hover:bg-orange-50 hover:text-orange-600"
+                      ? "bg-linear-to-r from-(--brand) to-(--brand-light) text-white shadow-md"
+                      : "text-gray-600 hover:bg-orange-50 hover:text-(--brand)"
                   }`
                 }
               >

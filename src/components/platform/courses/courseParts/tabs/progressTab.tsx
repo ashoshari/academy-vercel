@@ -21,7 +21,7 @@ const ProgressTab = () => {
       <h2 className="text-2xl font-bold text-gray-900 mb-6">تقدمك في الدورة</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-linear-to-r from-blue-500 to-purple-500 rounded-2xl p-6 text-white">
+        <div className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) rounded-2xl p-6 text-white">
           <div className="flex items-center space-x-3 mb-4">
             <BarChart3 className="w-8 h-8" />
             <div>
@@ -76,7 +76,7 @@ const ProgressTab = () => {
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
-                className="bg-linear-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-300"
                 style={{ width: `${lesson?.progress_percentage}%` }}
               ></div>
             </div>
@@ -100,7 +100,7 @@ const ProgressTab = () => {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-300"
                       style={{ width: `${unitProgress}%` }}
                     ></div>
                   </div>

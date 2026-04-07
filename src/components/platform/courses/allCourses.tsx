@@ -73,11 +73,11 @@ const AllCourses = () => {
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-2">
-                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
+                  <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium">
                     {course?.specialization_material?.name || "-"}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-(--brand-secondary) transition-colors duration-300">
                   {course.course_name || "-"}
                 </h3>
                 <p className="text-sm text-gray-600 mb-3">
@@ -115,7 +115,7 @@ const AllCourses = () => {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xs font-bold text-blue-600">
+                  <span className="text-xs font-bold text-(--brand-secondary)">
                     {course?.progress}%
                   </span>
                 </div>
@@ -133,7 +133,7 @@ const AllCourses = () => {
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
-                  className="bg-linear-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                  className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
                   style={{ width: `${course?.progress}%` }}
                 ></div>
               </div>
@@ -142,7 +142,7 @@ const AllCourses = () => {
             {/* Next Lesson */}
             <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
               <div className="flex items-center space-x-2 mb-1">
-                <Play className="w-4 h-4 text-blue-600" />
+                <Play className="w-4 h-4 text-(--brand-secondary)" />
                 <span className="text-sm font-medium text-gray-900">
                   الدرس التالي:
                 </span>
@@ -165,7 +165,7 @@ const AllCourses = () => {
             {/* Continue Button */}
             <button
               onClick={() => navigate(`/coursePage/${course?.course_id}`)}
-              className="w-full cursor-pointer bg-linear-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
+              className="w-full cursor-pointer bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
             >
               <Play className="w-4 h-4" />
               <span>متابعة التعلم</span>
@@ -211,7 +211,7 @@ const AllCourses = () => {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-lg md:text-xs font-bold text-blue-600">
+                <span className="text-lg md:text-xs font-bold text-(--brand-secondary)">
                   {course?.progress}%
                 </span>
               </div>
@@ -222,11 +222,11 @@ const AllCourses = () => {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
-                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
+                    <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium">
                       {course?.specialization_material?.name ?? "-"}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300">
+                  <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-(--brand-secondary) transition-colors duration-300">
                     {course?.course_name}
                   </h3>
                   <p className="text-gray-600 mb-2">{course?.teacher}</p>
@@ -247,7 +247,7 @@ const AllCourses = () => {
               <div className="mt-4">
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-linear-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                    className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
                     style={{ width: `${course?.progress}%` }}
                   ></div>
                 </div>
@@ -258,7 +258,7 @@ const AllCourses = () => {
             <div className="shrink-0">
               <button
                 onClick={() => navigate(`/coursePage/${course?.id}`)}
-                className="bg-linear-to-r from-blue-500 to-purple-500 text-white cursor-pointer px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+                className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white cursor-pointer px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
               >
                 <Play className="w-5 h-5" />
                 <span>متابعة</span>
@@ -273,7 +273,7 @@ const AllCourses = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-white">
       {/* Header */}
-      <div className="bg-linear-to-r from-blue-600 to-purple-600 shadow-lg">
+      <div className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between mb-6">
             <button
@@ -350,7 +350,7 @@ const AllCourses = () => {
                   onClick={() => setViewMode("grid")}
                   className={`p-2 rounded-lg transition-all cursor-pointer duration-200 ${
                     viewMode === "grid"
-                      ? "bg-white shadow-sm text-blue-600"
+                      ? "bg-white shadow-sm text-(--brand-secondary)"
                       : "text-gray-600"
                   }`}
                 >
@@ -360,7 +360,7 @@ const AllCourses = () => {
                   onClick={() => setViewMode("list")}
                   className={`p-2 rounded-lg transition-all cursor-pointer duration-200 ${
                     viewMode === "list"
-                      ? "bg-white shadow-sm text-blue-600"
+                      ? "bg-white shadow-sm text-(--brand-secondary)"
                       : "text-gray-600"
                   }`}
                 >

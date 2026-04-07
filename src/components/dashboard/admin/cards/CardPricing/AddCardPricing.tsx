@@ -110,7 +110,7 @@ const AddCardPricing = ({
                       : prev.default_library_price,
                   }));
                 }}
-                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                 placeholder="أدخل السعر..."
                 min="0"
                 step="1"
@@ -136,7 +136,7 @@ const AddCardPricing = ({
                     default_teacher_price: Math.min(value, newCard.price || 0),
                   });
                 }}
-                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                 placeholder="ادخل سعر المدرس..."
                 min="0"
                 step="1"
@@ -161,7 +161,7 @@ const AddCardPricing = ({
                     default_library_price: Math.min(value, newCard.price || 0),
                   });
                 }}
-                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                 placeholder="ادخل سعر المكتبة..."
                 min="0"
                 step="1"
@@ -179,7 +179,7 @@ const AddCardPricing = ({
             <div className="flex items-center gap-2">
               <label
                 htmlFor="imageUpload"
-                className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                className="cursor-pointer px-4 py-3 bg-(--brand) text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
               >
                 اختر الصورة المصغرة
               </label>
@@ -273,7 +273,7 @@ const AddCardPricing = ({
                   !newCard.default_library_price ||
                   newCard.default_library_price <= 0
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
+                    : "cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:from-(--brand-light) hover:to-(--brand)"
                 }`}
           >
             <Save size={16} />

@@ -19,7 +19,7 @@ export default function PriceCard({
       <div
         className={`p-6 text-white relative overflow-hidden ${
           priceCard?.card?.is_active
-            ? "bg-linear-to-br from-orange-500 to-orange-600"
+            ? "bg-linear-to-br from-(--brand) to-(--brand-light)"
             : "bg-linear-to-br from-gray-400 to-gray-500"
         }`}
       >

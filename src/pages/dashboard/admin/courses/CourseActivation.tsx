@@ -106,7 +106,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
               placeholder="ابحث بالاسم أو رقم الطالب..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) text-sm"
             />
           </div>
         </div>
@@ -209,7 +209,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
                                 setActivatingId(student.id);
                               }
                             }}
-                            className="cursor-pointer px-3 py-1 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg text-sm hover:from-orange-600 hover:to-orange-700"
+                            className="cursor-pointer px-3 py-1 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg text-sm hover:from-(--brand-light) hover:to-(--brand)"
                           >
                             تفعيل
                           </button>

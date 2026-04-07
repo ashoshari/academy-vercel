@@ -70,7 +70,7 @@ const FilesTab = () => {
               <div className="flex items-start space-x-4 mb-4">
                 <File className="w-12 h-12 text-gray-500" />
                 <div className="flex-1">
-                  <h3 className="font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-200">
+                  <h3 className="font-bold text-gray-900 mb-2 group-hover:text-(--brand-secondary) transition-colors duration-200">
                     {file?.title || "title"}
                   </h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">
@@ -111,7 +111,7 @@ const FilesTab = () => {
                 target="_blank"
                 onClick={() => handleDownload(file?.id)}
                 download
-                className="w-full bg-linear-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
+                className="w-full bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white py-3 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
               >
                 <Download className="w-5 h-5" />
                 <span>تحميل الملف</span>

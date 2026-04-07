@@ -255,7 +255,7 @@ const TeacherProfile: React.FC = () => {
           </h3>
           <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
             {course?.level?.name && (
-              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg">
+              <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg">
                 {course?.level?.name}
               </span>
             )}
@@ -293,7 +293,7 @@ const TeacherProfile: React.FC = () => {
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled
               ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
-              : "bg-linear-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
+              : "bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:from-(--brand-light) hover:to-(--brand) transform hover:scale-105"
           }`}
         >
           {course?.is_enrolled ? (
@@ -357,7 +357,7 @@ const TeacherProfile: React.FC = () => {
           </h3>
           <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
             {course?.level?.name && (
-              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg">
+              <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg">
                 {course?.level?.name || "-"}
               </span>
             )}
@@ -395,7 +395,7 @@ const TeacherProfile: React.FC = () => {
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled && course?.is_enrollment_active
               ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
-              : "bg-linear-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105"
+              : "bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:from-(--brand-light) hover:to-(--brand) transform hover:scale-105"
           }`}
         >
           {course?.is_enrolled && course?.is_enrollment_active ? (
@@ -532,7 +532,7 @@ const TeacherProfile: React.FC = () => {
               target="_blank"
               onClick={() => handleDownload(book?.id)}
               download
-              className="cursor-pointer bg-linear-to-r w-full justify-center from-yellow-500 to-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+              className="cursor-pointer bg-linear-to-r w-full justify-center from-yellow-500 to-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
               <p className="">تحميل</p>
@@ -605,7 +605,7 @@ const TeacherProfile: React.FC = () => {
               target="_blank"
               onClick={() => handleDownload(question?.id)}
               download
-              className="cursor-pointer bg-linear-to-r w-full justify-center from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+              className="cursor-pointer bg-linear-to-r w-full justify-center from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
               <p className="">تحميل</p>
@@ -696,7 +696,7 @@ const TeacherProfile: React.FC = () => {
       />
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-white">
         {/* Header */}
-        <div className="bg-linear-to-r from-blue-600 to-purple-600 shadow-lg">
+        <div className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) shadow-lg">
           <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-between mb-6">
               <button
@@ -780,7 +780,7 @@ const TeacherProfile: React.FC = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`cursor-pointer flex items-center justify-between w-full h-16 mx-1.25 space-x-2 px-10 md:px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
                       activeTab === tab.id
-                        ? "bg-linear-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
+                        ? "bg-linear-to-r from-(--brand) to-(--brand-light) text-white shadow-lg"
                         : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                     }`}
                   >
@@ -925,7 +925,7 @@ const TeacherProfile: React.FC = () => {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-linear-to-r from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-linear-to-r from-(--brand) to-(--brand-light) rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <CreditCard className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -986,7 +986,7 @@ const TeacherProfile: React.FC = () => {
                     disabled={
                       !selectedCourse?.is_free && !activationCode.trim()
                     }
-                    className="cursor-pointer flex-1 bg-linear-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="cursor-pointer flex-1 bg-linear-to-r from-(--brand) to-(--brand-light) py-3 px-6 rounded-xl font-semibold hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     تفعيل الدورة
                   </button>

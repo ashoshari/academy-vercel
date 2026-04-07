@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
                     <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
                       <img
                         loading="lazy"
-                        className="rounded-xl w-10 h-10 text-white"
+                        className="w-10 h-auto"
                         src={headerData?.logo}
                         alt="logo"
                       />
@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
                     <Image className="rounded-xl w-10 h-10 text-gray-600" />
                   )}
                   <div className="text-right">
-                    <h1 className="text-xl font-bold whitespace-nowrap bg-linear-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                    <h1 className="text-xl font-bold whitespace-nowrap bg-linear-to-r from-(--brand) to-(--brand-light) bg-clip-text text-transparent">
                       {headerData?.platform_name || "اسم المنصة"}
                     </h1>
                     <p className="text-xs text-gray-500">
@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                       }, 100);
                     }}
-                    className="cursor-pointer px-5 py-2 rounded-lg bg-linear-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-sm hover:shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all"
+                    className="cursor-pointer px-5 py-2 rounded-lg bg-linear-to-r from-(--brand) to-(--brand-light) text-white font-medium shadow-sm hover:shadow-md hover:brightness-110 transition-all"
                   >
                     عرض الكل
                   </Link>
@@ -131,7 +131,7 @@ const Navbar: React.FC = () => {
                       }
                       setOpen(!open);
                     }}
-                    className="cursor-pointer w-12 h-12 text-xs rounded-full bg-linear-to-r from-yellow-500 to-orange-500 hover:bg-linear-to-r hover:from-yellow-600 hover:to-orange-600 flex items-center justify-center text-white font-bold"
+                    className="w-12 h-12 rounded-full text-xs text-white font-bold bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 flex items-center justify-center cursor-pointer"
                   >
                     حسابي
                   </button>
@@ -177,7 +177,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <button
                   onClick={handleLoginClick}
-                  className="bg-linear-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 cursor-pointer"
+                  className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-200 transform hover:scale-105 cursor-pointer"
                 >
                   تسجيل الدخول
                 </button>
@@ -231,7 +231,7 @@ const Navbar: React.FC = () => {
                       }, 100);
                       setIsMenuOpen(false);
                     }}
-                    className="w-full text-center px-4 py-3 rounded-xl bg-linear-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-md hover:from-yellow-500 hover:to-orange-600 transition-all duration-200"
+                    className="w-full text-center px-4 py-3 rounded-xl bg-linear-to-r from-(--brand) to-(--brand-light) text-white font-medium shadow-md hover:brightness-110 transition-all duration-200"
                   >
                     عرض الكل
                   </Link>

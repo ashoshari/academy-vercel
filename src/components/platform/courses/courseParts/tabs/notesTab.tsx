@@ -222,7 +222,7 @@ const TextNotes = () => {
                       );
                       setNoteId(note?.id);
                     }}
-                    className="cursor-pointer p-2 text-blue-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    className="cursor-pointer p-2 text-(--brand-secondary) hover:bg-red-50 rounded-lg transition-colors duration-200"
                   >
                     <Pencil className="w-4 h-4" />
                   </button>

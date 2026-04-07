@@ -45,11 +45,12 @@ function colorForAction(action: string) {
     a.includes("insert") ||
     a.includes("added")
   )
-    return "bg-orange-500";
+    return "bg-(--brand)";
   if (a.includes("register") || a.includes("signup") || a.includes("enroll"))
     return "bg-green-500";
   if (a.includes("upload") || a.includes("publish")) return "bg-blue-500";
-  if (a.includes("update") || a.includes("edit")) return "bg-purple-500";
+  if (a.includes("update") || a.includes("edit"))
+    return "bg-(--brand-secondary)";
   if (a.includes("delete") || a.includes("remove")) return "bg-red-500";
   return "bg-gray-400";
 }

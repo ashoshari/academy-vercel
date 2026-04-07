@@ -293,7 +293,7 @@ export default function AddLibraryPage() {
           <div className="h-17 flex items-center">
             <label
               htmlFor="library-img-add"
-              className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all cursor-pointer"
+              className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2.5 text-sm rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all cursor-pointer"
             >
               إضافة صورة
             </label>
@@ -336,7 +336,7 @@ export default function AddLibraryPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="curosor-pointer px-6 py-3 bg-orange-500 text-white rounded-lg cursor-pointer hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
+            className="curosor-pointer px-6 py-3 bg-(--brand) text-white rounded-lg cursor-pointer hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
           >
             <Save size={16} />
             إضافة المكتبة

@@ -138,7 +138,7 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
               setAmount(e.target.value ? Number(e.target.value) : "")
             }
             placeholder="أدخل المبلغ"
-            className="px-3 py-2 border-gray-200 border focus:border-orange-500 outline-0 focus-within:ring-1 focus-within:ring-orange-500 rounded-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="px-3 py-2 border-gray-200 border focus:border-(--brand) outline-0 focus-within:ring-1 focus-within:ring-orange-500 rounded-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             onKeyDown={(e) => {
               if (e.key === "ArrowUp" || e.key === "ArrowDown") {
                 e.preventDefault();
@@ -158,7 +158,7 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
             </button>
             <button
               onClick={handleSavePrice}
-              className="cursor-pointer flex items-center gap-2 rounded-lg bg-linear-to-r from-orange-500 to-orange-600 px-6 py-2 text-white hover:from-orange-600 hover:to-orange-700"
+              className="cursor-pointer flex items-center gap-2 rounded-lg bg-linear-to-r from-(--brand) to-(--brand-light) px-6 py-2 text-white hover:from-(--brand-light) hover:to-(--brand)"
             >
               <Save size={16} />
               حفظ التغييرات

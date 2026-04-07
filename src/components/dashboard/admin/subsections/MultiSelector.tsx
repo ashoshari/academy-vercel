@@ -69,11 +69,9 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
           big ? "py-4.25" : "py-2.25"
         } border rounded-lg
           ${
-            open
-              ? "border-orange-500 ring-1 ring-orange-500"
-              : "border-gray-200"
+            open ? "border-(--brand) ring-1 ring-orange-500" : "border-gray-200"
           }
-          focus-within:border-orange-500 ${fullHeight && "h-full"}`}
+          focus-within:border-(--brand) ${fullHeight && "h-full"}`}
         onClick={() => {
           if (disabled) return;
           setOpen(true);

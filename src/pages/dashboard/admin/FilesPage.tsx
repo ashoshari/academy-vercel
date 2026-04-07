@@ -240,7 +240,7 @@ const FilesPage = () => {
 
     switch (file.fileType) {
       case "document":
-        return "text-blue-600";
+        return "text-(--brand-secondary)";
       case "image":
         return "text-green-600";
       case "video":
@@ -259,7 +259,7 @@ const FilesPage = () => {
       case "public":
         return "bg-green-100 text-green-800";
       case "students":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 text-(--brand-secondary)";
       case "teachers":
         return "bg-purple-100 text-purple-800";
       case "admin":
@@ -601,7 +601,7 @@ const FilesPage = () => {
             />
             <label
               htmlFor="file-upload"
-              className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
+              className="bg-(--brand) text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
             >
               اختيار الملفات
             </label>
@@ -658,7 +658,7 @@ const FilesPage = () => {
                   })
                 }
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
                 placeholder="وصف مختصر للملفات..."
               />
             </div>
@@ -675,7 +675,7 @@ const FilesPage = () => {
                     accessLevel: e.target.value as FileItem["accessLevel"],
                   })
                 }
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               >
                 <option value="public">عام - متاح للجميع</option>
                 <option value="students">طلاب - متاح للطلاب فقط</option>
@@ -695,7 +695,7 @@ const FilesPage = () => {
               onChange={(e) =>
                 setUploadFiles({ ...uploadFiles, expiryDate: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
             />
           </div>
         </div>
@@ -710,7 +710,7 @@ const FilesPage = () => {
           <button
             onClick={handleFileUpload}
             disabled={uploadFiles.files.length === 0}
-            className="px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Upload size={16} />
             رفع الملفات
@@ -747,7 +747,7 @@ const FilesPage = () => {
               onChange={(e) =>
                 setNewFolder({ ...newFolder, name: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل اسم المجلد..."
             />
           </div>
@@ -762,7 +762,7 @@ const FilesPage = () => {
                 setNewFolder({ ...newFolder, description: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
               placeholder="وصف مختصر للمجلد..."
             />
           </div>
@@ -779,7 +779,7 @@ const FilesPage = () => {
                   accessLevel: e.target.value as FileItem["accessLevel"],
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
             >
               <option value="public">عام - متاح للجميع</option>
               <option value="students">طلاب - متاح للطلاب فقط</option>
@@ -799,7 +799,7 @@ const FilesPage = () => {
           <button
             onClick={handleCreateFolder}
             disabled={!newFolder.name}
-            className="px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FolderPlus size={16} />
             إنشاء المجلد
@@ -829,7 +829,7 @@ const FilesPage = () => {
           </button>
           <button
             onClick={() => setShowUploadModal(true)}
-            className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Upload size={16} />
             رفع ملفات
@@ -855,7 +855,7 @@ const FilesPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الحجم الإجمالي</p>
-              <p className="text-3xl font-bold text-blue-600">
+              <p className="text-3xl font-bold text-(--brand-secondary)">
                 {formatFileSize(stats.totalSize)}
               </p>
             </div>
@@ -924,7 +924,7 @@ const FilesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الملفات..."
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -932,7 +932,7 @@ const FilesPage = () => {
           <select
             value={fileTypeFilter}
             onChange={(e) => setFileTypeFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="all">جميع الأنواع</option>
             <option value="folder">مجلدات</option>
@@ -947,7 +947,7 @@ const FilesPage = () => {
           <select
             value={accessFilter}
             onChange={(e) => setAccessFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="all">جميع المستويات</option>
             <option value="public">عام</option>
@@ -964,7 +964,7 @@ const FilesPage = () => {
               setSortBy(by as any);
               setSortOrder(order as any);
             }}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="name-asc">الاسم (أ-ي)</option>
             <option value="name-desc">الاسم (ي-أ)</option>
@@ -1031,7 +1031,7 @@ const FilesPage = () => {
                   <div className="flex gap-4 justify-center">
                     <button
                       onClick={() => setShowUploadModal(true)}
-                      className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2"
+                      className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2"
                     >
                       <Upload size={16} />
                       رفع ملفات
@@ -1144,7 +1144,7 @@ const FilesPage = () => {
                           {file.type === "folder" ? (
                             <button
                               onClick={() => navigateToFolder(file.id)}
-                              className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                              className="p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                               title="فتح المجلد"
                             >
                               <Eye size={16} />
@@ -1152,7 +1152,7 @@ const FilesPage = () => {
                           ) : (
                             <button
                               onClick={() => window.open(file.url, "_blank")}
-                              className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                              className="p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                               title="عرض الملف"
                             >
                               <ExternalLink size={16} />

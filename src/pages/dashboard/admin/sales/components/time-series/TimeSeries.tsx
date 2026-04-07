@@ -1,27 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import SimpleBarChart, {
   type SimpleBarPoint,
 } from "@/components/dashboard/admin/charts/SimpleBarChart";
 import {
+  buildMutualQueryString,
   buildTimeseriesQueryString,
-  mutualFilterKeyParts,
   type SalesFilters,
-} from "../../salesFilters";
-
-type TimeseriesChartRow = {
-  year: number;
-  month: number;
-  label: string;
-  total_teacher_share: string;
-  total_sales: number;
-};
-
-type TimeseriesPayload = {
-  granularity: string;
-  chart: TimeseriesChartRow[];
-};
+} from "../../utils/salesFilters";
+import { TimeseriesChartRow, TimeseriesPayload } from "../../types/types";
 
 function parseTimeseriesPayload(raw: unknown): TimeseriesPayload | undefined {
   if (!raw || typeof raw !== "object") return undefined;
@@ -51,11 +40,12 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
     [filters, chartYear],
   );
 
+  const mutualKey = buildMutualQueryString(filters);
   const { data: raw, isLoading } = useCustomQuery(
     `/v2/teacher/card-sales/timeseries/?${qs}`,
     [
       "card-sales-timeseries",
-      ...mutualFilterKeyParts(filters),
+      mutualKey,
       chartYear === "" ? "rolling" : chartYear,
     ],
   );
@@ -63,50 +53,61 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
   const payload = useMemo(() => parseTimeseriesPayload(raw), [raw]);
   const chartRows = useMemo(() => payload?.chart ?? [], [payload?.chart]);
 
-  const salesPoints: SimpleBarPoint[] = useMemo(
-    () =>
-      chartRows.map((r) => ({
-        id: `${r.year}-${r.month}`,
+  const { salesPoints, sharePoints } = useMemo(() => {
+    const sales: SimpleBarPoint[] = [];
+    const share: SimpleBarPoint[] = [];
+
+    for (const r of chartRows) {
+      const id = `${r.year}-${r.month}`;
+      const labelShort = String(r.month);
+      const labelFull = r.label;
+
+      sales.push({
+        id,
         value: r.total_sales,
-        labelFull: r.label,
-        labelShort: String(r.month),
-      })),
-    [chartRows],
-  );
+        labelFull,
+        labelShort,
+      });
 
-  const sharePoints: SimpleBarPoint[] = useMemo(
-    () =>
-      chartRows.map((r) => ({
-        id: `${r.year}-${r.month}`,
+      share.push({
+        id,
         value: Math.max(0, parseFloat(r.total_teacher_share) || 0),
-        labelFull: r.label,
-        labelShort: String(r.month),
-      })),
-    [chartRows],
-  );
-
-  useEffect(() => {
-    if (!salesPoints.length) {
-      setSelectedBarId(null);
-      return;
+        labelFull,
+        labelShort,
+      });
     }
-    const first = salesPoints[0].id;
-    setSelectedBarId((prev) =>
-      prev && salesPoints.some((p) => p.id === prev) ? prev : first,
-    );
+
+    return { salesPoints: sales, sharePoints: share };
+  }, [chartRows]);
+
+  const { salesPointIds, firstSalesId } = useMemo(() => {
+    if (!salesPoints.length) {
+      return {
+        salesPointIds: new Set<string>(),
+        salesCount: 0,
+        firstSalesId: null as string | null,
+      };
+    }
+
+    return {
+      salesPointIds: new Set(salesPoints.map((p) => p.id)),
+      salesCount: salesPoints.length,
+      firstSalesId: salesPoints[0].id,
+    };
   }, [salesPoints]);
 
   useEffect(() => {
-    const onDoc = (e: MouseEvent) => {
-      if (
-        yearMenuRef.current &&
-        !yearMenuRef.current.contains(e.target as Node)
-      )
-        setYearMenuOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, []);
+    if (!firstSalesId) {
+      setSelectedBarId(null);
+      return;
+    }
+
+    setSelectedBarId((prev) =>
+      prev && salesPointIds.has(prev) ? prev : firstSalesId,
+    );
+  }, [firstSalesId, salesPointIds]);
+
+  useClickOutside(yearMenuRef, () => setYearMenuOpen(false), yearMenuOpen);
 
   const yearOptions = useMemo(() => {
     const arr: number[] = [];
@@ -115,9 +116,9 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
   }, []);
 
   const selectedIdForCharts =
-    selectedBarId && salesPoints.some((p) => p.id === selectedBarId)
+    selectedBarId && salesPointIds.has(selectedBarId)
       ? selectedBarId
-      : (salesPoints[0]?.id ?? null);
+      : firstSalesId;
 
   return (
     <div

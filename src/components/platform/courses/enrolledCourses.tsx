@@ -1,5 +1,5 @@
 import React from "react";
-import { Play, Clock, BookOpen, ChevronRight } from "lucide-react";
+import { Play, Clock, BookOpen, ChevronRight, ChevronLeft } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
@@ -34,13 +34,13 @@ const EnrolledCourses: React.FC = () => {
             {/* Section Header */}
             <div className="flex items-center justify-between mb-12">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-linear-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) rounded-xl flex items-center justify-center">
                   <BookOpen className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">
                     دوراتي{" "}
-                    <span className="bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                    <span className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) bg-clip-text text-transparent">
                       الحالية
                     </span>
                   </h2>
@@ -52,17 +52,17 @@ const EnrolledCourses: React.FC = () => {
 
               <button
                 onClick={() => navigate("/all-courses")}
-                className="cursor-pointer hidden md:flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
+                className="cursor-pointer hidden md:flex items-center space-x-2 text-(--brand-secondary) hover:text-(--brand-secondary-dark) font-medium transition-colors duration-200"
               >
                 <span>عرض الكل</span>
-                <ChevronRight className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
             </div>
 
             {/* Quick Stats */}
             <div className="grid sm:grid-cols-3 grid-cols-1 gap-4 mb-8">
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
-                <div className="text-2xl font-bold text-blue-600 mb-1">
+                <div className="text-2xl font-bold text-(--brand-secondary) mb-1">
                   {myCoursesStats?.number_of_completed_lessons}
                 </div>
                 <div className="text-sm text-gray-600">دروس مكتملة</div>
@@ -104,19 +104,19 @@ const EnrolledCourses: React.FC = () => {
                               (material: any, index: number) => (
                                 <span
                                   key={index}
-                                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium"
+                                  className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium"
                                 >
                                   {material?.name}
                                 </span>
                               ),
                             )
                           ) : (
-                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-xs font-medium">
+                            <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium">
                               {course?.specialization_material?.name || "-"}
                             </span>
                           )}
                         </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                        <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-(--brand-secondary) transition-colors duration-300">
                           {course?.course_name || "-"}
                         </h3>
                         <p className="text-sm text-gray-600 mb-3">
@@ -154,7 +154,7 @@ const EnrolledCourses: React.FC = () => {
                           />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-xs font-bold text-blue-600">
+                          <span className="text-xs font-bold text-(--brand-secondary)">
                             {course?.progress}%
                           </span>
                         </div>
@@ -172,7 +172,7 @@ const EnrolledCourses: React.FC = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-linear-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                          className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
                           style={{ width: `${course?.progress}%` }}
                         ></div>
                       </div>
@@ -181,7 +181,7 @@ const EnrolledCourses: React.FC = () => {
                     {/* Next Lesson */}
                     <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
                       <div className="flex items-center space-x-2 mb-1">
-                        <Play className="w-4 h-4 text-blue-600" />
+                        <Play className="w-4 h-4 text-(--brand-secondary)" />
                         <span className="text-sm font-medium text-gray-900">
                           الدرس التالي:
                         </span>
@@ -206,7 +206,7 @@ const EnrolledCourses: React.FC = () => {
                       onClick={() =>
                         navigate(`/coursePage/${course?.course_id}`)
                       }
-                      className="w-full cursor-pointer bg-linear-to-r from-blue-500 to-purple-500 text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
+                      className="w-full cursor-pointer bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white py-2.5 px-4 rounded-xl font-semibold hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
                     >
                       <Play className="w-4 h-4" />
                       <span>متابعة التعلم</span>
@@ -220,7 +220,7 @@ const EnrolledCourses: React.FC = () => {
             <div className="text-center mt-8 md:hidden">
               <button
                 onClick={() => navigate("/all-courses")}
-                className="cursor-pointer bg-linear-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 mx-auto"
+                className="cursor-pointer bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 mx-auto"
               >
                 <BookOpen className="w-5 h-5" />
                 <span>عرض جميع دوراتي</span>

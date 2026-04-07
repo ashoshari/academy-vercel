@@ -160,7 +160,7 @@ const AddStudentPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50"
+            className="px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50"
           >
             <Save size={16} />
             إضافة الطالب

@@ -164,7 +164,7 @@ const GenerateModal = ({
                   name: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل اسم الكودات..."
               min="1"
               max="10000"
@@ -184,7 +184,7 @@ const GenerateModal = ({
                   card: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
             >
               <option value={0}>اختر سعر البطاقة</option>
               {cards?.data?.data
@@ -214,7 +214,7 @@ const GenerateModal = ({
                   quantity: parseInt(e.target.value) || 0,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل عدد الكودات..."
               min="1"
               max="10000"
@@ -232,7 +232,7 @@ const GenerateModal = ({
               onChange={(e) =>
                 setGenerateForm({ ...generateForm, prefix: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="CARD"
             />
           </div>
@@ -376,7 +376,7 @@ const GenerateModal = ({
                 setGenerateForm({ ...generateForm, notes: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
               placeholder="أدخل ملاحظات حول هذه المجموعة..."
             />
           </div>
@@ -397,8 +397,8 @@ const GenerateModal = ({
               <div className="flex items-center gap-2 text-sm">
                 {generateForm.targetingType === "all" ? (
                   <>
-                    <Globe size={16} className="text-blue-600" />
-                    <span className="text-blue-600 font-medium">
+                    <Globe size={16} className="text-(--brand-secondary)" />
+                    <span className="text-(--brand-secondary) font-medium">
                       يعمل على جميع الأقسام
                     </span>
                   </>
@@ -418,7 +418,7 @@ const GenerateModal = ({
 
           {/* Security Info Preview */}
           <div className="bg-blue-50 p-4 rounded-lg">
-            <h4 className="text-sm font-medium text-blue-800 mb-2 flex items-center gap-2">
+            <h4 className="text-sm font-medium text-(--brand-secondary) mb-2 flex items-center gap-2">
               <Shield size={16} />
               معلومات الأمان
             </h4>
@@ -461,7 +461,7 @@ const GenerateModal = ({
                   (generateForm.targetingType === "specific" &&
                     generateForm.targetedSubsections.length === 0)
             }
-            className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
             {loading ? "جارى التحميل..." : "     إنشاء الكودات"}

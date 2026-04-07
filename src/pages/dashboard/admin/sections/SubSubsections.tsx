@@ -176,7 +176,7 @@ const SubsectionsPage = () => {
     const section = data?.data?.data?.sections?.find(
       (s: any) => s.id === sectionId,
     );
-    if (!section) return "text-blue-600";
+    if (!section) return "text-(--brand-secondary)";
 
     switch (section.color) {
       case "green":
@@ -190,7 +190,7 @@ const SubsectionsPage = () => {
       case "pink":
         return "text-pink-600";
       default:
-        return "text-blue-600";
+        return "text-(--brand-secondary)";
     }
   };
 
@@ -413,7 +413,7 @@ const SubsectionsPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة قسم فرعي
@@ -428,7 +428,7 @@ const SubsectionsPage = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="البحث في الأقسام..."
-            className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           />
         </div>
       </div>
@@ -442,14 +442,14 @@ const SubsectionsPage = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="البحث في الأقسام الفرعية..."
-                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
               />
             </div>
           </div>
         </div> */}
 
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
-          <p className="text-2xl font-bold text-blue-600">
+          <p className="text-2xl font-bold text-(--brand-secondary)">
             {dataStatistics?.data?.data?.total_subsections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأقسام</p>
@@ -485,7 +485,7 @@ const SubsectionsPage = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة قسم فرعي جديد
@@ -639,7 +639,7 @@ const SubsectionsPage = () => {
                   {data?.data?.data?.length === 0 && (
                     <button
                       onClick={() => setShowAddModal(true)}
-                      className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                      className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
                     >
                       <Plus size={16} />
                       إضافة قسم فرعي

@@ -156,8 +156,9 @@ export default function AppRoutes() {
               {/* courses */}
               <Route path="courses" element={<CoursesPage />} />
               {/* courses */}
-
-              <Route path="sales" element={<SalesPage />} />
+              <Route element={<RequireRole exclude={["admin"]} />}>
+                <Route path="sales" element={<SalesPage />} />
+              </Route>
 
               {/* exams */}
               <Route path="exams" element={<ExamsPage />} />

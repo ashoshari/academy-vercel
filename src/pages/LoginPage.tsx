@@ -89,7 +89,7 @@ const LoginPage = () => {
           <div className="w-full max-w-md">
             {/* Header */}
             <div className="text-center mb-10">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl mb-6 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-(--brand) to-(--brand-light) rounded-2xl mb-6 shadow-2xl transform hover:scale-105 transition-transform duration-300">
                 <Lock className="w-10 h-10 text-white" />
               </div>
               <h1 className="text-4xl font-bold text-gray-800 mb-3">
@@ -130,7 +130,7 @@ const LoginPage = () => {
                       pattern="^07[0-9]{8}$"
                       maxLength={10}
                       minLength={10}
-                      className="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-orange-300 text-lg"
+                      className="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-orange-300 text-lg"
                       placeholder="07XXXXXXXX"
                       required
                     />
@@ -153,7 +153,7 @@ const LoginPage = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       minLength={6}
-                      className="w-full pr-12 pl-14 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-orange-300 text-lg"
+                      className="w-full pr-12 pl-14 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-orange-300 text-lg"
                       placeholder="••••••••"
                       required
                     />
@@ -171,7 +171,7 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="cursor-pointer w-full bg-linear-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl hover:shadow-2xl"
+                  className="cursor-pointer w-full bg-linear-to-r from-(--brand) to-(--brand-light) text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-(--brand-light) hover:to-(--brand) focus:outline-none focus:ring-4 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl hover:shadow-2xl"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-3">

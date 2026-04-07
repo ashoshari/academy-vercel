@@ -48,7 +48,7 @@ const AnimatedBackground: React.FC = () => {
           style={{ animationDuration: "5s", animationDelay: "2s" }}
         ></div>
         <div
-          className="absolute top-2/3 right-1/2 w-6 h-6 bg-orange-500/40 rounded-full animate-ping shadow-sm"
+          className="absolute top-2/3 right-1/2 w-6 h-6 bg-(--brand)/40 rounded-full animate-ping shadow-sm"
           style={{ animationDuration: "3s", animationDelay: "1s" }}
         ></div>
       </div>
@@ -117,7 +117,7 @@ const AnimatedBackground: React.FC = () => {
           style={{ animationDuration: "4s" }}
         ></div>
         <div
-          className="absolute top-1/2 left-20 w-1.5 h-1.5 bg-orange-500/70 rounded-full animate-bounce shadow-sm"
+          className="absolute top-1/2 left-20 w-1.5 h-1.5 bg-(--brand)/70 rounded-full animate-bounce shadow-sm"
           style={{ animationDuration: "5s", animationDelay: "2s" }}
         ></div>
         <div

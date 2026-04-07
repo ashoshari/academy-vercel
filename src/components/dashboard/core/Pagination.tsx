@@ -89,13 +89,13 @@ export default function Pagination({
                 : "px-4 py-2 text-sm rounded-xl"
             } ${
               page === currentPage
-                ? "bg-orange-500 text-white border-orange-500"
+                ? "bg-(--brand) text-white border-(--brand)"
                 : "bg-white text-gray-700 hover:bg-gray-100"
             }`}
           >
             {page}
           </button>
-        )
+        ),
       )}
 
       {/* Next */}

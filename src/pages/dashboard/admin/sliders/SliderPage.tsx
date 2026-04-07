@@ -174,7 +174,7 @@ const SliderPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة سلايد جديد
@@ -192,7 +192,7 @@ const SliderPage = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="البحث في السلايدر..."
-                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
               />
             </div>
           </div>
@@ -263,7 +263,7 @@ const SliderPage = () => {
                 {!searchTerm && (
                   <button
                     onClick={() => setShowAddModal(true)}
-                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة سلايد جديد
@@ -296,14 +296,14 @@ const SliderPage = () => {
               pattern="[0-9]*"
               lang="en"
               defaultValue="5"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               التبديل التلقائي
             </label>
-            <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300">
+            <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300">
               <option>مفعل</option>
               <option>معطل</option>
             </select>
@@ -312,14 +312,14 @@ const SliderPage = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               عرض النقاط
             </label>
-            <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300">
+            <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300">
               <option>مفعل</option>
               <option>معطل</option>
             </select>
           </div>
         </div>
         <div className="mt-6 flex justify-end">
-          <button className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300">
+          <button className="bg-gradient-to-r from-(--brand) to-(--brand-light) text-white px-6 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300">
             حفظ الإعدادات
           </button>
         </div>

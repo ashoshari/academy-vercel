@@ -376,7 +376,7 @@ const ExamsPage = () => {
   const getTypeColor = (type: any) => {
     switch (type) {
       case "practice":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 text-(--brand-secondary)";
       case "assessment":
         return "bg-purple-100 text-purple-800";
       case "final":
@@ -470,7 +470,7 @@ const ExamsPage = () => {
                 setSelectedExam(exam);
                 setCurrentView("questions");
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
               title="إدارة الأسئلة"
             >
               <FileText size={16} />
@@ -554,7 +554,7 @@ const ExamsPage = () => {
                   onChange={(e) =>
                     setNewExam({ ...newExam, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="أدخل عنوان الامتحان..."
                 />
               </div>
@@ -572,7 +572,7 @@ const ExamsPage = () => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
                   placeholder="وصف تفصيلي للامتحان..."
                 />
               </div>
@@ -592,7 +592,7 @@ const ExamsPage = () => {
                           teacher: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       <option value="">اختر استاذ</option>
                       {teachers?.data?.data?.map((type: any) => (
@@ -623,7 +623,7 @@ const ExamsPage = () => {
                           specialization_material: "",
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       <option value="">اختر القسم</option>
                       {subsectionData?.map((subSection: any) => (
@@ -653,7 +653,7 @@ const ExamsPage = () => {
                             specialization_material: "",
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                       >
                         <option value="">اختر الصف</option>
                         {subSection?.subsubsections?.map(
@@ -688,7 +688,7 @@ const ExamsPage = () => {
                             specialization_material: "",
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                       >
                         <option value="">اختر قسم فرعي</option>
                         {subsub?.specializations?.map((specialization: any) => (
@@ -728,7 +728,7 @@ const ExamsPage = () => {
                             specialization_material: e.target.value,
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                       >
                         <option value="">اختر مادة التخصص</option>
                         {(spec?.specialization_materials.length > 0
@@ -771,7 +771,7 @@ const ExamsPage = () => {
                         number_of_questions: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="10"
                     min="1"
                   />
@@ -792,7 +792,7 @@ const ExamsPage = () => {
                         total_marks: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="50"
                     min="1"
                   />
@@ -815,7 +815,7 @@ const ExamsPage = () => {
                         passing_marks: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="30"
                     min="1"
                   />
@@ -836,7 +836,7 @@ const ExamsPage = () => {
                         time_in_minutes: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="60"
                     min="1"
                   />
@@ -991,7 +991,7 @@ const ExamsPage = () => {
                 !newExam?.total_marks ||
                 !newExam?.passing_marks
               }
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الامتحان
@@ -1103,7 +1103,7 @@ const ExamsPage = () => {
                   onChange={(e) =>
                     setSelectedExam({ ...selectedExam, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="أدخل عنوان الامتحان..."
                 />
               </div>
@@ -1121,7 +1121,7 @@ const ExamsPage = () => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
                   placeholder="وصف تفصيلي للامتحان..."
                 />
               </div>
@@ -1141,7 +1141,7 @@ const ExamsPage = () => {
                           teacher: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       <option value="">اختر استاذ</option>
                       {teachers?.data?.data?.map((teacher: any) => (
@@ -1158,7 +1158,7 @@ const ExamsPage = () => {
                   <div className="flex justify-start items-end w-full">
                     <button
                       onClick={() => setEditSections(!editSections)}
-                      className="cursor-pointer w-full justify-center h-14.5 px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                      className="cursor-pointer w-full justify-center h-14.5 px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
                     >
                       تعديل الأقسام
                     </button>
@@ -1184,7 +1184,7 @@ const ExamsPage = () => {
                               specialization_material: "",
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                         >
                           <option value="">اختر القسم</option>
                           {subsectionData?.map((subSection: any) => (
@@ -1214,7 +1214,7 @@ const ExamsPage = () => {
                                 specialization_material: "",
                               });
                             }}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                           >
                             <option value="">اختر الصف</option>
                             {subSection?.subsubsections?.map(
@@ -1248,7 +1248,7 @@ const ExamsPage = () => {
                                 specialization_material: "",
                               });
                             }}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                           >
                             <option value="">اختر قسم فرعي</option>
                             {subsub?.specializations?.map(
@@ -1294,7 +1294,7 @@ const ExamsPage = () => {
                                 specialization_material: e.target.value,
                               });
                             }}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                           >
                             <option value="">اختر مادة التخصص</option>
                             {(spec?.specialization_materials.length > 0
@@ -1340,7 +1340,7 @@ const ExamsPage = () => {
                         number_of_questions: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="10"
                     min="1"
                   />
@@ -1361,7 +1361,7 @@ const ExamsPage = () => {
                         total_marks: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="50"
                     min="1"
                   />
@@ -1385,7 +1385,7 @@ const ExamsPage = () => {
                         passing_marks: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="30"
                     min="1"
                   />
@@ -1406,7 +1406,7 @@ const ExamsPage = () => {
                         time_in_minutes: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="60"
                     min="1"
                   />
@@ -1560,7 +1560,7 @@ const ExamsPage = () => {
                 !selectedExam?.total_marks ||
                 !selectedExam?.passing_marks
               }
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               تعديل الامتحان
@@ -1584,7 +1584,7 @@ const ExamsPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء امتحان جديد
@@ -1633,7 +1633,7 @@ const ExamsPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي المحاولات</p>
-              <p className="text-3xl font-bold text-blue-600">
+              <p className="text-3xl font-bold text-(--brand-secondary)">
                 {dataStatistcs?.data?.data?.total_attempts ?? "-"}
               </p>
             </div>
@@ -1653,7 +1653,7 @@ const ExamsPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الامتحانات..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -1661,7 +1661,7 @@ const ExamsPage = () => {
           <select
             value={materialFilter}
             onChange={(e) => setMaterialFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="">جميع المواد</option>
             {materialsData?.map((material: any) => (
@@ -1712,7 +1712,7 @@ const ExamsPage = () => {
 
           <button
             onClick={() => setCurrentView("create")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة امتحان جديد
@@ -1740,7 +1740,7 @@ const ExamsPage = () => {
 
               <button
                 onClick={() => setCurrentView("create")}
-                className="cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                className="cursor-pointer bg-gradient-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
               >
                 e <Plus size={16} />
                 إنشاء امتحان جديد
@@ -1840,7 +1840,7 @@ const ExamsPage = () => {
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
                               exam.is_free
-                                ? "bg-blue-100 text-blue-800"
+                                ? "bg-blue-100 text-(--brand-secondary)"
                                 : "bg-red-100 text-red-800"
                             }`}
                           >
@@ -1855,7 +1855,7 @@ const ExamsPage = () => {
                               setSelectedExam(exam);
                               setCurrentView("questions");
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                             title="إدارة الأسئلة"
                           >
                             <FileText size={16} />

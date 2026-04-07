@@ -56,7 +56,7 @@ export default function AddSliderModal({
                 onClick={() => setNewSlide({ ...newSlide, type: "image" })}
                 className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
                   newSlide.type === "image"
-                    ? "border-orange-500 bg-orange-50 text-orange-700"
+                    ? "border-(--brand) bg-orange-50 text-orange-700"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
@@ -67,7 +67,7 @@ export default function AddSliderModal({
                 onClick={() => setNewSlide({ ...newSlide, type: "video" })}
                 className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
                   newSlide.type === "video"
-                    ? "border-orange-500 bg-orange-50 text-orange-700"
+                    ? "border-(--brand) bg-orange-50 text-orange-700"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
@@ -88,7 +88,7 @@ export default function AddSliderModal({
               onChange={(e) =>
                 setNewSlide({ ...newSlide, header: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل العنوان..."
             />
           </div>
@@ -103,7 +103,7 @@ export default function AddSliderModal({
               onChange={(e) =>
                 setNewSlide({ ...newSlide, title: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل العنوان الرئيسي..."
             />
           </div>
@@ -119,7 +119,7 @@ export default function AddSliderModal({
                 setNewSlide({ ...newSlide, subtitle: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
               placeholder="أدخل العنوان الفرعي أو الوصف..."
             />
           </div>
@@ -137,7 +137,7 @@ export default function AddSliderModal({
                   link: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل رابط..."
             />
           </div>
@@ -169,7 +169,7 @@ export default function AddSliderModal({
                   order: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل الترتيب..."
             />
           </div>
@@ -248,7 +248,7 @@ export default function AddSliderModal({
           <button
             disabled={!newSlide.title || !newSlide.header}
             onClick={handleAddSlide}
-            className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
             حفظ السلايد

@@ -262,7 +262,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       case "semester":
         return "text-orange-600";
       case "unit":
-        return "text-blue-600";
+        return "text-(--brand-secondary)";
       case "topic":
         return "text-green-600";
       case "lesson":
@@ -579,7 +579,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                             href={item.videoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-700 text-xs flex items-center gap-1"
+                            className="text-(--brand-secondary) hover:text-blue-700 text-xs flex items-center gap-1"
                           >
                             <Link size={12} />
                             رابط الفيديو
@@ -609,7 +609,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         {item?.is_published ? "منشور" : "مسودة"}
                       </span>
                       {/* {item?.is_free && (
-                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-(--brand-secondary)">
                           مجاني
                         </span>
                       )} */}
@@ -651,7 +651,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           setSelectedItem(item);
                           setCurrentView("edit");
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded transition-colors"
                         title="تعديل"
                       >
                         <Edit size={14} />
@@ -737,7 +737,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
           <button
             onClick={() => setCurrentView("add")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
           >
             <Plus size={16} />
             إضافة محتوى
@@ -762,7 +762,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">الوحدات</p>
-                <p className="text-3xl font-bold text-blue-600">
+                <p className="text-3xl font-bold text-(--brand-secondary)">
                   {contentStatisticsData?.total_units}
                 </p>
               </div>
@@ -807,7 +807,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="البحث في المحتوى..."
-                  className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                 />
               </div>
               {/* Published Filter */}
@@ -889,7 +889,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 </p>
                 <button
                   onClick={() => setCurrentView("add")}
-                  className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة محتوى جديد
@@ -1006,7 +1006,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         parentId: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   >
                     <option value="">اختر العنصر الأب</option>
                     {getAvailableParents(newItem.type).map((parent: any) => (
@@ -1029,7 +1029,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   onChange={(e) =>
                     setNewItem({ ...newItem, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="أدخل عنوان المحتوى..."
                 />
               </div>
@@ -1045,7 +1045,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     setNewItem({ ...newItem, description: e.target.value })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
                   placeholder="وصف تفصيلي للمحتوى..."
                 />
               </div>
@@ -1066,7 +1066,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       estimatedDuration: parseInt(e.target.value) || 0,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="30"
                   min="0"
                 />
@@ -1138,7 +1138,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     onChange={(e) =>
                       setNewItem({ ...newItem, videoUrl: e.target.value })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     placeholder="أدخل ال ID الخاص بالفيديو..."
                   />
                 </div>
@@ -1158,7 +1158,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         examId: e.target.value,
                       });
                     }}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   >
                     <option value="">اختر الامتحان</option>
                     {examData
@@ -1244,7 +1244,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       order: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="أدخل الترتيب..."
                 />
               </div>
@@ -1252,7 +1252,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
               {/* Preview */}
               {newItem.title && (
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-blue-800 mb-2">معاينة</h4>
+                  <h4 className="font-medium text-(--brand-secondary) mb-2">
+                    معاينة
+                  </h4>
                   <div className="flex items-center gap-2 text-blue-700">
                     {newItem.type === "semester" && <BookOpen size={16} />}
                     {newItem.type === "unit" && <Folder size={16} />}
@@ -1265,7 +1267,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       )}
                     <span className="font-medium">{newItem.title}</span>
                   </div>
-                  <p className="text-sm text-blue-600 mt-1">
+                  <p className="text-sm text-(--brand-secondary) mt-1">
                     {newItem.description}
                   </p>
                 </div>
@@ -1296,7 +1298,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   newItem.lessonType === "exam" &&
                   !newItem.examId)
               }
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إضافة المحتوى
@@ -1348,7 +1350,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   onChange={(e) =>
                     setSelectedItem({ ...selectedItem, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="أدخل عنوان المحتوى..."
                 />
               </div>
@@ -1367,7 +1369,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
                   placeholder="وصف تفصيلي للمحتوى..."
                 />
               </div>
@@ -1388,7 +1390,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       time_in_minutes: parseInt(e.target.value) || 0,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="30"
                 />
               </div>
@@ -1409,7 +1411,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           link: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                       placeholder="أدخل ال ID الخاص بالفيديو..."
                     />
                   </div>
@@ -1430,7 +1432,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           exam: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       {examData
                         ?.filter(
@@ -1479,7 +1481,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
               {/* Type Info */}
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-blue-800 mb-2">
+                <h4 className="font-medium text-(--brand-secondary) mb-2">
                   معلومات النوع
                 </h4>
                 <div className="flex items-center gap-2 text-blue-700">
@@ -1558,7 +1560,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       order: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="أدخل الترتيب..."
                 />
               </div>
@@ -1597,7 +1599,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 handleEditItem();
               }}
               disabled={!selectedItem.title}
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات

@@ -112,7 +112,7 @@ export default function SimpleBarChart({
                 className={`w-full rounded-t-lg transition-all duration-300 ${
                   active
                     ? "bg-linear-to-t from-orange-600 to-orange-400 shadow-md"
-                    : "bg-linear-to-t from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500"
+                    : "bg-linear-to-t from-(--brand) to-(--brand-light) hover:from-(--brand-light) hover:to-(--brand)"
                 }`}
                 style={{ height: heightBar }}
               />

@@ -246,7 +246,7 @@ const CoreExam = ({
                     className={`text-3xl font-bold mb-2 ${
                       timeLeft < (examData?.time_in_minutes * 60) / 8
                         ? "text-red-600"
-                        : "text-blue-600"
+                        : "text-(--brand-secondary)"
                     }`}
                   >
                     {formatTime(timeLeft)}
@@ -269,7 +269,7 @@ const CoreExam = ({
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
-                    className="bg-linear-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
+                    className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-3 rounded-full transition-all duration-300"
                     style={{
                       width: `${
                         (Object.keys(selectedAnswers).length /
@@ -397,7 +397,7 @@ const CoreExam = ({
                         );
                       }
                     }}
-                    className="cursor-pointer px-6 py-3 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
+                    className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
                   >
                     <span>التالي</span>
                     <ChevronLeft className="w-5 h-5" />
@@ -531,7 +531,7 @@ const CoreExam = ({
                               <h5 className="font-semibold text-blue-900 mb-2">
                                 الشرح:
                               </h5>
-                              <p className="text-blue-800">
+                              <p className="text-(--brand-secondary)">
                                 {currentAnswer?.explanation}
                               </p>
                             </div>
@@ -544,7 +544,7 @@ const CoreExam = ({
                 <div className="flex justify-center space-x-4">
                   <button
                     onClick={retryExam}
-                    className="cursor-pointer px-8 py-3 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
+                    className="cursor-pointer px-8 py-3 bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
                   >
                     إعادة المحاولة
                   </button>

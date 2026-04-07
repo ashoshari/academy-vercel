@@ -81,7 +81,7 @@ const AddSectionModal = ({
               onChange={(e) =>
                 setNewSection({ ...newSection, name: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل اسم القسم..."
             />
           </div>
@@ -97,7 +97,7 @@ const AddSectionModal = ({
                 setNewSection({ ...newSection, description: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
               placeholder="أدخل وصف القسم..."
             />
           </div>
@@ -116,7 +116,7 @@ const AddSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     newSection.icon === option.id
-                      ? "border-orange-500 bg-orange-50 text-orange-700"
+                      ? "border-(--brand) bg-orange-50 text-orange-700"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -141,7 +141,7 @@ const AddSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     newSection.color === option.id
-                      ? "border-orange-500 bg-orange-50"
+                      ? "border-(--brand) bg-orange-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -192,7 +192,7 @@ const AddSectionModal = ({
           </button>
           <button
             onClick={handleAddSection}
-            className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+            className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
           >
             <Save size={16} />
             حفظ القسم
@@ -248,7 +248,7 @@ const EditSectionModal = ({
                   name: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="أدخل اسم القسم..."
             />
           </div>
@@ -267,7 +267,7 @@ const EditSectionModal = ({
                 })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
               placeholder="أدخل وصف القسم..."
             />
           </div>
@@ -289,7 +289,7 @@ const EditSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     selectedSection.icon === option.id
-                      ? "border-orange-500 bg-orange-50 text-orange-700"
+                      ? "border-(--brand) bg-orange-50 text-orange-700"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -317,7 +317,7 @@ const EditSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     selectedSection.color === option.id
-                      ? "border-orange-500 bg-orange-50"
+                      ? "border-(--brand) bg-orange-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -369,7 +369,7 @@ const EditSectionModal = ({
         </button>
         <button
           onClick={handleEditSection}
-          className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+          className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
         >
           <Save size={16} />
           حفظ التغييرات
@@ -592,7 +592,7 @@ const SectionsPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة قسم رئيسي جديد
@@ -609,7 +609,7 @@ const SectionsPage = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="البحث في الأقسام..."
-                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
               />
             </div>
             {/* View Mode */}
@@ -675,7 +675,7 @@ const SectionsPage = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة قسم رئيسي جديد
@@ -866,7 +866,7 @@ const SectionsPage = () => {
               {/* {!searchTerm && ( */}
               <button
                 onClick={() => setShowAddModal(true)}
-                className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
               >
                 <Plus size={16} />
                 إضافة قسم جديد

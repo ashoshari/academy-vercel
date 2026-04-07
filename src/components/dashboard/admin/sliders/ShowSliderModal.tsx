@@ -53,7 +53,7 @@ export default function ShowSliderModal({
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
                         selectedSlide.type === "image"
-                          ? "bg-blue-100 text-blue-800"
+                          ? "bg-blue-100 text-(--brand-secondary)"
                           : "bg-purple-100 text-purple-800"
                       }`}
                     >
@@ -132,7 +132,7 @@ export default function ShowSliderModal({
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
                               selectedSlide.is_published
-                                ? "bg-blue-100 text-blue-800"
+                                ? "bg-blue-100 text-(--brand-secondary)"
                                 : "bg-gray-100 text-gray-800"
                             }`}
                           >
@@ -152,7 +152,7 @@ export default function ShowSliderModal({
                   setShowDetailsModal(false);
                   setShowEditModal(true);
                 }}
-                className="cursor-pointer px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
               >
                 <Edit size={16} />
                 تعديل السلايد

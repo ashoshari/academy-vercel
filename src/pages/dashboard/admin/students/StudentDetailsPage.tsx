@@ -43,7 +43,7 @@ const StudentDetailsPage = () => {
       case "active":
         return "text-green-600 bg-green-100";
       case "completed":
-        return "text-blue-600 bg-blue-100";
+        return "text-(--brand-secondary) bg-blue-100";
       case "paused":
         return "text-yellow-600 bg-yellow-100";
       case "dropped":
@@ -214,7 +214,7 @@ const StudentDetailsPage = () => {
                                     <div className="flex items-center gap-2 mt-1">
                                       <div className="flex-1 bg-gray-200 rounded-full h-2">
                                         <div
-                                          className="bg-orange-500 h-2 rounded-full transition-all"
+                                          className="bg-(--brand) h-2 rounded-full transition-all"
                                           style={{
                                             width: `${course?.course?.progress}%`,
                                           }}

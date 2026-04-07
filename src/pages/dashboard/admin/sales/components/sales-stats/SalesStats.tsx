@@ -32,7 +32,7 @@ const SALES_STAT_ITEMS: ReadonlyArray<{
     key: "total_card_revenue",
     label: "إجمالي إيرادات البطاقات",
     icon: CreditCard,
-    valueClassName: "text-blue-600",
+    valueClassName: "text-(--brand-secondary)",
     iconClassName: "text-blue-500",
   },
 ];

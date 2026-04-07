@@ -184,7 +184,7 @@ const StudentsPage = () => {
   const StudentCard = ({ student }: { student: any }) => (
     <div className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
-      <div className="h-[30%] p-6 bg-linear-to-r from-orange-500 to-orange-600 text-white">
+      <div className="h-[30%] p-6 bg-linear-to-r from-(--brand) to-(--brand-light) text-white">
         <div className="flex items-center gap-4">
           <div className="relative">
             <img
@@ -294,7 +294,7 @@ const StudentsPage = () => {
                   setStudentId(student?.id);
                   handleActivation(student);
                 }}
-                className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 rounded-lg transition-colors"
+                className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) rounded-lg transition-colors"
                 title={student?.is_active ? "إخفاء الطالب" : "إظهار الطالب"}
               >
                 {student?.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
@@ -339,7 +339,7 @@ const StudentsPage = () => {
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/dashboard/students/add")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة طالب
@@ -377,7 +377,7 @@ const StudentsPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الطلاب الغير نشطون</p>
-              <p className="text-3xl font-bold text-blue-600">
+              <p className="text-3xl font-bold text-(--brand-secondary)">
                 {dataStatistics?.data?.data?.inactive_students ?? "-"}
               </p>
             </div>
@@ -411,7 +411,7 @@ const StudentsPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الدورات..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -421,7 +421,7 @@ const StudentsPage = () => {
             onChange={(e) =>
               setCourseFilter(e.target.value ? e.target.value : null)
             }
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="">جميع الدورات</option>
             {coursesData?.map((course: any) => (
@@ -437,7 +437,7 @@ const StudentsPage = () => {
             onChange={(e) =>
               setGradeFilter(e.target.value ? e.target.value : null)
             }
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="">جميع المراحل</option>
             {gradesData?.map((grade: any) => (
@@ -451,7 +451,7 @@ const StudentsPage = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="">جميع الحالات</option>
             <option value="true">نشط</option>
@@ -499,7 +499,7 @@ const StudentsPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/students/add")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة طالب جديد
@@ -525,7 +525,7 @@ const StudentsPage = () => {
 
                 <button
                   onClick={() => navigate("/dashboard/students/add")}
-                  className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة طالب جديد
@@ -621,7 +621,7 @@ const StudentsPage = () => {
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
                               student?.is_allow_to_use_web
-                                ? "bg-blue-100 text-blue-800"
+                                ? "bg-blue-100 text-(--brand-secondary)"
                                 : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
@@ -665,7 +665,7 @@ const StudentsPage = () => {
                               setStudentId(student?.id);
                               handleActivation(student);
                             }}
-                            className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 rounded-lg transition-colors"
+                            className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) rounded-lg transition-colors"
                             title={
                               student?.is_active
                                 ? "إخفاء الطالب"

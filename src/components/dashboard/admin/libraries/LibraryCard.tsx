@@ -31,7 +31,7 @@ export default function LibraryCard({
   return (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
-      <div className="p-6 bg-linear-to-r from-orange-500 to-orange-600 text-white">
+      <div className="p-6 bg-linear-to-r from-(--brand) to-(--brand-light) text-white">
         <div className="flex items-center gap-4">
           <div className="relative">
             <img
@@ -105,7 +105,7 @@ export default function LibraryCard({
               }}
               className={`p-2 rounded-lg transition-colors cursor-pointer ${
                 library.is_active
-                  ? "text-blue-600 hover:bg-blue-100"
+                  ? "text-(--brand-secondary) hover:bg-blue-100"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
               title={library?.is_active ? "إلغاء التفعيل" : "تفعيل المكتبة"}
@@ -121,7 +121,7 @@ export default function LibraryCard({
               onClick={() => {
                 navigate(`/dashboard/libraries/${library.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
               title="عرض التفاصيل"
             >
               <Eye size={16} />

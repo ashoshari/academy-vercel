@@ -308,7 +308,7 @@ const Sidebar = ({
                                              } py-1 hover:bg-gray-50 rounded ${
                                                currentLesson?.id ==
                                                  lesson?.id &&
-                                               "bg-linear-to-r from-blue-500 to-purple-500 text-white"
+                                               "bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white"
                                              }`}
                                       >
                                         <div className="flex justify-between items-center p-1.25 w-full">

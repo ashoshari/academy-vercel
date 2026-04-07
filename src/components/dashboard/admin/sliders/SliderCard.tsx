@@ -157,7 +157,7 @@ export default function SliderCard({
               <span
                 className={`px-1.5 py-0.5 rounded text-xs font-medium ${
                   slide.type === "image"
-                    ? "bg-blue-100 text-blue-800"
+                    ? "bg-blue-100 text-(--brand-secondary)"
                     : "bg-purple-100 text-purple-800"
                 }`}
               >
@@ -203,7 +203,7 @@ export default function SliderCard({
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
                       slide.is_published
-                        ? "bg-blue-100 text-blue-800"
+                        ? "bg-blue-100 text-(--brand-secondary)"
                         : "bg-gray-100 text-gray-800"
                     }`}
                   >
@@ -254,7 +254,7 @@ export default function SliderCard({
                     setSelectedSlide(slide);
                     setShowDetailsModal(true);
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
                 >
                   <Book size={16} />
                 </button>

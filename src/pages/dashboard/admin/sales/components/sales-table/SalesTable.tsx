@@ -1,37 +1,9 @@
 import Pagination from "@/components/dashboard/core/Pagination";
 import Spinner from "@/components/dashboard/Spinner";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
-import type { SalesFilters } from "../salesFilters";
-
-interface NamedRef {
-  id: string | null;
-  title: string | null;
-}
-
-interface SalesCategory {
-  subsection: NamedRef;
-  subsubsection: NamedRef;
-  specialization: NamedRef;
-  specialization_material: NamedRef;
-}
-
-interface SalesRow {
-  enrollment_id: string;
-  activated_at: string;
-  student: { id: string; name: string; mobile_number: string };
-  course: { id: string; name: string };
-  card: { id: string; price: string };
-  teacher_share: string;
-  share_percent_of_card: string;
-  category: SalesCategory;
-}
-
-interface SalesListResponse {
-  count: number;
-  page: number;
-  page_size: number;
-  data: SalesRow[];
-}
+import type { SalesFilters } from "../../utils/salesFilters";
+import { NamedRef } from "../../types/types";
+import { parseSalesPayload } from "../../utils/parseSalesPayload";
 
 const TH =
   "px-6 py-3 text-right text-xs whitespace-nowrap font-medium text-gray-500 uppercase tracking-wider";
@@ -43,20 +15,7 @@ function cellTitle(ref: NamedRef | undefined): string {
   return t || "—";
 }
 
-function parseSalesPayload(
-  salesResponse: unknown,
-): SalesListResponse | undefined {
-  const r = salesResponse as Record<string, unknown> | undefined;
-  if (!r) return undefined;
-  if (typeof r.count === "number" && Array.isArray(r.data))
-    return r as unknown as SalesListResponse;
-  const inner = r.data as Record<string, unknown> | undefined;
-  if (inner && typeof inner.count === "number" && Array.isArray(inner.data))
-    return inner as unknown as SalesListResponse;
-  return undefined;
-}
-
-export default function SalesListTable({
+export default function SalesTable({
   filters,
   setPage,
   salesResponse,

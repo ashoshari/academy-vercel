@@ -180,7 +180,7 @@ const LibrariesPage = () => {
           </button> */}
           <button
             onClick={() => navigate("/dashboard/libraries/add")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة مكتبة
@@ -218,7 +218,7 @@ const LibrariesPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">المكتبات غير النشطين</p>
-              <p className="text-3xl font-bold text-blue-600">
+              <p className="text-3xl font-bold text-(--brand-secondary)">
                 {librariesStatistics?.data?.data?.inactive_libraries ?? "-"}
               </p>
             </div>
@@ -239,7 +239,7 @@ const LibrariesPage = () => {
                 setFilters((prev) => ({ ...prev, search: e.target.value }))
               }
               placeholder="البحث في المكتبات..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             />
           </div> */}
 
@@ -294,7 +294,7 @@ const LibrariesPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/libraries/add")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة مكتبة جديد
@@ -324,7 +324,7 @@ const LibrariesPage = () => {
                 {
                   <button
                     onClick={() => navigate("/dashboard/libraries/add")}
-                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة مكتبة جديد
@@ -411,7 +411,7 @@ const LibrariesPage = () => {
                             }}
                             className={`p-2 rounded-lg transition-colors cursor-pointer ${
                               library.is_active
-                                ? "text-blue-600 hover:bg-blue-100"
+                                ? "text-(--brand-secondary) hover:bg-blue-100"
                                 : "text-gray-400 hover:bg-gray-100"
                             }`}
                             title={
@@ -442,7 +442,7 @@ const LibrariesPage = () => {
                             onClick={() => {
                               navigate(`/dashboard/libraries/${library.id}`);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                             title="عرض التفاصيل"
                           >
                             <Eye size={16} />
@@ -528,7 +528,7 @@ const LibrariesPage = () => {
 
             <button
               onClick={() => setShowPasswordModal(false)}
-              className="cursor-pointer w-full py-2 px-4 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold"
+              className="cursor-pointer w-full py-2 px-4 bg-(--brand) hover:bg-orange-600 text-white rounded-lg font-semibold"
             >
               إغلاق
             </button>

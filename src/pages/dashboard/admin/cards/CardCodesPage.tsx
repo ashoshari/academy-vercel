@@ -232,7 +232,7 @@ const CardCodesPage = () => {
         type: "all",
         display: "جميع الأقسام",
         icon: Globe,
-        color: "text-blue-600",
+        color: "text-(--brand-secondary)",
       };
     }
 
@@ -525,7 +525,7 @@ const CardCodesPage = () => {
           {canAddCode && (
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+              className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
             >
               <Plus size={16} />
               إضافة كودات
@@ -610,7 +610,7 @@ const CardCodesPage = () => {
                   className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all"
                 >
                   {/* Header */}
-                  <div className="bg-linear-to-r from-orange-500 to-orange-600 p-4 text-white">
+                  <div className="bg-linear-to-r from-(--brand) to-(--brand-light) p-4 text-white">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-bold text-lg">
                         {batch?.name || "-"}
@@ -694,7 +694,7 @@ const CardCodesPage = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                          className="bg-(--brand) h-2 rounded-full transition-all duration-300"
                           style={{
                             width: `${batch.avg_usage * 100}%`,
                           }}
@@ -759,10 +759,10 @@ const CardCodesPage = () => {
                     <div className="flex flex-col gap-y-2.5 min-h-20 overflow-y-auto">
                       {batch.note && (
                         <div className="bg-blue-50 p-3 rounded-lg">
-                          <div className="text-xs text-blue-600 font-medium mb-1">
+                          <div className="text-xs text-(--brand-secondary) font-medium mb-1">
                             ملاحظات:
                           </div>
-                          <div className="text-sm text-blue-800 mb-4 wrap-break-word">
+                          <div className="text-sm text-(--brand-secondary) mb-4 wrap-break-word">
                             {batch.note}
                           </div>
                         </div>
@@ -794,7 +794,7 @@ const CardCodesPage = () => {
                       onClick={() => handleBatchDownload(batch?.id)}
                       className={`cursor-pointer p-1 rounded transition-colors ${
                         batch.is_downloaded
-                          ? "text-blue-600 hover:bg-green-50"
+                          ? "text-(--brand-secondary) hover:bg-green-50"
                           : "text-gray-400 hover:bg-gray-50"
                       }`}
                       title={"تحميل الكود"}
@@ -834,7 +834,7 @@ const CardCodesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الكودات..."
-              className="w-full h-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full h-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -886,7 +886,7 @@ const CardCodesPage = () => {
           <select
             value={installmentFilter}
             onChange={(e) => setInstallmentFilter(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="">جميع حالات التقسيط</option>
             <option value="true">يوجد تقسيط</option>
@@ -897,7 +897,7 @@ const CardCodesPage = () => {
           <select
             value={isUsed || ""}
             onChange={(e) => setIsUsed(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="all">جميع حالات الاستخدام</option>
             <option value="false">متاح</option>
@@ -908,7 +908,7 @@ const CardCodesPage = () => {
           <select
             value={isCodeDownloaded || ""}
             onChange={(e) => setisCodeDownloaded(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="all">جميع حالات التحميل</option>
             <option value="true">تم التحميل</option>
@@ -919,7 +919,7 @@ const CardCodesPage = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="all">جميع حالات التفعيل</option>
             <option value="true">مفعل</option>
@@ -952,7 +952,7 @@ const CardCodesPage = () => {
           {canAddCode && (
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+              className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
             >
               <Plus size={16} />
               إضافة كودات جديدة
@@ -1065,7 +1065,7 @@ const CardCodesPage = () => {
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 code.is_active
-                                  ? "bg-blue-100 text-blue-800"
+                                  ? "bg-blue-100 text-(--brand-secondary)"
                                   : "bg-gray-100 text-gray-800"
                               }`}
                             >
@@ -1131,7 +1131,7 @@ const CardCodesPage = () => {
                                 onClick={() => handleCodeDownload(code?.id)}
                                 className={`cursor-pointer p-1 rounded transition-colors ${
                                   code.is_downloaded
-                                    ? "text-blue-600 hover:bg-green-50"
+                                    ? "text-(--brand-secondary) hover:bg-green-50"
                                     : "text-gray-400 hover:bg-gray-50"
                                 }`}
                                 title={"تحميل الكود"}

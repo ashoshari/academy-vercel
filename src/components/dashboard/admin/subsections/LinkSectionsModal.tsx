@@ -105,7 +105,7 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
                     onClick={toggleLink}
                     className={`flex items-center gap-4 rounded-lg border-2 p-4 transition-all ${
                       isLinked
-                        ? "border-orange-500 bg-orange-50"
+                        ? "border-(--brand) bg-orange-50"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
@@ -152,7 +152,7 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 rounded-lg bg-linear-to-r from-orange-500 to-orange-600 px-6 py-2 text-white transition-all hover:from-orange-600 hover:to-orange-700"
+            className="flex items-center gap-2 rounded-lg bg-linear-to-r from-(--brand) to-(--brand-light) px-6 py-2 text-white transition-all hover:from-(--brand-light) hover:to-(--brand)"
           >
             <Save size={16} />
             حفظ الروابط

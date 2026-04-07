@@ -261,7 +261,7 @@ export default function EditLibraryPage() {
           <div className="h-17 flex items-center justify-center">
             <label
               htmlFor="lib-img-edit"
-              className="bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 hover:to-orange-700 cursor-pointer"
+              className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2.5 text-sm rounded-lg hover:from-(--brand-light) hover:to-(--brand) cursor-pointer"
             >
               اضافة صورة
             </label>
@@ -304,7 +304,7 @@ export default function EditLibraryPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-orange-500 text-white rounded-lg cursor-pointer hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
+            className="px-6 py-3 bg-(--brand) text-white rounded-lg cursor-pointer hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
           >
             <Save size={16} />
             حفظ التعديلات

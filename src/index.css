@@ -1,4 +1,13 @@
 @import "tailwindcss";
+
+:root {
+  --brand: #9d6e21;
+  --brand-light: #c58c30;
+  --text-light: #ead2a5;
+  --brand-secondary: #2da4af;
+  --brand-secondary-dark: #1f7f88;
+}
+
 body {
   font-family: "Cairo", sans-serif;
 }

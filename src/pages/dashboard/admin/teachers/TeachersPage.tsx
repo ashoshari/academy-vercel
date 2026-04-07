@@ -174,7 +174,7 @@ const TeachersPage = () => {
   const TeacherCard = ({ teacher }: { teacher: any }) => (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
-      <div className="p-6 bg-linear-to-r from-orange-500 to-orange-600 text-white">
+      <div className="p-6 bg-linear-to-r from-(--brand) to-(--brand-light) text-white">
         <div className="flex items-center gap-4">
           <div className="relative">
             <img
@@ -219,7 +219,7 @@ const TeachersPage = () => {
       <div className="p-6">
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-(--brand-secondary)">
               {teacher?.number_of_courses_has}
             </div>
             <div className="text-xs text-gray-500">دورة</div>
@@ -246,7 +246,7 @@ const TeachersPage = () => {
               teacher?.tags?.slice(0, 3)?.map((subject: any) => (
                 <span
                   key={subject.id}
-                  className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
+                  className="px-2 py-1 bg-blue-100 text-(--brand-secondary) rounded-full text-xs font-medium"
                 >
                   {subject.name}
                 </span>
@@ -269,7 +269,7 @@ const TeachersPage = () => {
               onClick={() => {
                 navigate(`/dashboard/teachers/${teacher.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
               title="عرض التفاصيل"
             >
               <Book size={16} />
@@ -296,7 +296,7 @@ const TeachersPage = () => {
               }}
               className={`p-2 rounded-lg transition-colors cursor-pointer ${
                 teacher.is_active
-                  ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
+                  ? "text-(--brand-secondary) bg-blue-50 hover:bg-blue-100"
                   : "text-gray-400 bg-gray-50 hover:bg-gray-100"
               }`}
               title={teacher.is_active ? "إلغاء التفعيل" : "تفعيل المعلم"}
@@ -340,7 +340,7 @@ const TeachersPage = () => {
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/dashboard/teachers/add")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة معلم
@@ -378,7 +378,7 @@ const TeachersPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">المعلمين غير النشطين</p>
-              <p className="text-3xl font-bold text-blue-600">
+              <p className="text-3xl font-bold text-(--brand-secondary)">
                 {teachersStatistics?.data?.data?.inactive_teachers ?? "-"}
               </p>
             </div>
@@ -400,7 +400,7 @@ const TeachersPage = () => {
                 setFilters((prev) => ({ ...prev, search: e.target.value }))
               }
               placeholder="البحث في المعلمين..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -411,7 +411,7 @@ const TeachersPage = () => {
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, material: e.target.value }))
               }
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             >
               <option value="">جميع التخصصات</option>
               {dataMaterials?.data?.data?.map((el: any) => (
@@ -432,7 +432,7 @@ const TeachersPage = () => {
                   status: e.target.value as "all" | "active" | "inactive",
                 }))
               }
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             >
               <option value="all">جميع الحالات</option>
               <option value="true">نشط</option>
@@ -492,7 +492,7 @@ const TeachersPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/teachers/add")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة معلم جديد
@@ -515,7 +515,7 @@ const TeachersPage = () => {
                 {
                   <button
                     onClick={() => navigate("/dashboard/teachers/add")}
-                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة معلم جديد
@@ -603,7 +603,7 @@ const TeachersPage = () => {
                             {teacher.is_active ? "نشط" : "غير نشط"}
                           </span>
                           {/* {teacher.isVerified && (
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-(--brand-secondary)">
                             مؤكد
                           </span>
                         )} */}
@@ -625,7 +625,7 @@ const TeachersPage = () => {
                             }}
                             className={`p-2 rounded-lg transition-colors cursor-pointer ${
                               teacher.is_active
-                                ? "text-blue-600 hover:bg-blue-100"
+                                ? "text-(--brand-secondary) hover:bg-blue-100"
                                 : "text-gray-400 hover:bg-gray-100"
                             }`}
                             title={
@@ -656,7 +656,7 @@ const TeachersPage = () => {
                             onClick={() => {
                               navigate(`/dashboard/teachers/${teacher.id}`);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                             title="عرض التفاصيل"
                           >
                             <Book size={16} />
@@ -729,7 +729,7 @@ const TeachersPage = () => {
 
             <button
               onClick={() => setShowPasswordModal(false)}
-              className="cursor-pointer w-full py-2 px-4 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold"
+              className="cursor-pointer w-full py-2 px-4 bg-(--brand) hover:bg-orange-600 text-white rounded-lg font-semibold"
             >
               إغلاق
             </button>

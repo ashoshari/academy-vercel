@@ -322,7 +322,7 @@ const QuestionsTab = () => {
         <h2 className="text-2xl font-bold text-gray-900">الأسئلة</h2>
         <button
           onClick={() => setShowAddQuestion(true)}
-          className="bg-linear-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
+          className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
         >
           <Plus className="w-4 h-4" />
           <span>اطرح سؤالاً</span>
@@ -361,7 +361,7 @@ const QuestionsTab = () => {
                 disabled={
                   !newQuestionTitle.trim() || !newQuestionContent.trim()
                 }
-                className="bg-linear-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 نشر السؤال
               </button>
@@ -411,7 +411,7 @@ const QuestionsTab = () => {
                           );
                           setQuestionId(question?.id);
                         }}
-                        className="p-2 text-blue-600 cursor-pointer hover:bg-red-50 rounded-lg transition-colors duration-200"
+                        className="p-2 text-(--brand-secondary) cursor-pointer hover:bg-red-50 rounded-lg transition-colors duration-200"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -443,7 +443,7 @@ const QuestionsTab = () => {
                       )}
                     </span>
                     {question.lesson && (
-                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-lg">
+                      <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg">
                         {question?.lesson}
                       </span>
                     )}
@@ -480,7 +480,7 @@ const QuestionsTab = () => {
                           !editQuestionTitle.trim() ||
                           !editQuestionContent.trim()
                         }
-                        className="bg-linear-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         تعديل السؤال
                       </button>
@@ -540,7 +540,7 @@ const QuestionsTab = () => {
                               );
                               setcommentId(comment?.id);
                             }}
-                            className="p-2 text-blue-600 cursor-pointer hover:bg-red-50 rounded-lg transition-colors duration-200"
+                            className="p-2 text-(--brand-secondary) cursor-pointer hover:bg-red-50 rounded-lg transition-colors duration-200"
                           >
                             <Pencil className="w-3 h-3" />
                           </button>
@@ -562,7 +562,7 @@ const QuestionsTab = () => {
                           }
                           className={`flex items-center space-x-1 text-${
                             comment?.is_liked ? "blue-500" : "gray-500"
-                          } hover:text-blue-600 transition-colors duration-200`}
+                          } hover:text-(--brand-secondary) transition-colors duration-200`}
                         >
                           <ThumbsUp className="w-4 h-4" />
                           <span>{comment?.likes}</span>
@@ -658,7 +658,7 @@ const QuestionsTab = () => {
                 ) : (
                   <button
                     onClick={() => setSelectedQuestion(question)}
-                    className="flex items-center space-x-2 cursor-pointer text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                    className="flex items-center space-x-2 cursor-pointer text-(--brand-secondary) hover:text-blue-700 transition-colors duration-200"
                   >
                     <Reply className="w-4 h-4" />
                     <span>إضافة إجابة</span>

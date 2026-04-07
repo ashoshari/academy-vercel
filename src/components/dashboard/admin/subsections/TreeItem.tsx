@@ -244,7 +244,7 @@ export default function TreeItem({
                       setSelectedSubsection?.(item);
                       setShowLinkModal?.(true);
                     }}
-                    className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
                     title="ربط بالأقسام الرئيسية"
                   >
                     <Link size={16} />

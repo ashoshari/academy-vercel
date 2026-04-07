@@ -93,7 +93,7 @@ const AddSubsectionModal = ({
               type="text"
               value={data.name || ""}
               onChange={(e) => onChange({ ...data, name: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="ادخل اسم التخصص..."
             />
           ) : level === "mat" ? (
@@ -101,7 +101,7 @@ const AddSubsectionModal = ({
               type="text"
               value={data.material || ""}
               onChange={(e) => onChange({ ...data, material: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="ادخل اسم المادة..."
             />
           ) : (
@@ -109,7 +109,7 @@ const AddSubsectionModal = ({
               type="text"
               value={data.title || ""}
               onChange={(e) => onChange({ ...data, title: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="ادخل اسم القسم الفرعي..."
             />
           )}
@@ -131,7 +131,7 @@ const AddSubsectionModal = ({
                   })
                 }
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
                 placeholder="أدخل الوصف..."
               />
             </div>
@@ -147,7 +147,7 @@ const AddSubsectionModal = ({
                 lang="en"
                 value={data.order || 0}
                 onChange={(e) => onChange({ ...data, order: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                 placeholder="أدخل الترتيب..."
               />
             </div>
@@ -209,7 +209,7 @@ const AddSubsectionModal = ({
                   }}
                   className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     isLinked
-                      ? "border-orange-500 bg-orange-50 text-orange-700"
+                      ? "border-(--brand) bg-orange-50 text-orange-700"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -231,7 +231,7 @@ const AddSubsectionModal = ({
         </button>
         <button
           onClick={onSave}
-          className="px-6 py-2 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+          className="px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
         >
           <Save size={16} />
           {level === "spec"

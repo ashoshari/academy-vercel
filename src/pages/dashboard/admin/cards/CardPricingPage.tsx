@@ -85,7 +85,7 @@ const CardPricingPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة سعر جديد
@@ -103,7 +103,7 @@ const CardPricingPage = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="البحث بالسعر..."
-                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
               />
             </div>
           </div>
@@ -143,7 +143,7 @@ const CardPricingPage = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة سعر جديد
@@ -160,7 +160,7 @@ const CardPricingPage = () => {
               <div
                 className={`p-6 text-white relative overflow-hidden ${
                   card.is_active
-                    ? "bg-linear-to-br from-orange-500 to-orange-600"
+                    ? "bg-linear-to-br from-(--brand) to-(--brand-light)"
                     : "bg-linear-to-br from-gray-400 to-gray-500"
                 }`}
               >
@@ -276,7 +276,7 @@ const CardPricingPage = () => {
               {!searchTerm && (
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                  className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة سعر جديد

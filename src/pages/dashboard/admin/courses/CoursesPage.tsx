@@ -437,7 +437,7 @@ const CoursesPage = () => {
               <div className="text-xs text-gray-500">مادة التخصص</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-blue-600">
+              <div className="text-lg font-bold text-(--brand-secondary)">
                 {course?.time_in_hours ? course?.time_in_hours + "h" : "-"}
               </div>
               <div className="text-xs text-gray-500">ساعة</div>
@@ -480,7 +480,7 @@ const CoursesPage = () => {
                 setSelectedCourse(course);
                 setCurrentView("content");
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
               title="إدارة المحتوى"
             >
               <Folder size={16} />
@@ -498,7 +498,7 @@ const CoursesPage = () => {
               title={course?.is_Published ? "إلغاء النشر" : "نشر الدورة"}
             >
               {course?.is_published ? (
-                <Eye className="text-blue-600" size={16} />
+                <Eye className="text-(--brand-secondary)" size={16} />
               ) : (
                 <EyeOff size={16} />
               )}
@@ -601,7 +601,7 @@ const CoursesPage = () => {
                   onChange={(e) =>
                     setNewCourse({ ...newCourse, name: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="أدخل عنوان الدورة..."
                 />
               </div>
@@ -619,7 +619,7 @@ const CoursesPage = () => {
                       short_description: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="وصف مختصر للدورة..."
                 />
               </div>
@@ -637,7 +637,7 @@ const CoursesPage = () => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
                   placeholder="وصف تفصيلي للدورة..."
                 />
               </div>
@@ -657,7 +657,7 @@ const CoursesPage = () => {
                           teacher: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       <option value="">اختر المعلم</option>
                       {teacherData
@@ -687,7 +687,7 @@ const CoursesPage = () => {
                       time_in_hours: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="40"
                   min="0"
                 />
@@ -702,7 +702,7 @@ const CoursesPage = () => {
                 <div className="flex items-center gap-2">
                   <label
                     htmlFor="imageUpload"
-                    className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                    className="cursor-pointer px-4 py-3 bg-(--brand) text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
                   >
                     اختر الصورة المصغرة
                   </label>
@@ -798,7 +798,7 @@ const CoursesPage = () => {
                               card_price: e.target.value,
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                         >
                           <option value="">اختر بطاقة</option>
                           {cardsData
@@ -827,7 +827,7 @@ const CoursesPage = () => {
                     onChange={(e) =>
                       setNewCourse({ ...newCourse, start_date: e.target.value })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   />
                 </div>
 
@@ -841,7 +841,7 @@ const CoursesPage = () => {
                     onChange={(e) =>
                       setNewCourse({ ...newCourse, end_date: e.target.value })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   />
                 </div>
               </div>
@@ -866,7 +866,7 @@ const CoursesPage = () => {
                         specialization_material: "",
                       });
                     }}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   >
                     <option value="">اختر القسم</option>
                     {subsectionData?.map((subSection: any) => (
@@ -896,7 +896,7 @@ const CoursesPage = () => {
                           specialization_material: "",
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       <option value="">اختر الصف</option>
                       {subSection?.subsubsections?.map((subSubSection: any) => (
@@ -926,7 +926,7 @@ const CoursesPage = () => {
                           specialization_material: "",
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       <option value="">اختر قسم فرعي</option>
                       {subsub?.specializations?.map((specialization: any) => (
@@ -966,7 +966,7 @@ const CoursesPage = () => {
                           specialization_material: e.target.value,
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       <option value="">اختر مادة التخصص</option>
                       {(spec?.specialization_materials.length > 0
@@ -1069,7 +1069,7 @@ const CoursesPage = () => {
                   : false) ||
                 !newCourse.specialization_material
               }
-              className="cursor-pointer md:justify-start justify-center px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer md:justify-start justify-center px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الدورة
@@ -1126,7 +1126,7 @@ const CoursesPage = () => {
                       name: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="أدخل عنوان الدورة..."
                 />
               </div>
@@ -1144,7 +1144,7 @@ const CoursesPage = () => {
                       short_description: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="وصف مختصر للدورة..."
                 />
               </div>
@@ -1162,7 +1162,7 @@ const CoursesPage = () => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
                   placeholder="وصف تفصيلي للدورة..."
                 />
               </div>
@@ -1182,7 +1182,7 @@ const CoursesPage = () => {
                           teacher: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
                       <option value="">اختر المعلم</option>
                       {teacherData
@@ -1213,7 +1213,7 @@ const CoursesPage = () => {
                       time_in_hours: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   placeholder="40"
                   min="0"
                 />
@@ -1230,7 +1230,7 @@ const CoursesPage = () => {
                 <div className="flex items-center gap-2">
                   <label
                     htmlFor="fileUpload"
-                    className="cursor-pointer px-4 py-3 bg-orange-500 text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                    className="cursor-pointer px-4 py-3 bg-(--brand) text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
                   >
                     اختر الصورة المصغرة
                   </label>
@@ -1325,7 +1325,7 @@ const CoursesPage = () => {
                               card_price: e.target.value,
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                         >
                           <option value="">اختر بطاقة</option>
                           {cardsData
@@ -1357,7 +1357,7 @@ const CoursesPage = () => {
                         start_date: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   />
                 </div>
 
@@ -1374,7 +1374,7 @@ const CoursesPage = () => {
                         end_date: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                   />
                 </div>
               </div>
@@ -1383,7 +1383,7 @@ const CoursesPage = () => {
               {!editSections ? (
                 <button
                   onClick={() => setEditSections(!editSections)}
-                  className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2"
+                  className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
                 >
                   تعديل الأقسام
                 </button>
@@ -1408,7 +1408,7 @@ const CoursesPage = () => {
                             specialization_material: "",
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                       >
                         <option value="">اختر القسم</option>
                         {subsectionData?.map((subSection: any) => (
@@ -1438,7 +1438,7 @@ const CoursesPage = () => {
                               specialization_material: "",
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                         >
                           <option value="">اختر الصف</option>
                           {subSection?.subsubsections?.map(
@@ -1473,7 +1473,7 @@ const CoursesPage = () => {
                               specialization_material: "",
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                         >
                           <option value="">اختر التخصص</option>
                           {subsub?.specializations?.map(
@@ -1515,7 +1515,7 @@ const CoursesPage = () => {
                               specialization_material: e.target.value,
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                         >
                           <option value="">اختر مادة التخصص</option>
                           {(spec?.specialization_materials.length > 0
@@ -1629,7 +1629,7 @@ const CoursesPage = () => {
                   : false) ||
                 !selectedCourse.specialization_material
               }
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات
@@ -1659,7 +1659,7 @@ const CoursesPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 text-sm"
+          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء دورة جديدة
@@ -1693,7 +1693,7 @@ const CoursesPage = () => {
           label="إجمالي الطلاب"
           value={courseStatsData?.total_students_in_enrolled_courses ?? "-"}
           icon={Users}
-          valueClassName="text-blue-600"
+          valueClassName="text-(--brand-secondary)"
           iconClassName="text-blue-500"
         />
       </div>
@@ -1709,7 +1709,7 @@ const CoursesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الدورات..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -1720,7 +1720,7 @@ const CoursesPage = () => {
               onChange={(e) =>
                 setTeacherFilter(e.target.value ? e.target.value : null)
               }
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
             >
               <option value="">جميع المعلمين</option>
               {teacherData?.map((teacher: any) => (
@@ -1735,7 +1735,7 @@ const CoursesPage = () => {
           {/* <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="">جميع التصنيفات</option>
             {specializationData?.map((category: any) => (
@@ -1749,7 +1749,7 @@ const CoursesPage = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="">جميع الحالات</option>
             <option value="true">منشور</option>
@@ -1760,7 +1760,7 @@ const CoursesPage = () => {
           <select
             value={freeFilter}
             onChange={(e) => setFreeFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
           >
             <option value="all">جميع الأسعار</option>
             <option value="true">مجاني</option>
@@ -1807,7 +1807,7 @@ const CoursesPage = () => {
 
           <button
             onClick={() => setCurrentView("create")}
-            className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة دورة جديدة
@@ -1838,7 +1838,7 @@ const CoursesPage = () => {
                 {!searchTerm && statusFilter === "all" && (
                   <button
                     onClick={() => setCurrentView("create")}
-                    className="cursor-pointer bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إنشاء دورة جديدة
@@ -1956,7 +1956,7 @@ const CoursesPage = () => {
                             {/* <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             course.isActive
-                              ? "bg-blue-100 text-blue-800"
+                              ? "bg-blue-100 text-(--brand-secondary)"
                               : "bg-red-100 text-red-800"
                           }`}
                         >
@@ -1971,7 +1971,7 @@ const CoursesPage = () => {
                                 setSelectedCourse(course);
                                 setCurrentView("content");
                               }}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                               title="إدارة المحتوى"
                             >
                               <Folder size={16} />
@@ -1981,7 +1981,7 @@ const CoursesPage = () => {
                                 setSelectedCourse(course);
                                 setCurrentView("activate");
                               }}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                               title="تفعيل دورة"
                             >
                               <CheckCircle size={16} />
@@ -1992,7 +1992,7 @@ const CoursesPage = () => {
                               }}
                               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                                 course?.is_published
-                                  ? "text-blue-600"
+                                  ? "text-(--brand-secondary)"
                                   : "text-gray-400"
                               }`}
                               title={

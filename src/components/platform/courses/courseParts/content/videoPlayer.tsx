@@ -3,9 +3,11 @@ import { useLesson } from "@/store/platform/useLesson";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import AppLogo from "@/assets/manasaty-logo.jpg";
 import { getYoutubeVideoId } from "@/utils/getYoutubeVideoId";
+import { useState } from "react";
 // import { useState, useEffect } from "react";
 
 const VideoPlayer = ({ markLessonComplete }: any) => {
+  const [isPlaying, setIsPlaying] = useState(false);
   const user = JSON.parse(localStorage.getItem("platform_user") || "{}");
   const isAllowToUseWeb = user.is_allow_to_use_web;
   console.log(isAllowToUseWeb);
@@ -78,14 +80,39 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
           // Youtube
           <>
             <div className="relative pb-[56.25%] h-0 overflow-hidden">
-              <iframe
-                src={`https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1&playsinline=1`}
-                className="absolute top-0 left-0 w-full h-full border-none overflow-hidden"
-                allowFullScreen
-                title={currentLesson?.title ?? "YouTube Video Player"}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-              />
+              {!isPlaying ? (
+                <>
+                  {/* Thumbnail */}
+                  <img
+                    src={`https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`}
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                    alt="Video Thumbnail"
+                  />
+
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <button
+                      onClick={() => setIsPlaying(true)}
+                      className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 hover:scale-110 transition"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-10 h-10 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <iframe
+                  src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
+                  className="absolute top-0 left-0 w-full h-full border-none"
+                  allowFullScreen
+                />
+              )}
             </div>
           </>
         )}
@@ -173,7 +200,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
                       {(resource?.file_size / 1024).toFixed(1) ?? 0} MB
                     </div>
                   </div>
-                  <button className="p-2 text-blue-600 cursor-pointer hover:bg-blue-50 rounded-lg transition-colors duration-200">
+                  <button className="p-2 text-(--brand-secondary) cursor-pointer hover:bg-blue-50 rounded-lg transition-colors duration-200">
                     <Download className="w-4 h-4" />
                   </button>
                 </a>

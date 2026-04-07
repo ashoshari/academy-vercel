@@ -97,19 +97,19 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="space-y-3">
-            <div className="flex items-center space-x-3 ">
+            <div className="flex items-center space-x-3">
               {footerData?.logo ? (
                 <img
                   loading="lazy"
                   src={footerData?.logo}
                   alt="Logo"
-                  className="rounded-xl w-12 h-12 text-white bg-white"
+                  className="w-10 h-auto"
                 />
               ) : (
                 <Image className="rounded-xl w-12 h-12 text-white" />
               )}
               <div className="text-right">
-                <h3 className="text-xl font-bold text-yellow-400">
+                <h3 className="text-xl font-bold text-(--text-light)">
                   {footerData?.platform_name || "اسم المنصة"}
                 </h3>
                 <p className="text-sm text-gray-300">{footerData?.slogan}</p>
@@ -122,7 +122,7 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-yellow-400">
+            <h4 className="text-lg font-semibold text-(--text-light)">
               روابط سريعة
             </h4>
             {footerData?.links ? (
@@ -132,7 +132,7 @@ const Footer: React.FC = () => {
                     <li key={id}>
                       <a
                         onClick={() => navigate(`sections/${id}`)}
-                        className="text-gray-300 hover:text-yellow-400 transition-colors cursor-pointer duration-200"
+                        className="text-gray-300 hover:text-(--text-light) transition-colors cursor-pointer duration-200"
                       >
                         {title}
                       </a>
@@ -163,24 +163,24 @@ const Footer: React.FC = () => {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-yellow-400">
+            <h4 className="text-lg font-semibold text-(--text-light)">
               تواصل معنا
             </h4>
             <ul className="space-y-3">
               <li className="flex items-center space-x-3">
-                <Phone className="w-4 h-4 text-yellow-400" />
+                <Phone className="w-4 h-4 text-(--text-light)" />
                 <span className="text-gray-300 text-sm" dir="ltr">
                   {footerData?.contact_number || "-"}
                 </span>
               </li>
               <li className="flex items-center space-x-3">
-                <Mail className="w-4 h-4 text-yellow-400" />
+                <Mail className="w-4 h-4 text-(--text-light)" />
                 <span className="text-gray-300 text-sm">
                   {footerData?.contact_email || "-"}
                 </span>
               </li>
               <li className="flex items-center space-x-3">
-                <MapPin className="w-4 h-4 text-yellow-400" />
+                <MapPin className="w-4 h-4 text-(--text-light)" />
                 <span className="text-gray-300 text-sm" dir="ltr">
                   {footerData?.location || "-"}
                 </span>
@@ -190,7 +190,9 @@ const Footer: React.FC = () => {
 
           {/* Social Media */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-yellow-400">تابعنا</h4>
+            <h4 className="text-lg font-semibold text-(--text-light)">
+              تابعنا
+            </h4>
             <div className="flex space-x-4">
               {socialMediaData?.filter(
                 (link: any) =>
@@ -235,13 +237,13 @@ const Footer: React.FC = () => {
           <div className="flex space-x-6 mt-4 md:mt-0">
             <button
               onClick={() => navigate("./privacy-policy")}
-              className="cursor-pointer text-gray-400 hover:text-yellow-400 text-sm transition-colors duration-200"
+              className="cursor-pointer text-gray-400 hover:text-(--text-light) text-sm transition-colors duration-200"
             >
               سياسة الخصوصية
             </button>
             <button
               onClick={() => navigate("./terms-and-conditions")}
-              className="cursor-pointer text-gray-400 hover:text-yellow-400 text-sm transition-colors duration-200"
+              className="cursor-pointer text-gray-400 hover:text-(--text-light) text-sm transition-colors duration-200"
             >
               الشروط والأحكام
             </button>

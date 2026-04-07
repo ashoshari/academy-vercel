@@ -43,7 +43,7 @@ const Discover: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             اكتشف{" "}
-            <span className="bg-linear-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-(--brand) to-(--brand-light) bg-clip-text text-transparent">
               أقسامنا
             </span>
           </h2>
@@ -105,7 +105,7 @@ const Discover: React.FC = () => {
                     <button
                       onClick={() => discoverNavHandler(section.id)}
                       style={{ backgroundColor: section.color?.color }}
-                      className={`cursor-pointer w-full bg-linear-to-r hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
+                      className={`cursor-pointer w-full bg-linear-to-r hover:from-(--brand) hover:to-(--brand-light) text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
                     >
                       <span>استكشف الآن</span>
                       <ArrowLeft className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -127,7 +127,7 @@ const Discover: React.FC = () => {
         {/* Bottom CTA */}
         {!isLoggedIn && (
           <div className="text-center mt-16">
-            <div className="bg-linear-to-r from-yellow-500 to-orange-500 rounded-3xl p-8 text-white relative overflow-hidden">
+            <div className="bg-linear-to-r from-(--brand) to-(--brand-light) rounded-3xl p-8 text-white relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10 rounded-3xl"></div>
               <div className="relative z-10">
                 <h3 className="text-2xl md:text-3xl font-bold mb-4">

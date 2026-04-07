@@ -50,7 +50,7 @@
 //                 className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all"
 //               >
 //                 {/* Header */}
-//                 <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4 text-white">
+//                 <div className="bg-gradient-to-r from-(--brand) to-(--brand-light) p-4 text-white">
 //                   <div className="flex items-center justify-between mb-2">
 //                     <h3 className="font-bold text-lg">{batch?.name || "-"}</h3>
 //                     <div className="flex justify-center items-center gap-1">
@@ -132,7 +132,7 @@
 //                     </div>
 //                     <div className="w-full bg-gray-200 rounded-full h-2">
 //                       <div
-//                         className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+//                         className="bg-(--brand) h-2 rounded-full transition-all duration-300"
 //                         style={{
 //                           width: `${batch.avg_usage * 100}%`,
 //                         }}
@@ -197,10 +197,10 @@
 //                   <div className="flex flex-col gap-y-[10px] min-h-20 overflow-y-auto">
 //                     {batch.note && (
 //                       <div className="bg-blue-50 p-3 rounded-lg">
-//                         <div className="text-xs text-blue-600 font-medium mb-1">
+//                         <div className="text-xs text-(--brand-secondary) font-medium mb-1">
 //                           ملاحظات:
 //                         </div>
-//                         <div className="text-sm text-blue-800 mb-4 break-words">
+//                         <div className="text-sm text-(--brand-secondary) mb-4 break-words">
 //                           {batch.note}
 //                         </div>
 //                       </div>
@@ -232,7 +232,7 @@
 //                       onClick={() => handleBatchDownload(batch?.id)}
 //                       className={`cursor-pointer p-1 rounded transition-colors ${
 //                         batch.is_downloaded
-//                           ? "text-blue-600 hover:bg-green-50"
+//                           ? "text-(--brand-secondary) hover:bg-green-50"
 //                           : "text-gray-400 hover:bg-gray-50"
 //                       }`}
 //                       title={"تحميل الكود"}
