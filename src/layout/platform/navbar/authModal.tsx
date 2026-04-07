@@ -85,7 +85,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         <div className="p-6 sm:p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-r from-yellow-400 to-orange-500 rounded-2xl mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-r from-(--brand) to-(--brand-light) rounded-2xl mb-4">
               <GraduationCap className="w-8 h-8 text-white" />
               <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
             </div>
@@ -167,7 +167,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             <div className="mt-6 text-center flex gap-x-2.5">
               <button
                 onClick={switchMode}
-                className="cursor-pointer text-yellow-600 hover:text-yellow-700 text-sm font-semibold transition-all duration-300"
+                className="cursor-pointer text-(--brand) hover:text-(--brand-light) text-sm font-semibold transition-all duration-300"
               >
                 {isLogin
                   ? "🆕 لا تملك حساب؟ إنشاء حساب جديد"

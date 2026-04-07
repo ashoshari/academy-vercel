@@ -75,7 +75,7 @@ const TreePage: React.FC = () => {
         </div>
       </div>
 
-      <button className="w-full cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white py-3 px-4 rounded-xl font-semibold hover:brightness-110 transition-all duration-300 transform group-hover:scale-105">
+      <button className="w-full cursor-pointer text-white py-3 px-4 rounded-xl font-semibold bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform group-hover:scale-105">
         عرض الملف الشخصي
       </button>
     </div>

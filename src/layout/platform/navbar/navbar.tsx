@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                       }, 100);
                     }}
-                    className="cursor-pointer px-5 py-2 rounded-lg bg-linear-to-r from-(--brand) to-(--brand-light) text-white font-medium shadow-sm hover:shadow-md hover:brightness-110 transition-all"
+                    className="cursor-pointer px-5 py-2 rounded-lg text-white font-medium shadow-sm hover:shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700"
                   >
                     عرض الكل
                   </Link>
@@ -231,7 +231,7 @@ const Navbar: React.FC = () => {
                       }, 100);
                       setIsMenuOpen(false);
                     }}
-                    className="w-full text-center px-4 py-3 rounded-xl bg-linear-to-r from-(--brand) to-(--brand-light) text-white font-medium shadow-md hover:brightness-110 transition-all duration-200"
+                    className="w-full text-center px-4 py-3 rounded-xl text-white font-medium shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700"
                   >
                     عرض الكل
                   </Link>

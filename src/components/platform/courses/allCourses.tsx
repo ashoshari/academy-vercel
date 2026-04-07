@@ -165,7 +165,7 @@ const AllCourses = () => {
             {/* Continue Button */}
             <button
               onClick={() => navigate(`/coursePage/${course?.course_id}`)}
-              className="w-full cursor-pointer bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white py-2.5 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
+              className="w-full cursor-pointer text-white py-2.5 px-4 rounded-xl font-semibold bg-[linear-gradient(to_right,var(--brand-secondary),var(--brand-secondary-dark),var(--brand-secondary))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
             >
               <Play className="w-4 h-4" />
               <span>متابعة التعلم</span>

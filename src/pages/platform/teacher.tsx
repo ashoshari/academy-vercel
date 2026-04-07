@@ -293,7 +293,7 @@ const TeacherProfile: React.FC = () => {
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled
               ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
-              : "bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:from-(--brand-light) hover:to-(--brand) transform hover:scale-105"
+              : "text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
           }`}
         >
           {course?.is_enrolled ? (
@@ -395,7 +395,7 @@ const TeacherProfile: React.FC = () => {
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled && course?.is_enrollment_active
               ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
-              : "bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:from-(--brand-light) hover:to-(--brand) transform hover:scale-105"
+              : "text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
           }`}
         >
           {course?.is_enrolled && course?.is_enrollment_active ? (
@@ -463,7 +463,7 @@ const TeacherProfile: React.FC = () => {
           target="_blank"
           onClick={() => handleDownload(file?.id)}
           download
-          className="cursor-pointer bg-linear-to-r w-full justify-center from-green-500 to-teal-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+          className="cursor-pointer w-full justify-center text-white px-6 py-2 rounded-xl font-semibold bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform group-hover:scale-105 flex items-center space-x-2"
         >
           <Download className="w-4 h-4" />
           <p className="">تحميل</p>
@@ -532,7 +532,7 @@ const TeacherProfile: React.FC = () => {
               target="_blank"
               onClick={() => handleDownload(book?.id)}
               download
-              className="cursor-pointer bg-linear-to-r w-full justify-center from-yellow-500 to-orange-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+              className="cursor-pointer w-full justify-center text-white px-6 py-2 rounded-xl font-semibold bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform group-hover:scale-105 flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
               <p className="">تحميل</p>
@@ -605,7 +605,7 @@ const TeacherProfile: React.FC = () => {
               target="_blank"
               onClick={() => handleDownload(question?.id)}
               download
-              className="cursor-pointer bg-linear-to-r w-full justify-center from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-6 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform group-hover:scale-105 flex items-center space-x-2"
+              className="cursor-pointer w-full justify-center text-white px-6 py-2 rounded-xl font-semibold bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform group-hover:scale-105 flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
               <p className="">تحميل</p>
@@ -986,7 +986,7 @@ const TeacherProfile: React.FC = () => {
                     disabled={
                       !selectedCourse?.is_free && !activationCode.trim()
                     }
-                    className="cursor-pointer flex-1 bg-linear-to-r from-(--brand) to-(--brand-light) py-3 px-6 rounded-xl font-semibold hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="cursor-pointer flex-1 text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 py-3 px-6 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     تفعيل الدورة
                   </button>
