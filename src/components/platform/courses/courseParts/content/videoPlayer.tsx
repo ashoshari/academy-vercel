@@ -93,7 +93,7 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                     <button
                       onClick={() => setIsPlaying(true)}
-                      className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 hover:scale-110 transition"
+                      className="cursor-pointer w-17 h-17 rounded-full flex items-center justify-center border border-white hover:scale-110 transition"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

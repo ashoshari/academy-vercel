@@ -146,7 +146,7 @@ const Navbar: React.FC = () => {
                           navigate("/profile", { replace: false });
                           setOpen(false);
                         }}
-                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-linear-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-700 transition-all"
+                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-linear-to-r hover:from-(--brand) hover:to-(--brand-light) hover:text-white transition-all"
                       >
                         الملف الشخصي
                       </Link>
@@ -158,7 +158,7 @@ const Navbar: React.FC = () => {
                           navigate("/all-courses", { replace: false });
                           setOpen(false);
                         }}
-                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-linear-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-700 transition-all"
+                        className="block w-full text-right px-5 py-3 text-sm text-gray-700 hover:bg-linear-to-r hover:from-(--brand) hover:to-(--brand-light) hover:text-white transition-all"
                       >
                         دوراتي
                       </Link>

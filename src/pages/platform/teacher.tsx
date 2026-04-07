@@ -345,7 +345,7 @@ const TeacherProfile: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+        <div className="absolute top-4 left-4 bg-(--brand) text-white px-3 py-1 rounded-full text-sm font-bold">
           {course?.card_price?.price} دينار
         </div>
       </div>

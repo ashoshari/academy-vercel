@@ -19,6 +19,45 @@ const CoursePage = () => {
       setSidebarVisible(false);
     }
   }, []);
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+        (e.ctrlKey && e.key === "U")
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (
+        window.outerWidth - window.innerWidth > 150 ||
+        window.outerHeight - window.innerHeight > 150
+      ) {
+        document.body.innerHTML = "Access Denied";
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) {
+        document.body.style.filter = "blur(20px)";
+      } else {
+        document.body.style.filter = "none";
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
   const currentLessonIndex = useLesson((state) => state.currentLessonIndex);
   const setCurrentLesson = useLesson((state) => state.setCurrentLesson);
   // const currentLesson = useLesson((state) => state.currentLesson);
@@ -107,6 +146,7 @@ const CoursePage = () => {
       className={`transition-all duration-300 ${
         sidebarVisible ? (sidebarCollapsed ? "md:ml-16" : "md:ml-80") : "ml-0"
       }`}
+      onContextMenu={(e) => e.preventDefault()}
     >
       {/* Mobile Sidebar Overlay */}
       {sidebarVisible && (
