@@ -14,11 +14,19 @@ export const useCustomPost = (endpoint: string, queryKey?: string[]) => {
   });
 };
 
-export const useCustomUpdate = (endpoint: string, queryKey?: string[]) => {
+type UpdateEndpoint = string | (() => string);
+
+export const useCustomUpdate = (
+  endpoint: UpdateEndpoint,
+  queryKey?: string[],
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (body: any) => edit(endpoint, body),
+    mutationFn: (body: any) => {
+      const url = typeof endpoint === "function" ? endpoint() : endpoint;
+      return edit(url, body);
+    },
     onSuccess: () => {
       queryKey?.forEach((key) => {
         queryClient.resetQueries({ queryKey: [key] });

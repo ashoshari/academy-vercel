@@ -10,19 +10,18 @@ import {
   ToggleLeft,
   ToggleRight,
   CreditCard,
-  // Copy,
   CheckCircle,
   User,
   Clock,
   Target,
   Globe,
   Folder,
-  FolderTree,
-  ChevronDown,
-  ChevronUp,
   Users,
   Monitor,
   Download,
+  Info,
+  Power,
+  PowerOff,
 } from "lucide-react";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -33,10 +32,11 @@ import handleErrorAlerts from "@/utils/showErrorMessages";
 import Pagination from "@/components/dashboard/core/Pagination";
 import Spinner from "@/components/dashboard/Spinner";
 import { formatDate } from "@/services/date";
-import { useQueryClient } from "@tanstack/react-query";
-import { get } from "@/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { edit, get } from "@/api";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 
 const DOWNLOAD_RESTRICTION_DATE = new Date("2026-03-01T00:00:00Z");
 
@@ -86,6 +86,12 @@ export interface CodeBatch {
   targetingType: "all" | "specific"; // 'all' for all subsections, 'specific' for selected ones
 }
 
+type PendingCodeStatusToggle = {
+  id: string;
+  isActive: boolean;
+  codePrefix: string;
+};
+
 const CardCodesPage = () => {
   const queryClient = useQueryClient();
   const cardPricing: any = [];
@@ -113,6 +119,8 @@ const CardCodesPage = () => {
     "all",
   );
   const [codeBatches, setCodeBatches] = useState<any>();
+  const [pendingCodeStatusToggle, setPendingCodeStatusToggle] =
+    useState<PendingCodeStatusToggle | null>(null);
 
   const cardCodesStatistics = useCustomQuery("cards/codes-statistics/", [
     "card-codes-statistics",
@@ -192,10 +200,16 @@ const CardCodesPage = () => {
     "codes-generated",
   ]);
 
-  const toggleGeneratedCodeState = useCustomUpdate(
-    `cards/codes-generated/${codeBatches}/`,
-    ["card-codes", "card-codes-statistics", "codes-generated"],
-  );
+  const toggleGeneratedCodeMutation = useMutation({
+    mutationFn: (id: string) => edit(`cards/codes-generated/${id}/`, {}),
+    onSuccess: () => {
+      ["card-codes", "card-codes-statistics", "codes-generated"].forEach(
+        (key) => {
+          queryClient.resetQueries({ queryKey: [key] });
+        },
+      );
+    },
+  });
 
   const addCode = useCustomPost(`/cards/codes/`, [
     "card-codes",
@@ -347,20 +361,40 @@ const CardCodesPage = () => {
       });
   };
 
-  const toggleCodeStatus = async (id: string) => {
-    setCodeBatches(id);
+  const requestCodeStatusToggle = (row: {
+    id: string | number;
+    is_active: boolean;
+    code_string?: string;
+  }) => {
+    const raw = String(row.code_string ?? "");
+    const codePrefix = raw.split("-")[0] || raw || "—";
+    setPendingCodeStatusToggle({
+      id: String(row.id),
+      isActive: row.is_active,
+      codePrefix,
+    });
+  };
+
+  const confirmCodeStatusToggle = async () => {
+    if (!pendingCodeStatusToggle) return;
+    const { id } = pendingCodeStatusToggle;
     try {
-      const res = await toggleGeneratedCodeState.mutateAsync({});
+      const res = await toggleGeneratedCodeMutation.mutateAsync(id);
       if (res?.status) {
         toast.success("تم تحديث حالة البطاقة بنجاح");
+        setPendingCodeStatusToggle(null);
       } else {
         handleErrorAlerts(res?.error ?? "حدث خطأ أثناء تحديث حالة البطاقة");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const anyErr = err as {
+        response?: { data?: { error?: string; message?: string } };
+        message?: string;
+      };
       const msg =
-        err?.response?.data?.error ??
-        err?.response?.data?.message ??
-        err?.message ??
+        anyErr?.response?.data?.error ??
+        anyErr?.response?.data?.message ??
+        anyErr?.message ??
         "حدث خطأ أثناء تحديث حالة البطاقة";
       handleErrorAlerts(msg);
     }
@@ -574,8 +608,9 @@ const CardCodesPage = () => {
       </div>
 
       {/* Enhanced Batches Section with Targeting Info */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
-        <button
+      <div>
+        {/* className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50" */}
+        {/* <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="cursor-pointer p-6 hover:bg-gray-50 w-full flex justify-between"
         >
@@ -584,7 +619,7 @@ const CardCodesPage = () => {
             مجموعات الكودات مع الاستهداف ومعلومات الأمان
           </h2>
           {isExpanded ? <ChevronDown /> : <ChevronUp />}
-        </button>
+        </button> */}
         <div
           className={`
     overflow-hidden transition-all duration-500 ease-in-out
@@ -973,9 +1008,9 @@ const CardCodesPage = () => {
                     {/* <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       الكود
                     </th> */}
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                    {/* <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       المجموعة
-                    </th>
+                    </th> */}
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       السعر
                     </th>
@@ -1022,11 +1057,10 @@ const CardCodesPage = () => {
                           </div>
                         </td> */}
 
-                        <td className="px-4 py-3 whitespace-nowrap relative">
+                        {/* <td className="px-4 py-3 whitespace-nowrap relative">
                           <div className="group text-sm font-medium text-gray-900 cursor-default inline-block">
                             {code.code.name}
 
-                            {/* Tooltip */}
                             <div
                               className="fixed z-9999 opacity-0 group-hover:opacity-100 transition-all duration-200 
                             bg-gray-800 text-white text-xs rounded-md px-2 py-1 whitespace-nowrap 
@@ -1038,7 +1072,7 @@ const CardCodesPage = () => {
                               ID: {code.code.id}
                             </div>
                           </div>
-                        </td>
+                        </td> */}
 
                         <td className="px-4 py-3 text-gray-900">
                           {code.code.card.price} د.أ
@@ -1107,7 +1141,7 @@ const CardCodesPage = () => {
                           {role === "admin" && (
                             <div className="flex items-center gap-2">
                               <button
-                                onClick={() => toggleCodeStatus(code.id)}
+                                onClick={() => requestCodeStatusToggle(code)}
                                 className={`cursor-pointer p-1 rounded transition-colors ${
                                   code.is_active
                                     ? "text-green-600 hover:bg-green-50"
@@ -1139,6 +1173,14 @@ const CardCodesPage = () => {
                                 <Download size={16} />
                               </button>
                             )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              className="cursor-pointer p-1 rounded transition-colors"
+                              title={code?.code?.name}
+                            >
+                              <Info size={16} className="text-sky-500" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -1182,6 +1224,55 @@ const CardCodesPage = () => {
           setGenerateForm={setGenerateForm}
           subsectionTree={subsectionTree}
           loading={addCode.isPending}
+        />
+      )}
+
+      {pendingCodeStatusToggle && (
+        <ConfirmationModal
+          open
+          onClose={() =>
+            !toggleGeneratedCodeMutation.isPending &&
+            setPendingCodeStatusToggle(null)
+          }
+          onConfirm={confirmCodeStatusToggle}
+          title="تأكيد تغيير حالة الكود"
+          variant={pendingCodeStatusToggle.isActive ? "danger" : "success"}
+          icon={pendingCodeStatusToggle.isActive ? PowerOff : Power}
+          confirmLabel={
+            pendingCodeStatusToggle.isActive
+              ? "نعم، تعطيل الكود"
+              : "نعم، تفعيل الكود"
+          }
+          isPending={toggleGeneratedCodeMutation.isPending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingCodeStatusToggle.isActive ? "تعطيل" : "تفعيل"}
+                </span>{" "}
+                هذا الكود؟
+              </p>
+              <p className="text-sm text-gray-600">
+                بادئة الكود:{" "}
+                <span
+                  className="font-mono font-semibold text-(--brand-secondary)"
+                  dir="ltr"
+                >
+                  {pendingCodeStatusToggle.codePrefix}
+                </span>
+              </p>
+              {pendingCodeStatusToggle.isActive ? (
+                <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3">
+                  لن يعمل الكود لتفعيل البطاقة بعد التعطيل حتى تقوم بإعادة تفعيله.
+                </p>
+              ) : (
+                <p className="text-sm text-emerald-900/90 bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+                  بعد التفعيل يمكن استخدام هذا الكود لتفعيل البطاقة وفقاً لإعداداته.
+                </p>
+              )}
+            </>
+          }
         />
       )}
     </div>

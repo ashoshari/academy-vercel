@@ -21,7 +21,9 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import Spinner from "@/components/dashboard/Spinner";
 import { useState } from "react";
+import { flushSync } from "react-dom";
 import Pagination from "@/components/dashboard/core/Pagination";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -96,6 +98,13 @@ export interface ActivityRecord {
   timestamp: string;
   category: "login" | "course" | "payment" | "achievement" | "exam";
 }
+
+type PendingStudentVisibility = {
+  id: string | number;
+  isActive: boolean;
+  name: string;
+};
+
 const StudentsPage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -106,6 +115,8 @@ const StudentsPage = () => {
   const [gradeFilter, setGradeFilter] = useState<any>();
   const [statusFilter, setStatusFilter] = useState<any>();
   const [page, setPage] = useState(1);
+  const [pendingStudentVisibility, setPendingStudentVisibility] =
+    useState<PendingStudentVisibility | null>(null);
 
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("search", searchTerm);
@@ -135,10 +146,9 @@ const StudentsPage = () => {
   const paginationData = data?.pagination;
   const coursesData = courses?.data;
   const gradesData = grades?.data;
-  // PUT Student
   const { mutateAsync: putStudent, isPending } = useCustomUpdate(
-    `/account/admin/students/${studentId}/`,
-    ["putstudents"],
+    () => `/account/admin/students/${studentId}/`,
+    ["students", "students-statistics"],
   );
   // POST Reset IMEI
   const { mutateAsync: resetIMEI } = useCustomPost(
@@ -166,15 +176,26 @@ const StudentsPage = () => {
       );
     }
   };
-  const handleActivation = async (student: any) => {
-    const is_active = student?.is_active;
+  const requestStudentVisibilityToggle = (student: any) => {
+    setPendingStudentVisibility({
+      id: student.id,
+      isActive: Boolean(student?.is_active),
+      name: String(student?.name ?? "").trim() || "هذا الطالب",
+    });
+  };
+
+  const confirmStudentVisibilityToggle = async () => {
+    if (!pendingStudentVisibility) return;
+    const { id, isActive } = pendingStudentVisibility;
+    flushSync(() => {
+      setStudentId(String(id));
+    });
     try {
       const response = await putStudent({
-        is_active: !is_active,
+        is_active: !isActive,
       });
       toast.success(response?.data?.message ?? "تم تحديث حالة الطلب");
-      queryClient.invalidateQueries({ queryKey: ["students"] });
-      queryClient.invalidateQueries({ queryKey: ["students-statistics"] });
+      setPendingStudentVisibility(null);
     } catch (error: any) {
       toast.error(
         error?.response?.data?.error ?? "حدث خطأ في تحديث حالة الطالب",
@@ -290,10 +311,7 @@ const StudentsPage = () => {
                 <Book size={16} />
               </button>
               <button
-                onClick={() => {
-                  setStudentId(student?.id);
-                  handleActivation(student);
-                }}
+                onClick={() => requestStudentVisibilityToggle(student)}
                 className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) rounded-lg transition-colors"
                 title={student?.is_active ? "إخفاء الطالب" : "إظهار الطالب"}
               >
@@ -661,10 +679,9 @@ const StudentsPage = () => {
                             <Book size={16} />
                           </button>
                           <button
-                            onClick={() => {
-                              setStudentId(student?.id);
-                              handleActivation(student);
-                            }}
+                            onClick={() =>
+                              requestStudentVisibilityToggle(student)
+                            }
                             className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) rounded-lg transition-colors"
                             title={
                               student?.is_active
@@ -712,6 +729,47 @@ const StudentsPage = () => {
             onPageChange={setPage}
           />
         </>
+      )}
+
+      {pendingStudentVisibility && (
+        <ConfirmationModal
+          open
+          onClose={() => !isPending && setPendingStudentVisibility(null)}
+          onConfirm={confirmStudentVisibilityToggle}
+          title="تأكيد ظهور الطالب"
+          variant={pendingStudentVisibility.isActive ? "danger" : "success"}
+          icon={pendingStudentVisibility.isActive ? EyeOff : Eye}
+          confirmLabel={
+            pendingStudentVisibility.isActive
+              ? "نعم، إخفاء الطالب"
+              : "نعم، إظهار الطالب"
+          }
+          isPending={isPending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingStudentVisibility.isActive ? "إخفاء" : "إظهار"}
+                </span>{" "}
+                الطالب{" "}
+                <span className="font-bold text-(--brand-secondary)">
+                  {pendingStudentVisibility.name}
+                </span>
+                ؟
+              </p>
+              {pendingStudentVisibility.isActive ? (
+                <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3">
+                  لن يظهر الطالب كطالب نشط في القوائم ذات الصلة حتى تعيد تفعيله.
+                </p>
+              ) : (
+                <p className="text-sm text-emerald-900/90 bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+                  سيتم اعتبار الطالب نشطاً ويظهر وفقاً لإعدادات العرض الحالية.
+                </p>
+              )}
+            </>
+          }
+        />
       )}
     </div>
   );

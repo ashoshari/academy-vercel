@@ -40,6 +40,19 @@ interface TreeItem {
 
 type ContentType = "semester" | "unit" | "topic" | "lesson";
 
+const mapExamsToSelectOptions = (
+  exams: any[] | undefined,
+): { id: string; title: string }[] =>
+  (exams ?? []).map((e) => ({
+    id: String(e.id),
+    title: String(e.title ?? e.id),
+  }));
+
+const getExamIdFromSelectedItem = (exam: any): string | null => {
+  if (exam == null || exam === "") return null;
+  return String(typeof exam === "object" ? exam.id : exam);
+};
+
 const CourseContentPage = ({ course, onBack }: any) => {
   const queryClient = useQueryClient();
   const [selectedResources, setSelectedResources] = useState<any>([]);
@@ -48,7 +61,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showUnpublished, setShowUnpublished] = useState(true);
   const [filteredContent, setFilteredContent] = useState<any>([]);
-
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
     "tree",
   );
@@ -60,12 +72,16 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
   // GET Resources
   const { data: resources } = useCustomQuery(
-    `/training/admin/resources/?specialization_material=${course?.specialization_material?.id}`,
+    `/training/admin/resources/?is_paginated=false&type=resources`,
     ["resources"],
   );
   const resourceData = resources?.data;
   // GET Exams
-  const { data: exams } = useCustomQuery("/training/admin/exams/", ["exams"]);
+  const { data: exams } = useCustomQuery(
+    `/training/admin/exams/?teacher=${course?.teacher?.id}&is_paginated=false`,
+    ["exams"],
+  );
+
   const examData = exams?.data;
   // GET courseContent Statistics
   const { data: contentStatistics } = useCustomQuery(
@@ -76,6 +92,12 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const courseContentData = courseContent?.data;
   const courseContentTree = courseContentData?.semesters;
   const contentStatisticsData = contentStatistics?.data;
+
+  const examOptionsForCourse = mapExamsToSelectOptions(
+    examData?.filter(
+      (exam: any) => exam?.is_free === courseContentData?.is_free,
+    ),
+  );
 
   // POST Semester
   const { mutateAsync: postSemesters } = useCustomPost(
@@ -329,7 +351,13 @@ const CourseContentPage = ({ course, onBack }: any) => {
       is_published: selectedItem?.is_published,
       // is_free: selectedItem?.is_free,
       ...(selectedItem?.link && { link: selectedItem?.link }),
-      ...(selectedItem?.exam && { exam: selectedItem?.exam.id }),
+      ...(selectedItem?.exam != null &&
+        selectedItem.exam !== "" && {
+          exam:
+            typeof selectedItem.exam === "object"
+              ? selectedItem.exam.id
+              : selectedItem.exam,
+        }),
       ...(selectedItem?.order && { order: selectedItem?.order }),
       ...(selectedItem?.resources && { resources: selectedItem?.resources }),
     };
@@ -1147,32 +1175,28 @@ const CourseContentPage = ({ course, onBack }: any) => {
               {/* Exam Selection (for exam lessons) */}
               {newItem.type === "lesson" && newItem.lessonType === "exam" && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
                     الامتحان *
                   </label>
-                  <select
-                    value={newItem.examId || ""}
-                    onChange={(e) => {
-                      setNewItem({
-                        ...newItem,
-                        examId: e.target.value,
-                      });
-                    }}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
-                  >
-                    <option value="">اختر الامتحان</option>
-                    {examData
-                      ?.filter(
-                        (exam: any) =>
-                          exam?.teacher?.id === course?.teacher?.id &&
-                          exam?.is_free === courseContentData?.is_free,
-                      )
-                      ?.map((filteredExam: any) => (
-                        <option key={filteredExam?.id} value={filteredExam?.id}>
-                          {filteredExam.title}
-                        </option>
-                      ))}
-                  </select>
+                  <div className="space-y-3">
+                    <MultiSelectAutocomplete
+                      single
+                      big
+                      value={
+                        newItem.examId
+                          ? [String(newItem.examId)]
+                          : ([] as string[])
+                      }
+                      onChange={(ids) =>
+                        setNewItem({
+                          ...newItem,
+                          examId: ids[0] ?? "",
+                        })
+                      }
+                      options={examOptionsForCourse}
+                      placeholder="ابحث أو اختر الامتحان..."
+                    />
+                  </div>
                 </div>
               )}
 
@@ -1214,8 +1238,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         options={
                           resourceData?.filter(
                             (resource: any) =>
-                              resource.specialization_material ==
-                                course?.specialization_material?.id &&
                               resource?.teacher?.id === course?.teacher?.id &&
                               (resource?.type == "resources" ||
                                 resource?.type == "مصادر"),
@@ -1421,33 +1443,33 @@ const CourseContentPage = ({ course, onBack }: any) => {
               {selectedItem?.topic &&
                 selectedItem?.type.toLowerCase() === "exam" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
                       الامتحان *
                     </label>
-                    <select
-                      value={selectedItem.exam || ""}
-                      onChange={(e) =>
-                        setSelectedItem({
-                          ...selectedItem,
-                          exam: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
-                    >
-                      {examData
-                        ?.filter(
-                          (exam: any) =>
-                            exam?.teacher?.id === course?.teacher?.id,
-                        )
-                        ?.map((filteredExam: any) => (
-                          <option
-                            key={filteredExam?.id}
-                            value={filteredExam?.id}
-                          >
-                            {filteredExam.title}
-                          </option>
-                        ))}
-                    </select>
+                    <div className="space-y-3">
+                      <MultiSelectAutocomplete
+                        single
+                        value={(() => {
+                          const id = getExamIdFromSelectedItem(
+                            selectedItem.exam,
+                          );
+                          return id ? [id] : ([] as string[]);
+                        })()}
+                        onChange={(ids) => {
+                          const id = ids[0];
+                          setSelectedItem({
+                            ...selectedItem,
+                            exam: id
+                              ? (examData?.find(
+                                  (ex: any) => String(ex.id) === id,
+                                ) ?? { id })
+                              : null,
+                          });
+                        }}
+                        options={examOptionsForCourse}
+                        placeholder="ابحث أو اختر الامتحان..."
+                      />
+                    </div>
                   </div>
                 )}
             </div>
@@ -1531,8 +1553,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         options={
                           resourceData?.filter(
                             (resource: any) =>
-                              resource.specialization_material ==
-                                course?.specialization_material?.id &&
                               resource?.teacher?.id === course?.teacher?.id &&
                               (resource?.type == "resources" ||
                                 resource?.type == "مصادر"),

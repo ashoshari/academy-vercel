@@ -151,7 +151,7 @@ const GenerateModal = ({
 
         <div className="p-6 space-y-6">
           {/* Name */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               الاسم
             </label>
@@ -169,7 +169,7 @@ const GenerateModal = ({
               min="1"
               max="10000"
             />
-          </div>
+          </div> */}
 
           {/* Price Selection */}
           <div>
@@ -222,7 +222,7 @@ const GenerateModal = ({
           </div>
 
           {/* Prefix */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               بادئة الكود
             </label>
@@ -235,7 +235,7 @@ const GenerateModal = ({
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
               placeholder="CARD"
             />
-          </div>
+          </div> */}
           {role !== "library" && (
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>

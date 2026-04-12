@@ -295,6 +295,8 @@ const ExamsPage = () => {
         );
       });
   };
+
+  console.log(selectedExam?.teacher?.id);
   const handleEditExam = () => {
     selectedExam.teacher = selectedExam?.teacher?.id;
     selectedExam.subsection = selectedExam?.subsection?.id;
@@ -582,7 +584,7 @@ const ExamsPage = () => {
                 {role !== "teacher" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      اختر استاذ *
+                      اختر المعلّم *
                     </label>
                     <select
                       value={newExam?.teacher}
@@ -594,7 +596,7 @@ const ExamsPage = () => {
                       }
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
                     >
-                      <option value="">اختر استاذ</option>
+                      <option value="">اختر المعلّم</option>
                       {teachers?.data?.data?.map((type: any) => (
                         <option key={type.id} value={type.id}>
                           {type.name}
@@ -1131,14 +1133,16 @@ const ExamsPage = () => {
                 {role !== "teacher" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      اختر استاذ *
+                      اختر المعلم *
                     </label>
                     <select
                       value={selectedExam?.teacher?.id}
                       onChange={(e) =>
                         setSelectedExam({
                           ...selectedExam,
-                          teacher: e.target.value,
+                          teacher: {
+                            id: e.target.value,
+                          },
                         })
                       }
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
