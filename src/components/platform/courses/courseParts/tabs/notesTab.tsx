@@ -120,7 +120,7 @@ const TextNotes = () => {
         <h2 className="text-2xl font-bold text-gray-900">الملاحظات</h2>
         <button
           onClick={() => setShowAddNote(true)}
-          className="cursor-pointer bg-linear-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 flex items-center space-x-2"
+          className="cursor-pointer bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-4 py-2 rounded-xl font-semibold hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transition-all duration-300 flex items-center space-x-2"
         >
           <Plus className="w-4 h-4" />
           <span>إضافة ملاحظة</span>

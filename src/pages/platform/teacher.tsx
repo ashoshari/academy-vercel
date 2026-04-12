@@ -241,7 +241,7 @@ const TeacherProfile: React.FC = () => {
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-4 right-4">
-          <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
+          <div className="bg-(--brand-secondary) text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
             <Smile className="w-4 h-4" />
             <span>مجانا</span>
           </div>
@@ -292,7 +292,7 @@ const TeacherProfile: React.FC = () => {
           onClick={() => handleCourseClick(course)}
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled
-              ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+              ? "bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transform hover:scale-105"
               : "text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
           }`}
         >
@@ -394,7 +394,7 @@ const TeacherProfile: React.FC = () => {
           onClick={() => handleCourseClick(course)}
           className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
             course?.is_enrolled && course?.is_enrollment_active
-              ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+              ? "bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transform hover:scale-105"
               : "text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
           }`}
         >
@@ -668,7 +668,7 @@ const TeacherProfile: React.FC = () => {
 
       <button
         onClick={() => handleExamsClick(exam)}
-        className="w-full bg-linear-to-r from-purple-500 to-indigo-500 text-white cursor-pointer py-3 px-4 rounded-xl font-semibold hover:from-purple-600 hover:to-indigo-600 transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
+        className="w-full bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white cursor-pointer py-3 px-4 rounded-xl font-semibold hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
       >
         <Zap className="w-5 h-5" />
         <span>ابدأ الامتحان</span>
@@ -944,11 +944,11 @@ const TeacherProfile: React.FC = () => {
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-700 font-medium">سعر الدورة:</span>
                   {selectedCourse?.card_price?.price ? (
-                    <span className="text-2xl font-bold text-orange-600">
+                    <span className="text-2xl font-bold text-(--brand)">
                       {selectedCourse?.card_price?.price} دينار
                     </span>
                   ) : (
-                    <span className="text-2xl font-bold text-orange-600">
+                    <span className="text-2xl font-bold text-(--brand)">
                       مجانا
                     </span>
                   )}

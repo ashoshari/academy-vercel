@@ -322,7 +322,7 @@ const QuestionsTab = () => {
         <h2 className="text-2xl font-bold text-gray-900">الأسئلة</h2>
         <button
           onClick={() => setShowAddQuestion(true)}
-          className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
+          className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white px-4 py-2 rounded-xl font-semibold hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) cursor-pointer transition-all duration-300 flex items-center space-x-2"
         >
           <Plus className="w-4 h-4" />
           <span>اطرح سؤالاً</span>

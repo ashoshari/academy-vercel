@@ -308,7 +308,7 @@ const CoreExam = ({
                         className={`cursor-pointer w-full p-4 text-right rounded-xl border-2 transition-all duration-200 ${
                           selectedAnswers[currentQuestionIndex]?.answer_id ===
                           answer?.id
-                            ? "border-blue-500 bg-blue-50 text-blue-900"
+                            ? "border-(--brand-secondary) bg-blue-50 text-(--brand-secondary)"
                             : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                         }`}
                       >
@@ -317,7 +317,7 @@ const CoreExam = ({
                             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                               selectedAnswers[currentQuestionIndex]
                                 ?.answer_id === answer?.id
-                                ? "border-blue-500 bg-blue-500"
+                                ? "border-(--brand-secondary) bg-(--brand-secondary)"
                                 : "border-gray-300"
                             }`}
                           >
@@ -397,7 +397,7 @@ const CoreExam = ({
                         );
                       }
                     }}
-                    className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 flex items-center space-x-2"
+                    className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white rounded-xl font-semibold hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transition-all duration-300 flex items-center space-x-2"
                   >
                     <span>التالي</span>
                     <ChevronLeft className="w-5 h-5" />

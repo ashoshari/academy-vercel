@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
                     }`}
                   >
                     <div className="space-y-4 w-full">
-                      <h2 className="text-lg font-semibold text-yellow-400 animate-pulse">
+                      <h2 className="text-lg font-semibold text-(--brand) animate-pulse">
                         {slides?.length > 0
                           ? slides[currentSlide]?.subtitle
                           : ""}
@@ -211,7 +211,7 @@ const Hero: React.FC = () => {
                       onClick={() => setCurrentSlide(index)}
                       className={`cursor-pointer w-3 h-3 rounded-full transition-all duration-300 ${
                         index === currentSlide
-                          ? "bg-yellow-400 w-8"
+                          ? "bg-(--brand) w-8"
                           : "bg-white/50 hover:bg-white/70"
                       }`}
                     />

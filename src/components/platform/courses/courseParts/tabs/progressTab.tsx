@@ -45,7 +45,7 @@ const ProgressTab = () => {
           </div>
         </div>
 
-        <div className="bg-linear-to-r from-orange-500 to-red-500 rounded-2xl p-6 text-white">
+        <div className="bg-linear-to-r from-(--brand) to-(--brand-light) rounded-2xl p-6 text-white">
           <div className="flex items-center space-x-3 mb-4">
             <Target className="w-8 h-8" />
             <div>

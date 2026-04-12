@@ -69,7 +69,7 @@ const EnrolledCourses: React.FC = () => {
               </div>
 
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
-                <div className="text-2xl font-bold text-purple-600 mb-1">
+                <div className="text-2xl font-bold text-(--brand-secondary) mb-1">
                   {myCoursesStats?.percentage_of_completed_lessons_for_all_enrolled_courses.toFixed(
                     2,
                   )}
@@ -79,7 +79,7 @@ const EnrolledCourses: React.FC = () => {
               </div>
 
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
-                <div className="text-2xl font-bold text-orange-600 mb-1">
+                <div className="text-2xl font-bold text-(--brand) mb-1">
                   {myCoursesStats?.number_of_active_enrolled_courses}
                 </div>
                 <div className="text-sm text-gray-600">دورات نشطة</div>
