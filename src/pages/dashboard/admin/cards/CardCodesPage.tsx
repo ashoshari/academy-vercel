@@ -106,7 +106,6 @@ const CardCodesPage = () => {
   //   selectedPriceFilter,
   //   // , setSelectedPriceFilter
   // ] = useState<string | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
   const [isCodeDownloaded, setisCodeDownloaded] = useState<
     "all" | "true" | "false"
@@ -621,15 +620,7 @@ const CardCodesPage = () => {
           {isExpanded ? <ChevronDown /> : <ChevronUp />}
         </button> */}
         <div
-          className={`
-    overflow-hidden transition-all duration-500 ease-in-out
-    ${
-      isExpanded &&
-      !(!cardCodes?.data?.data || cardCodes?.data?.data?.length === 0)
-        ? `max-h-250 overflow-y-auto opacity-100 p-6`
-        : "max-h-0 opacity-0"
-    }
-  `}
+          className={`overflow-hidden transition-all duration-500 ease-in-out max-h-0 opacity-0`}
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {cardCodes?.data?.data?.map((batch: any) => {
@@ -1264,11 +1255,13 @@ const CardCodesPage = () => {
               </p>
               {pendingCodeStatusToggle.isActive ? (
                 <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3">
-                  لن يعمل الكود لتفعيل البطاقة بعد التعطيل حتى تقوم بإعادة تفعيله.
+                  لن يعمل الكود لتفعيل البطاقة بعد التعطيل حتى تقوم بإعادة
+                  تفعيله.
                 </p>
               ) : (
                 <p className="text-sm text-emerald-900/90 bg-emerald-50 border border-emerald-100 rounded-xl p-3">
-                  بعد التفعيل يمكن استخدام هذا الكود لتفعيل البطاقة وفقاً لإعداداته.
+                  بعد التفعيل يمكن استخدام هذا الكود لتفعيل البطاقة وفقاً
+                  لإعداداته.
                 </p>
               )}
             </>
