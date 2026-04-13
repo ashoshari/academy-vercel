@@ -235,7 +235,7 @@ const FilesPage = () => {
 
   const getFileTypeColor = (file: FileItem) => {
     if (file.type === "folder") {
-      return "text-orange-600";
+      return "text-(--brand)";
     }
 
     switch (file.fileType) {
@@ -248,7 +248,7 @@ const FilesPage = () => {
       case "audio":
         return "text-pink-600";
       case "archive":
-        return "text-yellow-600";
+        return "text-(--brand)";
       default:
         return "text-gray-600";
     }
@@ -417,7 +417,7 @@ const FilesPage = () => {
     const iconColor = getFileTypeColor(file);
 
     return (
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
         {/* Thumbnail/Icon */}
         <div className="relative h-32 bg-gray-50 flex items-center justify-center">
           {file.thumbnail ? (
@@ -580,7 +580,7 @@ const FilesPage = () => {
 
         <div className="p-6 space-y-6">
           {/* File Upload Area */}
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-(--brand) transition-colors">
             <UploadCloud size={48} className="text-gray-400 mx-auto mb-4" />
             <p className="text-gray-600 mb-4">
               اسحب الملفات هنا أو انقر للاختيار
@@ -839,7 +839,7 @@ const FilesPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي الملفات</p>
@@ -847,11 +847,11 @@ const FilesPage = () => {
                 {stats.totalFiles}
               </p>
             </div>
-            <File className="w-12 h-12 text-orange-500" />
+            <File className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الحجم الإجمالي</p>
@@ -863,7 +863,7 @@ const FilesPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي التحميلات</p>
@@ -875,7 +875,7 @@ const FilesPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">المجلدات</p>
@@ -890,11 +890,11 @@ const FilesPage = () => {
 
       {/* Breadcrumbs */}
       {currentPath !== null && (
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand)">
           <div className="flex items-center gap-2 text-sm">
             <button
               onClick={() => navigateToFolder(null)}
-              className="text-orange-600 hover:text-orange-700 transition-colors"
+              className="text-(--brand) hover:text-(--brand-light) transition-colors"
             >
               الرئيسية
             </button>
@@ -903,7 +903,7 @@ const FilesPage = () => {
                 <span className="text-gray-400">/</span>
                 <button
                   onClick={() => navigateToFolder(folder.id)}
-                  className="text-orange-600 hover:text-orange-700 transition-colors"
+                  className="text-(--brand) hover:text-(--brand-light) transition-colors"
                 >
                   {folder.name}
                 </button>
@@ -914,7 +914,7 @@ const FilesPage = () => {
       )}
 
       {/* Filters and Controls */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
           {/* Search */}
           <div className="md:col-span-2 relative">
@@ -981,7 +981,7 @@ const FilesPage = () => {
               onClick={() => setViewMode("grid")}
               className={`p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -991,7 +991,7 @@ const FilesPage = () => {
               onClick={() => setViewMode("list")}
               className={`p-2 rounded-lg transition-colors ${
                 viewMode === "list"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1009,7 +1009,7 @@ const FilesPage = () => {
           ))}
 
           {filteredFiles?.length === 0 && (
-            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
               <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
                 {searchTerm ||
@@ -1050,7 +1050,7 @@ const FilesPage = () => {
         </div>
       ) : (
         // List View
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand)">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">

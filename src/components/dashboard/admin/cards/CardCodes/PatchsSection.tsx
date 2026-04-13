@@ -14,13 +14,13 @@
 // const PatchsSection = () => {
 //   const [isExpanded, setIsExpanded] = useState(true);
 //   return (
-//     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50">
+//     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand)">
 //       <button
 //         onClick={() => setIsExpanded(!isExpanded)}
 //         className="cursor-pointer p-6 hover:bg-gray-50 w-full flex justify-between"
 //       >
 //         <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-//           <FolderTree className="w-5 h-5 text-orange-600" />
+//           <FolderTree className="w-5 h-5 text-(--brand)" />
 //           مجموعات الكودات مع الاستهداف ومعلومات الأمان
 //         </h2>
 //         {isExpanded ? <ChevronDown /> : <ChevronUp />}

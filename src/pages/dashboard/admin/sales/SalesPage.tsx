@@ -83,7 +83,7 @@ const SalesPage = () => {
 
       {isLoadingStats ? (
         <div className="flex justify-center w-full py-12">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : (
         <>

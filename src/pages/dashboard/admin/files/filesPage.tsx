@@ -250,7 +250,7 @@ const ResourcesPage = () => {
   };
   const getFileTypeColor = (file: any) => {
     if (file.type === "folder") {
-      return "text-orange-600";
+      return "text-(--brand)";
     }
 
     switch (file.fileType) {
@@ -369,7 +369,7 @@ const ResourcesPage = () => {
     const IconComponent = getFileIcon(resource);
     const iconColor = getFileTypeColor(resource);
     return (
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
         {/* Thumbnail/Icon */}
         <div className="relative h-32 bg-gray-50 flex items-center justify-center">
           {resource?.image ? (
@@ -524,7 +524,7 @@ const ResourcesPage = () => {
                   <div
                     className={`border-2 border-dashed w-full ${
                       uploadResources?.file && "hidden"
-                    } border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors`}
+                    } border-gray-300 rounded-lg p-8 text-center hover:border-(--brand) transition-colors`}
                   >
                     <UploadCloud
                       size={48}
@@ -584,7 +584,7 @@ const ResourcesPage = () => {
                     <h2 className="text-lg font-bold text-gray-800 text-center mb-1.25">
                       رفع صورة الملف *
                     </h2>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-(--brand) transition-colors">
                       <UploadCloud
                         size={48}
                         className="text-gray-400 mx-auto mb-4"
@@ -908,7 +908,7 @@ const ResourcesPage = () => {
                       is_published: e.target.checked,
                     })
                   }
-                  className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                 />
               </div>
             </div>
@@ -986,7 +986,7 @@ const ResourcesPage = () => {
                   <div
                     className={`border-2 border-dashed w-full ${
                       selectedResources?.file && "hidden"
-                    } border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors`}
+                    } border-gray-300 rounded-lg p-8 text-center hover:border-(--brand) transition-colors`}
                   >
                     <UploadCloud
                       size={48}
@@ -1045,7 +1045,7 @@ const ResourcesPage = () => {
                     <h2 className="text-lg font-bold text-gray-800 text-center mb-1.25">
                       رفع صورة الملف
                     </h2>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-300 transition-colors">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-(--brand) transition-colors">
                       <UploadCloud
                         size={48}
                         className="text-gray-400 mx-auto mb-4"
@@ -1401,7 +1401,7 @@ const ResourcesPage = () => {
                       is_published: e.target.checked,
                     })
                   }
-                  className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                  className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                 />
               </div>
             </div>
@@ -1460,7 +1460,7 @@ const ResourcesPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي الملفات</p>
@@ -1468,11 +1468,11 @@ const ResourcesPage = () => {
                 {resourcesStatsData?.total_resources ?? "-"}
               </p>
             </div>
-            <Files className="w-12 h-12 text-orange-500" />
+            <Files className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الملفات النشطة</p>
@@ -1484,7 +1484,7 @@ const ResourcesPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي التحميلات</p>
@@ -1496,21 +1496,21 @@ const ResourcesPage = () => {
           </div>
         </div>
 
-        {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">متوسط التقييم</p>
-              <p className="text-3xl font-bold text-orange-600">
+              <p className="text-3xl font-bold text-(--brand)">
                 2
               </p>
             </div>
-            <Star className="w-12 h-12 text-orange-500" />
+            <Star className="w-12 h-12 text-(--brand)" />
           </div>
         </div> */}
       </div>
 
       {/* Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
           {/* Search */}
           <div className="lg:col-span-2 relative">
@@ -1555,7 +1555,7 @@ const ResourcesPage = () => {
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1565,7 +1565,7 @@ const ResourcesPage = () => {
               onClick={() => setViewMode("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1578,10 +1578,10 @@ const ResourcesPage = () => {
       {/* resourcess Grid/Table */}
       {isLoading || isDeleting ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !resourcesData || resourcesData?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -1612,7 +1612,7 @@ const ResourcesPage = () => {
       ) : (
         <>
           {/* List View */}
-          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">

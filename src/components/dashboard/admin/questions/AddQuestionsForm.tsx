@@ -192,7 +192,7 @@ const AddQuestionsForm: React.FC<Props> = ({
   return (
     <div className="space-y-6">
       {/* Current question form */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <p>
           إجمالي درجات الامتحان: <strong>{totalMarks}</strong> • المستخدم:{" "}
           <strong>{existingMarksSum + pendingMarks}</strong> • المتبقي:{" "}
@@ -440,7 +440,7 @@ const AddQuestionsForm: React.FC<Props> = ({
 
       {/* Pending preview */}
       {pending.length > 0 && (
-        <div className="bg-white rounded-xl border border-orange-100/50 p-4">
+        <div className="bg-white rounded-xl border border-(--brand) p-4">
           <h3 className="font-bold text-gray-800 mb-3">الأسئلة في الدفعة</h3>
           <div className="grid md:grid-cols-2 gap-3">
             {pending.map((q, i) => (

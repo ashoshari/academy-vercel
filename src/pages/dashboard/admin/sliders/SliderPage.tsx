@@ -184,7 +184,7 @@ const SliderPage = () => {
       {/* Search and Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-3">
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand)">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -199,21 +199,21 @@ const SliderPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 col-span-4 gap-4">
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
-            <p className="text-2xl font-bold text-orange-600">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-(--brand)">
               {sliderStatisticsData?.data?.data?.total_sliders ?? "-"}
             </p>
             <p className="text-sm text-gray-600">إجمالي السلايدات</p>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
             <p className="text-2xl font-bold text-green-600">
               {sliderStatisticsData?.data?.data?.active_sliders ?? "-"}
             </p>
             <p className="text-sm text-gray-600">السلايدات النشطة</p>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
             <p className="text-2xl font-bold text-gray-600">
               {sliderStatisticsData?.data?.data?.inactive_sliders ?? "-"}
             </p>
@@ -225,7 +225,7 @@ const SliderPage = () => {
       {/* Slider Items List */}
       {slidersData?.isLoading ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : (
         <>
@@ -250,7 +250,7 @@ const SliderPage = () => {
             })}
 
             {sorted?.length === 0 && (
-              <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
                 <ImageIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   {searchTerm ? "لا توجد نتائج" : "لا توجد سلايدات"}
@@ -281,7 +281,7 @@ const SliderPage = () => {
       )}
 
       {/* Slider Settings */}
-      {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <h2 className="text-lg font-bold text-gray-800 mb-4">
           إعدادات السلايدر
         </h2>

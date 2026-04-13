@@ -65,7 +65,7 @@ export default function TreeItem({
     (type === "specializations" && item?.specialization_materials?.length > 0);
   return (
     <div
-      className={`bg-white/95 backdrop-blur-xl rounded-lg shadow-sm border border-orange-100/50 hover:shadow-md transition-all duration-300`}
+      className={`bg-white/95 backdrop-blur-xl rounded-lg shadow-sm border border-(--brand) hover:shadow-md transition-all duration-300`}
       style={{
         marginRight: `${(type === "subsections" ? 0 : type === "subsubsections" ? 1 : 2) * 26}px`,
       }}
@@ -82,9 +82,9 @@ export default function TreeItem({
                 className="cursor-pointer p-1 hover:bg-orange-50 rounded transition-colors"
               >
                 {isExpanded ? (
-                  <ChevronDown size={16} className="text-orange-600" />
+                  <ChevronDown size={16} className="text-(--brand)" />
                 ) : (
-                  <ChevronRight size={16} className="text-orange-600" />
+                  <ChevronRight size={16} className="text-(--brand)" />
                 )}
               </button>
             ) : (
@@ -96,9 +96,9 @@ export default function TreeItem({
             {/* Folder/File Icon */}
             {hasChildren ? (
               isExpanded ? (
-                <FolderOpen size={20} className="text-orange-500" />
+                <FolderOpen size={20} className="text-(--brand)" />
               ) : (
-                <Folder size={20} className="text-orange-500" />
+                <Folder size={20} className="text-(--brand)" />
               )
             ) : (
               <File size={20} className="text-gray-400" />
@@ -121,7 +121,7 @@ export default function TreeItem({
 
               {/* Level Badge */}
               <div className="flex items-center gap-2 ml-4">
-                <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                <span className="bg-orange-100 text-(--brand) px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                   <Hash size={12} />
                   المستوى
                   {type === "subsections"
@@ -177,7 +177,7 @@ export default function TreeItem({
                       setShowAddMaterialModal?.(true);
                     }
                   }}
-                  className="cursor-pointer mr-auto p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
+                  className="cursor-pointer mr-auto p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
                 >
                   <Plus size={16} />
                   {type === "subsections"
@@ -196,7 +196,7 @@ export default function TreeItem({
                     // setSelectedSpecialization?.(item);
                     setShowAddMaterialModal?.(true);
                   }}
-                  className=" p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
+                  className=" p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
                   title=" إضافة مادة  "
                 >
                   <Plus size={16} />
@@ -276,7 +276,7 @@ export default function TreeItem({
                       setShowEditMaterialModal?.(true);
                     }
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
                   title="تعديل القسم"
                 >
                   <Edit size={16} />

@@ -214,10 +214,10 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
           <button
             onClick={markLessonComplete}
             disabled={currentLesson?.is_completed}
-            className={`cursor-pointer disabled:cursor-not-allowed px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
+            className={`cursor-pointer disabled:cursor-not-allowed px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 ${
               currentLesson?.is_completed
-                ? "bg-green-100 text-green-800 cursor-not-allowed"
-                : "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transform hover:scale-105"
+                ? "bg-green-100 text-green-800 cursor-not-allowed transition-all duration-300"
+                : "text-white shadow-sm hover:shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
             }`}
           >
             <CheckCircle className="w-5 h-5" />

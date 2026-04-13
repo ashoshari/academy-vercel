@@ -209,7 +209,7 @@ const AddSubsectionModal = ({
                   }}
                   className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     isLinked
-                      ? "border-(--brand) bg-orange-50 text-orange-700"
+                      ? "border-(--brand) bg-orange-50 text-(--brand)"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >

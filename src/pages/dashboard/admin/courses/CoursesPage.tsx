@@ -350,7 +350,7 @@ const CoursesPage = () => {
   };
 
   const CourseCard = ({ course }: { course: any }) => (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Thumbnail */}
       <div className="relative h-48 overflow-hidden">
         <img
@@ -511,7 +511,7 @@ const CoursesPage = () => {
                 setSelectedCourse(course);
                 setCurrentView("edit");
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
               title="تعديل الدورة"
             >
               <Edit size={16} />
@@ -521,7 +521,7 @@ const CoursesPage = () => {
                 setCourseId(course?.id);
                 handleDeleteCourse();
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
               title="حذف الدورة"
             >
               <Trash2 size={16} />
@@ -583,7 +583,7 @@ const CoursesPage = () => {
         </div>
 
         {/* Create Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Basic Info */}
             <div className="space-y-6">
@@ -766,7 +766,7 @@ const CoursesPage = () => {
                           card_price: 0,
                         })
                       }
-                      className="text-orange-600 focus:ring-orange-500"
+                      className="text-(--brand) focus:ring-orange-500"
                     />
                     <span>دورة مجانية</span>
                   </label>
@@ -778,7 +778,7 @@ const CoursesPage = () => {
                       onChange={() =>
                         setNewCourse({ ...newCourse, is_free: false })
                       }
-                      className="text-orange-600 focus:ring-orange-500"
+                      className="text-(--brand) focus:ring-orange-500"
                     />
                     <span>دورة مدفوعة</span>
                   </label>
@@ -1001,7 +1001,7 @@ const CoursesPage = () => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -1019,7 +1019,7 @@ const CoursesPage = () => {
                         is_special: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -1039,7 +1039,7 @@ const CoursesPage = () => {
                         is_show_general_questions: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
               </div>
@@ -1105,7 +1105,7 @@ const CoursesPage = () => {
         </div>
 
         {/* Edit Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Basic Info */}
             <div className="space-y-6">
@@ -1293,7 +1293,7 @@ const CoursesPage = () => {
                           is_free: true,
                         })
                       }
-                      className="text-orange-600 focus:ring-orange-500"
+                      className="text-(--brand) focus:ring-orange-500"
                     />
                     <span>دورة مجانية</span>
                   </label>
@@ -1305,7 +1305,7 @@ const CoursesPage = () => {
                       onChange={() =>
                         setSelectedCourse({ ...selectedCourse, is_free: false })
                       }
-                      className="text-orange-600 focus:ring-orange-500"
+                      className="text-(--brand) focus:ring-orange-500"
                     />
                     <span>دورة مدفوعة</span>
                   </label>
@@ -1552,7 +1552,7 @@ const CoursesPage = () => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -1570,7 +1570,7 @@ const CoursesPage = () => {
                         is_special: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -1590,7 +1590,7 @@ const CoursesPage = () => {
                         is_show_general_questions: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
               </div>
@@ -1673,7 +1673,7 @@ const CoursesPage = () => {
           value={courseStatsData?.total_courses ?? "-"}
           icon={BookOpen}
           valueClassName="text-gray-800"
-          iconClassName="text-orange-500"
+          iconClassName="text-(--brand)"
         />
         <DashboardStatCard
           label="الدورات النشطة"
@@ -1699,7 +1699,7 @@ const CoursesPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
           {/* Search */}
           <div className="md:col-span-2 relative">
@@ -1773,7 +1773,7 @@ const CoursesPage = () => {
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1783,7 +1783,7 @@ const CoursesPage = () => {
               onClick={() => setViewMode("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1795,10 +1795,10 @@ const CoursesPage = () => {
       {/* Courses Grid/Table */}
       {isLoading || isDeleting || isEditing ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !courseData || courseData?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -1823,7 +1823,7 @@ const CoursesPage = () => {
               ))}
 
             {courseData?.length === 0 && (
-              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
                 <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   {searchTerm || teacherFilter || statusFilter !== "all"
@@ -1859,7 +1859,7 @@ const CoursesPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -2013,7 +2013,7 @@ const CoursesPage = () => {
                                 setSelectedCourse(course);
                                 setCurrentView("edit");
                               }}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="تعديل الدورة"
                             >
                               <Edit size={16} />
@@ -2023,7 +2023,7 @@ const CoursesPage = () => {
                                 setCourseId(course?.id);
                                 handleDeleteCourse();
                               }}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="حذف الدورة"
                             >
                               <Trash2 size={16} />

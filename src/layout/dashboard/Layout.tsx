@@ -103,7 +103,7 @@ const Layout = () => {
       <div
         className={`${smallScreen && sidebarOpen ? "fixed z-100 h-full" : ""} ${
           sidebarOpen ? "min-w-64" : "min-w-16"
-        } transition-all duration-300 bg-white/95 backdrop-blur-xl shadow-lg border-l border-orange-100/50`}
+        } transition-all duration-300 bg-white/95 backdrop-blur-xl shadow-lg border-l border-(--brand)`}
       >
         <div className="p-4">
           {/* Header */}
@@ -155,7 +155,7 @@ const Layout = () => {
           </nav>
 
           {/* Logout Button */}
-          <div className="mt-6 pt-6 border-t border-orange-100">
+          <div className="mt-6 pt-6 border-t border-(--brand)">
             <button
               onClick={() => {
                 removeTokens(navigate, setIsAuthenticated);

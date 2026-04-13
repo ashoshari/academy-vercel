@@ -122,7 +122,7 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
 
   return (
     <div
-      className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50 w-full"
+      className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full"
       dir="rtl"
     >
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
@@ -160,7 +160,7 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
                   }}
                   className={`cursor-pointer w-full text-right px-3 py-2 text-sm transition-colors ${
                     chartYear === ""
-                      ? "bg-orange-100 text-orange-700 font-semibold"
+                      ? "bg-orange-100 text-(--brand) font-semibold"
                       : "text-gray-700 hover:bg-orange-50"
                   }`}
                 >
@@ -176,7 +176,7 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
                     }}
                     className={`cursor-pointer w-full text-right px-3 py-2 text-sm transition-colors ${
                       y === chartYear
-                        ? "bg-orange-100 text-orange-700 font-semibold"
+                        ? "bg-orange-100 text-(--brand) font-semibold"
                         : "text-gray-700 hover:bg-orange-50"
                     }`}
                     role="option"

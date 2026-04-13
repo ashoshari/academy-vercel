@@ -83,7 +83,7 @@ export default function EditTeacherPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-orange-500" />
+        <Spinner size={40} thickness={4} className="text-(--brand)" />
       </div>
     );
   }
@@ -225,7 +225,7 @@ export default function EditTeacherPage() {
               id="is_active"
               type="checkbox"
               {...register("is_active")}
-              className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+              className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
             />
             <label
               className="text-sm font-medium text-gray-700"
@@ -243,7 +243,7 @@ export default function EditTeacherPage() {
               defaultChecked={true}
               type="checkbox"
               {...register("is_active")}
-              className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-[20px] h-[20px]"
+              className="rounded border-gray-300 text-(--brand) focus:ring-orange-500 w-[20px] h-[20px]"
             />
           </div> */}
 

@@ -69,7 +69,7 @@ const ContactPage = () => {
           <div className="absolute top-6 left-6">
             <button
               onClick={() => navigate("/login")}
-              className="flex items-center gap-2 px-6 py-3 text-orange-600 hover:text-orange-700 hover:bg-white/60 rounded-xl transition-all duration-300 backdrop-blur-md shadow-lg border border-orange-200/30"
+              className="flex items-center gap-2 px-6 py-3 text-(--brand) hover:text-(--brand-light) hover:bg-white/60 rounded-xl transition-all duration-300 backdrop-blur-md shadow-lg border border-(--brand)"
             >
               <ArrowRight size={20} />
               <span className="font-medium">تسجيل الدخول</span>
@@ -94,9 +94,9 @@ const ContactPage = () => {
             <div className="grid lg:grid-cols-2 gap-16 items-start">
               {/* Contact Information */}
               <div className="space-y-10">
-                <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-orange-100/50 transform hover:scale-[1.02] transition-all duration-300">
+                <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
                   <h2 className="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-4">
-                    <Phone className="w-8 h-8 text-orange-600" />
+                    <Phone className="w-8 h-8 text-(--brand)" />
                     معلومات التواصل
                   </h2>
 
@@ -106,16 +106,16 @@ const ContactPage = () => {
                         {item.action ? (
                           <a
                             href={item.action}
-                            className="flex items-center gap-6 p-6 rounded-2xl hover:bg-orange-50/80 transition-all duration-300 border-2 border-transparent hover:border-orange-200 transform hover:scale-[1.02]"
+                            className="flex items-center gap-6 p-6 rounded-2xl hover:bg-orange-50/80 transition-all duration-300 border-2 border-transparent hover:border-(--brand) transform hover:scale-[1.02]"
                           >
                             <div className="flex items-center justify-center w-16 h-16 bg-orange-100/80 rounded-xl group-hover:bg-orange-200/80 transition-colors shadow-lg">
-                              <item.icon className="w-8 h-8 text-orange-600" />
+                              <item.icon className="w-8 h-8 text-(--brand)" />
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-semibold text-gray-500 mb-1">
                                 {item.label}
                               </p>
-                              <p className="text-xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors">
+                              <p className="text-xl font-bold text-gray-800 group-hover:text-(--brand) transition-colors">
                                 {item.value}
                               </p>
                             </div>
@@ -123,7 +123,7 @@ const ContactPage = () => {
                         ) : (
                           <div className="flex items-center gap-6 p-6 rounded-2xl">
                             <div className="flex items-center justify-center w-16 h-16 bg-orange-100/80 rounded-xl shadow-lg">
-                              <item.icon className="w-8 h-8 text-orange-600" />
+                              <item.icon className="w-8 h-8 text-(--brand)" />
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-semibold text-gray-500 mb-1">
@@ -141,13 +141,13 @@ const ContactPage = () => {
                 </div>
 
                 {/* Working Hours */}
-                <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-orange-100/50 transform hover:scale-[1.02] transition-all duration-300">
+                <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
                   <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-4">
-                    <Clock className="w-7 h-7 text-orange-600" />
+                    <Clock className="w-7 h-7 text-(--brand)" />
                     ساعات العمل
                   </h3>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center py-3 border-b border-orange-100">
+                    <div className="flex justify-between items-center py-3 border-b border-(--brand)">
                       <span className="text-gray-600 text-lg">
                         الأحد - الخميس
                       </span>
@@ -169,7 +169,7 @@ const ContactPage = () => {
 
               {/* Features & About */}
               <div className="space-y-10">
-                <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-orange-100/50 transform hover:scale-[1.02] transition-all duration-300">
+                <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
                   <h2 className="text-3xl font-bold text-gray-800 mb-8">
                     لماذا نحن؟
                   </h2>
@@ -177,7 +177,7 @@ const ContactPage = () => {
                     {features.map((feature, index) => (
                       <div key={index} className="flex items-start gap-6">
                         <div className="flex items-center justify-center w-16 h-16 bg-orange-100/80 rounded-xl shrink-0 shadow-lg">
-                          <feature.icon className="w-8 h-8 text-orange-600" />
+                          <feature.icon className="w-8 h-8 text-(--brand)" />
                         </div>
                         <div>
                           <h3 className="font-bold text-gray-800 mb-2 text-xl">
@@ -193,9 +193,9 @@ const ContactPage = () => {
                 </div>
 
                 {/* About Section */}
-                <div className="bg-linear-to-br from-orange-500/95 to-orange-600/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-white border border-orange-400/30 transform hover:scale-[1.02] transition-all duration-300">
+                <div className="bg-linear-to-br from-orange-500/95 to-orange-600/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-white border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
                   <h2 className="text-3xl font-bold mb-6">عن الشركة</h2>
-                  <p className="text-orange-100 leading-relaxed mb-8 text-lg">
+                  <p className="text-(--brand) leading-relaxed mb-8 text-lg">
                     نحن في Supervision Software نركز على تقديم حلول تقنية متطورة
                     ومنصات تعليمية تفاعلية تساعد المؤسسات والأفراد على تحقيق
                     أهدافهم التعليمية والمهنية بكفاءة عالية.
@@ -217,7 +217,7 @@ const ContactPage = () => {
 
             {/* Call to Action */}
             <div className="mt-16 text-center">
-              <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-100/50 transform hover:scale-[1.02] transition-all duration-300">
+              <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
                 <h2 className="text-3xl font-bold text-gray-800 mb-6">
                   هل تحتاج مساعدة؟
                 </h2>
@@ -233,7 +233,7 @@ const ContactPage = () => {
                   </a>
                   <a
                     href="mailto:contact@vision-jo.com"
-                    className="border-2 border-(--brand) text-orange-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-50/80 transition-all duration-300 backdrop-blur-sm transform hover:scale-[1.05] shadow-lg"
+                    className="border-2 border-(--brand) text-(--brand) px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-50/80 transition-all duration-300 backdrop-blur-sm transform hover:scale-[1.05] shadow-lg"
                   >
                     راسلنا عبر البريد
                   </a>

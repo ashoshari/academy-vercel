@@ -87,7 +87,7 @@ const EditStudentPage = () => {
   if (studentData?.isLoading)
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-orange-500" />
+        <Spinner size={40} thickness={4} className="text-(--brand)" />
       </div>
     );
   return (
@@ -191,7 +191,7 @@ const EditStudentPage = () => {
           <input
             type="checkbox"
             {...register("is_allow_to_use_web")}
-            className="rounded border-gray-300 w-6 h-6 text-orange-600 focus:ring-orange-500"
+            className="rounded border-gray-300 w-6 h-6 text-(--brand) focus:ring-(--brand)"
           />
         </div>
 

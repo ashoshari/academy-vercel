@@ -57,11 +57,11 @@ const AnimatedBackground: React.FC = () => {
       <div className="absolute inset-0">
         {/* Soft rotating squares */}
         <div
-          className="absolute top-16 left-1/3 w-16 h-16 border-2 border-orange-300/25 transform rotate-45 animate-spin shadow-lg"
+          className="absolute top-16 left-1/3 w-16 h-16 border-2 border-(--brand) transform rotate-45 animate-spin shadow-lg"
           style={{ animationDuration: "20s" }}
         ></div>
         <div
-          className="absolute bottom-20 right-1/4 w-12 h-12 border-2 border-orange-400/30 transform rotate-12 animate-spin shadow-md"
+          className="absolute bottom-20 right-1/4 w-12 h-12 border-2 border-(--brand) transform rotate-12 animate-spin shadow-md"
           style={{ animationDuration: "15s", animationDirection: "reverse" }}
         ></div>
 

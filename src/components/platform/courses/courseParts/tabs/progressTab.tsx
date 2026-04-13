@@ -52,7 +52,7 @@ const ProgressTab = () => {
               <div className="text-3xl font-bold">
                 {courseProgress?.total_number_of_not_completed_lessons}
               </div>
-              <div className="text-orange-100">دروس متبقية</div>
+              <div className="text-(--brand)">دروس متبقية</div>
             </div>
           </div>
         </div>

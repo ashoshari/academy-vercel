@@ -1,7 +1,7 @@
 type SpinnerProps = {
-  size?: number;        // px
-  thickness?: number;   // border width in px
-  className?: string;   // extra tailwind classes (e.g., text-orange-500)
+  size?: number; // px
+  thickness?: number; // border width in px
+  className?: string; // extra tailwind classes (e.g., text-(--brand))
 };
 
 export default function Spinner({

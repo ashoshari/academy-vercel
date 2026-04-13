@@ -203,7 +203,7 @@ const StudentsPage = () => {
     }
   };
   const StudentCard = ({ student }: { student: any }) => (
-    <div className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+    <div className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
       <div className="h-[30%] p-6 bg-linear-to-r from-(--brand) to-(--brand-light) text-white">
         <div className="flex items-center gap-4">
@@ -221,7 +221,7 @@ const StudentsPage = () => {
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-lg mb-1">{student?.name || "-"}</h3>
-            <p className="text-orange-100 text-sm">
+            <p className="text-(--brand) text-sm">
               {student?.grade?.name || "-"}
             </p>
             <div className="flex items-center gap-2 mt-2">
@@ -266,7 +266,7 @@ const StudentsPage = () => {
             <div className="text-xs text-gray-500">دورات مكتملة</div>
           </div>
           <div className="text-center col-span-2">
-            <div className="text-2xl font-bold text-orange-600">
+            <div className="text-2xl font-bold text-(--brand)">
               {student?.total_spend} د.أ
             </div>
             <div className="text-xs text-gray-500">إجمالي الإنفاق</div>
@@ -332,7 +332,7 @@ const StudentsPage = () => {
                 onClick={() => {
                   navigate(`/dashboard/students/edit/${student.id}`);
                 }}
-                className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 rounded-lg transition-colors"
+                className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) rounded-lg transition-colors"
                 title="تعديل الطالب"
               >
                 <Edit size={16} />
@@ -367,7 +367,7 @@ const StudentsPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
@@ -375,11 +375,11 @@ const StudentsPage = () => {
                 {dataStatistics?.data?.data?.total_students ?? "-"}
               </p>
             </div>
-            <Users className="w-12 h-12 text-orange-500" />
+            <Users className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الطلاب النشطون</p>
@@ -391,7 +391,7 @@ const StudentsPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الطلاب الغير نشطون</p>
@@ -399,27 +399,27 @@ const StudentsPage = () => {
                 {dataStatistics?.data?.data?.inactive_students ?? "-"}
               </p>
             </div>
-            <CircleX className="w-12 h-12 text-blue-500" />
+            <CircleX className="w-12 h-12 text-red-500" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي الإيرادات</p>
-              <p className="text-3xl font-bold text-orange-600">
+              <p className="text-3xl font-bold text-(--brand)">
                 {dataStatistics?.data?.data?.total_income
                   ? dataStatistics?.data?.data?.total_income + " د.أ"
                   : "0"}
               </p>
             </div>
-            <DollarSign className="w-12 h-12 text-orange-500" />
+            <DollarSign className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
           {/* Search */}
           <div className="md:col-span-2 relative">
@@ -482,7 +482,7 @@ const StudentsPage = () => {
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -492,7 +492,7 @@ const StudentsPage = () => {
               onClick={() => setViewMode("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -505,10 +505,10 @@ const StudentsPage = () => {
       {/* Students Grid/Table */}
       {isLoading || isPending ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !studentsData || studentsData.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -532,7 +532,7 @@ const StudentsPage = () => {
             ))}
 
             {studentsData?.length === 0 && (
-              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
                 <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   لا توجد نتائج
@@ -560,7 +560,7 @@ const StudentsPage = () => {
       ) : (
         <>
           {/* Table */}
-          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -710,7 +710,7 @@ const StudentsPage = () => {
                                 `/dashboard/students/edit/${student.id}`,
                               );
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل الطالب"
                           >
                             <Edit size={16} />

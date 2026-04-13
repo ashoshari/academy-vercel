@@ -79,7 +79,7 @@ const LoginPage = () => {
           <div className="absolute top-6 left-6">
             <button
               onClick={() => onNavigate("/contact")}
-              className="cursor-pointer flex items-center gap-2 px-6 py-3 text-orange-600 hover:text-orange-700 hover:bg-white/60 rounded-xl transition-all duration-300 backdrop-blur-md shadow-lg border border-orange-200/30"
+              className="cursor-pointer flex items-center gap-2 px-6 py-3 text-(--brand) hover:text-(--brand) hover:bg-white/60 rounded-xl transition-all duration-300 backdrop-blur-md shadow-lg border border-(--brand)"
             >
               <Mail size={20} />
               <span className="font-medium">تواصل معنا</span>
@@ -101,7 +101,7 @@ const LoginPage = () => {
             </div>
 
             {/* Login Form */}
-            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-orange-100/50 transform hover:scale-[1.02] transition-all duration-300">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
               {error && (
                 <div className="mt-4 text-red-600 text-sm text-center">
                   {error}
@@ -118,7 +118,7 @@ const LoginPage = () => {
                     رقم الهاتف
                   </label>
                   <div className="relative group">
-                    <Phone className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-orange-500 transition-colors" />
+                    <Phone className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-(--brand) transition-colors" />
                     <input
                       id="phone"
                       type="tel"
@@ -130,7 +130,7 @@ const LoginPage = () => {
                       pattern="^07[0-9]{8}$"
                       maxLength={10}
                       minLength={10}
-                      className="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-orange-300 text-lg"
+                      className="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-(--brand) focus:border-(--brand) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-(--brand) text-lg"
                       placeholder="07XXXXXXXX"
                       required
                     />
@@ -146,21 +146,21 @@ const LoginPage = () => {
                     كلمة المرور
                   </label>
                   <div className="relative group">
-                    <Lock className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-orange-500 transition-colors" />
+                    <Lock className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-(--brand) transition-colors" />
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       minLength={6}
-                      className="w-full pr-12 pl-14 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-orange-300 text-lg"
+                      className="w-full pr-12 pl-14 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-(--brand) focus:border-(--brand) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-(--brand) text-lg"
                       placeholder="••••••••"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors p-1"
+                      className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-(--brand) transition-colors p-1"
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -190,7 +190,7 @@ const LoginPage = () => {
                   مواجهة مشكلة في تسجيل الدخول؟{" "}
                   <button
                     onClick={() => onNavigate("/contact")}
-                    className="cursor-pointer text-orange-600 hover:text-orange-700 font-semibold transition-colors hover:underline"
+                    className="cursor-pointer text-(--brand) hover:text-(--brand) font-semibold transition-colors hover:underline"
                   >
                     تواصل معنا
                   </button>
@@ -202,7 +202,7 @@ const LoginPage = () => {
             <div className="text-center mt-10">
               <p className="text-gray-600">
                 مدعوم من{" "}
-                <span className="font-bold text-orange-600 text-lg">
+                <span className="font-bold text-(--brand) text-lg">
                   Supervision Software
                 </span>
               </p>

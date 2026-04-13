@@ -256,7 +256,7 @@ const GenerateModal = ({
                   setSelectedSpecializationMaterial([]);
                   setAllSubstections(e.target.checked);
                 }}
-                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                className="rounded border-gray-300 text-(--brand) focus:ring-(--brand-light)"
               />
             </div>
           )}
@@ -279,7 +279,7 @@ const GenerateModal = ({
                     is_installment: e.target.checked,
                   });
                 }}
-                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                className="rounded border-gray-300 text-(--brand) focus:ring-(--brand-light)"
               />
             </div>
           )}
@@ -385,7 +385,7 @@ const GenerateModal = ({
           {generateForm.priceId > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-600 mb-2">مثال على الكود:</p>
-              <p className="font-mono text-lg font-bold text-orange-600 mb-3">
+              <p className="font-mono text-lg font-bold text-(--brand) mb-3">
                 {generateForm.prefix}-
                 {
                   cardPricing.find((p: any) => p.id === generateForm.priceId)
@@ -404,8 +404,8 @@ const GenerateModal = ({
                   </>
                 ) : (
                   <>
-                    <Target size={16} className="text-orange-600" />
-                    <span className="text-orange-600 font-medium">
+                    <Target size={16} className="text-(--brand)" />
+                    <span className="text-(--brand) font-medium">
                       {generateForm.targetedSubsections.length === 0
                         ? "لم يتم اختيار أقسام بعد"
                         : `يعمل على ${generateForm.targetedSubsections.length} قسم محدد`}

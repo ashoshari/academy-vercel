@@ -19,7 +19,7 @@ const SALES_STAT_ITEMS: ReadonlyArray<{
     label: "إجمالي المبيعات",
     icon: ShoppingCart,
     valueClassName: "text-gray-800",
-    iconClassName: "text-orange-500",
+    iconClassName: "text-(--brand)",
   },
   {
     key: "total_teacher_share",

@@ -190,7 +190,7 @@ const LibrariesPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي المكتبات</p>
@@ -198,11 +198,11 @@ const LibrariesPage = () => {
                 {librariesStatistics?.data?.data?.total_libraries ?? "-"}
               </p>
             </div>
-            <Users className="w-12 h-12 text-orange-500" />
+            <Users className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">المكتبات النشطون</p>
@@ -214,7 +214,7 @@ const LibrariesPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">المكتبات غير النشطين</p>
@@ -222,13 +222,13 @@ const LibrariesPage = () => {
                 {librariesStatistics?.data?.data?.inactive_libraries ?? "-"}
               </p>
             </div>
-            <CircleX className="w-12 h-12 text-blue-500" />
+            <CircleX className="w-12 h-12 text-red-500" />
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50 w-full">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full">
         {/* Search
           <div className="col-span-2 relative min-w-0">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -251,7 +251,7 @@ const LibrariesPage = () => {
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -261,7 +261,7 @@ const LibrariesPage = () => {
               onClick={() => setViewMode("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -281,11 +281,11 @@ const LibrariesPage = () => {
       {/* libraries Grid/Table */}
       {dataLibraries?.isLoading ? (
         <div className="flex justify-center w-full">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !dataLibraries?.data?.data ||
         dataLibraries?.data?.data?.length === 0 ? (
-        <div className="col-span-full w-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full w-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -315,7 +315,7 @@ const LibrariesPage = () => {
             ))}
 
             {dataLibraries?.data?.data.length === 0 && (
-              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
                 <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   لا يوجد مكتبات
@@ -345,7 +345,7 @@ const LibrariesPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -453,7 +453,7 @@ const LibrariesPage = () => {
                                 `/dashboard/libraries/edit/${library.id}`,
                               );
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل"
                           >
                             <Edit size={16} />

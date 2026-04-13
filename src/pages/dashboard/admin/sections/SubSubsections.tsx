@@ -420,7 +420,7 @@ const SubsectionsPage = () => {
         </button>
       </div>
       {/* Search and Stats */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand)">
         <div className="w-full relative">
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
@@ -434,7 +434,7 @@ const SubsectionsPage = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* <div className="lg:col-span-2">
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand)">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -448,21 +448,21 @@ const SubsectionsPage = () => {
           </div>
         </div> */}
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
           <p className="text-2xl font-bold text-(--brand-secondary)">
             {dataStatistics?.data?.data?.total_subsections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأقسام</p>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
           <p className="text-2xl font-bold text-green-600">
             {dataStatistics?.data?.data?.active_subsections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">الأقسام المفعلة</p>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
           <p className="text-2xl font-bold text-red-600">
             {dataStatistics?.data?.data?.inactive_subsections ?? "-"}
           </p>
@@ -471,10 +471,10 @@ const SubsectionsPage = () => {
       </div>
       {data?.isLoading ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !data?.data?.data || data?.data?.data?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -626,7 +626,7 @@ const SubsectionsPage = () => {
                 );
               })
             : data?.data?.data?.length === 0 && (
-                <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+                <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
                   <>
                     <Folder className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-800 mb-2">

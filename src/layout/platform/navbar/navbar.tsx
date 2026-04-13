@@ -64,10 +64,10 @@ const Navbar: React.FC = () => {
               >
                 <div className="flex items-center space-x-3">
                   {headerData?.logo ? (
-                    <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
+                    <div className="flex items-center justify-center w-15 h-15">
                       <img
                         loading="lazy"
-                        className="w-10 h-auto"
+                        className="w-full h-full"
                         src={headerData?.logo}
                         alt="logo"
                       />
@@ -94,7 +94,7 @@ const Navbar: React.FC = () => {
                   <button
                     key={item.id}
                     onClick={() => navigate(`/sections/${item?.id}`)}
-                    className="cursor-pointer px-5 py-2 rounded-xl text-gray-700 font-medium hover:bg-yellow-100 hover:text-yellow-700 transition-all duration-200"
+                    className="cursor-pointer px-5 py-2 rounded-lg text-gray-700 font-medium hover:bg-linear-to-r from-(--brand) to-(--brand-light) hover:text-white transition-all duration-200"
                   >
                     {item.title}
                   </button>

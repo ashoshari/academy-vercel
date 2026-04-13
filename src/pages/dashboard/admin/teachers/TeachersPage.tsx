@@ -172,7 +172,7 @@ const TeachersPage = () => {
   // };
 
   const TeacherCard = ({ teacher }: { teacher: any }) => (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
       <div className="p-6 bg-linear-to-r from-(--brand) to-(--brand-light) text-white">
         <div className="flex items-center gap-4">
@@ -196,7 +196,7 @@ const TeachersPage = () => {
           <div className="flex-1">
             <h3 className="font-bold text-lg mb-1">{teacher.name}</h3>
 
-            <p className="text-orange-100 text-sm">
+            <p className="text-(--brand) text-sm">
               {teacher?.material?.name || "-"}
             </p>
 
@@ -307,7 +307,7 @@ const TeachersPage = () => {
               onClick={() => {
                 navigate(`/dashboard/teachers/edit/${teacher.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
               title="تعديل المعلم"
             >
               <Edit size={16} />
@@ -350,7 +350,7 @@ const TeachersPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي المعلمين</p>
@@ -358,11 +358,11 @@ const TeachersPage = () => {
                 {teachersStatistics?.data?.data?.total_teachers || "-"}
               </p>
             </div>
-            <Users className="w-12 h-12 text-orange-500" />
+            <Users className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">المعلمين النشطون</p>
@@ -374,7 +374,7 @@ const TeachersPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">المعلمين غير النشطين</p>
@@ -382,13 +382,13 @@ const TeachersPage = () => {
                 {teachersStatistics?.data?.data?.inactive_teachers ?? "-"}
               </p>
             </div>
-            <CircleX className="w-12 h-12 text-blue-500" />
+            <CircleX className="w-12 h-12 text-red-500" />
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <div className="grid grid-cols-5 gap-4">
           {/* Search */}
           <div className="col-span-2 relative min-w-0">
@@ -448,7 +448,7 @@ const TeachersPage = () => {
                 onClick={() => setViewMode("table")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "table"
-                    ? "bg-orange-100 text-orange-600"
+                    ? "bg-orange-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -458,7 +458,7 @@ const TeachersPage = () => {
                 onClick={() => setViewMode("grid")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "grid"
-                    ? "bg-orange-100 text-orange-600"
+                    ? "bg-orange-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -479,11 +479,11 @@ const TeachersPage = () => {
       {/* Teachers Grid/Table */}
       {dataTeachers?.isLoading ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !dataTeachers?.data?.data ||
         dataTeachers?.data?.data?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -506,7 +506,7 @@ const TeachersPage = () => {
             ))}
 
             {dataTeachers?.data?.data.length === 0 && (
-              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
                 <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   لا يوجد معلمين
@@ -535,7 +535,7 @@ const TeachersPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -667,7 +667,7 @@ const TeachersPage = () => {
                                 `/dashboard/teachers/edit/${teacher.id}`,
                               );
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل"
                           >
                             <Edit size={16} />
