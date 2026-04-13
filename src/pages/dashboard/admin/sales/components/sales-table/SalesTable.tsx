@@ -37,15 +37,15 @@ export default function SalesTable({
       </h3>
       {isLoadingSales ? (
         <div className="flex justify-center w-full py-12">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !rows.length ? (
-        <div className="w-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="w-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <p className="text-gray-500">لا توجد نتائج في القائمة</p>
         </div>
       ) : (
         <>
-          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">

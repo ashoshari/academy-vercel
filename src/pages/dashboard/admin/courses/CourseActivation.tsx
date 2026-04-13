@@ -106,7 +106,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
               placeholder="ابحث بالاسم أو رقم الطالب..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) text-sm"
+              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand) text-sm"
             />
           </div>
         </div>
@@ -115,7 +115,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
         <div className="flex-1 overflow-y-auto my-4">
           {isLoading ? (
             <div className="flex justify-center items-center h-full">
-              <Spinner size={40} thickness={4} className="text-orange-500" />
+              <Spinner size={40} thickness={4} className="text-(--brand)" />
             </div>
           ) : students?.length === 0 && searchTerm ? (
             <div className="col-span-full backdrop-blur-xl shadow-lg p-12 text-center">

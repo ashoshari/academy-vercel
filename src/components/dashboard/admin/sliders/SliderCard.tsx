@@ -130,7 +130,7 @@ export default function SliderCard({
   return (
     <div
       key={slide.id}
-      className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300"
+      className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300"
     >
       <div className="p-6">
         <div className="flex items-start gap-6">
@@ -181,7 +181,7 @@ export default function SliderCard({
                 </p>
               </div>
               <div className="flex items-center gap-2 ml-4">
-                <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">
+                <span className="bg-orange-100 text-(--brand) px-2 py-1 rounded-full text-xs font-medium">
                   #{slide.order}
                 </span>
               </div>
@@ -221,14 +221,14 @@ export default function SliderCard({
                 <button
                   onClick={() => moveSlide("up")}
                   disabled={!prevId || !!isMoving}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ArrowUp size={16} />
                 </button>
                 <button
                   onClick={() => moveSlide("down")}
                   disabled={!nextId || !!isMoving}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ArrowDown size={16} />
                 </button>
@@ -265,7 +265,7 @@ export default function SliderCard({
                     setSelectedSlide(slide);
                     setShowEditModal(true);
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
                 >
                   <Edit size={16} />
                 </button>
@@ -275,7 +275,7 @@ export default function SliderCard({
                   onClick={() => {
                     handleDeleteSlide();
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
                 >
                   <Trash2 size={16} />
                 </button>

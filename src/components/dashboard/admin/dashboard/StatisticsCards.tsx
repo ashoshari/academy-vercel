@@ -42,7 +42,7 @@ export default function StatisticsCards<T extends object>({
         {Array.from({ length: Math.max(4, items.length || 1) }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl p-6 border border-orange-100/50 shadow-lg bg-white animate-pulse h-27.5"
+            className="rounded-xl p-6 border border-(--brand) shadow-lg bg-white animate-pulse h-27.5"
           />
         ))}
       </div>
@@ -70,18 +70,12 @@ export default function StatisticsCards<T extends object>({
             className={
               isPrimary
                 ? "bg-linear-to-br from-(--brand) to-(--brand-light) rounded-xl p-6 text-white shadow-lg"
-                : "bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-lg border border-orange-100/50"
+                : "bg-white/95 backdrop-blur-xl rounded-xl p-6 shadow-lg border border-(--brand)"
             }
           >
             <div className="flex items-center justify-between">
               <div>
-                <p
-                  className={
-                    isPrimary
-                      ? "text-orange-100 text-sm"
-                      : "text-gray-500 text-sm"
-                  }
-                >
+                <p className={isPrimary ? "" : "text-gray-500 text-sm"}>
                   {label}
                 </p>
                 <p
@@ -97,8 +91,8 @@ export default function StatisticsCards<T extends object>({
               <Icon
                 className={
                   isPrimary
-                    ? "w-12 h-12 text-orange-200"
-                    : "w-12 h-12 text-orange-500"
+                    ? "w-12 h-12 text-white"
+                    : "w-12 h-12 text-(--brand)"
                 }
               />
             </div>

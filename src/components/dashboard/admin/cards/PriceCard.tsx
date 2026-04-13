@@ -14,7 +14,7 @@ export default function PriceCard({
   setSelectedCard,
 }: Props) {
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
       <div
         className={`p-6 text-white relative overflow-hidden ${
@@ -103,7 +103,7 @@ export default function PriceCard({
                     setSelectedCard(card);
                     setShowEditModal(true);
                   }}
-                  className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                  className="p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
                   title="تعديل السعر"
                 >
                   <Edit size={16} />

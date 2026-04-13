@@ -102,7 +102,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <h1 className="text-2xl font-bold text-gray-800 mb-3">
           مرحبًا بك في لوحة التحكم
         </h1>

@@ -282,7 +282,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const getItemColor = (item: any) => {
     switch (item.type) {
       case "semester":
-        return "text-orange-600";
+        return "text-(--brand)";
       case "unit":
         return "text-(--brand-secondary)";
       case "topic":
@@ -557,7 +557,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
     return (
       <div key={item.id} className="space-y-2">
         <div
-          className={`bg-white/95 backdrop-blur-xl rounded-lg shadow-sm border border-orange-100/50 hover:shadow-md transition-all duration-300`}
+          className={`bg-white/95 backdrop-blur-xl rounded-lg shadow-sm border border-(--brand) hover:shadow-md transition-all duration-300`}
           style={{ marginLeft: `${depth * 24}px` }}
         >
           <div className="p-4">
@@ -569,9 +569,9 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   className="cursor-pointer p-1 hover:bg-orange-50 rounded transition-colors"
                 >
                   {isExpanded ? (
-                    <ChevronDown size={16} className="text-orange-600" />
+                    <ChevronDown size={16} className="text-(--brand)" />
                   ) : (
-                    <ChevronRight size={16} className="text-orange-600" />
+                    <ChevronRight size={16} className="text-(--brand)" />
                   )}
                 </button>
               )}
@@ -657,7 +657,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           setSelectedItem(item);
                           moveItem(item, "up");
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأعلى"
                       >
                         <ArrowUp size={14} />
@@ -667,7 +667,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           setSelectedItem(item);
                           moveItem(item, "down");
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded transition-colors"
                         title="نقل لأسفل"
                       >
                         <ArrowDown size={14} />
@@ -774,19 +774,19 @@ const CourseContentPage = ({ course, onBack }: any) => {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">الفصول</p>
-                <p className="text-3xl font-bold text-orange-600">
+                <p className="text-3xl font-bold text-(--brand)">
                   {contentStatisticsData?.total_semesters}
                 </p>
               </div>
-              <BookOpen className="w-12 h-12 text-orange-500" />
+              <BookOpen className="w-12 h-12 text-(--brand)" />
             </div>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">الوحدات</p>
@@ -798,7 +798,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
             </div>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">المواضيع</p>
@@ -810,7 +810,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
             </div>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">الدروس</p>
@@ -824,7 +824,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         </div>
 
         {/* Filters */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex justify-between gap-4">
             {/* Search */}
             <div className="flex items-center w-[50%] gap-x-5">
@@ -844,7 +844,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 onClick={() => setShowUnpublished(!showUnpublished)}
                 className={`cursor-pointer px-3 py-1 text-sm ${
                   showUnpublished
-                    ? "bg-orange-50 text-orange-600"
+                    ? "bg-orange-50 text-(--brand)"
                     : "bg-gray-100 text-gray-600 "
                 } rounded-lg hover:shadow-md transition-colors`}
               >
@@ -882,7 +882,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   collectIds(contentTree);
                   setExpandedItems(allIds);
                 }}
-                className="cursor-pointer px-3 py-1 text-sm bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                className="cursor-pointer px-3 py-1 text-sm bg-orange-100 text-(--brand) rounded-lg hover:bg-orange-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 توسيع الكل
               </button>
@@ -898,11 +898,11 @@ const CourseContentPage = ({ course, onBack }: any) => {
         </div>
 
         {/* Content Tree */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="space-y-4">
             {isLoading ? (
               <div className="flex justify-center w-full">
-                <Spinner size={40} thickness={4} className="text-orange-500" />
+                <Spinner size={40} thickness={4} className="text-(--brand)" />
               </div>
             ) : filteredContent?.length > 0 ? (
               filteredContent?.map((item: any) => renderTreeItem(item))
@@ -954,7 +954,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         </div>
 
         {/* Add Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Basic Info */}
             <div className="space-y-6">
@@ -1213,7 +1213,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     onChange={(e) =>
                       setNewItem({ ...newItem, isPublished: e.target.checked })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-4 h-4"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500 w-4 h-4"
                   />
                 </div>
               </div>
@@ -1353,7 +1353,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
         </div>
 
         {/* Edit Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Basic Info */}
             <div className="space-y-6">
@@ -1496,7 +1496,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500 w-4 h-4"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500 w-4 h-4"
                   />
                 </div>
               </div>

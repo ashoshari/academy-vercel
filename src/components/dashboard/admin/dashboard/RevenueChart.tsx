@@ -94,7 +94,7 @@ export default function RevenueChart() {
 
   const loading = !res?.data && !res?.error;
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold text-gray-800">الإيرادات الشهرية</h2>
@@ -129,7 +129,7 @@ export default function RevenueChart() {
                     className={`cursor-pointer w-full text-right px-3 py-2 text-sm transition-colors
               ${
                 y === year
-                  ? "bg-orange-100 text-orange-700 font-semibold"
+                  ? "bg-orange-100 text-(--brand) font-semibold"
                   : "text-gray-700 hover:bg-orange-50"
               }`}
                     role="option"

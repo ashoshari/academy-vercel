@@ -55,7 +55,7 @@ const StudentDetailsPage = () => {
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-orange-500" />
+        <Spinner size={40} thickness={4} className="text-(--brand)" />
       </div>
     );
   return (
@@ -166,7 +166,7 @@ const StudentDetailsPage = () => {
                             <div className="flex items-start gap-4">
                               {/* <IconComponent
                               size={24}
-                              className="text-orange-500 mt-1"
+                              className="text-(--brand) mt-1"
                             /> */}
                               <div className="flex-1">
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4  mb-2">

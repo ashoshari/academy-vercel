@@ -131,7 +131,7 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
                     </div>
 
                     {isLinked && (
-                      <span className="rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-800">
+                      <span className="rounded-full bg-orange-100 px-2 py-1 text-xs text-(--brand)">
                         مرتبط
                       </span>
                     )}

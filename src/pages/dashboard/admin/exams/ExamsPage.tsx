@@ -391,7 +391,7 @@ const ExamsPage = () => {
   };
 
   const ExamCard = ({ exam }: { exam: any }) => (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
       <div className="p-6 bg-linear-to-r from-blue-500 to-blue-600 text-white">
         <div className="flex items-start justify-between mb-4">
@@ -500,7 +500,7 @@ const ExamsPage = () => {
                 setSelectedExam(exam);
                 setCurrentView("edit");
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
               title="تعديل الامتحان"
             >
               <Edit size={16} />
@@ -538,7 +538,7 @@ const ExamsPage = () => {
         </div>
 
         {/* Create Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Basic Info */}
             <div className="space-y-6">
@@ -861,7 +861,7 @@ const ExamsPage = () => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -880,7 +880,7 @@ const ExamsPage = () => {
                         is_free: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -897,7 +897,7 @@ const ExamsPage = () => {
                         enable_countdown: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -917,7 +917,7 @@ const ExamsPage = () => {
                         show_correct_answers: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -937,7 +937,7 @@ const ExamsPage = () => {
                         shuffle_questions: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -957,7 +957,7 @@ const ExamsPage = () => {
                         shuffle_answers: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
               </div>
@@ -1035,7 +1035,7 @@ const ExamsPage = () => {
         </div>
 
         {/* Results and Statistics */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
           <div className="text-center py-12">
             <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-800 mb-2">
@@ -1088,7 +1088,7 @@ const ExamsPage = () => {
         </div>
 
         {/* Create Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Basic Info */}
             <div className="space-y-6">
@@ -1433,7 +1433,7 @@ const ExamsPage = () => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -1452,7 +1452,7 @@ const ExamsPage = () => {
                         is_free: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -1469,7 +1469,7 @@ const ExamsPage = () => {
                         enable_countdown: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -1489,7 +1489,7 @@ const ExamsPage = () => {
                         show_correct_answers: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -1509,7 +1509,7 @@ const ExamsPage = () => {
                         shuffle_questions: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
 
@@ -1529,7 +1529,7 @@ const ExamsPage = () => {
                         shuffle_answers: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
                   />
                 </div>
               </div>
@@ -1597,7 +1597,7 @@ const ExamsPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي الامتحانات</p>
@@ -1605,11 +1605,11 @@ const ExamsPage = () => {
                 {dataStatistcs?.data?.data?.total_exams ?? "-"}
               </p>
             </div>
-            <FileText className="w-12 h-12 text-orange-500" />
+            <FileText className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الامتحانات النشطة</p>
@@ -1621,7 +1621,7 @@ const ExamsPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm"> الامتحانات الغير نشطة </p>
@@ -1633,7 +1633,7 @@ const ExamsPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي المحاولات</p>
@@ -1647,7 +1647,7 @@ const ExamsPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
           {/* Search */}
           <div className="md:col-span-2 relative">
@@ -1680,7 +1680,7 @@ const ExamsPage = () => {
               onClick={() => setCurrentView("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 currentView === "table"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1690,7 +1690,7 @@ const ExamsPage = () => {
               onClick={() => setCurrentView("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 currentView === "grid"
-                  ? "bg-orange-100 text-orange-600"
+                  ? "bg-orange-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1702,10 +1702,10 @@ const ExamsPage = () => {
 
       {data?.isLoading ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !data?.data?.data || data?.data?.data?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -1736,7 +1736,7 @@ const ExamsPage = () => {
           />
 
           {/* {data?.data?.data?.length === 0 && (
-            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
               <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
                 لا توجد امتحانات
@@ -1755,7 +1755,7 @@ const ExamsPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">
@@ -1879,7 +1879,7 @@ const ExamsPage = () => {
                               setSelectedExam(exam);
                               setCurrentView("edit");
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل"
                           >
                             <Edit size={16} />
@@ -1889,7 +1889,7 @@ const ExamsPage = () => {
                               setSelectedExam(exam);
                               toggleExamStatus(exam.is_published);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title={
                               exam.is_published ? "إلغاء النشر" : "نشر الامتحان"
                             }

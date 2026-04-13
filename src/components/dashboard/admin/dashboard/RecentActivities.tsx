@@ -77,7 +77,7 @@ export default function RecentActivities() {
   const activities: Activity[] = data?.data ?? [];
 
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
       <h2 className="text-lg font-bold text-gray-800 mb-4">النشاطات الحديثة</h2>
 
       {/* Loading / Error / Empty */}

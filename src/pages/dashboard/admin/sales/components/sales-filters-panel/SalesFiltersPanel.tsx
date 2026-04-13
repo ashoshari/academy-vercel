@@ -73,7 +73,7 @@ export default function SalesFiltersPanel({
       : subsub?.specialization_materials) ?? [];
 
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full overflow-hidden">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) w-full overflow-hidden">
       <div className="p-5 space-y-5">
         <FilterField label="بحث" hint="اسم الطالب أو رقم الجوال">
           <div className="relative">

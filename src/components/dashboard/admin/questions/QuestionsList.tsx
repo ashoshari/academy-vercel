@@ -34,7 +34,7 @@ const QuestionsList: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) w-full">
         <div className="w-full max-w-75 min-w-full overflow-auto pb-6">
           <table className="min-w-250 w-full text-sm bg-white">
             <thead className="bg-gray-50">
@@ -59,7 +59,7 @@ const QuestionsList: React.FC<Props> = ({
                   <td className="px-6 py-3">
                     <div className="flex items-center justify-start gap-4">
                       <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0">
-                        <span className="font-bold text-orange-600 text-sm">
+                        <span className="font-bold text-(--brand) text-sm">
                           {index + 1}
                         </span>
                       </div>
@@ -83,7 +83,7 @@ const QuestionsList: React.FC<Props> = ({
                       </button>
                       <button
                         onClick={() => onEdit(q, index)}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-orange-600"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand)"
                         title="تعديل"
                       >
                         <Edit size={16} />

@@ -57,7 +57,7 @@ const CustomCardTable = () => {
 
       {/* Stats Cards */}
       <div className="grid gap-4 w-full">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div className="">
               <p className="text-gray-500 text-sm">إجمالي البطاقات المخصصة</p>
@@ -65,13 +65,13 @@ const CustomCardTable = () => {
                 {dataUserCardPrices?.data?.pagination?.count ?? "-"}
               </p>
             </div>
-            <CreditCard className="w-12 h-12 text-orange-500" />
+            <CreditCard className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50 w-full">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full">
         <div className="grid grid-cols-5 gap-4">
           {/* View Mode + Count */}
           <div className="flex justify-between items-center gap-3 mt-1 w-full">
@@ -81,7 +81,7 @@ const CustomCardTable = () => {
                 onClick={() => setViewMode("table")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "table"
-                    ? "bg-orange-100 text-orange-600"
+                    ? "bg-orange-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -91,7 +91,7 @@ const CustomCardTable = () => {
                 onClick={() => setViewMode("grid")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "grid"
-                    ? "bg-orange-100 text-orange-600"
+                    ? "bg-orange-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -112,11 +112,11 @@ const CustomCardTable = () => {
       {/* libraries Grid/Table */}
       {dataUserCardPrices?.isLoading ? (
         <div className="flex justify-center w-full">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !dataUserCardPrices?.data?.data ||
         dataUserCardPrices?.data?.data?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -146,7 +146,7 @@ const CustomCardTable = () => {
             ))}
 
             {dataUserCardPrices?.data?.data?.length === 0 && (
-              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
                 <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   لا يوجد اسعار مخصصة
@@ -176,7 +176,7 @@ const CustomCardTable = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) w-full">
             <div className="w-full max-w-75 min-w-full overflow-auto pb-6">
               <table className="min-w-250 w-full text-sm bg-white">
                 <thead className="bg-gray-50">
@@ -245,7 +245,7 @@ const CustomCardTable = () => {
                               setSelectedCard(card);
                               setShowEditModal(true);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل"
                           >
                             <Edit size={16} />

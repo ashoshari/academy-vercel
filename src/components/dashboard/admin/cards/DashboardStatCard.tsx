@@ -6,7 +6,7 @@ export type DashboardStatCardProps = {
   icon: LucideIcon;
   /** Tailwind color classes for the value (e.g. text-gray-800, text-green-600) */
   valueClassName?: string;
-  /** Tailwind color classes for the icon (e.g. text-orange-500) */
+  /** Tailwind color classes for the icon (e.g. text-(--brand)) */
   iconClassName?: string;
 };
 
@@ -23,10 +23,10 @@ export default function DashboardStatCard({
   value,
   icon: Icon,
   valueClassName = "text-gray-800",
-  iconClassName = "text-orange-500",
+  iconClassName = "text-(--brand)",
 }: DashboardStatCardProps) {
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50 w-full min-w-0">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full min-w-0">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-gray-500 text-sm">{label}</p>

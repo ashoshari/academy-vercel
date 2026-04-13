@@ -92,7 +92,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-linear-to-r from-gray-900 to-gray-800 text-white">
+    <footer className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -103,7 +103,7 @@ const Footer: React.FC = () => {
                   loading="lazy"
                   src={footerData?.logo}
                   alt="Logo"
-                  className="w-10 h-auto"
+                  className="w-15 h-15"
                 />
               ) : (
                 <Image className="rounded-xl w-12 h-12 text-white" />

@@ -254,7 +254,7 @@ const CardCodesPage = () => {
         type: "specific",
         display: getSubsectionName(targetedSubsections[0]),
         icon: Target,
-        color: "text-orange-600",
+        color: "text-(--brand)",
       };
     }
 
@@ -262,7 +262,7 @@ const CardCodesPage = () => {
       type: "specific",
       display: `${targetedSubsections?.length} أقسام محددة`,
       icon: Target,
-      color: "text-orange-600",
+      color: "text-(--brand)",
     };
   };
 
@@ -569,7 +569,7 @@ const CardCodesPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">إجمالي الكودات</p>
@@ -577,11 +577,11 @@ const CardCodesPage = () => {
                 {cardCodesStatistics?.data?.data?.total_generated_codes ?? "-"}
               </p>
             </div>
-            <Hash className="w-12 h-12 text-orange-500" />
+            <Hash className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الكودات المستخدمة</p>
@@ -593,7 +593,7 @@ const CardCodesPage = () => {
           </div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">الكودات المتاحة</p>
@@ -608,13 +608,13 @@ const CardCodesPage = () => {
 
       {/* Enhanced Batches Section with Targeting Info */}
       <div>
-        {/* className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50" */}
+        {/* className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand)" */}
         {/* <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="cursor-pointer p-6 hover:bg-gray-50 w-full flex justify-between"
         >
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-            <FolderTree className="w-5 h-5 text-orange-600" />
+            <FolderTree className="w-5 h-5 text-(--brand)" />
             مجموعات الكودات مع الاستهداف ومعلومات الأمان
           </h2>
           {isExpanded ? <ChevronDown /> : <ChevronUp />}
@@ -850,7 +850,7 @@ const CardCodesPage = () => {
       </div>
 
       {/* Enhanced Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-3">
           {/* Search */}
           <div className="relative col-span-1 lg:col-span-2">
@@ -964,11 +964,11 @@ const CardCodesPage = () => {
       {/* Enhanced Codes Table */}
       {generateCodes?.isLoading ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !generateCodes?.data?.data ||
         generateCodes?.data?.data?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -987,7 +987,7 @@ const CardCodesPage = () => {
         </div>
       ) : (
         <>
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 w-full">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) w-full">
             <div className="p-6 border-b border-gray-200">
               <h2 className="text-lg font-bold text-gray-800">قائمة الكودات</h2>
             </div>
@@ -1040,7 +1040,7 @@ const CardCodesPage = () => {
                             </span>
                             <button
                               onClick={() => copyToClipboard(code.code_string)}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="نسخ الكود"
                             >
                               <Copy size={14} />

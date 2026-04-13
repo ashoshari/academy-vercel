@@ -83,7 +83,7 @@ const QuestionEditForm: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-orange-100/50">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
         <h2 className="text-lg font-bold text-gray-800">تعديل السؤال</h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

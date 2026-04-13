@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   BookOpen,
   Monitor,
@@ -18,8 +18,10 @@ import {
   FileArchive,
   Archive,
   Book,
+  Filter,
+  X,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import useTokenStore from "@/store/platform/useToken";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
@@ -33,6 +35,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const TeacherProfile: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const [activeTab, setActiveTab] = useState("free_courses");
   const [showActivationModal, setShowActivationModal] = useState(false);
@@ -46,11 +49,37 @@ const TeacherProfile: React.FC = () => {
     // Whenever login state changes, refetch teacher queries
     queryClient.invalidateQueries({ queryKey: ["teachers"] });
   }, [isLoggedIn, queryClient]);
-  // Get Teacher
-  const { data, isLoading, error } = useCustomQuery(
-    `/training/students/teacher/${id}/`,
-    ["teachers", id],
-  );
+
+  const teacherListQuerySuffix = useMemo(() => {
+    const sp = new URLSearchParams();
+    const sectionId = searchParams.get("section_id");
+    const subsectionId = searchParams.get("subsection_id");
+    const subSubsectionId = searchParams.get("subsubsection_id");
+    const specMatId = searchParams.get("specialization_material_id");
+    if (sectionId) sp.set("section_id", sectionId);
+    if (subsectionId) sp.set("subsection_id", subsectionId);
+    if (subSubsectionId) sp.set("subsubsection_id", subSubsectionId);
+    if (specMatId) sp.set("specialization_material_id", specMatId);
+    return sp.toString();
+  }, [searchParams]);
+
+  const teacherEndpoint = useMemo(() => {
+    const base = `/training/students/teacher/${id}/`;
+    return teacherListQuerySuffix ? `${base}?${teacherListQuerySuffix}` : base;
+  }, [id, teacherListQuerySuffix]);
+
+  const hasTreeFilters = teacherListQuerySuffix.length > 0;
+
+  const handleClearTreeFilters = () => {
+    if (id) navigate(`/teacher/${id}`, { replace: true });
+  };
+
+  // Get Teacher (optional section tree filters narrow courses/resources per material path)
+  const { data, isLoading, error } = useCustomQuery(teacherEndpoint, [
+    "teachers",
+    id,
+    teacherListQuerySuffix,
+  ]);
   // Handle Download
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
@@ -126,6 +155,40 @@ const TeacherProfile: React.FC = () => {
       count: freeExamsData?.length || 0,
     },
   ];
+
+  // Default tab is free_courses, but that panel still mounts when its count is 0 while other
+  // tabs are hidden — sync to the first tab that actually has items (e.g. الدورات only).
+  useEffect(() => {
+    if (isLoading) return;
+    const tabMeta = [
+      { id: "free_courses", count: freeCoursesData?.length ?? 0 },
+      { id: "courses", count: coursesData?.length ?? 0 },
+      { id: "files", count: filesData?.length ?? 0 },
+      { id: "bookses", count: booksesData?.length ?? 0 },
+      {
+        id: "ministerial_questions",
+        count: ministerial_questions?.length ?? 0,
+      },
+      { id: "free_exams", count: freeExamsData?.length ?? 0 },
+    ];
+    const nonEmpty = tabMeta.filter((t) => t.count > 0);
+    if (nonEmpty.length === 0) return;
+    setActiveTab((prev) => {
+      const current = tabMeta.find((t) => t.id === prev);
+      if (current && current.count > 0) return prev;
+      return nonEmpty[0].id;
+    });
+  }, [
+    isLoading,
+    id,
+    teacherListQuerySuffix,
+    freeCoursesData?.length,
+    coursesData?.length,
+    filesData?.length,
+    booksesData?.length,
+    ministerial_questions?.length,
+    freeExamsData?.length,
+  ]);
 
   // POST ACTIVATION
   const { mutateAsync: postActivation } = useCustomPost(
@@ -345,7 +408,7 @@ const TeacherProfile: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="absolute top-4 left-4 bg-(--brand) text-white px-3 py-1 rounded-full text-sm font-bold">
+        <div className="absolute top-4 left-4 bg-(--brand-secondary) text-white px-3 py-1 rounded-full text-sm font-bold">
           {course?.card_price?.price} دينار
         </div>
       </div>
@@ -762,6 +825,31 @@ const TeacherProfile: React.FC = () => {
         </div>
 
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {hasTreeFilters && (
+            <div
+              dir="rtl"
+              className="mb-6 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3.5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+            >
+              <button
+                type="button"
+                onClick={handleClearTreeFilters}
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-300 hover:bg-gray-100"
+              >
+                <X
+                  className="h-4 w-4 opacity-70"
+                  strokeWidth={2.25}
+                  aria-hidden
+                />
+                إزالة الفلاتر
+              </button>
+              <div className="flex min-w-0 items-start gap-2.5">
+                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-(--brand)">
+                  <Filter className="h-4 w-4" aria-hidden />
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Tabs */}
           <div
             className={`grid grid-cols-1 md:grid-cols-${

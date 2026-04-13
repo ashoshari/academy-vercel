@@ -118,7 +118,7 @@ export default function SimpleBarChart({
               />
               <span
                 className={`text-[11px] mt-2 text-center leading-tight px-0.5 ${
-                  active ? "text-orange-700 font-semibold" : "text-gray-500"
+                  active ? "text-(--brand) font-semibold" : "text-gray-500"
                 }`}
               >
                 {p.labelShort}

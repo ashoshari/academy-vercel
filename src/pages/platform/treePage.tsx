@@ -5,6 +5,47 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useParams } from "react-router";
 import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 
+/** Query params for `/training/students/teacher/:id/` so tabs reflect the tree path. */
+type TeacherTreeQueryFilters = {
+  section_id: string;
+  subsection_id: string;
+  subsubsection_id?: string;
+  specialization_material_id?: string;
+};
+
+function buildTeacherProfileSearchParams(
+  teacher: { id: string; materials?: { id?: string }[] },
+  filters: TeacherTreeQueryFilters,
+) {
+  const params = new URLSearchParams();
+  params.set("section_id", filters.section_id);
+  params.set("subsection_id", filters.subsection_id);
+  if (filters.subsubsection_id) {
+    params.set("subsubsection_id", filters.subsubsection_id);
+  }
+  const materialId =
+    filters.specialization_material_id ?? teacher.materials?.[0]?.id;
+  if (materialId) {
+    params.set("specialization_material_id", String(materialId));
+  }
+  return params;
+}
+
+function nextTeacherTreeFilters(
+  parentChildKey: string | undefined,
+  child: { id: string },
+  prev: TeacherTreeQueryFilters,
+): TeacherTreeQueryFilters {
+  if (!parentChildKey) return prev;
+  const next = { ...prev };
+  if (parentChildKey === "subsubsections" || parentChildKey === "subsections") {
+    next.subsubsection_id = child.id;
+  } else if (parentChildKey === "specialization_materials") {
+    next.specialization_material_id = child.id;
+  }
+  return next;
+}
+
 const TreePage: React.FC = () => {
   const { navHeaderId } = useParams();
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
@@ -46,11 +87,15 @@ const TreePage: React.FC = () => {
       return childHasChildren || childHasTeachers;
     });
   };
-  const renderTeacher = (teacher: any) => (
+  const renderTeacher = (teacher: any, filters: TeacherTreeQueryFilters) => (
     <div
       key={teacher.id}
       className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-100 cursor-pointer group"
-      onClick={() => navigate(`/teacher/${teacher.id}`)}
+      onClick={() => {
+        const params = buildTeacherProfileSearchParams(teacher, filters);
+        const qs = params.toString();
+        navigate(`/teacher/${teacher.id}${qs ? `?${qs}` : ""}`);
+      }}
     >
       <div className="flex items-center space-x-4 mb-4">
         <div className="relative">
@@ -80,7 +125,11 @@ const TreePage: React.FC = () => {
       </button>
     </div>
   );
-  const renderNode = (node: any, level: number = 0) => {
+  const renderNode = (
+    node: any,
+    level: number = 0,
+    teacherFilters: TeacherTreeQueryFilters,
+  ) => {
     const isExpanded = expandedNodes.has(node?.id);
 
     const childKey = Object.keys(node).find(
@@ -100,20 +149,16 @@ const TreePage: React.FC = () => {
     return (
       <div key={node?.id} className="mb-4">
         <div
-          className={`flex items-center space-x-3 p-4 rounded-xl cursor-pointer transition-all duration-300 hover:bg-linear-to-r hover:from-yellow-50 hover:to-orange-50 ${
-            level === 0
-              ? "bg-white shadow-md border border-gray-100"
-              : "bg-gray-50 hover:bg-gray-100"
-          }`}
+          className={`flex items-center space-x-3 p-4 rounded-xl cursor-pointer transition-all duration-300 hover:bg-(--brand) hover:text-white`}
           style={{ marginRight: `${level * 20}px` }}
           onClick={() => toggleNode(node.id)}
         >
           {(hasChildren || hasTeachers) && (
             <div className="shrink-0">
               {isExpanded ? (
-                <ChevronDown className="w-5 h-5 text-gray-600" />
+                <ChevronDown className="w-5 h-5" />
               ) : (
-                <ChevronRight className="w-5 h-5 text-gray-600" />
+                <ChevronRight className="w-5 h-5" />
               )}
             </div>
           )}
@@ -139,11 +184,7 @@ const TreePage: React.FC = () => {
             </div>
           )}
           <div>
-            <p
-              className={`font-semibold ${
-                level === 0 ? "text-lg text-gray-900" : "text-gray-700"
-              }`}
-            >
+            <p className={`font-semibold ${level === 0 ? "text-lg" : ""}`}>
               {node?.title || node?.name || node?.material?.name}
             </p>
             {node?.description && (
@@ -161,7 +202,7 @@ const TreePage: React.FC = () => {
 
           {hasTeachers && isExpanded && (
             <div className="mr-auto">
-              <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="bg-(--brand) text-white px-3 py-1 rounded-full text-sm font-medium">
                 {node?.teachers?.length || 0} أستاذ
               </span>
             </div>
@@ -173,12 +214,18 @@ const TreePage: React.FC = () => {
             {hasChildren &&
               !hasTeachers &&
               node[childKey!]?.map((child: any) =>
-                renderNode(child, level + 1),
+                renderNode(
+                  child,
+                  level + 1,
+                  nextTeacherTreeFilters(childKey, child, teacherFilters),
+                ),
               )}
 
             {hasTeachers && (
               <div className="ms-12.5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
-                {node.teachers.map(renderTeacher)}
+                {node.teachers.map((t: any) =>
+                  renderTeacher(t, teacherFilters),
+                )}
               </div>
             )}
           </div>
@@ -242,7 +289,7 @@ const TreePage: React.FC = () => {
             <p>الرئيسية</p>
           </a>
           <span className="cursor-default">/</span>
-          <span className="cursor-default text-yellow-600 font-medium">
+          <span className="cursor-default text-(--brand) font-medium">
             {data?.title}
           </span>
         </div>
@@ -285,7 +332,10 @@ const TreePage: React.FC = () => {
               // Otherwise render the nodes normally
               data.subsections.map((node: any) => (
                 <React.Fragment key={node.id}>
-                  {renderNode(node)}
+                  {renderNode(node, 0, {
+                    section_id: navHeaderId ?? "",
+                    subsection_id: node.id,
+                  })}
                 </React.Fragment>
               ))
             )

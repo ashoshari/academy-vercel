@@ -83,7 +83,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
           return (
             <span
               key={id}
-              className="flex items-center gap-1 bg-orange-100 text-orange-800 text-xs
+              className="flex items-center gap-1 bg-orange-100 text-(--brand) text-xs
                         rounded-full pl-2 pr-1 py-1"
             >
               {opt.title}

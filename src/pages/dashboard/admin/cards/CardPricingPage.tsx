@@ -95,7 +95,7 @@ const CardPricingPage = () => {
       {/* Search and Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* <div className="lg:col-span-2">
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand)">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -108,19 +108,19 @@ const CardPricingPage = () => {
             </div>
           </div>
         </div> */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
-          <p className="text-2xl font-bold text-orange-600">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+          <p className="text-2xl font-bold text-(--brand)">
             {cardStatistics?.data?.data?.total_cards ?? "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأسعار</p>
         </div>
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
           <p className="text-2xl font-bold text-green-600">
             {cardStatistics?.data?.data?.active_cards ?? "-"}
           </p>
           <p className="text-sm text-gray-600"> الأسعار المفعلة</p>
         </div>{" "}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
           <p className="text-2xl font-bold text-green-600">
             {cardStatistics?.data?.data?.inactive_cards ?? "-"}
           </p>
@@ -131,10 +131,10 @@ const CardPricingPage = () => {
       {/* Cards Grid */}
       {cards?.isLoading ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !cards?.data?.data || cards?.data?.data.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -154,7 +154,7 @@ const CardPricingPage = () => {
           {cardPricing?.map((card: any) => (
             <div
               key={card.id}
-              className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
+              className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group"
             >
               {/* Header */}
               <div
@@ -243,7 +243,7 @@ const CardPricingPage = () => {
                       setSelectedCard(card);
                       setShowEditModal(true);
                     }}
-                    className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                    className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
                     title="تعديل السعر"
                   >
                     <Edit size={16} />
@@ -263,7 +263,7 @@ const CardPricingPage = () => {
           ))}
 
           {cards?.data?.data?.length === 0 && (
-            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
               <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-800 mb-2">
                 {searchTerm ? "لا توجد نتائج" : "لا توجد أسعار"}

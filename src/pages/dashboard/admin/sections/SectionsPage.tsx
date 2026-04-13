@@ -116,7 +116,7 @@ const AddSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     newSection.icon === option.id
-                      ? "border-(--brand) bg-orange-50 text-orange-700"
+                      ? "border-(--brand) bg-orange-50 text-(--brand)"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -289,7 +289,7 @@ const EditSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     selectedSection.icon === option.id
-                      ? "border-(--brand) bg-orange-50 text-orange-700"
+                      ? "border-(--brand) bg-orange-50 text-(--brand)"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -408,7 +408,7 @@ const ConfirmToggleModal = ({
         <div className="p-6 text-right space-y-4">
           <p className="text-gray-700 text-base font-medium">
             هل أنت متأكد من {isEnabled ? "إخفاء" : "إظهار"} القسم
-            <span className="font-bold text-orange-600"> {sectionName}</span>؟
+            <span className="font-bold text-(--brand)"> {sectionName}</span>؟
           </p>
         </div>
 
@@ -601,7 +601,7 @@ const SectionsPage = () => {
       <div className="flex gap-x-2.5">
         {/* Search and Stats */}
         <div className="w-full">
-          <div className="flex gap-x-2.5 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50">
+          <div className="flex gap-x-2.5 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand)">
             <div className="w-full relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -618,7 +618,7 @@ const SectionsPage = () => {
                 onClick={() => setViewMode("table")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "table"
-                    ? "bg-orange-100 text-orange-600"
+                    ? "bg-orange-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -628,7 +628,7 @@ const SectionsPage = () => {
                 onClick={() => setViewMode("grid")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "grid"
-                    ? "bg-orange-100 text-orange-600"
+                    ? "bg-orange-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -639,19 +639,19 @@ const SectionsPage = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
-          <p className="text-2xl font-bold text-orange-600">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+          <p className="text-2xl font-bold text-(--brand)">
             {statistics?.data?.data?.total_sections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">إجمالي الأقسام</p>
         </div>
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
           <p className="text-2xl font-bold text-green-600">
             {statistics?.data?.data?.active_sections ?? "-"}
           </p>
           <p className="text-sm text-gray-600">الأقسام المفعلة</p>
         </div>{" "}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-orange-100/50 text-center">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
           <p className="text-2xl font-bold text-red-600">
             {statistics?.data?.data?.inactive_sections ?? "-"}
           </p>
@@ -661,10 +661,10 @@ const SectionsPage = () => {
 
       {sections?.isLoading ? (
         <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-orange-500" />
+          <Spinner size={40} thickness={4} className="text-(--brand)" />
         </div>
       ) : !sections?.data?.data || sections?.data?.data?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-800 mb-2">
             لا توجد نتائج
@@ -689,7 +689,7 @@ const SectionsPage = () => {
             return (
               <div
                 key={section.id}
-                className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group"
+                className="flex flex-col bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group"
               >
                 {/* Header */}
                 <div
@@ -829,7 +829,7 @@ const SectionsPage = () => {
                           });
                           setShowEditModal(true);
                         }}
-                        className="cursor-pointer p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                        className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
                         title="تعديل القسم"
                       >
                         <Edit size={16} />
@@ -851,7 +851,7 @@ const SectionsPage = () => {
           })}
 
           {sections?.data?.data.length === 0 && (
-            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-orange-100/50">
+            <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
               <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               {/* <h3 className="text-lg font-medium text-gray-800 mb-2">
               {searchTerm ? "لا توجد نتائج" : "لا توجد أقسام"}
@@ -878,7 +878,7 @@ const SectionsPage = () => {
       ) : (
         <>
           {/* Table View */}
-          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden">
+          <div className="w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -992,7 +992,7 @@ const SectionsPage = () => {
                               });
                               setShowEditModal(true);
                             }}
-                            className="cursor-pointer text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                            className="cursor-pointer text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
                             title="تعديل القسم"
                           >
                             <Edit size={16} />

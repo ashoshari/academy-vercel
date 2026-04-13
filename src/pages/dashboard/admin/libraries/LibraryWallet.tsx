@@ -83,7 +83,7 @@ export default function LibraryWalletPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-orange-500" />
+        <Spinner size={40} thickness={4} className="text-(--brand)" />
       </div>
     );
   }

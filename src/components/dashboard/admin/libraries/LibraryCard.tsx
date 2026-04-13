@@ -29,7 +29,7 @@ export default function LibraryCard({
 }: Props) {
   const navigate = useNavigate();
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Header */}
       <div className="p-6 bg-linear-to-r from-(--brand) to-(--brand-light) text-white">
         <div className="flex items-center gap-4">
@@ -131,7 +131,7 @@ export default function LibraryCard({
               onClick={() => {
                 navigate(`/dashboard/libraries/edit/${library.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
               title="تعديل المكتبة"
             >
               <Edit size={16} />

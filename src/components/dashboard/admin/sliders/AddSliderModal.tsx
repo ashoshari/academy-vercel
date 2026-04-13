@@ -56,7 +56,7 @@ export default function AddSliderModal({
                 onClick={() => setNewSlide({ ...newSlide, type: "image" })}
                 className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
                   newSlide.type === "image"
-                    ? "border-(--brand) bg-orange-50 text-orange-700"
+                    ? "border-(--brand) bg-orange-50 text-(--brand)"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
@@ -67,7 +67,7 @@ export default function AddSliderModal({
                 onClick={() => setNewSlide({ ...newSlide, type: "video" })}
                 className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
                   newSlide.type === "video"
-                    ? "border-(--brand) bg-orange-50 text-orange-700"
+                    ? "border-(--brand) bg-orange-50 text-(--brand)"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
@@ -153,7 +153,7 @@ export default function AddSliderModal({
               onChange={(e) =>
                 setSelectedImageFile(e.target.files?.[0] ?? null)
               }
-              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-orange-50 file:text-(--brand) hover:file:bg-orange-100"
             />
           </div>
           <div>
@@ -191,7 +191,7 @@ export default function AddSliderModal({
               <p className="text-sm text-gray-700 mb-2">
                 معاينة الصورة الجديدة:
               </p>
-              <div className="w-full max-w-sm rounded-lg overflow-hidden border border-orange-200 bg-orange-50">
+              <div className="w-full max-w-sm rounded-lg overflow-hidden border border-(--brand) bg-(--brand)">
                 <img
                   src={previewUrl}
                   alt="preview"

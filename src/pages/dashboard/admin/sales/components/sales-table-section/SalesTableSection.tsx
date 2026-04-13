@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 const TABLE_CARD =
-  "w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-orange-100/50 overflow-hidden";
+  "w-full max-w-50 min-w-full pb-6 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden";
 
 type SalesTableSectionProps = {
   title: string;

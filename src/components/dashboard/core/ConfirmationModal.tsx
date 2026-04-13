@@ -94,7 +94,7 @@ export function ConfirmationModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirmation-modal-title"
-        className={`relative w-full max-w-md rounded-2xl bg-white shadow-2xl ring-1 ${styles.ring} border border-orange-100/60 overflow-hidden`}
+        className={`relative w-full max-w-md rounded-2xl bg-white shadow-2xl ring-1 ${styles.ring} border border-(--brand) overflow-hidden`}
       >
         <div className="flex items-start justify-between gap-3 border-b border-gray-100 bg-linear-to-l from-white to-orange-50/40 px-5 py-4">
           <div className="flex items-start gap-3 min-w-0 text-right">
