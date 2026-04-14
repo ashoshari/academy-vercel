@@ -28,7 +28,7 @@ const QuestionsList: React.FC<Props> = ({
         </div>
         <button
           onClick={onAdd}
-          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg text-sm hover:from-(--brand-light) hover:to-(--brand)"
+          className="btn-brand-slide text-white px-4 py-2 rounded-lg text-sm"
         >
           إضافة أسئلة
         </button>

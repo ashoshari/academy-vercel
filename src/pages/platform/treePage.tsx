@@ -104,7 +104,7 @@ const TreePage: React.FC = () => {
               teacher?.image ||
               `https://ui-avatars.com/api/?name=${encodeURIComponent(
                 teacher?.name,
-              )}&background=ffffff&color=f97316&size=64`
+              )}&background=ffffff&color=2465c9&size=64`
             }
             alt={teacher?.name}
             className="w-16 h-16 rounded-full object-cover border-4 border-gradient-to-r from-yellow-400 to-orange-500"

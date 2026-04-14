@@ -273,7 +273,7 @@ const AddCardPricing = ({
                   !newCard.default_library_price ||
                   newCard.default_library_price <= 0
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:from-(--brand-light) hover:to-(--brand)"
+                    : "btn-brand-slide text-white"
                 }`}
           >
             <Save size={16} />

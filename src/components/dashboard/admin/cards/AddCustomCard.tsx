@@ -205,7 +205,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
             </button>
             <button
               onClick={handleSavePrice}
-              className="cursor-pointer flex items-center gap-2 rounded-lg bg-linear-to-r from-(--brand) to-(--brand-light) px-6 py-2 text-white hover:from-(--brand-light) hover:to-(--brand)"
+              className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white"
             >
               <Save size={16} />
               حفظ

@@ -125,7 +125,7 @@ const QuestionEditForm: React.FC<Props> = ({
                 <div className="h-17 flex items-center justify-center">
                   <label
                     htmlFor="question-img-edit"
-                    className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2.5 text-sm rounded-lg hover:from-orange-600 w-fit self-end hover:to-orange-700 transition-all block"
+                    className="btn-brand-slide text-white px-4 py-2.5 text-sm rounded-lg w-fit self-end transition-all block"
                   >
                     اضافة صورة
                   </label>
@@ -214,7 +214,7 @@ const QuestionEditForm: React.FC<Props> = ({
                           <div>
                             <label
                               htmlFor={`answer_${idx}_edit`}
-                              className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 text-sm rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all block"
+                              className="btn-brand-slide text-white px-4 py-2 text-sm rounded-lg transition-all block"
                             >
                               اضافة صورة
                             </label>

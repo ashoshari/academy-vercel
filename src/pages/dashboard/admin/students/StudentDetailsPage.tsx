@@ -90,7 +90,7 @@ const StudentDetailsPage = () => {
                       selectedStudent?.image ||
                       `https://ui-avatars.com/api/?name=${encodeURIComponent(
                         selectedStudent?.name,
-                      )}&background=f97316&color=ffffff&size=64`
+                      )}&background=2465c9&color=ffffff&size=64`
                     }
                     alt={selectedStudent?.name}
                     className="w-16 h-16 rounded-full"

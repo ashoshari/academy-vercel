@@ -293,7 +293,7 @@ export default function AddLibraryPage() {
           <div className="h-17 flex items-center">
             <label
               htmlFor="library-img-add"
-              className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2.5 text-sm rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all cursor-pointer"
+              className="btn-brand-slide text-white px-4 py-2.5 text-sm rounded-lg transition-all"
             >
               إضافة صورة
             </label>

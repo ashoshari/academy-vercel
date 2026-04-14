@@ -39,7 +39,7 @@ export default function LibraryCard({
                 library?.image ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
                   library?.name,
-                )}&background=ffffff&color=f97316&size=64`
+                )}&background=ffffff&color=2465c9&size=64`
               }
               alt={library?.name}
               className="w-16 h-16 rounded-full border-2 border-white/20"

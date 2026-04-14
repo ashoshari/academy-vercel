@@ -11,3 +11,26 @@
 body {
   font-family: "Cairo", sans-serif;
 }
+
+/* Shared brand "slide" gradient hover (used across platform + dashboard buttons) */
+.btn-brand-slide {
+  cursor: pointer;
+  color: #fff;
+  background-image: linear-gradient(
+    to right,
+    var(--brand),
+    var(--brand-light),
+    var(--brand)
+  );
+  background-size: 200% 100%;
+  background-position: left;
+  transition:
+    background-position 700ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    filter 200ms ease;
+}
+
+.btn-brand-slide:hover {
+  background-position: right;
+}

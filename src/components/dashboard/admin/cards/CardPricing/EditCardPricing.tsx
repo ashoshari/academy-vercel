@@ -142,7 +142,7 @@ const EditCardPricing = ({
           </button>
           <button
             type="submit"
-            className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
+            className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2"
           >
             <Save size={16} />
             حفظ التغييرات

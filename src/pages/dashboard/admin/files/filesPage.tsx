@@ -40,6 +40,7 @@ import { readUserFromStorage, roleOf } from "@/services/auth";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 
 const ResourcesPage = () => {
   const user = readUserFromStorage();
@@ -149,6 +150,11 @@ const ResourcesPage = () => {
       "deleteResources",
       resourceId,
     ]);
+  const [pendingDeleteResource, setPendingDeleteResource] = useState<{
+    id: any;
+    title?: string;
+  } | null>(null);
+
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return "0 B";
     const k = 1024;
@@ -158,50 +164,67 @@ const ResourcesPage = () => {
   };
   const handleDeleteFile = async (id: any) => {
     setResourceId(id);
-    if (confirm("هل أنت متأكد من حذف هذا العنصر؟")) {
-      // Delete file and all its children if it's a folder
-      try {
-        const response = await deleteResources(id);
-        toast.success(response?.data);
-        queryClient.invalidateQueries({
-          queryKey: ["resources", searchTerm, typeFilter, statusFilter, page],
-        });
-      } catch (err: any) {
-        toast.error(err?.response?.data?.message);
-      }
+    setPendingDeleteResource({
+      id,
+      title:
+        resourcesData?.data?.find((r: any) => r?.id === id)?.title ??
+        selectedResources?.title ??
+        "",
+    });
+  };
+
+  const confirmDeleteFile = async () => {
+    if (!pendingDeleteResource) return;
+    try {
+      const response = await deleteResources(pendingDeleteResource.id);
+      toast.success(response?.data);
+      queryClient.invalidateQueries({
+        queryKey: ["resources", searchTerm, typeFilter, statusFilter, page],
+      });
+      setPendingDeleteResource(null);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
     }
   };
   const handleEditFile = async (id: any) => {
     setResourceId(id);
     const formData = new FormData();
-    selectedResources.title &&
+    if (selectedResources.title) {
       formData.append("title", selectedResources.title);
-    selectedResources.description &&
+    }
+    if (selectedResources.description) {
       formData.append("description", selectedResources.description);
-    role !== "teacher" &&
-      selectedResources.teacher &&
+    }
+    if (role !== "teacher" && selectedResources.teacher) {
       formData.append(
         "teacher",
         selectedResources.teacher.id
           ? selectedResources.teacher.id
           : selectedResources.teacher,
       );
-    selectedResources.expiry_date &&
+    }
+    if (selectedResources.expiry_date) {
       formData.append("expiry_date", selectedResources.expiry_date);
-    selectedResources.subsection &&
+    }
+    if (selectedResources.subsection) {
       formData.append("subsection", selectedResources.subsection);
-    selectedResources.subsubsection &&
+    }
+    if (selectedResources.subsubsection) {
       formData.append("subsubsection", selectedResources.subsubsection);
-    selectedResources.specialization &&
+    }
+    if (selectedResources.specialization) {
       formData.append("specialization", selectedResources.specialization);
-    selectedResources.specialization_material &&
+    }
+    if (selectedResources.specialization_material) {
       formData.append(
         "specialization_material",
         selectedResources.specialization_material,
       );
-    selectedResources.lesson &&
+    }
+    if (selectedResources.lesson) {
       formData.append("lesson", selectedResources.lesson);
-    selectedResources.type &&
+    }
+    if (selectedResources.type) {
       formData.append(
         "type",
         selectedResources.type == "مصادر"
@@ -214,8 +237,10 @@ const ResourcesPage = () => {
                 ? "files"
                 : selectedResources?.type,
       );
-    selectedResources.is_free &&
+    }
+    if (selectedResources.is_free) {
       formData.append("is_free", selectedResources.is_free);
+    }
     formData.append("is_published", selectedResources.is_published ?? true);
     if (
       selectedResources.image &&
@@ -292,31 +317,45 @@ const ResourcesPage = () => {
   };
   const handleResourceUpload = async () => {
     const formData = new FormData();
-    uploadResources.title && formData.append("title", uploadResources.title);
-    uploadResources.description &&
+    if (uploadResources.title) {
+      formData.append("title", uploadResources.title);
+    }
+    if (uploadResources.description) {
       formData.append("description", uploadResources.description);
-    uploadResources.teacher &&
+    }
+    if (uploadResources.teacher) {
       formData.append("teacher", uploadResources.teacher);
-    uploadResources.expiry_date &&
+    }
+    if (uploadResources.expiry_date) {
       formData.append("expiry_date", uploadResources.expiry_date);
-    uploadResources.subsection &&
+    }
+    if (uploadResources.subsection) {
       formData.append("subsection", uploadResources.subsection);
-    uploadResources.subsubsection &&
+    }
+    if (uploadResources.subsubsection) {
       formData.append("subsubsection", uploadResources.subsubsection);
-    uploadResources.specialization &&
+    }
+    if (uploadResources.specialization) {
       formData.append("specialization", uploadResources.specialization);
-    uploadResources.specialization_material &&
+    }
+    if (uploadResources.specialization_material) {
       formData.append(
         "specialization_material",
         uploadResources.specialization_material,
       );
-    uploadResources.lesson && formData.append("lesson", uploadResources.lesson);
-    uploadResources.type &&
+    }
+    if (uploadResources.lesson) {
+      formData.append("lesson", uploadResources.lesson);
+    }
+    if (uploadResources.type) {
       formData.append("type", uploadResources.type || null);
-    uploadResources.is_free &&
+    }
+    if (uploadResources.is_free) {
       formData.append("is_free", uploadResources.is_free || false);
-    uploadResources.is_published &&
+    }
+    if (uploadResources.is_published) {
       formData.append("is_published", uploadResources.is_published ?? true);
+    }
     if (
       uploadResources.image &&
       typeof (uploadResources.image as any).name === "string" &&
@@ -842,7 +881,7 @@ const ResourcesPage = () => {
                     لا يوجد مواد تخصص لعرضها برجاء اختيار مسار صحيح
                   </p>
                 )}
-              {(spec?.specialization_materials.length > 0 ||
+              {((spec?.specialization_materials?.length ?? 0) > 0 ||
                 (subsub?.specializations?.length == 0 &&
                   subsub?.specialization_materials?.length > 0)) && (
                 <div>
@@ -861,9 +900,10 @@ const ResourcesPage = () => {
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر مادة التخصص</option>
-                      {(spec?.specialization_materials.length > 0
-                        ? spec?.specialization_materials
-                        : subsub?.specialization_materials
+                      {(
+                        (spec?.specialization_materials?.length ?? 0) > 0
+                          ? spec?.specialization_materials ?? []
+                          : subsub?.specialization_materials ?? []
                       ).map((specialization_material: any) => (
                         <option
                           key={specialization_material.id}
@@ -944,7 +984,7 @@ const ResourcesPage = () => {
                   : false) ||
                 !uploadResources.specialization_material
               }
-              className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Upload size={16} />
               رفع الملف
@@ -1216,7 +1256,7 @@ const ResourcesPage = () => {
                 <div className="flex justify-start items-end w-full">
                   <button
                     onClick={() => setEditSections(!editSections)}
-                    className="cursor-pointer justify-center w-full h-14.5 px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
+                    className="btn-brand-slide justify-center w-full h-14.5 px-6 py-3 rounded-lg transition-all flex items-center gap-2"
                   >
                     تعديل الأقسام
                   </button>
@@ -1352,9 +1392,10 @@ const ResourcesPage = () => {
                           className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر مادة التخصص</option>
-                          {(spec?.specialization_materials.length > 0
-                            ? spec?.specialization_materials
-                            : subsub?.specialization_materials
+                          {(
+                            (spec?.specialization_materials?.length ?? 0) > 0
+                              ? spec?.specialization_materials ?? []
+                              : subsub?.specialization_materials ?? []
                           ).map((specialization_material: any) => (
                             <option
                               key={specialization_material.id}
@@ -1431,7 +1472,7 @@ const ResourcesPage = () => {
                   : false) ||
                 !selectedResources.specialization_material
               }
-              className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Upload size={16} />
               تعديل الملف
@@ -1453,7 +1494,7 @@ const ResourcesPage = () => {
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+          className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Upload size={16} />
           رفع ملف{" "}
@@ -1605,7 +1646,7 @@ const ResourcesPage = () => {
 
           <button
             onClick={() => setShowCreateModal(true)}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة ملف جديد
@@ -1744,6 +1785,33 @@ const ResourcesPage = () => {
       {/* Modals */}
       {showCreateModal && CreateModal()}
       {showEditModal && EditModal()}
+
+      {pendingDeleteResource && (
+        <ConfirmationModal
+          open
+          onClose={() => !isDeleting && setPendingDeleteResource(null)}
+          onConfirm={confirmDeleteFile}
+          title="حذف الملف"
+          variant="danger"
+          confirmLabel="نعم، حذف"
+          isPending={isDeleting}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.
+              </p>
+              {pendingDeleteResource.title ? (
+                <p className="text-sm text-gray-600">
+                  العنوان:{" "}
+                  <span className="font-semibold text-(--brand-secondary)">
+                    {pendingDeleteResource.title}
+                  </span>
+                </p>
+              ) : null}
+            </>
+          }
+        />
+      )}
     </div>
   );
 };

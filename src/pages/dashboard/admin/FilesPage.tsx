@@ -710,7 +710,7 @@ const FilesPage = () => {
           <button
             onClick={handleFileUpload}
             disabled={uploadFiles.files.length === 0}
-            className="px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Upload size={16} />
             رفع الملفات
@@ -799,7 +799,7 @@ const FilesPage = () => {
           <button
             onClick={handleCreateFolder}
             disabled={!newFolder.name}
-            className="px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FolderPlus size={16} />
             إنشاء المجلد
@@ -829,7 +829,7 @@ const FilesPage = () => {
           </button>
           <button
             onClick={() => setShowUploadModal(true)}
-            className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+            className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Upload size={16} />
             رفع ملفات
@@ -1031,7 +1031,7 @@ const FilesPage = () => {
                   <div className="flex gap-4 justify-center">
                     <button
                       onClick={() => setShowUploadModal(true)}
-                      className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2"
+                      className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2"
                     >
                       <Upload size={16} />
                       رفع ملفات

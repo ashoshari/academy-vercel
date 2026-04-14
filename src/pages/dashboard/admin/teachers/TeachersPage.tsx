@@ -15,8 +15,8 @@ import {
   Grid,
   Rows,
   CircleX,
-  Book,
   EyeOff,
+  Info,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -27,6 +27,7 @@ import Pagination from "@/components/dashboard/core/Pagination";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 
 export interface Teacher {
   id: number;
@@ -54,8 +55,16 @@ export interface Teacher {
 
 const TeachersPage = () => {
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+  const [selectedTeacherId, setSelectedTeacherId] = useState<
+    string | number | null
+  >(null);
   const [newPassword, setNewPassword] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [pendingTeacherStatusToggle, setPendingTeacherStatusToggle] = useState<{
+    id: string | number;
+    isActive: boolean;
+    name: string;
+  } | null>(null);
 
   const navigate = useNavigate();
   // filter
@@ -96,7 +105,7 @@ const TeachersPage = () => {
   const dataMaterials = useCustomQuery("core/materials/", ["materials"]);
 
   const teacherStatus = useCustomPost(
-    `/account/admin/teachers/${selectedTeacher?.id}/activate/`,
+    `/account/admin/teachers/${selectedTeacherId ?? "noop"}/activate/`,
     ["teachers", "teachers-statistics"],
   );
   const resetAccountPassword = useCustomUpdate(
@@ -119,6 +128,7 @@ const TeachersPage = () => {
       .then((res) => {
         if (res?.status) {
           toast.success(res?.data);
+          setPendingTeacherStatusToggle(null);
         } else {
           toast.error("فشل تحديث حالة المعلم");
         }
@@ -128,6 +138,16 @@ const TeachersPage = () => {
           error?.response?.data?.message || "حدث خطأ أثناء تحديث الحالة",
         );
       });
+  };
+
+  const requestTeacherStatusToggle = (teacher: any) => {
+    setSelectedTeacher(teacher);
+    setSelectedTeacherId(teacher?.id ?? null);
+    setPendingTeacherStatusToggle({
+      id: teacher?.id,
+      isActive: Boolean(teacher?.is_active),
+      name: String(teacher?.name ?? ""),
+    });
   };
 
   const resetPassword = () => {
@@ -185,7 +205,7 @@ const TeachersPage = () => {
                 teacher?.image ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
                   teacher?.name,
-                )}&background=ffffff&color=f97316&size=64`
+                )}&background=ffffff&color=2465c9&size=64`
               }
               alt={teacher?.name}
               className="w-16 h-16 rounded-full border-2 border-white/20"
@@ -275,7 +295,7 @@ const TeachersPage = () => {
               className="p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
               title="عرض التفاصيل"
             >
-              <Book size={16} />
+              <Info size={16} />
             </button>
 
             <button
@@ -294,8 +314,7 @@ const TeachersPage = () => {
           <div className="flex items-center gap-1">
             <button
               onClick={() => {
-                setSelectedTeacher(teacher);
-                toggleTeacherStatus();
+                requestTeacherStatusToggle(teacher);
               }}
               className={`p-2 rounded-lg transition-colors cursor-pointer ${
                 teacher.is_active
@@ -343,7 +362,7 @@ const TeachersPage = () => {
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/dashboard/teachers/add")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+            className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة معلم
@@ -508,7 +527,7 @@ const TeachersPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/teachers/add")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة معلم جديد
@@ -531,7 +550,7 @@ const TeachersPage = () => {
                 {
                   <button
                     onClick={() => navigate("/dashboard/teachers/add")}
-                    className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة معلم جديد
@@ -636,8 +655,7 @@ const TeachersPage = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
-                              setSelectedTeacher(teacher);
-                              toggleTeacherStatus();
+                              requestTeacherStatusToggle(teacher);
                             }}
                             className={`p-2 rounded-lg transition-colors cursor-pointer ${
                               teacher.is_active
@@ -675,7 +693,7 @@ const TeachersPage = () => {
                             className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                             title="عرض التفاصيل"
                           >
-                            <Book size={16} />
+                            <Info size={16} />
                           </button>
                           <button
                             onClick={() => {
@@ -751,6 +769,54 @@ const TeachersPage = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {pendingTeacherStatusToggle && (
+        <ConfirmationModal
+          open
+          onClose={() =>
+            !teacherStatus.isPending && setPendingTeacherStatusToggle(null)
+          }
+          onConfirm={toggleTeacherStatus}
+          title={
+            pendingTeacherStatusToggle.isActive
+              ? "إلغاء تفعيل المعلم"
+              : "تفعيل المعلم"
+          }
+          variant={pendingTeacherStatusToggle.isActive ? "danger" : "success"}
+          confirmLabel={
+            pendingTeacherStatusToggle.isActive
+              ? "نعم، إلغاء التفعيل"
+              : "نعم، تفعيل"
+          }
+          isPending={teacherStatus.isPending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingTeacherStatusToggle.isActive
+                    ? "إلغاء تفعيل"
+                    : "تفعيل"}
+                </span>{" "}
+                المعلم{" "}
+                <span className="font-bold text-(--brand-secondary)">
+                  {pendingTeacherStatusToggle.name}
+                </span>
+                ؟
+              </p>
+              {pendingTeacherStatusToggle.isActive ? (
+                <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3 mt-3">
+                  لن يتمكن المعلم من استخدام المنصة حتى تقوم بإعادة تفعيله.
+                </p>
+              ) : (
+                <p className="text-sm text-emerald-900/90 bg-emerald-50 border border-emerald-100 rounded-xl p-3 mt-3">
+                  بعد التفعيل سيتمكن المعلم من استخدام المنصة بشكل طبيعي.
+                </p>
+              )}
+            </>
+          }
+        />
       )}
     </div>
   );

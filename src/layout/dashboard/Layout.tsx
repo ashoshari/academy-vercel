@@ -149,7 +149,7 @@ const Layout = () => {
                   } rounded-lg transition-all duration-300 text-sm ${
                     isActive
                       ? "bg-linear-to-r from-(--brand) to-(--brand-light) text-white shadow-md"
-                      : "text-gray-600 hover:bg-orange-50 hover:text-(--brand)"
+                      : "text-gray-600 hover:bg-(--brand) hover:text-white"
                   }`
                 }
               >

@@ -27,6 +27,7 @@ import LibraryCard from "@/components/dashboard/admin/libraries/LibraryCard";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 
 export interface Library {
   id: string;
@@ -44,8 +45,16 @@ export interface Library {
 }
 const LibrariesPage = () => {
   const [selectedLibrary, setSelectedLibrary] = useState<Library | null>(null);
+  const [selectedLibraryId, setSelectedLibraryId] = useState<
+    string | number | null
+  >(null);
   const [newPassword, setNewPassword] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [pendingLibraryStatusToggle, setPendingLibraryStatusToggle] = useState<{
+    id: string | number;
+    isActive: boolean;
+    name: string;
+  } | null>(null);
 
   const navigate = useNavigate();
   // filter
@@ -81,7 +90,7 @@ const LibrariesPage = () => {
   );
 
   const libraryStatus = useCustomPost(
-    `/account/admin/libraries/${selectedLibrary?.id}/activate/`,
+    `/account/admin/libraries/${selectedLibraryId ?? "noop"}/activate/`,
     ["libraries", "libraries-statistics"],
   );
   const resetAccountPassword = useCustomUpdate(
@@ -105,6 +114,7 @@ const LibrariesPage = () => {
       .then((res) => {
         if (res?.status) {
           toast.success(res?.data);
+          setPendingLibraryStatusToggle(null);
         } else {
           toast.error("فشل تحديث حالة المكتبة");
         }
@@ -114,6 +124,16 @@ const LibrariesPage = () => {
           error?.response?.data?.message || "حدث خطأ أثناء تحديث الحالة",
         );
       });
+  };
+
+  const requestLibraryStatusToggle = (library: Library) => {
+    setSelectedLibrary(library);
+    setSelectedLibraryId(library?.id ?? null);
+    setPendingLibraryStatusToggle({
+      id: library.id,
+      isActive: Boolean(library.is_active),
+      name: String(library.name ?? ""),
+    });
   };
 
   const resetPassword = () => {
@@ -183,7 +203,7 @@ const LibrariesPage = () => {
           </button> */}
           <button
             onClick={() => navigate("/dashboard/libraries/add")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+            className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة مكتبة
@@ -312,7 +332,7 @@ const LibrariesPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/libraries/add")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة مكتبة جديد
@@ -328,7 +348,7 @@ const LibrariesPage = () => {
                 resetAccountPassword={resetAccountPassword}
                 resetPassword={resetPassword}
                 setSelectedLibrary={setSelectedLibrary}
-                toggleLibraryStatus={toggleLibraryStatus}
+                toggleLibraryStatus={() => requestLibraryStatusToggle(library)}
               />
             ))}
 
@@ -342,7 +362,7 @@ const LibrariesPage = () => {
                 {
                   <button
                     onClick={() => navigate("/dashboard/libraries/add")}
-                    className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إضافة مكتبة جديد
@@ -424,8 +444,7 @@ const LibrariesPage = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
-                              setSelectedLibrary(library);
-                              toggleLibraryStatus();
+                              requestLibraryStatusToggle(library);
                             }}
                             className={`p-2 rounded-lg transition-colors cursor-pointer ${
                               library.is_active
@@ -552,6 +571,54 @@ const LibrariesPage = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {pendingLibraryStatusToggle && (
+        <ConfirmationModal
+          open
+          onClose={() =>
+            !libraryStatus.isPending && setPendingLibraryStatusToggle(null)
+          }
+          onConfirm={toggleLibraryStatus}
+          title={
+            pendingLibraryStatusToggle.isActive
+              ? "إلغاء تفعيل المكتبة"
+              : "تفعيل المكتبة"
+          }
+          variant={pendingLibraryStatusToggle.isActive ? "danger" : "success"}
+          confirmLabel={
+            pendingLibraryStatusToggle.isActive
+              ? "نعم، إلغاء التفعيل"
+              : "نعم، تفعيل"
+          }
+          isPending={libraryStatus.isPending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingLibraryStatusToggle.isActive
+                    ? "إلغاء تفعيل"
+                    : "تفعيل"}
+                </span>{" "}
+                المكتبة{" "}
+                <span className="font-bold text-(--brand-secondary)">
+                  {pendingLibraryStatusToggle.name}
+                </span>
+                ؟
+              </p>
+              {pendingLibraryStatusToggle.isActive ? (
+                <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3 mt-3">
+                  لن تتمكن المكتبة من استخدام المنصة حتى تقوم بإعادة تفعيلها.
+                </p>
+              ) : (
+                <p className="text-sm text-emerald-900/90 bg-emerald-50 border border-emerald-100 rounded-xl p-3 mt-3">
+                  بعد التفعيل ستتمكن المكتبة من استخدام المنصة بشكل طبيعي.
+                </p>
+              )}
+            </>
+          }
+        />
       )}
     </div>
   );

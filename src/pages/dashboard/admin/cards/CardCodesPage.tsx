@@ -560,7 +560,7 @@ const CardCodesPage = () => {
           {canAddCode && (
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+              className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
             >
               <Plus size={16} />
               إضافة كودات
@@ -647,7 +647,7 @@ const CardCodesPage = () => {
                   className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all"
                 >
                   {/* Header */}
-                  <div className="bg-linear-to-r from-(--brand) to-(--brand-light) p-4 text-white">
+                  <div className="btn-brand-slide p-4 text-white">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-bold text-lg">
                         {batch?.name || "-"}
@@ -987,7 +987,7 @@ const CardCodesPage = () => {
           {canAddCode && (
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+              className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
             >
               <Plus size={16} />
               إضافة كودات جديدة
@@ -1179,7 +1179,7 @@ const CardCodesPage = () => {
                               className="cursor-pointer p-1 rounded transition-colors"
                               title={code?.code?.name}
                             >
-                              <Info size={16} className="text-sky-500" />
+                              <Info size={16} className="text-gray-300" />
                             </button>
                           </div>
                         </td>
