@@ -140,7 +140,7 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
             <button
               type="button"
               onClick={() => setYearMenuOpen((v) => !v)}
-              className="cursor-pointer px-3 py-1.5 rounded-md border border-gray-200 text-sm flex items-center gap-1 hover:bg-gray-50 focus:ring-2 focus:ring-orange-500 min-w-34 justify-between"
+              className="cursor-pointer px-3 py-1.5 rounded-md border border-gray-200 text-sm flex items-center gap-1 hover:bg-gray-50 focus:ring-2 focus:ring-(--brand) min-w-34 justify-between"
               aria-haspopup="listbox"
               aria-expanded={yearMenuOpen}
             >

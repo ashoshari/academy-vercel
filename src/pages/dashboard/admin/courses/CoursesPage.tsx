@@ -87,10 +87,11 @@ const CoursesPage = () => {
   const courseData = data?.data;
   const paginationData = data?.pagination;
   // GET courses stats
-  const { data: coursesStats, isLoading: isLoadingCourseStats } = useCustomQuery(
-    "/training/admin/courses-statistics/",
-    ["courses-stats", role],
-  );
+  const { data: coursesStats, isLoading: isLoadingCourseStats } =
+    useCustomQuery("/training/admin/courses-statistics/", [
+      "courses-stats",
+      role,
+    ]);
   // GET teachers
   const { data: teachers } = useCustomQuery(
     "/account/admin/teachers/?page_size=9999",
@@ -603,7 +604,7 @@ const CoursesPage = () => {
                   onChange={(e) =>
                     setNewCourse({ ...newCourse, name: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="أدخل عنوان الدورة..."
                 />
               </div>
@@ -621,7 +622,7 @@ const CoursesPage = () => {
                       short_description: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="وصف مختصر للدورة..."
                 />
               </div>
@@ -639,7 +640,7 @@ const CoursesPage = () => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="وصف تفصيلي للدورة..."
                 />
               </div>
@@ -659,7 +660,7 @@ const CoursesPage = () => {
                           teacher: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر المعلم</option>
                       {teacherData
@@ -689,7 +690,7 @@ const CoursesPage = () => {
                       time_in_hours: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="40"
                   min="0"
                 />
@@ -768,7 +769,7 @@ const CoursesPage = () => {
                           card_price: 0,
                         })
                       }
-                      className="text-(--brand) focus:ring-orange-500"
+                      className="text-(--brand) focus:ring-(--brand)"
                     />
                     <span>دورة مجانية</span>
                   </label>
@@ -780,7 +781,7 @@ const CoursesPage = () => {
                       onChange={() =>
                         setNewCourse({ ...newCourse, is_free: false })
                       }
-                      className="text-(--brand) focus:ring-orange-500"
+                      className="text-(--brand) focus:ring-(--brand)"
                     />
                     <span>دورة مدفوعة</span>
                   </label>
@@ -800,7 +801,7 @@ const CoursesPage = () => {
                               card_price: e.target.value,
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر بطاقة</option>
                           {cardsData
@@ -829,7 +830,7 @@ const CoursesPage = () => {
                     onChange={(e) =>
                       setNewCourse({ ...newCourse, start_date: e.target.value })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   />
                 </div>
 
@@ -843,7 +844,7 @@ const CoursesPage = () => {
                     onChange={(e) =>
                       setNewCourse({ ...newCourse, end_date: e.target.value })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   />
                 </div>
               </div>
@@ -868,7 +869,7 @@ const CoursesPage = () => {
                         specialization_material: "",
                       });
                     }}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   >
                     <option value="">اختر القسم</option>
                     {subsectionData?.map((subSection: any) => (
@@ -898,7 +899,7 @@ const CoursesPage = () => {
                           specialization_material: "",
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر الصف</option>
                       {subSection?.subsubsections?.map((subSubSection: any) => (
@@ -928,7 +929,7 @@ const CoursesPage = () => {
                           specialization_material: "",
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر قسم فرعي</option>
                       {subsub?.specializations?.map((specialization: any) => (
@@ -968,7 +969,7 @@ const CoursesPage = () => {
                           specialization_material: e.target.value,
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر مادة التخصص</option>
                       {(spec?.specialization_materials.length > 0
@@ -1003,7 +1004,7 @@ const CoursesPage = () => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -1021,7 +1022,7 @@ const CoursesPage = () => {
                         is_special: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -1041,7 +1042,7 @@ const CoursesPage = () => {
                         is_show_general_questions: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
               </div>
@@ -1128,7 +1129,7 @@ const CoursesPage = () => {
                       name: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="أدخل عنوان الدورة..."
                 />
               </div>
@@ -1146,7 +1147,7 @@ const CoursesPage = () => {
                       short_description: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="وصف مختصر للدورة..."
                 />
               </div>
@@ -1164,7 +1165,7 @@ const CoursesPage = () => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="وصف تفصيلي للدورة..."
                 />
               </div>
@@ -1184,7 +1185,7 @@ const CoursesPage = () => {
                           teacher: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر المعلم</option>
                       {teacherData
@@ -1215,7 +1216,7 @@ const CoursesPage = () => {
                       time_in_hours: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="40"
                   min="0"
                 />
@@ -1295,7 +1296,7 @@ const CoursesPage = () => {
                           is_free: true,
                         })
                       }
-                      className="text-(--brand) focus:ring-orange-500"
+                      className="text-(--brand) focus:ring-(--brand)"
                     />
                     <span>دورة مجانية</span>
                   </label>
@@ -1307,7 +1308,7 @@ const CoursesPage = () => {
                       onChange={() =>
                         setSelectedCourse({ ...selectedCourse, is_free: false })
                       }
-                      className="text-(--brand) focus:ring-orange-500"
+                      className="text-(--brand) focus:ring-(--brand)"
                     />
                     <span>دورة مدفوعة</span>
                   </label>
@@ -1327,7 +1328,7 @@ const CoursesPage = () => {
                               card_price: e.target.value,
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر بطاقة</option>
                           {cardsData
@@ -1359,7 +1360,7 @@ const CoursesPage = () => {
                         start_date: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   />
                 </div>
 
@@ -1376,7 +1377,7 @@ const CoursesPage = () => {
                         end_date: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   />
                 </div>
               </div>
@@ -1410,7 +1411,7 @@ const CoursesPage = () => {
                             specialization_material: "",
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                       >
                         <option value="">اختر القسم</option>
                         {subsectionData?.map((subSection: any) => (
@@ -1440,7 +1441,7 @@ const CoursesPage = () => {
                               specialization_material: "",
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر الصف</option>
                           {subSection?.subsubsections?.map(
@@ -1475,7 +1476,7 @@ const CoursesPage = () => {
                               specialization_material: "",
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر التخصص</option>
                           {subsub?.specializations?.map(
@@ -1517,7 +1518,7 @@ const CoursesPage = () => {
                               specialization_material: e.target.value,
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر مادة التخصص</option>
                           {(spec?.specialization_materials.length > 0
@@ -1554,7 +1555,7 @@ const CoursesPage = () => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -1572,7 +1573,7 @@ const CoursesPage = () => {
                         is_special: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -1592,7 +1593,7 @@ const CoursesPage = () => {
                         is_show_general_questions: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
               </div>
@@ -1715,7 +1716,7 @@ const CoursesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الدورات..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -1726,7 +1727,7 @@ const CoursesPage = () => {
               onChange={(e) =>
                 setTeacherFilter(e.target.value ? e.target.value : null)
               }
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             >
               <option value="">جميع المعلمين</option>
               {teacherData?.map((teacher: any) => (
@@ -1741,7 +1742,7 @@ const CoursesPage = () => {
           {/* <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="">جميع التصنيفات</option>
             {specializationData?.map((category: any) => (
@@ -1755,7 +1756,7 @@ const CoursesPage = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="">جميع الحالات</option>
             <option value="true">منشور</option>
@@ -1766,7 +1767,7 @@ const CoursesPage = () => {
           <select
             value={freeFilter}
             onChange={(e) => setFreeFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="all">جميع الأسعار</option>
             <option value="true">مجاني</option>

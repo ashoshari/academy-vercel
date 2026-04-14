@@ -138,7 +138,7 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
               setAmount(e.target.value ? Number(e.target.value) : "")
             }
             placeholder="أدخل المبلغ"
-            className="px-3 py-2 border-gray-200 border focus:border-(--brand) outline-0 focus-within:ring-1 focus-within:ring-orange-500 rounded-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="px-3 py-2 border-gray-200 border focus:border-(--brand) outline-0 focus-within:ring-1 focus-within:ring-(--brand) rounded-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             onKeyDown={(e) => {
               if (e.key === "ArrowUp" || e.key === "ArrowDown") {
                 e.preventDefault();

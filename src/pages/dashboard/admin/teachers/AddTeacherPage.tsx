@@ -96,7 +96,7 @@ export default function AddTeacherPage() {
           <input
             type="text"
             {...register("name", { required: true })}
-            className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
             placeholder="أدخل الاسم الكامل"
           />
           {errors.name && (
@@ -112,7 +112,7 @@ export default function AddTeacherPage() {
           <input
             type="email"
             {...register("email", { required: false })}
-            className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
             placeholder="example@domain.com"
           />
           {errors.email && (
@@ -145,7 +145,7 @@ export default function AddTeacherPage() {
                 "",
               );
             }}
-            className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-orange-500 
+            className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-(--brand) 
     ${errors.mobile_number ? "border-red-500" : "border-gray-200"}`}
             placeholder="07XXXXXXXX"
           />
@@ -206,7 +206,7 @@ export default function AddTeacherPage() {
             <input
               type="text"
               {...register("password", { required: true })}
-              className="flex-1 px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="flex-1 px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
               placeholder="أدخل كلمة المرور"
             />
             <button
@@ -226,7 +226,7 @@ export default function AddTeacherPage() {
             id="is_active"
             type="checkbox"
             {...register("is_active")}
-            className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+            className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
           />
           <label
             className="text-sm font-medium text-gray-700"
@@ -244,7 +244,7 @@ export default function AddTeacherPage() {
             defaultChecked={true}
             type="checkbox"
             {...register("is_active")}
-            className="rounded border-gray-300 text-(--brand) focus:ring-orange-500 w-[20px] h-[20px]"
+            className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-[20px] h-[20px]"
           />
         </div> */}
 

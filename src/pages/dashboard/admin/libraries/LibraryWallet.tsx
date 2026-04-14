@@ -201,7 +201,7 @@ export default function LibraryWalletPage() {
                     setAmount(e.target.value ? Number(e.target.value) : "")
                   }
                   placeholder="أدخل المبلغ"
-                  className="px-3 py-2 border rounded-lg w-40 focus:ring-2 focus:ring-orange-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="px-3 py-2 border rounded-lg w-40 focus:ring-2 focus:ring-(--brand) [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   onKeyDown={(e) => {
                     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
                       e.preventDefault();

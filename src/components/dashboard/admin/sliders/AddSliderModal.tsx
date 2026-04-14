@@ -88,7 +88,7 @@ export default function AddSliderModal({
               onChange={(e) =>
                 setNewSlide({ ...newSlide, header: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل العنوان..."
             />
           </div>
@@ -103,7 +103,7 @@ export default function AddSliderModal({
               onChange={(e) =>
                 setNewSlide({ ...newSlide, title: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل العنوان الرئيسي..."
             />
           </div>
@@ -119,7 +119,7 @@ export default function AddSliderModal({
                 setNewSlide({ ...newSlide, subtitle: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
               placeholder="أدخل العنوان الفرعي أو الوصف..."
             />
           </div>
@@ -137,7 +137,7 @@ export default function AddSliderModal({
                   link: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل رابط..."
             />
           </div>
@@ -169,7 +169,7 @@ export default function AddSliderModal({
                   order: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل الترتيب..."
             />
           </div>

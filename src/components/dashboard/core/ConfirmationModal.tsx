@@ -36,8 +36,8 @@ const variantClass: Record<
   },
   neutral: {
     confirm:
-      "bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2",
-    ring: "ring-orange-500/20",
+      "bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2",
+    ring: "ring-(--brand)/20",
     iconWrap: "bg-orange-50",
     icon: "text-(--brand-secondary)",
   },

@@ -119,7 +119,7 @@ const ForgetPassword = ({
                   },
                 })}
                 minLength={6}
-                className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
                 placeholder="أدخل كلمة المرور"
               />
               <button
@@ -170,7 +170,7 @@ const ForgetPassword = ({
                     value === newPassword || "كلمة المرور غير متطابقة",
                 })}
                 minLength={6}
-                className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                className="w-full flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
                 placeholder="أدخل كلمة المرور"
               />
               <button
@@ -222,7 +222,7 @@ const ForgetPassword = ({
               );
             }}
             type="text"
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-right"
             placeholder="ادخل رقم الهاتف"
           />
           {errors.mobile_number && (
@@ -248,7 +248,7 @@ const ForgetPassword = ({
                     {...field}
                     type="text"
                     maxLength={1}
-                    className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
+                    className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300"
                     onChange={(e) => {
                       const val = e.target.value.slice(-1); // keep only last digit
                       field.onChange(val);
@@ -289,7 +289,7 @@ const ForgetPassword = ({
               );
             }}
             type="text"
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300 text-right"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-right"
             placeholder="ادخل رقم الهاتف"
           />
           {errors.mobile_number && (
@@ -302,7 +302,7 @@ const ForgetPassword = ({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="cursor-pointer w-full bg-linear-to-r from-(--brand) to-(--brand-light) text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-(--brand-light) hover:to-(--brand) focus:ring-4 focus:ring-yellow-200 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-70"
+        className="cursor-pointer w-full text-white py-3 px-6 rounded-xl font-bold text-lg bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right focus:ring-4 focus:ring-(--brand) transition-all duration-700 flex items-center justify-center space-x-3 disabled:opacity-70"
       >
         {isSubmitting ? (
           <div className="flex items-center space-x-2">

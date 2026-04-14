@@ -93,7 +93,7 @@ const AddSubsectionModal = ({
               type="text"
               value={data.name || ""}
               onChange={(e) => onChange({ ...data, name: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="ادخل اسم التخصص..."
             />
           ) : level === "mat" ? (
@@ -101,7 +101,7 @@ const AddSubsectionModal = ({
               type="text"
               value={data.material || ""}
               onChange={(e) => onChange({ ...data, material: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="ادخل اسم المادة..."
             />
           ) : (
@@ -109,7 +109,7 @@ const AddSubsectionModal = ({
               type="text"
               value={data.title || ""}
               onChange={(e) => onChange({ ...data, title: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="ادخل اسم القسم الفرعي..."
             />
           )}
@@ -131,7 +131,7 @@ const AddSubsectionModal = ({
                   })
                 }
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                 placeholder="أدخل الوصف..."
               />
             </div>
@@ -147,7 +147,7 @@ const AddSubsectionModal = ({
                 lang="en"
                 value={data.order || 0}
                 onChange={(e) => onChange({ ...data, order: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 placeholder="أدخل الترتيب..."
               />
             </div>

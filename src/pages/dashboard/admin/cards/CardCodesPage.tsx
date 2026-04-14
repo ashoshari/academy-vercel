@@ -871,7 +871,7 @@ const CardCodesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الكودات..."
-              className="w-full h-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="w-full h-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -923,7 +923,7 @@ const CardCodesPage = () => {
           <select
             value={installmentFilter}
             onChange={(e) => setInstallmentFilter(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="">جميع حالات التقسيط</option>
             <option value="true">يوجد تقسيط</option>
@@ -934,7 +934,7 @@ const CardCodesPage = () => {
           <select
             value={isUsed || ""}
             onChange={(e) => setIsUsed(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="all">جميع حالات الاستخدام</option>
             <option value="false">متاح</option>
@@ -945,7 +945,7 @@ const CardCodesPage = () => {
           <select
             value={isCodeDownloaded || ""}
             onChange={(e) => setisCodeDownloaded(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="all">جميع حالات التحميل</option>
             <option value="true">تم التحميل</option>
@@ -956,7 +956,7 @@ const CardCodesPage = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="all">جميع حالات التفعيل</option>
             <option value="true">مفعل</option>

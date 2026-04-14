@@ -90,7 +90,7 @@ const EditCardPricing = ({
                   valueAsNumber: true,
                 })}
                 defaultValue={selectedCard.default_library_price || ""}
-                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 placeholder="ادخل سعر المكتبة..."
                 min="0.1"
               />
@@ -118,7 +118,7 @@ const EditCardPricing = ({
                   valueAsNumber: true,
                 })}
                 defaultValue={selectedCard.default_teacher_price || ""}
-                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 placeholder="ادخل سعر المدرس..."
                 min="0.1"
                 // step="0.1"
