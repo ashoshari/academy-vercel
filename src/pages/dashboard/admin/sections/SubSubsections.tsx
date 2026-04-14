@@ -188,7 +188,7 @@ const SubsectionsPage = () => {
       case "red":
         return "text-red-600";
       case "yellow":
-        return "text-yellow-600";
+        return "text-(--brand)";
       case "pink":
         return "text-pink-600";
       default:
@@ -430,7 +430,7 @@ const SubsectionsPage = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="البحث في الأقسام..."
-            className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           />
         </div>
       </div>
@@ -443,7 +443,7 @@ const SubsectionsPage = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="البحث في الأقسام الفرعية..."
-                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
               />
             </div>
           </div>

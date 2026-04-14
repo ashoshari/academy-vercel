@@ -68,9 +68,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
         className={`flex flex-wrap items-center gap-2 px-3 ${
           big ? "py-4.25" : "py-2.25"
         } border rounded-lg
-          ${
-            open ? "border-(--brand) ring-1 ring-orange-500" : "border-gray-200"
-          }
+          ${open ? "border-(--brand) ring-1 ring-(--brand)" : "border-gray-200"}
           focus-within:border-(--brand) ${fullHeight && "h-full"}`}
         onClick={() => {
           if (disabled) return;

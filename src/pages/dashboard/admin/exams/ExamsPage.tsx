@@ -559,7 +559,7 @@ const ExamsPage = () => {
                   onChange={(e) =>
                     setNewExam({ ...newExam, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="أدخل عنوان الامتحان..."
                 />
               </div>
@@ -577,7 +577,7 @@ const ExamsPage = () => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="وصف تفصيلي للامتحان..."
                 />
               </div>
@@ -597,7 +597,7 @@ const ExamsPage = () => {
                           teacher: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر المعلّم</option>
                       {teachers?.data?.data?.map((type: any) => (
@@ -628,7 +628,7 @@ const ExamsPage = () => {
                           specialization_material: "",
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر القسم</option>
                       {subsectionData?.map((subSection: any) => (
@@ -658,7 +658,7 @@ const ExamsPage = () => {
                             specialization_material: "",
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                       >
                         <option value="">اختر الصف</option>
                         {subSection?.subsubsections?.map(
@@ -693,7 +693,7 @@ const ExamsPage = () => {
                             specialization_material: "",
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                       >
                         <option value="">اختر قسم فرعي</option>
                         {subsub?.specializations?.map((specialization: any) => (
@@ -733,7 +733,7 @@ const ExamsPage = () => {
                             specialization_material: e.target.value,
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                       >
                         <option value="">اختر مادة التخصص</option>
                         {(spec?.specialization_materials.length > 0
@@ -776,7 +776,7 @@ const ExamsPage = () => {
                         number_of_questions: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="10"
                     min="1"
                   />
@@ -797,7 +797,7 @@ const ExamsPage = () => {
                         total_marks: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="50"
                     min="1"
                   />
@@ -820,7 +820,7 @@ const ExamsPage = () => {
                         passing_marks: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="30"
                     min="1"
                   />
@@ -841,7 +841,7 @@ const ExamsPage = () => {
                         time_in_minutes: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="60"
                     min="1"
                   />
@@ -864,7 +864,7 @@ const ExamsPage = () => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -883,7 +883,7 @@ const ExamsPage = () => {
                         is_free: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -900,7 +900,7 @@ const ExamsPage = () => {
                         enable_countdown: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -920,7 +920,7 @@ const ExamsPage = () => {
                         show_correct_answers: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -940,7 +940,7 @@ const ExamsPage = () => {
                         shuffle_questions: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -960,7 +960,7 @@ const ExamsPage = () => {
                         shuffle_answers: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
               </div>
@@ -1108,7 +1108,7 @@ const ExamsPage = () => {
                   onChange={(e) =>
                     setSelectedExam({ ...selectedExam, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="أدخل عنوان الامتحان..."
                 />
               </div>
@@ -1126,7 +1126,7 @@ const ExamsPage = () => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="وصف تفصيلي للامتحان..."
                 />
               </div>
@@ -1148,7 +1148,7 @@ const ExamsPage = () => {
                           },
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر استاذ</option>
                       {teachers?.data?.data?.map((teacher: any) => (
@@ -1191,7 +1191,7 @@ const ExamsPage = () => {
                               specialization_material: "",
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر القسم</option>
                           {subsectionData?.map((subSection: any) => (
@@ -1221,7 +1221,7 @@ const ExamsPage = () => {
                                 specialization_material: "",
                               });
                             }}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                           >
                             <option value="">اختر الصف</option>
                             {subSection?.subsubsections?.map(
@@ -1255,7 +1255,7 @@ const ExamsPage = () => {
                                 specialization_material: "",
                               });
                             }}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                           >
                             <option value="">اختر قسم فرعي</option>
                             {subsub?.specializations?.map(
@@ -1301,7 +1301,7 @@ const ExamsPage = () => {
                                 specialization_material: e.target.value,
                               });
                             }}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                           >
                             <option value="">اختر مادة التخصص</option>
                             {(spec?.specialization_materials.length > 0
@@ -1347,7 +1347,7 @@ const ExamsPage = () => {
                         number_of_questions: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="10"
                     min="1"
                   />
@@ -1368,7 +1368,7 @@ const ExamsPage = () => {
                         total_marks: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="50"
                     min="1"
                   />
@@ -1392,7 +1392,7 @@ const ExamsPage = () => {
                         passing_marks: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="30"
                     min="1"
                   />
@@ -1413,7 +1413,7 @@ const ExamsPage = () => {
                         time_in_minutes: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="60"
                     min="1"
                   />
@@ -1436,7 +1436,7 @@ const ExamsPage = () => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -1455,7 +1455,7 @@ const ExamsPage = () => {
                         is_free: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -1472,7 +1472,7 @@ const ExamsPage = () => {
                         enable_countdown: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -1492,7 +1492,7 @@ const ExamsPage = () => {
                         show_correct_answers: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -1512,7 +1512,7 @@ const ExamsPage = () => {
                         shuffle_questions: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
 
@@ -1532,7 +1532,7 @@ const ExamsPage = () => {
                         shuffle_answers: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
               </div>
@@ -1667,7 +1667,7 @@ const ExamsPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الامتحانات..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -1675,7 +1675,7 @@ const ExamsPage = () => {
           <select
             value={materialFilter}
             onChange={(e) => setMaterialFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="">جميع المواد</option>
             {materialsData?.map((material: any) => (

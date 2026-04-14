@@ -79,7 +79,7 @@ const AddStudentPage = () => {
           <input
             type="text"
             {...register("name", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
             placeholder="أدخل الاسم الكامل"
           />
           {errors.name && (
@@ -109,7 +109,7 @@ const AddStudentPage = () => {
                 "",
               );
             }}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
             placeholder="07XXXXXXXX"
           />
           {errors.mobile_number && (
@@ -135,7 +135,7 @@ const AddStudentPage = () => {
                 },
               })}
               minLength={6}
-              className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+              className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
               placeholder="أدخل كلمة المرور"
             />
 

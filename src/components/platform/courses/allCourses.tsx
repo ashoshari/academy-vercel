@@ -341,7 +341,7 @@ const AllCourses = () => {
                   placeholder="البحث في الدورات..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300"
+                  className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300"
                 />
               </div>
               {/* View Mode */}

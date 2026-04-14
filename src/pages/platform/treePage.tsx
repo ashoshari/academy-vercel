@@ -111,7 +111,7 @@ const TreePage: React.FC = () => {
           />
         </div>
         <div className="flex-1 text-right">
-          <h4 className="text-lg font-bold text-gray-900 group-hover:text-yellow-600 transition-colors duration-200">
+          <h4 className="text-lg font-bold text-gray-900 group-hover:text-(--brand) transition-colors duration-200">
             {teacher?.name}
           </h4>
           <p className="text-gray-600 font-medium">

@@ -106,7 +106,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
               placeholder="ابحث بالاسم أو رقم الطالب..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand) text-sm"
+              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) text-sm"
             />
           </div>
         </div>
@@ -181,7 +181,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
                               placeholder="كود البطاقة"
                               value={cardCode}
                               onChange={(e) => setCardCode(e.target.value)}
-                              className="px-3 py-1 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-orange-500"
+                              className="px-3 py-1 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-(--brand)"
                             />
                             <button
                               onClick={() => handleActivate(student.id)}

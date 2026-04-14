@@ -83,7 +83,7 @@ const AddSectionModal = ({
               onChange={(e) =>
                 setNewSection({ ...newSection, name: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل اسم القسم..."
             />
           </div>
@@ -99,7 +99,7 @@ const AddSectionModal = ({
                 setNewSection({ ...newSection, description: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
               placeholder="أدخل وصف القسم..."
             />
           </div>
@@ -250,7 +250,7 @@ const EditSectionModal = ({
                   name: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل اسم القسم..."
             />
           </div>
@@ -269,7 +269,7 @@ const EditSectionModal = ({
                 })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
               placeholder="أدخل وصف القسم..."
             />
           </div>
@@ -612,7 +612,7 @@ const SectionsPage = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="البحث في الأقسام..."
-                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+                className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
               />
             </div>
             {/* View Mode */}

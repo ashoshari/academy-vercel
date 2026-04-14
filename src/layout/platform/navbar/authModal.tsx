@@ -76,7 +76,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               setForgetPassword(false);
               reset();
             }}
-            className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-linear-to-r from-yellow-400 to-orange-500 text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
+            className="cursor-pointer absolute top-4 right-4 w-10 h-10 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-full flex items-center justify-center transition-colors duration-200 z-10"
           >
             <ArrowRight className="w-5 h-5 text-white" />
           </button>

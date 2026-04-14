@@ -143,7 +143,7 @@ const EditModal: React.FC<Props> = ({
                 onChange={(e) => {
                   onChange({ ...data, subsection: e.target.value });
                 }}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               >
                 <option value="">قسم رئيسي (بدون أب)</option>
                 {mainSections.map((sec: any) => (
@@ -165,7 +165,7 @@ const EditModal: React.FC<Props> = ({
                 onChange={(e) => {
                   onChange({ ...data, subsubsection: e.target.value });
                 }}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               >
                 <option value="">قسم رئيسي (بدون أب)</option>
                 {mainSections.map((sec: any) => (
@@ -187,7 +187,7 @@ const EditModal: React.FC<Props> = ({
                 onChange={(e) => {
                   onChange({ ...data, specialization: e.target.value });
                 }}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               >
                 <option value="">قسم رئيسي (بدون أب)</option>
                 {mainSections.map((sec: any) => (
@@ -207,7 +207,7 @@ const EditModal: React.FC<Props> = ({
               <input
                 value={data?.name}
                 onChange={(e) => onChange({ ...data, name: e.target.value })}
-                className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-orange-500"
+                className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-(--brand)"
               />
             ) : level === "mat" ? (
               <input
@@ -215,13 +215,13 @@ const EditModal: React.FC<Props> = ({
                 onChange={(e) =>
                   onChange({ ...data, material: e.target.value })
                 }
-                className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-orange-500"
+                className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-(--brand)"
               />
             ) : (
               <input
                 value={data.title}
                 onChange={(e) => onChange({ ...data, title: e.target.value })}
-                className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-orange-500"
+                className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-(--brand)"
               />
             )}
           </div>
@@ -238,7 +238,7 @@ const EditModal: React.FC<Props> = ({
                   onChange={(e) =>
                     onChange({ ...data, description: e.target.value })
                   }
-                  className="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-orange-500"
+                  className="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
 
@@ -253,7 +253,7 @@ const EditModal: React.FC<Props> = ({
                   lang="en"
                   value={data?.order}
                   onChange={(e) => onChange({ ...data, order: e.target.value })}
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-orange-500"
+                  className="w-full rounded-lg border border-gray-200 px-4 py-3 focus:border-(--brand) focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </>

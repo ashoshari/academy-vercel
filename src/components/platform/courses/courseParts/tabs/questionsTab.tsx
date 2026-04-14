@@ -339,13 +339,13 @@ const QuestionsTab = () => {
               value={newQuestionTitle}
               onChange={(e) => setNewQuestionTitle(e.target.value)}
               placeholder="عنوان السؤال"
-              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300"
+              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300"
             />
             <textarea
               value={newQuestionContent}
               onChange={(e) => setNewQuestionContent(e.target.value)}
               placeholder="تفاصيل السؤال..."
-              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300 resize-none"
+              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 resize-none"
               rows={4}
             />
           </div>
@@ -462,13 +462,13 @@ const QuestionsTab = () => {
                       value={editQuestionTitle}
                       onChange={(e) => setEditQuestionTitle(e.target.value)}
                       placeholder="عنوان السؤال"
-                      className="w-full p-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300"
+                      className="w-full p-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300"
                     />
                     <textarea
                       value={editQuestionContent}
                       onChange={(e) => setEditQuestionContent(e.target.value)}
                       placeholder="تفاصيل السؤال..."
-                      className="w-full p-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300 resize-none"
+                      className="w-full p-4 border border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 resize-none"
                       rows={4}
                     />
                   </div>
@@ -594,7 +594,7 @@ const QuestionsTab = () => {
                               setEditCommentContent(e.target.value)
                             }
                             placeholder="اكتب إجابتك..."
-                            className="w-full p-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300 resize-none"
+                            className="w-full p-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 resize-none"
                             rows={3}
                           />
                           <div className="flex space-x-3">
@@ -633,7 +633,7 @@ const QuestionsTab = () => {
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="اكتب إجابتك..."
-                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300 resize-none"
+                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 resize-none"
                       rows={3}
                     />
                     <div className="flex space-x-3">

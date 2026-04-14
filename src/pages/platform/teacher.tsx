@@ -1061,7 +1061,7 @@ const TeacherProfile: React.FC = () => {
                         onChange={(e) => {
                           setActivationCode(e.target.value);
                         }}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-500 transition-all duration-300"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-lights) transition-all duration-300"
                         placeholder="أدخل كود التفعيل"
                       />
                     </>

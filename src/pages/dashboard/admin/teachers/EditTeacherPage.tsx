@@ -114,7 +114,7 @@ export default function EditTeacherPage() {
           <input
             type="text"
             {...register("name", { required: true })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
           />
           {errors.name && (
             <span className="text-sm text-red-500">الاسم مطلوب</span>
@@ -129,7 +129,7 @@ export default function EditTeacherPage() {
           <input
             type="email"
             {...register("email", { required: false })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand)"
             placeholder="example@domain.com"
           />
           {errors.email && (
@@ -162,7 +162,7 @@ export default function EditTeacherPage() {
                 "",
               );
             }}
-            className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-orange-500 
+            className={`w-full px-4 py-4 border rounded-lg focus:ring-2 focus:ring-(--brand) 
     ${errors.mobile_number ? "border-red-500" : "border-gray-200"}`}
             placeholder="07XXXXXXXX"
           />
@@ -221,7 +221,7 @@ export default function EditTeacherPage() {
               id="is_active"
               type="checkbox"
               {...register("is_active")}
-              className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+              className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
             />
             <label
               className="text-sm font-medium text-gray-700"
@@ -239,7 +239,7 @@ export default function EditTeacherPage() {
               defaultChecked={true}
               type="checkbox"
               {...register("is_active")}
-              className="rounded border-gray-300 text-(--brand) focus:ring-orange-500 w-[20px] h-[20px]"
+              className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-[20px] h-[20px]"
             />
           </div> */}
 

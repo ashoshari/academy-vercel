@@ -658,7 +658,7 @@ const FilesPage = () => {
                   })
                 }
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                 placeholder="وصف مختصر للملفات..."
               />
             </div>
@@ -675,7 +675,7 @@ const FilesPage = () => {
                     accessLevel: e.target.value as FileItem["accessLevel"],
                   })
                 }
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               >
                 <option value="public">عام - متاح للجميع</option>
                 <option value="students">طلاب - متاح للطلاب فقط</option>
@@ -695,7 +695,7 @@ const FilesPage = () => {
               onChange={(e) =>
                 setUploadFiles({ ...uploadFiles, expiryDate: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
             />
           </div>
         </div>
@@ -747,7 +747,7 @@ const FilesPage = () => {
               onChange={(e) =>
                 setNewFolder({ ...newFolder, name: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل اسم المجلد..."
             />
           </div>
@@ -762,7 +762,7 @@ const FilesPage = () => {
                 setNewFolder({ ...newFolder, description: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
               placeholder="وصف مختصر للمجلد..."
             />
           </div>
@@ -779,7 +779,7 @@ const FilesPage = () => {
                   accessLevel: e.target.value as FileItem["accessLevel"],
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
             >
               <option value="public">عام - متاح للجميع</option>
               <option value="students">طلاب - متاح للطلاب فقط</option>
@@ -924,7 +924,7 @@ const FilesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الملفات..."
-              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -932,7 +932,7 @@ const FilesPage = () => {
           <select
             value={fileTypeFilter}
             onChange={(e) => setFileTypeFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="all">جميع الأنواع</option>
             <option value="folder">مجلدات</option>
@@ -947,7 +947,7 @@ const FilesPage = () => {
           <select
             value={accessFilter}
             onChange={(e) => setAccessFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="all">جميع المستويات</option>
             <option value="public">عام</option>
@@ -964,7 +964,7 @@ const FilesPage = () => {
               setSortBy(by as any);
               setSortOrder(order as any);
             }}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="name-asc">الاسم (أ-ي)</option>
             <option value="name-desc">الاسم (ي-أ)</option>

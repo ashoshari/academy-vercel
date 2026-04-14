@@ -130,7 +130,7 @@ const LoginPage = () => {
                       pattern="^07[0-9]{8}$"
                       maxLength={10}
                       minLength={10}
-                      className="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-(--brand) focus:border-(--brand) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-(--brand) text-lg"
+                      className="w-full pr-12 pl-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-(--brand) text-lg"
                       placeholder="07XXXXXXXX"
                       required
                     />
@@ -153,7 +153,7 @@ const LoginPage = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       minLength={6}
-                      className="w-full pr-12 pl-14 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-(--brand) focus:border-(--brand) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-(--brand) text-lg"
+                      className="w-full pr-12 pl-14 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-right bg-white/90 backdrop-blur-sm hover:border-(--brand) text-lg"
                       placeholder="••••••••"
                       required
                     />
@@ -171,7 +171,7 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="cursor-pointer w-full bg-linear-to-r from-(--brand) to-(--brand-light) text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-(--brand-light) hover:to-(--brand) focus:outline-none focus:ring-4 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl hover:shadow-2xl"
+                  className="cursor-pointer w-full bg-linear-to-r from-(--brand) to-(--brand-light) text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-(--brand-light) hover:to-(--brand) focus:outline-none focus:ring-4 focus:ring-(--brand)/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl hover:shadow-2xl"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-3">

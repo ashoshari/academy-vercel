@@ -164,7 +164,7 @@ const GenerateModal = ({
                   name: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل اسم الكودات..."
               min="1"
               max="10000"
@@ -184,7 +184,7 @@ const GenerateModal = ({
                   card: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
             >
               <option value={0}>اختر سعر البطاقة</option>
               {cards?.data?.data
@@ -214,7 +214,7 @@ const GenerateModal = ({
                   quantity: parseInt(e.target.value) || 0,
                 })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="أدخل عدد الكودات..."
               min="1"
               max="10000"
@@ -232,7 +232,7 @@ const GenerateModal = ({
               onChange={(e) =>
                 setGenerateForm({ ...generateForm, prefix: e.target.value })
               }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               placeholder="CARD"
             />
           </div> */}
@@ -376,7 +376,7 @@ const GenerateModal = ({
                 setGenerateForm({ ...generateForm, notes: e.target.value })
               }
               rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
               placeholder="أدخل ملاحظات حول هذه المجموعة..."
             />
           </div>

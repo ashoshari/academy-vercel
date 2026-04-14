@@ -105,7 +105,7 @@ export default function RevenueChart() {
           <div ref={menuRef} className="relative">
             <button
               onClick={() => setOpen((v) => !v)}
-              className="cursor-pointer px-3 py-1.5 rounded-md border border-gray-200 text-sm flex items-center gap-1 hover:bg-gray-50 focus:ring-2 focus:ring-orange-500"
+              className="cursor-pointer px-3 py-1.5 rounded-md border border-gray-200 text-sm flex items-center gap-1 hover:bg-gray-50 focus:ring-2 focus:ring-(--brand)"
               aria-haspopup="listbox"
               aria-expanded={open}
             >

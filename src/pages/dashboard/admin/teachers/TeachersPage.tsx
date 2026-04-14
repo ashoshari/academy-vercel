@@ -410,7 +410,7 @@ const TeachersPage = () => {
                 setFilters((prev) => ({ ...prev, search: e.target.value }))
               }
               placeholder="البحث في المعلمين..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -421,7 +421,7 @@ const TeachersPage = () => {
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, material: e.target.value }))
               }
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             >
               <option value="">جميع التخصصات</option>
               {dataMaterials?.data?.data?.map((el: any) => (
@@ -442,7 +442,7 @@ const TeachersPage = () => {
                   status: e.target.value as "all" | "active" | "inactive",
                 }))
               }
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             >
               <option value="all">جميع الحالات</option>
               <option value="true">نشط</option>

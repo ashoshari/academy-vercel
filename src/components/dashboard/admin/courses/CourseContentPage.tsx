@@ -835,7 +835,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="البحث في المحتوى..."
-                  className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 />
               </div>
               {/* Published Filter */}
@@ -1036,7 +1036,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         parentId: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   >
                     <option value="">اختر العنصر الأب</option>
                     {getAvailableParents(newItem.type).map((parent: any) => (
@@ -1059,7 +1059,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   onChange={(e) =>
                     setNewItem({ ...newItem, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="أدخل عنوان المحتوى..."
                 />
               </div>
@@ -1075,7 +1075,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     setNewItem({ ...newItem, description: e.target.value })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="وصف تفصيلي للمحتوى..."
                 />
               </div>
@@ -1096,7 +1096,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       estimatedDuration: parseInt(e.target.value) || 0,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="30"
                   min="0"
                 />
@@ -1168,7 +1168,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     onChange={(e) =>
                       setNewItem({ ...newItem, videoUrl: e.target.value })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     placeholder="أدخل ال ID الخاص بالفيديو..."
                   />
                 </div>
@@ -1215,7 +1215,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     onChange={(e) =>
                       setNewItem({ ...newItem, isPublished: e.target.checked })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500 w-4 h-4"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-4 h-4"
                   />
                 </div>
               </div>
@@ -1268,7 +1268,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       order: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="أدخل الترتيب..."
                 />
               </div>
@@ -1374,7 +1374,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   onChange={(e) =>
                     setSelectedItem({ ...selectedItem, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="أدخل عنوان المحتوى..."
                 />
               </div>
@@ -1393,7 +1393,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="وصف تفصيلي للمحتوى..."
                 />
               </div>
@@ -1414,7 +1414,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       time_in_minutes: parseInt(e.target.value) || 0,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="30"
                 />
               </div>
@@ -1435,7 +1435,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           link: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                       placeholder="أدخل ال ID الخاص بالفيديو..."
                     />
                   </div>
@@ -1498,7 +1498,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                         is_published: e.target.checked,
                       })
                     }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-orange-500 w-4 h-4"
+                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-4 h-4"
                   />
                 </div>
               </div>
@@ -1582,7 +1582,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       order: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   placeholder="أدخل الترتيب..."
                 />
               </div>

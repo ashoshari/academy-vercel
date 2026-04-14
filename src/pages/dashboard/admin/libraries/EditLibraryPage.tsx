@@ -118,7 +118,7 @@ export default function EditLibraryPage() {
   };
 
   const inputClass = (hasError: boolean) =>
-    `w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 ${
+    `w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-(--brand) ${
       hasError ? "border-red-500 focus:border-red-500" : "border-gray-200"
     }`;
 

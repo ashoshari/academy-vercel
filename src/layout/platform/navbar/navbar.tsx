@@ -94,9 +94,15 @@ const Navbar: React.FC = () => {
                   <button
                     key={item.id}
                     onClick={() => navigate(`/sections/${item?.id}`)}
-                    className="cursor-pointer px-5 py-2 rounded-lg text-gray-700 font-medium hover:bg-linear-to-r from-(--brand) to-(--brand-light) hover:text-white transition-all duration-200"
+                    className="cursor-pointer relative overflow-hidden px-5 py-2 rounded-lg text-gray-700 font-medium group"
                   >
-                    {item.title}
+                    {/* Gradient background layer */}
+                    <span className="absolute inset-0 bg-linear-to-r from-(--brand) to-(--brand-light) opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"></span>
+
+                    {/* Button text */}
+                    <span className="relative z-10 transition-colors duration-300 ease-out group-hover:text-white">
+                      {item.title}
+                    </span>
                   </button>
                 ))}
 
@@ -177,7 +183,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <button
                   onClick={handleLoginClick}
-                  className="bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-200 transform hover:scale-105 cursor-pointer"
+                  className="cursor-pointer text-white px-4 py-2 rounded-lg font-medium bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
                 >
                   تسجيل الدخول
                 </button>
@@ -190,7 +196,7 @@ const Navbar: React.FC = () => {
                     setIsMenuOpen(!isMenuOpen);
                     if (open) setOpen(false);
                   }}
-                  className="cursor-pointer lg:hidden p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all duration-200"
+                  className="cursor-pointer lg:hidden p-2 text-gray-600 hover:text-(--brand) hover:bg-yellow-50 rounded-lg transition-all duration-200"
                 >
                   {isMenuOpen ? (
                     <X className="w-5 h-5" />

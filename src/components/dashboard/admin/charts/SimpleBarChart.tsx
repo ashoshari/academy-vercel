@@ -103,7 +103,7 @@ export default function SimpleBarChart({
               key={p.id}
               type="button"
               onClick={() => onSelect(p.id)}
-              className="cursor-pointer flex-1 min-w-8 flex flex-col items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded"
+              className="cursor-pointer flex-1 min-w-8 flex flex-col items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-(--brand) rounded"
               title={`${p.labelFull}: ${formatValue(p.value)}`}
             >
               <div

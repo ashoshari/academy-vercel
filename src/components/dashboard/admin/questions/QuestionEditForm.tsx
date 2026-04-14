@@ -98,7 +98,7 @@ const QuestionEditForm: React.FC<Props> = ({
                 onChange={(e) =>
                   setForm((d) => ({ ...d, question_text: e.target.value }))
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--brand)"
               />
             </div>
 
@@ -117,7 +117,7 @@ const QuestionEditForm: React.FC<Props> = ({
                       marks: parseInt(e.target.value) || 0,
                     }))
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
 
@@ -206,7 +206,7 @@ const QuestionEditForm: React.FC<Props> = ({
                           onChange={(e) =>
                             setAnswer(idx, { answer_text: e.target.value })
                           }
-                          className="flex-1 w-full px-3 py-2 border border-gray-300 bg-white rounded-lg focus:ring-2 focus:ring-orange-500"
+                          className="flex-1 w-full px-3 py-2 border border-gray-300 bg-white rounded-lg focus:ring-2 focus:ring-(--brand)"
                           placeholder={`الخيار ${idx + 1}...`}
                         />
 
@@ -255,7 +255,7 @@ const QuestionEditForm: React.FC<Props> = ({
                           setAnswer(idx, { explanation: e.target.value })
                         }
                         placeholder="شرح (اختياري)"
-                        className="max-w-xs px-3 py-2 self-center border border-gray-300 bg-white rounded-lg focus:ring-2 focus:ring-orange-500"
+                        className="max-w-xs px-3 py-2 self-center border border-gray-300 bg-white rounded-lg focus:ring-2 focus:ring-(--brand)"
                       />
                     </div>
                   </div>

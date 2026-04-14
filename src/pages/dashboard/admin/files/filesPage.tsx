@@ -265,7 +265,7 @@ const ResourcesPage = () => {
       case "audio":
         return "text-pink-600";
       case "archive":
-        return "text-yellow-600";
+        return "text-(--brand)";
       default:
         return "text-gray-600";
     }
@@ -666,7 +666,7 @@ const ResourcesPage = () => {
                     })
                   }
                   rows={1}
-                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="عنوان الملف..."
                 />
               </div>
@@ -684,7 +684,7 @@ const ResourcesPage = () => {
                     })
                   }
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="وصف مختصر للملف..."
                 />
               </div>
@@ -701,7 +701,7 @@ const ResourcesPage = () => {
                       type: e.target.value as any,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 >
                   <option value="">اختر نوع الملف</option>
                   <option value="resources">مصادر</option>
@@ -724,7 +724,7 @@ const ResourcesPage = () => {
                         teacher: e.target.value as any,
                       })
                     }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   >
                     <option value="">اختر معلم</option>
                     {teacherData?.map(
@@ -758,7 +758,7 @@ const ResourcesPage = () => {
                         specialization_material: "",
                       });
                     }}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   >
                     <option value="">اختر القسم</option>
                     {subsectionData?.map((subSection: any) => (
@@ -788,7 +788,7 @@ const ResourcesPage = () => {
                           specialization_material: "",
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر الصف</option>
                       {subSection?.subsubsections?.map((subSubSection: any) => (
@@ -818,7 +818,7 @@ const ResourcesPage = () => {
                           specialization_material: "",
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر قسم فرعي</option>
                       {subsub?.specializations?.map((specialization: any) => (
@@ -858,7 +858,7 @@ const ResourcesPage = () => {
                           specialization_material: e.target.value,
                         });
                       }}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر مادة التخصص</option>
                       {(spec?.specialization_materials.length > 0
@@ -891,7 +891,7 @@ const ResourcesPage = () => {
                     expiry_date: e.target.value,
                   })
                 }
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               />
             </div>
             <div className="flex flex-col justify-end gap-4">
@@ -910,7 +910,7 @@ const ResourcesPage = () => {
                       is_published: e.target.checked,
                     })
                   }
-                  className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                  className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -1127,7 +1127,7 @@ const ResourcesPage = () => {
                     })
                   }
                   rows={1}
-                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="عنوان الملف..."
                 />
               </div>
@@ -1145,7 +1145,7 @@ const ResourcesPage = () => {
                     })
                   }
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
                   placeholder="وصف مختصر للملف..."
                 />
               </div>
@@ -1172,7 +1172,7 @@ const ResourcesPage = () => {
                       type: e.target.value as any,
                     })
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 >
                   <option value="">اختر نوع الملف</option>
                   <option value="resources">مصادر</option>
@@ -1200,7 +1200,7 @@ const ResourcesPage = () => {
                         teacher: selectedTeacher ?? null,
                       });
                     }}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   >
                     <option value="">اختر معلم</option>
                     {teacherData?.map((teacher: any) => (
@@ -1242,7 +1242,7 @@ const ResourcesPage = () => {
                             specialization_material: "",
                           });
                         }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                       >
                         <option value="">اختر القسم</option>
                         {subsectionData?.map((subSection: any) => (
@@ -1272,7 +1272,7 @@ const ResourcesPage = () => {
                               specialization_material: "",
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر الصف</option>
                           {subSection?.subsubsections?.map(
@@ -1307,7 +1307,7 @@ const ResourcesPage = () => {
                               specialization_material: "",
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر قسم فرعي</option>
                           {subsub?.specializations?.map(
@@ -1349,7 +1349,7 @@ const ResourcesPage = () => {
                               specialization_material: e.target.value,
                             });
                           }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر مادة التخصص</option>
                           {(spec?.specialization_materials.length > 0
@@ -1384,7 +1384,7 @@ const ResourcesPage = () => {
                     expiry_date: e.target.value,
                   })
                 }
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
               />
             </div>
             <div className="flex flex-col justify-end gap-4">
@@ -1403,7 +1403,7 @@ const ResourcesPage = () => {
                       is_published: e.target.checked,
                     })
                   }
-                  className="rounded border-gray-300 text-(--brand) focus:ring-orange-500"
+                  className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -1468,43 +1468,43 @@ const ResourcesPage = () => {
         />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي الملفات</p>
-              <p className="text-3xl font-bold text-gray-800">
-                {resourcesStatsData?.total_resources ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي الملفات</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {resourcesStatsData?.total_resources ?? "-"}
+                </p>
+              </div>
+              <Files className="w-12 h-12 text-(--brand)" />
             </div>
-            <Files className="w-12 h-12 text-(--brand)" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">الملفات النشطة</p>
-              <p className="text-3xl font-bold text-green-600">
-                {resourcesStatsData?.total_published ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">الملفات النشطة</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {resourcesStatsData?.total_published ?? "-"}
+                </p>
+              </div>
+              <CheckCircle className="w-12 h-12 text-green-500" />
             </div>
-            <CheckCircle className="w-12 h-12 text-green-500" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي التحميلات</p>
-              <p className="text-3xl font-bold text-(--brand-secondary)">
-                {resourcesStatsData?.total_downloads ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي التحميلات</p>
+                <p className="text-3xl font-bold text-(--brand-secondary)">
+                  {resourcesStatsData?.total_downloads ?? "-"}
+                </p>
+              </div>
+              <Download className="w-12 h-12 text-blue-500" />
             </div>
-            <Download className="w-12 h-12 text-blue-500" />
           </div>
-        </div>
 
-        {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+          {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-sm">متوسط التقييم</p>
@@ -1529,7 +1529,7 @@ const ResourcesPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="البحث في الملفات..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             />
           </div>
 
@@ -1537,7 +1537,7 @@ const ResourcesPage = () => {
           <select
             value={typeFilter || ""}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="">جميع الأنواع</option>
             {types?.map((type: any, index: any) => (
@@ -1551,7 +1551,7 @@ const ResourcesPage = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-(--brand) transition-all duration-300 text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
           >
             <option value="all">جميع الحالات</option>
             <option value="true">منشور</option>

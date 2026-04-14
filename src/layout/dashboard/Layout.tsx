@@ -21,12 +21,17 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import AnimatedBackground from "@/components/login/AnimatedBackground";
+import { useCustomQuery } from "@/hooks/useQuery";
 
 const Layout = () => {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [smallScreen, setSmallScreen] = useState(false);
+  const { data, isLoading } = useCustomQuery("/core/footer/", ["footer"]);
+
+  const headerData = data?.data;
+
   useEffect(() => {
     const handleResize = () => {
       setSmallScreen(window.innerWidth < 768);
@@ -86,16 +91,18 @@ const Layout = () => {
           : menuItems;
 
   useEffect(() => {
-    document.title = "داش بورد";
+    if (headerData) {
+      document.title = "Dashboard";
 
-    // const link =
-    //   document.querySelector("link[rel='icon']") ||
-    //   document.createElement("link");
+      const link =
+        document.querySelector("link[rel='icon']") ||
+        document.createElement("link");
 
-    // link.setAttribute("rel", "icon");
-    // link.setAttribute("href", "/favicon.ico");
-    // document.head.appendChild(link);
-  }, []);
+      link.setAttribute("rel", "icon");
+      link.setAttribute("href", headerData?.logo);
+      document.head.appendChild(link);
+    }
+  }, [headerData, isLoading]);
 
   return (
     <div className="min-h-screen flex" dir="rtl">
