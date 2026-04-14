@@ -4,6 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
+// haha
 export default defineConfig({
   plugins: [react(), tsconfigPaths(), tailwindcss()],
 });
