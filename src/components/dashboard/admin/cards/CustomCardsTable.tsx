@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Plus, Edit, Users, Grid, Rows, CreditCard } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import Pagination from "@/components/dashboard/core/Pagination";
-import Spinner from "@/components/dashboard/Spinner";
 import { CustomCard } from "@/pages/dashboard/admin/cards/CardCustomPrice";
 import PriceCard from "./PriceCard";
 import EditCustomCard from "./EditCustomCard";
 import AddCustomCard from "./AddCustomCard";
+import Skeleton from "@/components/dashboard/Skeleton";
+import PricingCardsSkeleton from "@/components/dashboard/skeletons/PricingCardsSkeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 
 const CustomCardTable = () => {
   const [showEditModal, setShowEditModal] = useState(false);
@@ -28,6 +31,7 @@ const CustomCardTable = () => {
     `/cards/user-card-prices/?${queryParams.toString()}`,
     ["user-card-prices", filters],
   );
+  const isLoading = Boolean((dataUserCardPrices as any)?.isLoading);
 
   return (
     <div
@@ -57,17 +61,24 @@ const CustomCardTable = () => {
 
       {/* Stats Cards */}
       <div className="grid gap-4 w-full">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div className="">
-              <p className="text-gray-500 text-sm">إجمالي البطاقات المخصصة</p>
-              <p className="text-3xl font-bold text-gray-800">
-                {dataUserCardPrices?.data?.pagination?.count ?? "-"}
-              </p>
+        {isLoading ? (
+          <StatsCardsSkeleton
+            count={1}
+            gridClassName="grid grid-cols-1 gap-4 w-full"
+          />
+        ) : (
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div className="">
+                <p className="text-gray-500 text-sm">إجمالي البطاقات المخصصة</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {dataUserCardPrices?.data?.pagination?.count ?? "-"}
+                </p>
+              </div>
+              <CreditCard className="w-12 h-12 text-(--brand)" />
             </div>
-            <CreditCard className="w-12 h-12 text-(--brand)" />
           </div>
-        </div>
+        )}
       </div>
 
       {/* Filters */}
@@ -110,10 +121,16 @@ const CustomCardTable = () => {
       </div>
 
       {/* libraries Grid/Table */}
-      {dataUserCardPrices?.isLoading ? (
-        <div className="flex justify-center w-full">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+      {isLoading ? (
+        viewMode === "grid" ? (
+          <PricingCardsSkeleton
+            count={filters.page_size}
+            gridClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
+            cardClassName="h-80 rounded-xl"
+          />
+        ) : (
+          <TableSkeleton rows={filters.page_size} header={false} />
+        )
       ) : !dataUserCardPrices?.data?.data ||
         dataUserCardPrices?.data?.data?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">

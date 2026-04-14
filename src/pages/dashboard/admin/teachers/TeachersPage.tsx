@@ -24,7 +24,9 @@ import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useNavigate } from "react-router";
 import Pagination from "@/components/dashboard/core/Pagination";
-import Spinner from "@/components/dashboard/Spinner";
+import Skeleton from "@/components/dashboard/Skeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 
 export interface Teacher {
   id: number;
@@ -85,6 +87,7 @@ const TeachersPage = () => {
     "account/admin/teachers-statistics/",
     ["teachers-statistics"],
   );
+  const isLoadingStatistics = Boolean((teachersStatistics as any)?.isLoading);
 
   const dataTeachers = useCustomQuery(
     `account/admin/teachers/?${queryParams.toString()}`,
@@ -349,43 +352,50 @@ const TeachersPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي المعلمين</p>
-              <p className="text-3xl font-bold text-gray-800">
-                {teachersStatistics?.data?.data?.total_teachers || "-"}
-              </p>
+      {isLoadingStatistics ? (
+        <StatsCardsSkeleton
+          count={3}
+          gridClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي المعلمين</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {teachersStatistics?.data?.data?.total_teachers || "-"}
+                </p>
+              </div>
+              <Users className="w-12 h-12 text-(--brand)" />
             </div>
-            <Users className="w-12 h-12 text-(--brand)" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">المعلمين النشطون</p>
-              <p className="text-3xl font-bold text-green-600">
-                {teachersStatistics?.data?.data?.active_teachers || "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">المعلمين النشطون</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {teachersStatistics?.data?.data?.active_teachers || "-"}
+                </p>
+              </div>
+              <UserCheck className="w-12 h-12 text-green-500" />
             </div>
-            <UserCheck className="w-12 h-12 text-green-500" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">المعلمين غير النشطين</p>
-              <p className="text-3xl font-bold text-(--brand-secondary)">
-                {teachersStatistics?.data?.data?.inactive_teachers ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">المعلمين غير النشطين</p>
+                <p className="text-3xl font-bold text-(--brand-secondary)">
+                  {teachersStatistics?.data?.data?.inactive_teachers ?? "-"}
+                </p>
+              </div>
+              <CircleX className="w-12 h-12 text-red-500" />
             </div>
-            <CircleX className="w-12 h-12 text-red-500" />
           </div>
         </div>
-      </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
@@ -478,9 +488,15 @@ const TeachersPage = () => {
 
       {/* Teachers Grid/Table */}
       {dataTeachers?.isLoading ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} variant="card" className="h-96 rounded-xl" />
+            ))}
+          </div>
+        ) : (
+          <TableSkeleton rows={10} header={false} />
+        )
       ) : !dataTeachers?.data?.data ||
         dataTeachers?.data?.data?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">

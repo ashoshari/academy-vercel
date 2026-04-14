@@ -23,8 +23,10 @@ import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useNavigate } from "react-router";
 import Pagination from "@/components/dashboard/core/Pagination";
-import Spinner from "@/components/dashboard/Spinner";
 import LibraryCard from "@/components/dashboard/admin/libraries/LibraryCard";
+import Skeleton from "@/components/dashboard/Skeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 
 export interface Library {
   id: string;
@@ -71,6 +73,7 @@ const LibrariesPage = () => {
     "account/admin/libraries-statistics/",
     ["libraries-statistics"],
   );
+  const isLoadingStatistics = Boolean((librariesStatistics as any)?.isLoading);
 
   const dataLibraries = useCustomQuery(
     `account/admin/libraries/?${queryParams.toString()}`,
@@ -189,43 +192,50 @@ const LibrariesPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي المكتبات</p>
-              <p className="text-3xl font-bold text-gray-800">
-                {librariesStatistics?.data?.data?.total_libraries ?? "-"}
-              </p>
+      {isLoadingStatistics ? (
+        <StatsCardsSkeleton
+          count={3}
+          gridClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full"
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي المكتبات</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {librariesStatistics?.data?.data?.total_libraries ?? "-"}
+                </p>
+              </div>
+              <Users className="w-12 h-12 text-(--brand)" />
             </div>
-            <Users className="w-12 h-12 text-(--brand)" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">المكتبات النشطون</p>
-              <p className="text-3xl font-bold text-green-600">
-                {librariesStatistics?.data?.data?.active_libraries ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">المكتبات النشطون</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {librariesStatistics?.data?.data?.active_libraries ?? "-"}
+                </p>
+              </div>
+              <UserCheck className="w-12 h-12 text-green-500" />
             </div>
-            <UserCheck className="w-12 h-12 text-green-500" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">المكتبات غير النشطين</p>
-              <p className="text-3xl font-bold text-(--brand-secondary)">
-                {librariesStatistics?.data?.data?.inactive_libraries ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">المكتبات غير النشطين</p>
+                <p className="text-3xl font-bold text-(--brand-secondary)">
+                  {librariesStatistics?.data?.data?.inactive_libraries ?? "-"}
+                </p>
+              </div>
+              <CircleX className="w-12 h-12 text-red-500" />
             </div>
-            <CircleX className="w-12 h-12 text-red-500" />
           </div>
         </div>
-      </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full">
@@ -280,9 +290,17 @@ const LibrariesPage = () => {
 
       {/* libraries Grid/Table */}
       {dataLibraries?.isLoading ? (
-        <div className="flex justify-center w-full">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} variant="card" className="h-96 rounded-xl" />
+            ))}
+          </div>
+        ) : (
+          <div className="w-full">
+            <TableSkeleton rows={10} header={false} />
+          </div>
+        )
       ) : !dataLibraries?.data?.data ||
         dataLibraries?.data?.data?.length === 0 ? (
         <div className="col-span-full w-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">

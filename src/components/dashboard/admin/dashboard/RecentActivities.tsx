@@ -2,6 +2,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import { useState } from "react";
 import Pagination from "../../core/Pagination";
+import Skeleton from "@/components/dashboard/Skeleton";
 
 interface Pagination {
   next: number | null;
@@ -84,10 +85,7 @@ export default function RecentActivities() {
       {isLoading && (
         <div className="space-y-2">
           {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="animate-pulse h-12 bg-gray-100 rounded-lg"
-            />
+            <Skeleton key={i} className="h-12 w-full rounded-lg" />
           ))}
         </div>
       )}

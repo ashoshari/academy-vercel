@@ -8,8 +8,9 @@ import EditSliderModal from "@/components/dashboard/admin/sliders/EditSliderModa
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import AddSliderModal from "@/components/dashboard/admin/sliders/AddSliderModal";
 import ShowSliderModal from "@/components/dashboard/admin/sliders/ShowSliderModal";
-import Spinner from "@/components/dashboard/Spinner";
 import { useQueryClient } from "@tanstack/react-query";
+import Skeleton from "@/components/dashboard/Skeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 // import Pagination from "@/components/dashboard/core/Pagination";
 
 export type SlideType = "image" | "video";
@@ -50,6 +51,7 @@ const SliderPage = () => {
     "/training/admin/sliders-statistics/",
     ["sliders-statistics"],
   );
+  const isLoadingStatistics = Boolean((sliderStatisticsData as any)?.isLoading);
 
   const updateSlide = useCustomUpdate(
     `/training/admin/sliders/${selectedSlide?.id ?? "noop"}/`,
@@ -198,34 +200,43 @@ const SliderPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 col-span-4 gap-4">
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-            <p className="text-2xl font-bold text-(--brand)">
-              {sliderStatisticsData?.data?.data?.total_sliders ?? "-"}
-            </p>
-            <p className="text-sm text-gray-600">إجمالي السلايدات</p>
-          </div>
+        {isLoadingStatistics ? (
+          <StatsCardsSkeleton
+            count={3}
+            gridClassName="grid grid-cols-1 lg:grid-cols-3 col-span-4 gap-4"
+          />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 col-span-4 gap-4">
+            <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+              <p className="text-2xl font-bold text-(--brand)">
+                {sliderStatisticsData?.data?.data?.total_sliders ?? "-"}
+              </p>
+              <p className="text-sm text-gray-600">إجمالي السلايدات</p>
+            </div>
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-            <p className="text-2xl font-bold text-green-600">
-              {sliderStatisticsData?.data?.data?.active_sliders ?? "-"}
-            </p>
-            <p className="text-sm text-gray-600">السلايدات النشطة</p>
-          </div>
+            <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+              <p className="text-2xl font-bold text-green-600">
+                {sliderStatisticsData?.data?.data?.active_sliders ?? "-"}
+              </p>
+              <p className="text-sm text-gray-600">السلايدات النشطة</p>
+            </div>
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-            <p className="text-2xl font-bold text-gray-600">
-              {sliderStatisticsData?.data?.data?.inactive_sliders ?? "-"}
-            </p>
-            <p className="text-sm text-gray-600">السلايدات الغير النشطة</p>
+            <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+              <p className="text-2xl font-bold text-gray-600">
+                {sliderStatisticsData?.data?.data?.inactive_sliders ?? "-"}
+              </p>
+              <p className="text-sm text-gray-600">السلايدات الغير النشطة</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Slider Items List */}
       {slidersData?.isLoading ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
+        <div className="space-y-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} variant="card" className="h-24 rounded-xl" />
+          ))}
         </div>
       ) : (
         <>

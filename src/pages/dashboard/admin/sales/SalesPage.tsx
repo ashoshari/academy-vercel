@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 
 import { useCustomQuery } from "@/hooks/useQuery";
-import Spinner from "@/components/dashboard/Spinner";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import Skeleton from "@/components/dashboard/Skeleton";
 import SalesListTable from "./components/sales-table/SalesTable";
 import SalesStats from "./components/sales-stats/SalesStats";
 import {
@@ -82,8 +83,23 @@ const SalesPage = () => {
       />
 
       {isLoadingStats ? (
-        <div className="flex justify-center w-full py-12">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
+        <div className="space-y-6 w-full">
+          <StatsCardsSkeleton
+            count={3}
+            gridClassName="grid grid-cols-1 md:grid-cols-3 gap-4"
+          />
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full">
+            <Skeleton className="h-6 w-48 rounded-md mb-4" />
+            <Skeleton className="h-64 w-full rounded-lg" />
+          </div>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full">
+            <Skeleton className="h-5 w-40 rounded-md mb-4" />
+            <Skeleton className="h-40 w-full rounded-lg" />
+          </div>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full">
+            <Skeleton className="h-5 w-40 rounded-md mb-4" />
+            <Skeleton className="h-40 w-full rounded-lg" />
+          </div>
         </div>
       ) : (
         <>

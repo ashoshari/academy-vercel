@@ -17,7 +17,8 @@ import { useCustomPost } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import EditModal from "@/components/dashboard/admin/subsections/EditSubsectionModal";
-import Spinner from "@/components/dashboard/Spinner";
+import Skeleton from "@/components/dashboard/Skeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 
 export interface SubSection {
   id: number;
@@ -116,6 +117,7 @@ const SubsectionsPage = () => {
     "/training/admin/subsections-statistics/",
     ["subsections-statistics"],
   );
+  const isLoadingStatistics = Boolean((dataStatistics as any)?.isLoading);
   const sectionsData = useCustomQuery("/training/admin/sections/", [
     "sections",
   ]);
@@ -432,8 +434,7 @@ const SubsectionsPage = () => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* <div className="lg:col-span-2">
+      {/* <div className="lg:col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand)">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -448,30 +449,40 @@ const SubsectionsPage = () => {
           </div>
         </div> */}
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-(--brand-secondary)">
-            {dataStatistics?.data?.data?.total_subsections ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600">إجمالي الأقسام</p>
-        </div>
+      {isLoadingStatistics ? (
+        <StatsCardsSkeleton
+          count={3}
+          gridClassName="grid grid-cols-1 lg:grid-cols-3 gap-4"
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-(--brand-secondary)">
+              {dataStatistics?.data?.data?.total_subsections ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600">إجمالي الأقسام</p>
+          </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-green-600">
-            {dataStatistics?.data?.data?.active_subsections ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600">الأقسام المفعلة</p>
-        </div>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-green-600">
+              {dataStatistics?.data?.data?.active_subsections ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600">الأقسام المفعلة</p>
+          </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-red-600">
-            {dataStatistics?.data?.data?.inactive_subsections ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-red-600">
+              {dataStatistics?.data?.data?.inactive_subsections ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
+          </div>
         </div>
-      </div>
+      )}
       {data?.isLoading ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
+        <div className="space-y-2">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-12 w-full rounded-lg" />
+          ))}
         </div>
       ) : !data?.data?.data || data?.data?.data?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">

@@ -36,8 +36,10 @@ import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
-import Spinner from "@/components/dashboard/Spinner";
 import { readUserFromStorage, roleOf } from "@/services/auth";
+import Skeleton from "@/components/dashboard/Skeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 
 const ResourcesPage = () => {
   const user = readUserFromStorage();
@@ -83,7 +85,7 @@ const ResourcesPage = () => {
   const resourcesData = data?.data;
   const paginationData = data?.pagination;
   // GET resourcess stats
-  const { data: resourcesStats } = useCustomQuery(
+  const { data: resourcesStats, isLoading: isLoadingStats } = useCustomQuery(
     "/training/admin/resource-statistics/",
     ["resources-stats"],
   );
@@ -1459,7 +1461,13 @@ const ResourcesPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {isLoadingStats ? (
+        <StatsCardsSkeleton
+          count={3}
+          gridClassName="grid grid-cols-1 lg:grid-cols-3 gap-4"
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="flex items-center justify-between">
             <div>
@@ -1507,7 +1515,8 @@ const ResourcesPage = () => {
             <Star className="w-12 h-12 text-(--brand)" />
           </div>
         </div> */}
-      </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
@@ -1577,9 +1586,15 @@ const ResourcesPage = () => {
 
       {/* resourcess Grid/Table */}
       {isLoading || isDeleting ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} variant="card" className="h-72 rounded-xl" />
+            ))}
+          </div>
+        ) : (
+          <TableSkeleton rows={10} header={false} />
+        )
       ) : !resourcesData || resourcesData?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />

@@ -1,5 +1,5 @@
 import Pagination from "@/components/dashboard/core/Pagination";
-import Spinner from "@/components/dashboard/Spinner";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import type { SalesFilters } from "../../utils/salesFilters";
 import { NamedRef } from "../../types/types";
@@ -36,9 +36,7 @@ export default function SalesTable({
         قائمة المبيعات التفصيلية
       </h3>
       {isLoadingSales ? (
-        <div className="flex justify-center w-full py-12">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        <TableSkeleton rows={8} header={false} />
       ) : !rows.length ? (
         <div className="w-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <p className="text-gray-500">لا توجد نتائج في القائمة</p>

@@ -2,7 +2,7 @@ import { useParams } from "react-router";
 import { Shield, User } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
-import Spinner from "@/components/dashboard/Spinner";
+import DetailsPageSkeleton from "@/components/dashboard/skeletons/DetailsPageSkeleton";
 import { Library } from "./LibrariesPage";
 
 export default function LibraryDetailsPage() {
@@ -16,9 +16,11 @@ export default function LibraryDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-(--brand)" />
-      </div>
+      <DetailsPageSkeleton
+        withTopHeader={false}
+        sectionsPx={[256, 192]}
+        subtitleWidthClassName="w-40"
+      />
     );
   }
   if (!selectedLibrary) {
