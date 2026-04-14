@@ -6,7 +6,6 @@ import { CustomCard } from "@/pages/dashboard/admin/cards/CardCustomPrice";
 import PriceCard from "./PriceCard";
 import EditCustomCard from "./EditCustomCard";
 import AddCustomCard from "./AddCustomCard";
-import Skeleton from "@/components/dashboard/Skeleton";
 import PricingCardsSkeleton from "@/components/dashboard/skeletons/PricingCardsSkeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
