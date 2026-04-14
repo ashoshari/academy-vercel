@@ -9,13 +9,13 @@ import {
   Users,
   CheckCircle,
   Save,
-  Folder,
   ArrowRight,
   Rows,
   Grid,
   User,
   Trash2,
   XCircle,
+  Settings,
 } from "lucide-react";
 import CourseContentPage from "@/components/dashboard/admin/courses/CourseContentPage";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -27,6 +27,7 @@ import {
 import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import CourseActivation from "./CourseActivation";
@@ -53,6 +54,15 @@ const CoursesPage = () => {
   // >("all");
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const [courseId, setCourseId] = useState<any>(null);
+  const [pendingCoursePublishToggle, setPendingCoursePublishToggle] = useState<{
+    id: string;
+    isPublished: boolean;
+    title: string;
+  } | null>(null);
+  const [pendingDeleteCourse, setPendingDeleteCourse] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
   const [paginationFilter, setPaginationFilter] = useState({
     page: 1,
     page_size: 6,
@@ -155,9 +165,16 @@ const CoursesPage = () => {
 
   // PUT Course
   const { mutateAsync: editCourse, isPending: isEditing } = useCustomUpdate(
-    `/training/admin/courses/${courseId}/`,
+    () => `/training/admin/courses/${courseId}/`,
     ["editcourses", courseId],
   );
+
+  const { mutateAsync: publishCourse, isPending: isPublishing } =
+    useCustomUpdate(
+      () =>
+        `/training/admin/courses/${pendingCoursePublishToggle?.id ?? "noop"}/`,
+      ["courses", "courses-stats"],
+    );
 
   // POST New Course
   const { mutateAsync: createCourse } = useCustomPost(
@@ -295,19 +312,25 @@ const CoursesPage = () => {
     }
   };
 
-  const handleDeleteCourse = async () => {
-    if (
-      confirm(
-        "هل أنت متأكد من حذف هذه الدورة؟ سيتم حذف جميع المحتوى المرتبط بها.",
-      )
-    ) {
-      try {
-        const response: any = await deleteCourse();
-        toast.success(response.message ?? "تم الحذف بنجاح");
-        queryClient.invalidateQueries({ queryKey: ["courses"] });
-      } catch (err: any) {
-        toast.error(err?.response?.data?.error);
-      }
+  const requestDeleteCourse = (course: any) => {
+    const id = String(course?.id ?? "");
+    if (!id) return;
+    setCourseId(id);
+    setPendingDeleteCourse({
+      id,
+      title: String(course?.name ?? "—"),
+    });
+  };
+
+  const confirmDeleteCourse = async () => {
+    if (!pendingDeleteCourse) return;
+    try {
+      const response: any = await deleteCourse();
+      toast.success(response.message ?? "تم الحذف بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      setPendingDeleteCourse(null);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error);
     }
   };
 
@@ -319,13 +342,13 @@ const CoursesPage = () => {
           : course,
       ),
     );
-    setCourseId(courseId);
     const updateCourse = courses.find((c: any) => c?.id === courseId);
     const newStatus = !updateCourse?.is_published;
     try {
-      await editCourse({ is_published: newStatus });
+      await publishCourse({ is_published: newStatus });
       toast.success("تم تعديل حالة الدورة بنجاح");
       queryClient.invalidateQueries({ queryKey: ["courses"] });
+      setPendingCoursePublishToggle(null);
     } catch (error: any) {
       toast.error(
         error?.response?.data?.error || "حدث خطاء في تعديل حالة الدورة",
@@ -338,6 +361,14 @@ const CoursesPage = () => {
         ),
       );
     }
+  };
+
+  const requestCoursePublishToggle = (course: any) => {
+    setPendingCoursePublishToggle({
+      id: String(course?.id ?? ""),
+      isPublished: Boolean(course?.is_published),
+      title: String(course?.name ?? course?.title ?? "—"),
+    });
   };
   const getLevelColor = (level: any) => {
     switch (level) {
@@ -486,12 +517,12 @@ const CoursesPage = () => {
               className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
               title="إدارة المحتوى"
             >
-              <Folder size={16} />
+              <Settings size={16} />
             </button>
 
             <button
               onClick={() => {
-                toggleCourseStatus(course?.id);
+                requestCoursePublishToggle(course);
               }}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 course?.is_Published
@@ -521,8 +552,7 @@ const CoursesPage = () => {
             </button>
             <button
               onClick={() => {
-                setCourseId(course?.id);
-                handleDeleteCourse();
+                requestDeleteCourse(course);
               }}
               className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
               title="حذف الدورة"
@@ -1072,7 +1102,7 @@ const CoursesPage = () => {
                   : false) ||
                 !newCourse.specialization_material
               }
-              className="cursor-pointer md:justify-start justify-center px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand-slide md:justify-start justify-center px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الدورة
@@ -1386,7 +1416,7 @@ const CoursesPage = () => {
               {!editSections ? (
                 <button
                   onClick={() => setEditSections(!editSections)}
-                  className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
+                  className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2"
                 >
                   تعديل الأقسام
                 </button>
@@ -1632,7 +1662,7 @@ const CoursesPage = () => {
                   : false) ||
                 !selectedCourse.specialization_material
               }
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات
@@ -1662,7 +1692,7 @@ const CoursesPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+          className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء دورة جديدة
@@ -1820,7 +1850,7 @@ const CoursesPage = () => {
 
           <button
             onClick={() => setCurrentView("create")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة دورة جديدة
@@ -1851,7 +1881,7 @@ const CoursesPage = () => {
                 {!searchTerm && statusFilter === "all" && (
                   <button
                     onClick={() => setCurrentView("create")}
-                    className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+                    className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
                   >
                     <Plus size={16} />
                     إنشاء دورة جديدة
@@ -1987,7 +2017,7 @@ const CoursesPage = () => {
                               className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                               title="إدارة المحتوى"
                             >
-                              <Folder size={16} />
+                              <Settings size={16} />
                             </button>
                             <button
                               onClick={() => {
@@ -2001,7 +2031,7 @@ const CoursesPage = () => {
                             </button>
                             <button
                               onClick={() => {
-                                toggleCourseStatus(course?.id);
+                                requestCoursePublishToggle(course);
                               }}
                               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                                 course?.is_published
@@ -2033,8 +2063,7 @@ const CoursesPage = () => {
                             </button>
                             <button
                               onClick={() => {
-                                setCourseId(course?.id);
-                                handleDeleteCourse();
+                                requestDeleteCourse(course);
                               }}
                               className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="حذف الدورة"
@@ -2058,6 +2087,69 @@ const CoursesPage = () => {
             pageSize={paginationFilter.page_size}
           />
         </>
+      )}
+
+      {pendingCoursePublishToggle && (
+        <ConfirmationModal
+          open
+          onClose={() => !isPublishing && setPendingCoursePublishToggle(null)}
+          onConfirm={() => toggleCourseStatus(pendingCoursePublishToggle.id)}
+          title={
+            pendingCoursePublishToggle.isPublished
+              ? "إلغاء نشر الدورة"
+              : "نشر الدورة"
+          }
+          variant={pendingCoursePublishToggle.isPublished ? "danger" : "success"}
+          confirmLabel={
+            pendingCoursePublishToggle.isPublished
+              ? "نعم، إلغاء النشر"
+              : "نعم، نشر"
+          }
+          isPending={isPublishing}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingCoursePublishToggle.isPublished ? "إلغاء نشر" : "نشر"}
+                </span>{" "}
+                هذه الدورة؟
+              </p>
+              <p className="text-sm text-gray-600">
+                الدورة:{" "}
+                <span className="font-semibold text-(--brand-secondary)">
+                  {pendingCoursePublishToggle.title}
+                </span>
+              </p>
+            </>
+          }
+        />
+      )}
+
+      {pendingDeleteCourse && (
+        <ConfirmationModal
+          open
+          onClose={() => !isDeleting && setPendingDeleteCourse(null)}
+          onConfirm={confirmDeleteCourse}
+          title="حذف الدورة"
+          variant="danger"
+          confirmLabel="نعم، حذف"
+          isPending={isDeleting}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد من حذف هذه الدورة؟ سيتم حذف جميع المحتوى المرتبط
+                بها.
+              </p>
+              <p className="text-sm text-gray-600">
+                الدورة:{" "}
+                <span className="font-semibold text-(--brand-secondary)">
+                  {pendingDeleteCourse.title}
+                </span>
+              </p>
+            </>
+          }
+        />
       )}
     </div>
   );

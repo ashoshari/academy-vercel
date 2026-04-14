@@ -216,7 +216,7 @@ const StudentsPage = () => {
                 student?.image ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
                   student?.name,
-                )}&background=ffffff&color=f97316&size=64`
+                )}&background=ffffff&color=2465c9&size=64`
               }
               alt={student?.name}
               className="w-16 h-16 rounded-full border-2 border-white/20"
@@ -360,7 +360,7 @@ const StudentsPage = () => {
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/dashboard/students/add")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+            className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
           >
             <Plus size={16} />
             إضافة طالب
@@ -537,7 +537,7 @@ const StudentsPage = () => {
 
           <button
             onClick={() => navigate("/dashboard/students/add")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة طالب جديد
@@ -563,7 +563,7 @@ const StudentsPage = () => {
 
                 <button
                   onClick={() => navigate("/dashboard/students/add")}
-                  className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+                  className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة طالب جديد
@@ -588,9 +588,9 @@ const StudentsPage = () => {
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       الطالب
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {/* <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       الصف
-                    </th>
+                    </th> */}
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       الدورات
                     </th>
@@ -627,9 +627,9 @@ const StudentsPage = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {student?.grade?.name || "-"}
-                      </td>
+                      </td> */}
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div className="flex items-center gap-2">
                           <span className="font-medium">
@@ -696,7 +696,7 @@ const StudentsPage = () => {
                             className="cursor-pointer p-1 text-gray-400 hover:text-green-600 transition-colors"
                             title="عرض التفاصيل"
                           >
-                            <Book size={16} />
+                            <Info size={16} />
                           </button>
                           <button
                             onClick={() =>

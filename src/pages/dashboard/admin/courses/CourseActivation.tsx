@@ -209,7 +209,7 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
                                 setActivatingId(student.id);
                               }
                             }}
-                            className="cursor-pointer px-3 py-1 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg text-sm hover:from-(--brand-light) hover:to-(--brand)"
+                            className="btn-brand-slide px-3 py-1 rounded-lg text-sm"
                           >
                             تفعيل
                           </button>

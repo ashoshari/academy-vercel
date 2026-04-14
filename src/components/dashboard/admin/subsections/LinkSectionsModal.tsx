@@ -152,7 +152,7 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 rounded-lg bg-linear-to-r from-(--brand) to-(--brand-light) px-6 py-2 text-white transition-all hover:from-(--brand-light) hover:to-(--brand)"
+            className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white transition-all"
           >
             <Save size={16} />
             حفظ الروابط

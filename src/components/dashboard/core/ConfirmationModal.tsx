@@ -1,5 +1,6 @@
 import { X, type LucideIcon } from "lucide-react";
 import { useCallback, useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 export type ConfirmationModalVariant = "danger" | "success" | "neutral";
 
@@ -36,7 +37,7 @@ const variantClass: Record<
   },
   neutral: {
     confirm:
-      "bg-linear-to-r from-(--brand) to-(--brand-light) text-white hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2",
+      "btn-brand-slide text-white hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2",
     ring: "ring-(--brand)/20",
     iconWrap: "bg-orange-50",
     icon: "text-(--brand-secondary)",
@@ -76,8 +77,9 @@ export function ConfirmationModal({
   }, [open, handleKeyDown]);
 
   if (!open) return null;
+  if (typeof document === "undefined") return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="presentation"
@@ -133,7 +135,7 @@ export function ConfirmationModal({
             type="button"
             onClick={() => void onConfirm()}
             disabled={isPending}
-            className={`cursor-pointer min-w-[7rem] rounded-xl px-4 py-2.5 text-sm font-semibold transition-all disabled:opacity-60 disabled:pointer-events-none ${styles.confirm}`}
+            className={`cursor-pointer min-w-28 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all disabled:opacity-60 disabled:pointer-events-none ${styles.confirm}`}
           >
             {isPending ? "جاري التنفيذ…" : confirmLabel}
           </button>
@@ -148,5 +150,5 @@ export function ConfirmationModal({
         </div>
       </div>
     </div>
-  );
+  , document.body);
 }

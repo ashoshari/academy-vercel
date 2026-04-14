@@ -5,10 +5,10 @@ import handleErrorAlerts from "@/utils/showErrorMessages";
 import {
   ArrowDown,
   ArrowUp,
-  Book,
   Edit,
   // Eye,
   Image,
+  Info,
   ToggleLeft,
   ToggleRight,
   Trash2,
@@ -18,6 +18,7 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 
 interface SliderCardProps {
   slide: any;
@@ -43,6 +44,11 @@ export default function SliderCard({
   setShowDetailsModal,
 }: SliderCardProps) {
   const queryClient = useQueryClient();
+  const [pendingSlideStatusToggle, setPendingSlideStatusToggle] = useState<{
+    isPublished: boolean;
+    header: string;
+  } | null>(null);
+  const [pendingDelete, setPendingDelete] = useState(false);
   const updateSlideStatus = useCustomUpdate(
     `/training/admin/sliders/${slide?.id}/`,
     ["sliders"],
@@ -86,17 +92,16 @@ export default function SliderCard({
     ["deleteSliders"],
   );
   const handleDeleteSlide = async () => {
-    if (confirm("هل أنت متأكد من حذف هذا السلايد؟")) {
-      try {
-        const response = await deleteSlide();
-        toast.success(response.message ?? "تم الحذف");
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === "sliders",
-        });
-        queryClient.invalidateQueries({ queryKey: ["sliders-statistics"] });
-      } catch (e: any) {
-        handleErrorAlerts(e?.response?.data?.error);
-      }
+    try {
+      const response = await deleteSlide();
+      toast.success(response.message ?? "تم الحذف");
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === "sliders",
+      });
+      queryClient.invalidateQueries({ queryKey: ["sliders-statistics"] });
+      setPendingDelete(false);
+    } catch (e: any) {
+      handleErrorAlerts(e?.response?.data?.error);
     }
   };
   const [isMoving, setIsMoving] = useState<null | "up" | "down">(null);
@@ -222,6 +227,7 @@ export default function SliderCard({
                   onClick={() => moveSlide("up")}
                   disabled={!prevId || !!isMoving}
                   className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="تحريك للأعلى"
                 >
                   <ArrowUp size={16} />
                 </button>
@@ -229,6 +235,7 @@ export default function SliderCard({
                   onClick={() => moveSlide("down")}
                   disabled={!nextId || !!isMoving}
                   className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="تحريك للأسفل"
                 >
                   <ArrowDown size={16} />
                 </button>
@@ -236,10 +243,18 @@ export default function SliderCard({
                 {/* Status toggles */}
 
                 <button
-                  onClick={toggleSlideStatus}
+                  onClick={() =>
+                    setPendingSlideStatusToggle({
+                      isPublished: Boolean(slide?.is_published),
+                      header: String(slide?.header ?? slide?.title ?? "—"),
+                    })
+                  }
                   className={`cursor-pointer p-1 rounded-full transition-colors ${
                     slide?.is_published ? "text-green-600" : "text-gray-400"
                   }`}
+                  title={
+                    slide?.is_published ? "إلغاء التفعيل" : "تفعيل شريط التمرير"
+                  }
                 >
                   {slide?.is_published ? (
                     <ToggleRight size={24} />
@@ -255,8 +270,9 @@ export default function SliderCard({
                     setShowDetailsModal(true);
                   }}
                   className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
+                  title="عرض التفاصيل"
                 >
-                  <Book size={16} />
+                  <Info size={16} />
                 </button>
 
                 {/* Edit */}
@@ -266,6 +282,7 @@ export default function SliderCard({
                     setShowEditModal(true);
                   }}
                   className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                  title="تعديل السلايد"
                 >
                   <Edit size={16} />
                 </button>
@@ -273,9 +290,10 @@ export default function SliderCard({
                 {/* Delete */}
                 <button
                   onClick={() => {
-                    handleDeleteSlide();
+                    setPendingDelete(true);
                   }}
                   className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                  title="حذف السلايد"
                 >
                   <Trash2 size={16} />
                 </button>
@@ -284,6 +302,67 @@ export default function SliderCard({
           </div>
         </div>
       </div>
+
+      {pendingSlideStatusToggle && (
+        <ConfirmationModal
+          open
+          onClose={() =>
+            !updateSlideStatus.isPending && setPendingSlideStatusToggle(null)
+          }
+          onConfirm={async () => {
+            await toggleSlideStatus();
+            setPendingSlideStatusToggle(null);
+          }}
+          title={
+            pendingSlideStatusToggle.isPublished
+              ? "إلغاء تفعيل شريط التمرير"
+              : "تفعيل شريط التمرير"
+          }
+          variant={pendingSlideStatusToggle.isPublished ? "danger" : "success"}
+          confirmLabel={
+            pendingSlideStatusToggle.isPublished
+              ? "نعم، إلغاء التفعيل"
+              : "نعم، تفعيل"
+          }
+          isPending={updateSlideStatus.isPending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingSlideStatusToggle.isPublished
+                    ? "إلغاء تفعيل"
+                    : "تفعيل"}
+                </span>{" "}
+                هذا السلايد؟
+              </p>
+              <p className="text-sm text-gray-600">
+                العنوان:{" "}
+                <span className="font-semibold text-(--brand-secondary)">
+                  {pendingSlideStatusToggle.header}
+                </span>
+              </p>
+            </>
+          }
+        />
+      )}
+
+      {pendingDelete && (
+        <ConfirmationModal
+          open
+          onClose={() => setPendingDelete(false)}
+          onConfirm={handleDeleteSlide}
+          title="حذف السلايد"
+          variant="danger"
+          confirmLabel="نعم، حذف"
+          isPending={false}
+          description={
+            <p className="text-base">
+              هل أنت متأكد من حذف هذا السلايد؟ لا يمكن التراجع عن هذا الإجراء.
+            </p>
+          }
+        />
+      )}
     </div>
   );
 }

@@ -196,7 +196,7 @@ const EditStudentPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50"
+            className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50"
           >
             <Save size={16} />
             تعديل الطالب

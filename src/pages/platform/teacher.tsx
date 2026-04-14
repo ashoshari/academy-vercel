@@ -784,7 +784,7 @@ const TeacherProfile: React.FC = () => {
                     teacherData?.image ||
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(
                       teacherData?.name,
-                    )}&background=ffffff&color=f97316&size=64`
+                    )}&background=ffffff&color=2465c9&size=64`
                   }
                   alt={teacherData?.name ?? "اسم المعلم"}
                   className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"

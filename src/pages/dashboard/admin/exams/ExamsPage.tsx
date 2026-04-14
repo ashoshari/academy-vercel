@@ -19,6 +19,7 @@ import {
   Rows,
   Grid,
   ArrowRight,
+  Settings,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
@@ -36,6 +37,7 @@ import { isArray } from "lodash";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 export interface Exam {
   id: string;
   title: string;
@@ -139,7 +141,15 @@ const ExamsPage = () => {
   const queryClient = useQueryClient();
   // const [examId, setExamId] = useState();
   const [selectedExam, setSelectedExam] = useState<any>(null);
+  const [selectedExamId, setSelectedExamId] = useState<string | number | null>(
+    null,
+  );
   const [searchTerm, setSearchTerm] = useState("");
+  const [pendingExamPublishToggle, setPendingExamPublishToggle] = useState<{
+    id: string | number;
+    isPublished: boolean;
+    title: string;
+  } | null>(null);
   const [materialFilter, setMaterialFilter] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [newExam, setNewExam] = useState<any>({
@@ -201,8 +211,8 @@ const ExamsPage = () => {
   // GET Codes
   // const { data: cards } = useCustomQuery("/cards/", ["cards"]);
   // const cardsData = cards?.data;
-  const updateExam = useCustomUpdate(
-    `/training/admin/exams/${selectedExam?.id}/`,
+  const { mutateAsync: updateExam, isPending: isUpdatingExam } = useCustomUpdate(
+    () => `/training/admin/exams/${selectedExamId ?? "noop"}/`,
     ["exams"],
   );
 
@@ -235,7 +245,7 @@ const ExamsPage = () => {
         is_published: exam.is_published,
       });
     }
-  }, [singleExam?.data?.data]);
+  }, [singleExam?.data?.data, role]);
 
   // GET SubSection
   const { data: subsections } = useCustomQuery(
@@ -330,14 +340,14 @@ const ExamsPage = () => {
       });
   };
   const toggleExamStatus = (status: boolean) => {
-    updateExam
-      .mutateAsync({
+    updateExam({
         is_published: !status,
       })
       .then((res) => {
         if (res?.status) {
           toast.success("تم تحديث حالة الاختبار بنجاح");
           setNewExam(null);
+          setPendingExamPublishToggle(null);
           queryClient.invalidateQueries({
             queryKey: ["exams"],
           });
@@ -363,6 +373,16 @@ const ExamsPage = () => {
     //       : exam
     //   )
     // );
+  };
+
+  const requestExamPublishToggle = (exam: any) => {
+    setSelectedExam(exam);
+    setSelectedExamId(exam?.id ?? null);
+    setPendingExamPublishToggle({
+      id: exam?.id,
+      isPublished: Boolean(exam?.is_published),
+      title: String(exam?.title ?? "—"),
+    });
   };
 
   const getDifficultyColor = (difficulty: any) => {
@@ -478,13 +498,12 @@ const ExamsPage = () => {
               className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
               title="إدارة الأسئلة"
             >
-              <FileText size={16} />
+              <Settings size={16} />
             </button>
 
             <button
               onClick={() => {
-                setSelectedExam(exam);
-                toggleExamStatus(exam.is_published);
+                requestExamPublishToggle(exam);
               }}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 exam.is_published
@@ -736,9 +755,10 @@ const ExamsPage = () => {
                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                       >
                         <option value="">اختر مادة التخصص</option>
-                        {(spec?.specialization_materials.length > 0
-                          ? spec?.specialization_materials
-                          : subsub?.specialization_materials
+                        {(
+                          (spec?.specialization_materials?.length ?? 0) > 0
+                            ? spec?.specialization_materials ?? []
+                            : subsub?.specialization_materials ?? []
                         ).map((specialization_material: any) => (
                           <option
                             key={specialization_material.id}
@@ -996,7 +1016,7 @@ const ExamsPage = () => {
                 !newExam?.total_marks ||
                 !newExam?.passing_marks
               }
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إنشاء الامتحان
@@ -1165,7 +1185,7 @@ const ExamsPage = () => {
                   <div className="flex justify-start items-end w-full">
                     <button
                       onClick={() => setEditSections(!editSections)}
-                      className="cursor-pointer w-full justify-center h-14.5 px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
+                      className="btn-brand-slide w-full justify-center h-14.5 px-6 py-3 rounded-lg transition-all flex items-center gap-2"
                     >
                       تعديل الأقسام
                     </button>
@@ -1304,9 +1324,10 @@ const ExamsPage = () => {
                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                           >
                             <option value="">اختر مادة التخصص</option>
-                            {(spec?.specialization_materials.length > 0
-                              ? spec?.specialization_materials
-                              : subsub?.specialization_materials
+                            {(
+                              (spec?.specialization_materials?.length ?? 0) > 0
+                                ? spec?.specialization_materials ?? []
+                                : subsub?.specialization_materials ?? []
                             ).map((specialization_material: any) => (
                               <option
                                 key={specialization_material.id}
@@ -1567,7 +1588,7 @@ const ExamsPage = () => {
                 !selectedExam?.total_marks ||
                 !selectedExam?.passing_marks
               }
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               تعديل الامتحان
@@ -1591,7 +1612,7 @@ const ExamsPage = () => {
         </div>
         <button
           onClick={() => setCurrentView("create")}
-          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+          className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إنشاء امتحان جديد
@@ -1732,7 +1753,7 @@ const ExamsPage = () => {
 
           <button
             onClick={() => setCurrentView("create")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة امتحان جديد
@@ -1878,7 +1899,7 @@ const ExamsPage = () => {
                             className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
                             title="إدارة الأسئلة"
                           >
-                            <FileText size={16} />
+                            <Settings size={16} />
                           </button>
                           <button
                             onClick={() => {
@@ -1902,8 +1923,7 @@ const ExamsPage = () => {
                           </button>
                           <button
                             onClick={() => {
-                              setSelectedExam(exam);
-                              toggleExamStatus(exam.is_published);
+                              requestExamPublishToggle(exam);
                             }}
                             className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title={
@@ -1930,6 +1950,39 @@ const ExamsPage = () => {
             onPageChange={setPage}
           />
         </>
+      )}
+
+      {pendingExamPublishToggle && (
+        <ConfirmationModal
+          open
+          onClose={() => !isUpdatingExam && setPendingExamPublishToggle(null)}
+          onConfirm={() => toggleExamStatus(pendingExamPublishToggle.isPublished)}
+          title={
+            pendingExamPublishToggle.isPublished ? "إلغاء نشر الامتحان" : "نشر الامتحان"
+          }
+          variant={pendingExamPublishToggle.isPublished ? "danger" : "success"}
+          confirmLabel={
+            pendingExamPublishToggle.isPublished ? "نعم، إلغاء النشر" : "نعم، نشر"
+          }
+          isPending={isUpdatingExam}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingExamPublishToggle.isPublished ? "إلغاء نشر" : "نشر"}
+                </span>{" "}
+                هذا الامتحان؟
+              </p>
+              <p className="text-sm text-gray-600">
+                الامتحان:{" "}
+                <span className="font-semibold text-(--brand-secondary)">
+                  {pendingExamPublishToggle.title}
+                </span>
+              </p>
+            </>
+          }
+        />
       )}
     </div>
   );

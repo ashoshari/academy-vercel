@@ -10,6 +10,7 @@ import EditCardPricing from "@/components/dashboard/admin/cards/CardPricing/Edit
 import AddCardPricing from "@/components/dashboard/admin/cards/CardPricing/AddCardPricing";
 import PricingCardsSkeleton from "@/components/dashboard/skeletons/PricingCardsSkeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 
 export interface CardPricing {
   id: string;
@@ -23,9 +24,15 @@ export interface CardPricing {
 
 const CardPricingPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [selectedCard, setSelectedCard] = useState<any>(null);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [searchTerm, _] = useState("");
   const [showEditModal, setShowEditModal] = useState(false);
+  const [pendingCardStatusToggle, setPendingCardStatusToggle] = useState<{
+    id: string;
+    isActive: boolean;
+    price: number;
+  } | null>(null);
 
   const [newCard, setNewCard] = useState<Partial<CardPricing>>({
     price: 0,
@@ -51,31 +58,37 @@ const CardPricingPage = () => {
   ]);
   const isLoadingStatistics = Boolean((cardStatistics as any)?.isLoading);
 
-  const updateCard = useCustomUpdate(`cards/${selectedCard}/`, [
-    "cards",
-    "card-statistics",
-  ]);
+  const { mutateAsync: updateCard, isPending: isUpdatingCard } = useCustomUpdate(
+    () => `cards/${selectedCardId ?? "noop"}/`,
+    ["cards", "card-statistics"],
+  );
 
-  const toggleCardStatus = (id: number) => {
-    setSelectedCard(id);
-    const is_active = cards?.data?.data.filter(
-      (card: any) => card.id === id,
-    )[0];
+  const requestCardStatusToggle = (card: any) => {
+    const id = String(card?.id ?? "");
+    if (!id) return;
+    setSelectedCardId(id);
+    setPendingCardStatusToggle({
+      id,
+      isActive: Boolean(card?.is_active),
+      price: Number(card?.price ?? 0),
+    });
+  };
 
-    updateCard
-      .mutateAsync({
-        is_active: !is_active.is_active,
-      })
-      .then((res) => {
-        if (res) {
-          toast.success("تم تحديث حالة البطاقة بنجاح");
-        } else {
-          toast.error("حدث خطأ أثناء تحديث حالة البطاقة");
-        }
-      })
-      .catch((err) => {
-        handleErrorAlerts(err?.response?.data?.message || "حدث خطأ");
+  const confirmCardStatusToggle = async () => {
+    if (!pendingCardStatusToggle) return;
+    try {
+      const res = await updateCard({
+        is_active: !pendingCardStatusToggle.isActive,
       });
+      if (res) {
+        toast.success("تم تحديث حالة البطاقة بنجاح");
+        setPendingCardStatusToggle(null);
+      } else {
+        toast.error("حدث خطأ أثناء تحديث حالة البطاقة");
+      }
+    } catch (err: any) {
+      handleErrorAlerts(err?.response?.data?.message || "حدث خطأ");
+    }
   };
   return (
     <div className="space-y-6">
@@ -87,7 +100,7 @@ const CardPricingPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+          className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة سعر جديد
@@ -150,7 +163,7 @@ const CardPricingPage = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة سعر جديد
@@ -229,7 +242,7 @@ const CardPricingPage = () => {
                 <div className="flex items-center justify-center gap-2">
                   {/* Toggle Status */}
                   <button
-                    onClick={() => toggleCardStatus(card.id)}
+                    onClick={() => requestCardStatusToggle(card)}
                     className={`p-2 rounded-lg transition-colors flex gap-2 items-center cursor-pointer ${
                       card.is_active
                         ? "text-green-600 bg-green-50 hover:bg-green-100"
@@ -283,7 +296,7 @@ const CardPricingPage = () => {
               {!searchTerm && (
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+                  className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة سعر جديد
@@ -308,6 +321,37 @@ const CardPricingPage = () => {
           setSelectedCard={setSelectedCard}
           setShowEditModal={setShowEditModal}
           setCardPricing={setCardPricing}
+        />
+      )}
+
+      {pendingCardStatusToggle && (
+        <ConfirmationModal
+          open
+          onClose={() => !isUpdatingCard && setPendingCardStatusToggle(null)}
+          onConfirm={confirmCardStatusToggle}
+          title={pendingCardStatusToggle.isActive ? "تعطيل البطاقة" : "تفعيل البطاقة"}
+          variant={pendingCardStatusToggle.isActive ? "danger" : "success"}
+          confirmLabel={
+            pendingCardStatusToggle.isActive ? "نعم، تعطيل" : "نعم، تفعيل"
+          }
+          isPending={isUpdatingCard}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingCardStatusToggle.isActive ? "تعطيل" : "تفعيل"}
+                </span>{" "}
+                هذه البطاقة؟
+              </p>
+              <p className="text-sm text-gray-600">
+                السعر:{" "}
+                <span className="font-semibold text-(--brand-secondary)" dir="ltr">
+                  {pendingCardStatusToggle.price}
+                </span>
+              </p>
+            </>
+          }
         />
       )}
     </div>

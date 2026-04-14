@@ -765,7 +765,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
           <button
             onClick={() => setCurrentView("add")}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
+            className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2"
           >
             <Plus size={16} />
             إضافة محتوى
@@ -919,7 +919,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 </p>
                 <button
                   onClick={() => setCurrentView("add")}
-                  className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 mx-auto"
+                  className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 mx-auto"
                 >
                   <Plus size={16} />
                   إضافة محتوى جديد
@@ -1322,7 +1322,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   newItem.lessonType === "exam" &&
                   !newItem.examId)
               }
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               إضافة المحتوى
@@ -1621,7 +1621,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 handleEditItem();
               }}
               disabled={!selectedItem.title}
-              className="cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات

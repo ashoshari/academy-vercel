@@ -194,7 +194,7 @@ const AddSectionModal = ({
           </button>
           <button
             onClick={handleAddSection}
-            className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
+            className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2"
           >
             <Save size={16} />
             حفظ القسم
@@ -371,7 +371,7 @@ const EditSectionModal = ({
         </button>
         <button
           onClick={handleEditSection}
-          className="cursor-pointer px-6 py-2 bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg hover:from-(--brand-light) hover:to-(--brand) transition-all flex items-center gap-2"
+          className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2"
         >
           <Save size={16} />
           حفظ التغييرات
@@ -595,7 +595,7 @@ const SectionsPage = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-4 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 text-sm"
+          className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
         >
           <Plus size={16} />
           إضافة قسم رئيسي جديد
@@ -691,7 +691,7 @@ const SectionsPage = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
           >
             <Plus size={16} />
             إضافة قسم رئيسي جديد
@@ -882,7 +882,7 @@ const SectionsPage = () => {
               {/* {!searchTerm && ( */}
               <button
                 onClick={() => setShowAddModal(true)}
-                className="cursor-pointer bg-linear-to-r from-(--brand) to-(--brand-light) text-white px-6 py-3 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300 flex items-center gap-2 mx-auto"
+                className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
               >
                 <Plus size={16} />
                 إضافة قسم جديد
