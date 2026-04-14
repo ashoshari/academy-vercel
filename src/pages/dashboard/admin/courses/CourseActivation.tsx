@@ -3,7 +3,7 @@ import { X, Search, Check, XCircle, Users } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCustomPost } from "@/hooks/useMutation";
 import { useCustomQuery } from "@/hooks/useQuery";
-import Spinner from "@/components/dashboard/Spinner";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 
 interface Student {
   id: string;
@@ -114,8 +114,8 @@ const CourseActivation = ({ setCurrentView, selectedCourse }: any) => {
         {/* Table */}
         <div className="flex-1 overflow-y-auto my-4">
           {isLoading ? (
-            <div className="flex justify-center items-center h-full">
-              <Spinner size={40} thickness={4} className="text-(--brand)" />
+            <div className="px-6">
+              <TableSkeleton rows={6} header={false} />
             </div>
           ) : students?.length === 0 && searchTerm ? (
             <div className="col-span-full backdrop-blur-xl shadow-lg p-12 text-center">

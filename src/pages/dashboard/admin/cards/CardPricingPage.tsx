@@ -5,10 +5,11 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import toast from "react-hot-toast";
-import Spinner from "@/components/dashboard/Spinner";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import EditCardPricing from "@/components/dashboard/admin/cards/CardPricing/EditCardPricing";
 import AddCardPricing from "@/components/dashboard/admin/cards/CardPricing/AddCardPricing";
+import PricingCardsSkeleton from "@/components/dashboard/skeletons/PricingCardsSkeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 
 export interface CardPricing {
   id: string;
@@ -48,6 +49,7 @@ const CardPricingPage = () => {
   const cardStatistics = useCustomQuery("/cards/statistics/", [
     "card-statistics",
   ]);
+  const isLoadingStatistics = Boolean((cardStatistics as any)?.isLoading);
 
   const updateCard = useCustomUpdate(`cards/${selectedCard}/`, [
     "cards",
@@ -93,8 +95,7 @@ const CardPricingPage = () => {
       </div>
 
       {/* Search and Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* <div className="lg:col-span-2">
+      {/* <div className="lg:col-span-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand)">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -108,31 +109,37 @@ const CardPricingPage = () => {
             </div>
           </div>
         </div> */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-(--brand)">
-            {cardStatistics?.data?.data?.total_cards ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600">إجمالي الأسعار</p>
+      {isLoadingStatistics ? (
+        <StatsCardsSkeleton
+          count={3}
+          gridClassName="grid grid-cols-1 lg:grid-cols-3 gap-4"
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-(--brand)">
+              {cardStatistics?.data?.data?.total_cards ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600">إجمالي الأسعار</p>
+          </div>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-green-600">
+              {cardStatistics?.data?.data?.active_cards ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600"> الأسعار المفعلة</p>
+          </div>{" "}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-green-600">
+              {cardStatistics?.data?.data?.inactive_cards ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600"> الأسعار غير المفعلة</p>
+          </div>
         </div>
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-green-600">
-            {cardStatistics?.data?.data?.active_cards ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600"> الأسعار المفعلة</p>
-        </div>{" "}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-green-600">
-            {cardStatistics?.data?.data?.inactive_cards ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600"> الأسعار غير المفعلة</p>
-        </div>
-      </div>
+      )}
 
       {/* Cards Grid */}
       {cards?.isLoading ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        <PricingCardsSkeleton />
       ) : !cards?.data?.data || cards?.data?.data.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />

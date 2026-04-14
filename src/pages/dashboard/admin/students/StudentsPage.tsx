@@ -19,7 +19,9 @@ import {
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
-import Spinner from "@/components/dashboard/Spinner";
+import Skeleton from "@/components/dashboard/Skeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import { useState } from "react";
 import { flushSync } from "react-dom";
 import Pagination from "@/components/dashboard/core/Pagination";
@@ -141,6 +143,7 @@ const StudentsPage = () => {
   const dataStatistics = useCustomQuery("/account/admin/students-statistics/", [
     "students-statistics",
   ]);
+  const isLoadingStatistics = Boolean((dataStatistics as any)?.isLoading);
 
   const studentsData = data?.data;
   const paginationData = data?.pagination;
@@ -366,57 +369,64 @@ const StudentsPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
-              <p className="text-3xl font-bold text-gray-800">
-                {dataStatistics?.data?.data?.total_students ?? "-"}
-              </p>
+      {isLoadingStatistics ? (
+        <StatsCardsSkeleton
+          count={4}
+          gridClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي الطلاب</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {dataStatistics?.data?.data?.total_students ?? "-"}
+                </p>
+              </div>
+              <Users className="w-12 h-12 text-(--brand)" />
             </div>
-            <Users className="w-12 h-12 text-(--brand)" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">الطلاب النشطون</p>
-              <p className="text-3xl font-bold text-green-600">
-                {dataStatistics?.data?.data?.active_students ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">الطلاب النشطون</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {dataStatistics?.data?.data?.active_students ?? "-"}
+                </p>
+              </div>
+              <UserCheck className="w-12 h-12 text-green-500" />
             </div>
-            <UserCheck className="w-12 h-12 text-green-500" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">الطلاب الغير نشطون</p>
-              <p className="text-3xl font-bold text-(--brand-secondary)">
-                {dataStatistics?.data?.data?.inactive_students ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">الطلاب الغير نشطون</p>
+                <p className="text-3xl font-bold text-(--brand-secondary)">
+                  {dataStatistics?.data?.data?.inactive_students ?? "-"}
+                </p>
+              </div>
+              <CircleX className="w-12 h-12 text-red-500" />
             </div>
-            <CircleX className="w-12 h-12 text-red-500" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي الإيرادات</p>
-              <p className="text-3xl font-bold text-(--brand)">
-                {dataStatistics?.data?.data?.total_income
-                  ? dataStatistics?.data?.data?.total_income + " د.أ"
-                  : "0"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي الإيرادات</p>
+                <p className="text-3xl font-bold text-(--brand)">
+                  {dataStatistics?.data?.data?.total_income
+                    ? dataStatistics?.data?.data?.total_income + " د.أ"
+                    : "0"}
+                </p>
+              </div>
+              <DollarSign className="w-12 h-12 text-(--brand)" />
             </div>
-            <DollarSign className="w-12 h-12 text-(--brand)" />
           </div>
         </div>
-      </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
@@ -504,9 +514,19 @@ const StudentsPage = () => {
 
       {/* Students Grid/Table */}
       {isLoading || isPending ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                variant="card"
+                className="h-96 rounded-xl overflow-hidden"
+              />
+            ))}
+          </div>
+        ) : (
+          <TableSkeleton rows={10} header={false} />
+        )
       ) : !studentsData || studentsData.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />

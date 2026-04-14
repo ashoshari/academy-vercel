@@ -2,7 +2,7 @@ import { useParams } from "react-router";
 import { Shield, ArrowRight, User } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
-import Spinner from "@/components/dashboard/Spinner";
+import DetailsPageSkeleton from "@/components/dashboard/skeletons/DetailsPageSkeleton";
 import { useNavigate } from "react-router";
 export default function TeacherDetailsPage() {
   const { id } = useParams();
@@ -16,9 +16,12 @@ export default function TeacherDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-(--brand)" />
-      </div>
+      <DetailsPageSkeleton
+        withTopHeader
+        titleWidthClassName="w-40"
+        subtitleWidthClassName="w-56"
+        sectionsPx={[256, 192]}
+      />
     );
   }
   if (!selectedTeacher) {

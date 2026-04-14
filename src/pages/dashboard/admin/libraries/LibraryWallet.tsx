@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { Trash2, User } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
-import Spinner from "@/components/dashboard/Spinner";
+import DetailsPageSkeleton from "@/components/dashboard/skeletons/DetailsPageSkeleton";
 import { Library } from "./LibrariesPage";
 import toast from "react-hot-toast";
 import { useCustomPost, useCustomRemove } from "@/hooks/useMutation";
@@ -82,9 +82,11 @@ export default function LibraryWalletPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-(--brand)" />
-      </div>
+      <DetailsPageSkeleton
+        withTopHeader={false}
+        subtitleWidthClassName="w-40"
+        sectionsPx={[320]}
+      />
     );
   }
   if (!selectedLibrary) {

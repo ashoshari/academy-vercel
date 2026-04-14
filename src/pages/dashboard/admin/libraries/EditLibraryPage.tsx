@@ -6,8 +6,8 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useCustomUpdate } from "@/hooks/useMutation";
-import Spinner from "@/components/dashboard/Spinner";
 import { applyServerErrors } from "@/utils/errors";
+import FormPageSkeleton from "@/components/dashboard/skeletons/FormPageSkeleton";
 
 interface FormValues {
   name: string;
@@ -123,11 +123,7 @@ export default function EditLibraryPage() {
     }`;
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-(--brand)" />
-      </div>
-    );
+    return <FormPageSkeleton inputs={4} includeWideInput includeToggleRow />;
   }
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">

@@ -30,13 +30,14 @@ import toast from "react-hot-toast";
 import GenerateModal from "@/components/card-codes/GenerateModal";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import Pagination from "@/components/dashboard/core/Pagination";
-import Spinner from "@/components/dashboard/Spinner";
 import { formatDate } from "@/services/date";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { edit, get } from "@/api";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 
 const DOWNLOAD_RESTRICTION_DATE = new Date("2026-03-01T00:00:00Z");
 
@@ -124,6 +125,7 @@ const CardCodesPage = () => {
   const cardCodesStatistics = useCustomQuery("cards/codes-statistics/", [
     "card-codes-statistics",
   ]);
+  const isLoadingStatistics = Boolean((cardCodesStatistics as any)?.isLoading);
 
   const cardCodes = useCustomQuery(`cards/codes/?page=${codePage}`, [
     "card-codes",
@@ -568,43 +570,52 @@ const CardCodesPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي الكودات</p>
-              <p className="text-3xl font-bold text-gray-800">
-                {cardCodesStatistics?.data?.data?.total_generated_codes ?? "-"}
-              </p>
+      {isLoadingStatistics ? (
+        <StatsCardsSkeleton
+          count={3}
+          gridClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي الكودات</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {cardCodesStatistics?.data?.data?.total_generated_codes ??
+                    "-"}
+                </p>
+              </div>
+              <Hash className="w-12 h-12 text-(--brand)" />
             </div>
-            <Hash className="w-12 h-12 text-(--brand)" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">الكودات المستخدمة</p>
-              <p className="text-3xl font-bold text-red-600">
-                {cardCodesStatistics?.data?.data?.used_generated_codes ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">الكودات المستخدمة</p>
+                <p className="text-3xl font-bold text-red-600">
+                  {cardCodesStatistics?.data?.data?.used_generated_codes ?? "-"}
+                </p>
+              </div>
+              <CheckCircle className="w-12 h-12 text-red-500" />
             </div>
-            <CheckCircle className="w-12 h-12 text-red-500" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">الكودات المتاحة</p>
-              <p className="text-3xl font-bold text-green-600">
-                {cardCodesStatistics?.data?.data?.unused_generated_codes ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">الكودات المتاحة</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {cardCodesStatistics?.data?.data?.unused_generated_codes ??
+                    "-"}
+                </p>
+              </div>
+              <CreditCard className="w-12 h-12 text-green-500" />
             </div>
-            <CreditCard className="w-12 h-12 text-green-500" />
           </div>
         </div>
-      </div>
+      )}
 
       {/* Enhanced Batches Section with Targeting Info */}
       <div>
@@ -963,9 +974,7 @@ const CardCodesPage = () => {
 
       {/* Enhanced Codes Table */}
       {generateCodes?.isLoading ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        <TableSkeleton rows={10} />
       ) : !generateCodes?.data?.data ||
         generateCodes?.data?.data?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">

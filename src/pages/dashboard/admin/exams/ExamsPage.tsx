@@ -29,11 +29,13 @@ import {
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import ExamQuestionsPage from "./questions/QuestionsPage";
-import Spinner from "@/components/dashboard/Spinner";
 import Pagination from "@/components/dashboard/core/Pagination";
 import { useQueryClient } from "@tanstack/react-query";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import { isArray } from "lodash";
+import Skeleton from "@/components/dashboard/Skeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 export interface Exam {
   id: string;
   title: string;
@@ -174,6 +176,7 @@ const ExamsPage = () => {
   const dataStatistcs = useCustomQuery("/training/admin/exams-statistics/", [
     "exams-statistics",
   ]);
+  const isLoadingStatistics = Boolean((dataStatistcs as any)?.isLoading);
   const materials = useCustomQuery("/core/materials/", ["materials"]);
 
   const materialsData = materials?.data?.data;
@@ -1596,55 +1599,62 @@ const ExamsPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي الامتحانات</p>
-              <p className="text-3xl font-bold text-gray-800">
-                {dataStatistcs?.data?.data?.total_exams ?? "-"}
-              </p>
+      {isLoadingStatistics ? (
+        <StatsCardsSkeleton
+          count={4}
+          gridClassName="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4"
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي الامتحانات</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {dataStatistcs?.data?.data?.total_exams ?? "-"}
+                </p>
+              </div>
+              <FileText className="w-12 h-12 text-(--brand)" />
             </div>
-            <FileText className="w-12 h-12 text-(--brand)" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">الامتحانات النشطة</p>
-              <p className="text-3xl font-bold text-green-600">
-                {dataStatistcs?.data?.data?.active_exams ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">الامتحانات النشطة</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {dataStatistcs?.data?.data?.active_exams ?? "-"}
+                </p>
+              </div>
+              <CheckCircle className="w-12 h-12 text-green-500" />
             </div>
-            <CheckCircle className="w-12 h-12 text-green-500" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm"> الامتحانات الغير نشطة </p>
-              <p className="text-3xl font-bold text-red-600">
-                {dataStatistcs?.data?.data?.inactive_exams ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm"> الامتحانات الغير نشطة </p>
+                <p className="text-3xl font-bold text-red-600">
+                  {dataStatistcs?.data?.data?.inactive_exams ?? "-"}
+                </p>
+              </div>
+              <Award className="w-12 h-12 text-red-500" />
             </div>
-            <Award className="w-12 h-12 text-red-500" />
           </div>
-        </div>
 
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm">إجمالي المحاولات</p>
-              <p className="text-3xl font-bold text-(--brand-secondary)">
-                {dataStatistcs?.data?.data?.total_attempts ?? "-"}
-              </p>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">إجمالي المحاولات</p>
+                <p className="text-3xl font-bold text-(--brand-secondary)">
+                  {dataStatistcs?.data?.data?.total_attempts ?? "-"}
+                </p>
+              </div>
+              <Users className="w-12 h-12 text-blue-500" />
             </div>
-            <Users className="w-12 h-12 text-blue-500" />
           </div>
         </div>
-      </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
@@ -1701,9 +1711,15 @@ const ExamsPage = () => {
       </div>
 
       {data?.isLoading ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        currentView === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} variant="card" className="h-96 rounded-xl" />
+            ))}
+          </div>
+        ) : (
+          <TableSkeleton rows={10} header={false} />
+        )
       ) : !data?.data?.data || data?.data?.data?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />

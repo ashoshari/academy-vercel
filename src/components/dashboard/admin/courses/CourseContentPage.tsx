@@ -28,7 +28,7 @@ import {
 } from "@/hooks/useMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import Spinner from "@/components/dashboard/Spinner";
+import Skeleton from "@/components/dashboard/Skeleton";
 
 interface TreeItem {
   id: string | number;
@@ -901,8 +901,10 @@ const CourseContentPage = ({ course, onBack }: any) => {
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
           <div className="space-y-4">
             {isLoading ? (
-              <div className="flex justify-center w-full">
-                <Spinner size={40} thickness={4} className="text-(--brand)" />
+              <div className="space-y-2">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <Skeleton key={i} className="h-12 w-full rounded-lg" />
+                ))}
               </div>
             ) : filteredContent?.length > 0 ? (
               filteredContent?.map((item: any) => renderTreeItem(item))

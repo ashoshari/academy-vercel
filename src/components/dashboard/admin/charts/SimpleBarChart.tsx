@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import Skeleton from "@/components/dashboard/Skeleton";
 
 const BAR_MIN_PX = 4;
 
@@ -49,11 +50,8 @@ export default function SimpleBarChart({
   if (loading) {
     return (
       <div className="space-y-2">
-        <div className="animate-pulse h-6 w-32 bg-gray-100 rounded-md" />
-        <div
-          className="animate-pulse bg-gray-100 rounded-lg"
-          style={{ height: heightPx }}
-        />
+        <Skeleton className="h-6 w-32 rounded-md" />
+        <Skeleton className="rounded-lg" style={{ height: heightPx }} />
       </div>
     );
   }
@@ -111,7 +109,7 @@ export default function SimpleBarChart({
               <div
                 className={`w-full rounded-t-lg transition-all duration-300 ${
                   active
-                    ? "bg-linear-to-t from-orange-600 to-orange-400 shadow-md"
+                    ? "bg-linear-to-t from-(--brand-secondary) to-(--brand-secondary-dark) shadow-md"
                     : "bg-linear-to-t from-(--brand) to-(--brand-light) hover:from-(--brand-light) hover:to-(--brand)"
                 }`}
                 style={{ height: heightBar }}

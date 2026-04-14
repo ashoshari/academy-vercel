@@ -20,7 +20,9 @@ import { formatDate } from "@/services/date";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
-import Spinner from "@/components/dashboard/Spinner";
+import Skeleton from "@/components/dashboard/Skeleton";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 // import { formatDateTimeSimple } from "@/utils/formatDateTime";
 // import Pagination from "@/components/dashboard/core/Pagination";
 
@@ -468,6 +470,7 @@ const SectionsPage = () => {
   const statistics = useCustomQuery("/training/admin/sections-statistics/", [
     "sections-statistics",
   ]);
+  const isLoadingStatistics = Boolean((statistics as any)?.isLoading);
 
   // const paginationData = sections.data?.pagination;
   const icons = useCustomQuery("/core/icons/", ["icons"]);
@@ -638,31 +641,44 @@ const SectionsPage = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-(--brand)">
-            {statistics?.data?.data?.total_sections ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600">إجمالي الأقسام</p>
+      {isLoadingStatistics ? (
+        <StatsCardsSkeleton
+          count={3}
+          gridClassName="grid grid-cols-1 lg:grid-cols-3 gap-4"
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-(--brand)">
+              {statistics?.data?.data?.total_sections ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600">إجمالي الأقسام</p>
+          </div>
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-green-600">
+              {statistics?.data?.data?.active_sections ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600">الأقسام المفعلة</p>
+          </div>{" "}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
+            <p className="text-2xl font-bold text-red-600">
+              {statistics?.data?.data?.inactive_sections ?? "-"}
+            </p>
+            <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
+          </div>
         </div>
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-green-600">
-            {statistics?.data?.data?.active_sections ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600">الأقسام المفعلة</p>
-        </div>{" "}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-4 border border-(--brand) text-center">
-          <p className="text-2xl font-bold text-red-600">
-            {statistics?.data?.data?.inactive_sections ?? "-"}
-          </p>
-          <p className="text-sm text-gray-600">الأقسام الغير مفعلة</p>
-        </div>
-      </div>
+      )}
 
       {sections?.isLoading ? (
-        <div className="flex justify-center">
-          <Spinner size={40} thickness={4} className="text-(--brand)" />
-        </div>
+        viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} variant="card" className="h-96 rounded-xl" />
+            ))}
+          </div>
+        ) : (
+          <TableSkeleton rows={10} header={false} />
+        )
       ) : !sections?.data?.data || sections?.data?.data?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
           <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />

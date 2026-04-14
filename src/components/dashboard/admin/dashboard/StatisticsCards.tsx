@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 
 export type StatItem<T extends object> = {
   key: Extract<keyof T, string>;
@@ -38,14 +39,10 @@ export default function StatisticsCards<T extends object>({
 }: StatisticsCardsProps<T>) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {Array.from({ length: Math.max(4, items.length || 1) }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-xl p-6 border border-(--brand) shadow-lg bg-white animate-pulse h-27.5"
-          />
-        ))}
-      </div>
+      <StatsCardsSkeleton
+        count={Math.max(4, items.length || 1)}
+        gridClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+      />
     );
   }
   if (!data) {

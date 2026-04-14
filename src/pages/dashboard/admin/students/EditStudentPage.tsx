@@ -6,7 +6,7 @@ import { Save, RefreshCw, ArrowRight } from "lucide-react";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import { useCustomQuery } from "@/hooks/useQuery";
-import Spinner from "@/components/dashboard/Spinner";
+import FormPageSkeleton from "@/components/dashboard/skeletons/FormPageSkeleton";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface FormValues {
@@ -85,11 +85,7 @@ const EditStudentPage = () => {
     }
   };
   if (studentData?.isLoading)
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size={40} thickness={4} className="text-(--brand)" />
-      </div>
-    );
+    return <FormPageSkeleton inputs={2} includeWideInput includeToggleRow />;
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 mt-8">
       <div className="flex items-center mb-6 gap-x-1.25">
