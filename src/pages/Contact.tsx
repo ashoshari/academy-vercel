@@ -1,4 +1,3 @@
-import AnimatedBackground from "@/components/login/AnimatedBackground";
 import {
   Phone,
   Mail,
@@ -62,7 +61,7 @@ const ContactPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden" dir="rtl">
-      <AnimatedBackground />
+      {/* <AnimatedBackground /> */}
       <div className="relative z-10">
         <div className="min-h-screen p-4">
           {/* Navigation */}
@@ -195,7 +194,7 @@ const ContactPage = () => {
                 {/* About Section */}
                 <div className="bg-linear-to-br from-orange-500/95 to-orange-600/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-white border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
                   <h2 className="text-3xl font-bold mb-6">عن الشركة</h2>
-                  <p className="text-(--brand) leading-relaxed mb-8 text-lg">
+                  <p className="text-white leading-relaxed mb-8 text-lg">
                     نحن في Supervision Software نركز على تقديم حلول تقنية متطورة
                     ومنصات تعليمية تفاعلية تساعد المؤسسات والأفراد على تحقيق
                     أهدافهم التعليمية والمهنية بكفاءة عالية.
