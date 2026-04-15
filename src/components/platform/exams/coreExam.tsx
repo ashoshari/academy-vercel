@@ -13,7 +13,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import EmptyState from "@/components/core/EmptyState";
-import { Inbox } from "lucide-react";
+import { Inbox, ShieldAlert } from "lucide-react";
 
 interface ExamProps {
   examData: any;
@@ -132,15 +132,15 @@ const CoreExam = ({
     <section>
       {examError ? (
         <div className="min-h-screen p-3 bg-linear-to-br from-gray-50 to-white flex flex-col items-center justify-center">
-          <img
-            loading="lazy"
-            src={errorIllustation}
-            alt="404"
-            className="w-75 h-75"
+          <EmptyState
+            title="ليس لديك الصلاحيات لمشاهدة هذا المحتوى"
+            description="إذا كنت تعتقد أن هذا خطأ، تواصل مع الدعم."
+            icon={ShieldAlert}
+            tone="warning"
+            size="lg"
+            fullHeight
+            className="w-full"
           />
-          <p className="text-gray-600 text-xl text-center">
-            ليس لديك الصلاحيات لمشاهدة هذا المحتوى
-          </p>
         </div>
       ) : !examData?.questions || examData?.questions?.length === 0 ? (
         <>
