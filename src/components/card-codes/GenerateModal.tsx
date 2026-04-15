@@ -455,8 +455,7 @@ const GenerateModal = ({
             disabled={
               loading
                 ? true
-                : generateForm.name === "" ||
-                  !generateForm.card ||
+                : !generateForm.card ||
                   generateForm.quantity <= 0 ||
                   (generateForm.targetingType === "specific" &&
                     generateForm.targetedSubsections.length === 0)

@@ -219,10 +219,10 @@ const CardCodesPage = () => {
     "main-statistics",
   ]);
   const [generateForm, setGenerateForm] = useState({
-    name: "",
+    // name: "",
     card: "",
     quantity: 0,
-    prefix: "M",
+    // prefix: "M",
     notes: "",
     targetingType: "all" as "all" | "specific",
     is_installment: false,
@@ -318,10 +318,10 @@ const CardCodesPage = () => {
   };
   const handleGenerateCodes = () => {
     const rawData = {
-      name: generateForm.name,
+      // name: generateForm.name,
       card: generateForm.card,
       number_of_codes: generateForm.quantity,
-      prefix: generateForm.prefix,
+      // prefix: generateForm.prefix,
       is_installment: generateForm.is_installment,
       subsections: generateForm?.subsections,
       subsubsections: generateForm?.subsubsections,
@@ -337,10 +337,10 @@ const CardCodesPage = () => {
       .then((res) => {
         if (res.status) {
           setGenerateForm({
-            name: "",
+            // name: "",
             card: "",
             quantity: 0,
-            prefix: "M",
+            // prefix: "M",
             notes: "",
             targetingType: "all",
             is_installment: false,

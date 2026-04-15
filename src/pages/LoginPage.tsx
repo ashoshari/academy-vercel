@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, Phone, Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router";
-import AnimatedBackground from "@/components/login/AnimatedBackground";
 import { useCustomPost } from "@/hooks/useMutation";
 import { storeTokens } from "@/services/auth";
 import useAuth from "@/store/useAuth";
@@ -72,7 +71,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden" dir="rtl">
-      <AnimatedBackground />
+      {/* <AnimatedBackground /> */}
       <div className="relative z-10">
         <div className="min-h-screen flex items-center justify-center p-4">
           {/* Navigation */}

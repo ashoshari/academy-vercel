@@ -20,7 +20,6 @@ import {
   Upload,
   Image as ImageIcon,
 } from "lucide-react";
-import AnimatedBackground from "@/components/login/AnimatedBackground";
 import { useCustomQuery } from "@/hooks/useQuery";
 
 const Layout = () => {
@@ -181,7 +180,7 @@ const Layout = () => {
       {/* Main Content */}
       <div className="flex-1 p-6">
         <div className="min-h-screen relative overflow-auto" dir="rtl">
-          <AnimatedBackground />
+          {/* <AnimatedBackground /> */}
           <div className="relative z-10">{<Outlet />}</div>
         </div>
       </div>
