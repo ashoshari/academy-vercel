@@ -3,12 +3,8 @@ import { useState } from "react";
 import {
   Plus,
   Search,
-  Eye,
-  EyeOff,
   Hash,
   Calendar,
-  ToggleLeft,
-  ToggleRight,
   CreditCard,
   CheckCircle,
   User,
@@ -28,6 +24,7 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import GenerateModal from "@/components/card-codes/GenerateModal";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import Pagination from "@/components/dashboard/core/Pagination";
 import { formatDate } from "@/services/date";
@@ -810,23 +807,12 @@ const CardCodesPage = () => {
                   {/* Actions */}
                   {role === "admin" && (
                     <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-                      <button
-                        onClick={() => toggleBatchStatus(batch.id)}
-                        className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                          batch.is_active
-                            ? "text-green-600 bg-green-50 hover:bg-green-100"
-                            : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-                        }`}
-                        title={
-                          batch.is_active ? "تعطيل المجموعة" : "تفعيل المجموعة"
-                        }
-                      >
-                        {batch.is_active ? (
-                          <ToggleRight size={20} />
-                        ) : (
-                          <ToggleLeft size={20} />
-                        )}
-                      </button>
+                      <StatusToggleButton
+                        isOn={Boolean(batch.is_active)}
+                        onToggle={() => toggleBatchStatus(batch.id)}
+                        titleOn="تعطيل المجموعة"
+                        titleOff="تفعيل المجموعة"
+                      />
                       {/* <button
                       onClick={() => handleBatchDownload(batch?.id)}
                       className={`cursor-pointer p-1 rounded transition-colors ${
@@ -1140,23 +1126,12 @@ const CardCodesPage = () => {
                         <td className="px-4 py-3 whitespace-nowrap flex gap-2">
                           {role === "admin" && (
                             <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => requestCodeStatusToggle(code)}
-                                className={`cursor-pointer p-1 rounded transition-colors ${
-                                  code.is_active
-                                    ? "text-green-600 hover:bg-green-50"
-                                    : "text-gray-400 hover:bg-gray-50"
-                                }`}
-                                title={
-                                  code.is_active ? "تعطيل الكود" : "تفعيل الكود"
-                                }
-                              >
-                                {code.is_active ? (
-                                  <Eye size={16} />
-                                ) : (
-                                  <EyeOff size={16} />
-                                )}
-                              </button>
+                              <StatusToggleButton
+                                isOn={Boolean(code.is_active)}
+                                onToggle={() => requestCodeStatusToggle(code)}
+                                titleOn="تعطيل الكود"
+                                titleOff="تفعيل الكود"
+                              />
                             </div>
                           )}
                           <div className="flex items-center gap-2">

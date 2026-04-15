@@ -8,8 +8,6 @@ import {
   Calendar,
   ToggleLeft,
   ToggleRight,
-  Eye,
-  EyeOff,
   Search,
   Rows,
   Grid,
@@ -23,6 +21,7 @@ import handleErrorAlerts from "@/utils/showErrorMessages";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 // import { formatDateTimeSimple } from "@/utils/formatDateTime";
 // import Pagination from "@/components/dashboard/core/Pagination";
 
@@ -793,8 +792,9 @@ const SectionsPage = () => {
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div className="flex items-center gap-1">
                       {/* Toggle Status */}
-                      <button
-                        onClick={() => {
+                      <StatusToggleButton
+                        isOn={Boolean(section.is_published)}
+                        onToggle={() => {
                           setSelectedSection({
                             id: section.id,
                             name: section.title,
@@ -810,21 +810,9 @@ const SectionsPage = () => {
 
                           setConfirmToggleModal(true);
                         }}
-                        className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                          section.is_published
-                            ? "text-green-600 bg-green-50 hover:bg-green-100"
-                            : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-                        }`}
-                        title={
-                          section.is_published ? "تفعيل القسم" : "تعطيل القسم"
-                        }
-                      >
-                        {section.is_published ? (
-                          <Eye size={16} />
-                        ) : (
-                          <EyeOff size={16} />
-                        )}
-                      </button>
+                        titleOn="تعطيل القسم"
+                        titleOff="تفعيل القسم"
+                      />
                     </div>
 
                     <div className="flex items-center gap-1">
@@ -958,8 +946,9 @@ const SectionsPage = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-5">
-                          <button
-                            onClick={() => {
+                          <StatusToggleButton
+                            isOn={Boolean(section.is_published)}
+                            onToggle={() => {
                               setSelectedSection({
                                 id: section.id,
                                 name: section.title,
@@ -975,23 +964,9 @@ const SectionsPage = () => {
 
                               setConfirmToggleModal(true);
                             }}
-                            className={`rounded-lg transition-colors cursor-pointer ${
-                              section.is_published
-                                ? "text-green-600"
-                                : "text-gray-400"
-                            }`}
-                            title={
-                              section.is_published
-                                ? "تفعيل القسم"
-                                : "تعطيل القسم"
-                            }
-                          >
-                            {section.is_published ? (
-                              <Eye size={16} />
-                            ) : (
-                              <EyeOff size={16} />
-                            )}
-                          </button>
+                            titleOn="تعطيل القسم"
+                            titleOff="تفعيل القسم"
+                          />
                           <button
                             onClick={() => {
                               setSelectedSection({

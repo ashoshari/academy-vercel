@@ -9,8 +9,6 @@ import {
   // Eye,
   Image,
   Info,
-  ToggleLeft,
-  ToggleRight,
   Trash2,
   // Trash2,
   Video,
@@ -19,6 +17,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 
 interface SliderCardProps {
   slide: any;
@@ -242,26 +241,17 @@ export default function SliderCard({
 
                 {/* Status toggles */}
 
-                <button
-                  onClick={() =>
+                <StatusToggleButton
+                  isOn={Boolean(slide?.is_published)}
+                  onToggle={() =>
                     setPendingSlideStatusToggle({
                       isPublished: Boolean(slide?.is_published),
                       header: String(slide?.header ?? slide?.title ?? "—"),
                     })
                   }
-                  className={`cursor-pointer p-1 rounded-full transition-colors ${
-                    slide?.is_published ? "text-green-600" : "text-gray-400"
-                  }`}
-                  title={
-                    slide?.is_published ? "إلغاء التفعيل" : "تفعيل شريط التمرير"
-                  }
-                >
-                  {slide?.is_published ? (
-                    <ToggleRight size={24} />
-                  ) : (
-                    <ToggleLeft size={24} />
-                  )}
-                </button>
+                  titleOn="إلغاء التفعيل"
+                  titleOff="تفعيل شريط التمرير"
+                />
 
                 {/* View details */}
                 <button

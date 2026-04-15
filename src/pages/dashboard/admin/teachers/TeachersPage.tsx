@@ -28,6 +28,7 @@ import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 
 export interface Teacher {
   id: number;
@@ -653,27 +654,14 @@ const TeachersPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
+                          <StatusToggleButton
+                            isOn={Boolean(teacher?.is_active)}
+                            onToggle={() => {
                               requestTeacherStatusToggle(teacher);
                             }}
-                            className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                              teacher.is_active
-                                ? "text-(--brand-secondary) hover:bg-blue-100"
-                                : "text-gray-400 hover:bg-gray-100"
-                            }`}
-                            title={
-                              teacher?.is_active
-                                ? "إلغاء التفعيل"
-                                : "تفعيل المعلم"
-                            }
-                          >
-                            {teacher?.is_active ? (
-                              <Eye size={16} />
-                            ) : (
-                              <EyeOff size={16} />
-                            )}
-                          </button>
+                            titleOn="إلغاء التفعيل"
+                            titleOff="تفعيل المعلم"
+                          />
 
                           <button
                             onClick={() => {

@@ -6,8 +6,6 @@ import {
   Eye,
   Users,
   UserCheck,
-  CheckCircle,
-  XCircle,
   RefreshCw,
   Check,
   ClipboardCopy,
@@ -28,6 +26,7 @@ import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 
 export interface Library {
   id: string;
@@ -442,27 +441,14 @@ const LibrariesPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
+                          <StatusToggleButton
+                            isOn={Boolean(library?.is_active)}
+                            onToggle={() => {
                               requestLibraryStatusToggle(library);
                             }}
-                            className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                              library.is_active
-                                ? "text-(--brand-secondary) hover:bg-blue-100"
-                                : "text-gray-400 hover:bg-gray-100"
-                            }`}
-                            title={
-                              library?.is_active
-                                ? "إلغاء التفعيل"
-                                : "تفعيل المكتبة"
-                            }
-                          >
-                            {library?.is_active ? (
-                              <CheckCircle size={16} />
-                            ) : (
-                              <XCircle size={16} />
-                            )}
-                          </button>
+                            titleOn="إلغاء التفعيل"
+                            titleOff="تفعيل المكتبة"
+                          />
 
                           <button
                             onClick={() => {

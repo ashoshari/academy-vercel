@@ -28,6 +28,7 @@ import toast from "react-hot-toast";
 import { formatDate } from "@/services/date";
 import Pagination from "@/components/dashboard/core/Pagination";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 import { useQueryClient } from "@tanstack/react-query";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import CourseActivation from "./CourseActivation";
@@ -520,23 +521,14 @@ const CoursesPage = () => {
               <Settings size={16} />
             </button>
 
-            <button
-              onClick={() => {
+            <StatusToggleButton
+              isOn={Boolean(course?.is_published)}
+              onToggle={() => {
                 requestCoursePublishToggle(course);
               }}
-              className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                course?.is_Published
-                  ? "text-green-600 bg-green-50 hover:bg-green-100"
-                  : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-              }`}
-              title={course?.is_Published ? "إلغاء النشر" : "نشر الدورة"}
-            >
-              {course?.is_published ? (
-                <Eye className="text-(--brand-secondary)" size={16} />
-              ) : (
-                <EyeOff size={16} />
-              )}
-            </button>
+              titleOn="إلغاء النشر"
+              titleOff="نشر الدورة"
+            />
           </div>
 
           <div className="flex items-center gap-1">
