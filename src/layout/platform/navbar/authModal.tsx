@@ -6,6 +6,7 @@ import Register from "../authModal/register";
 import Login from "../authModal/login";
 import ForgetPassword from "../authModal/forgetPassword";
 import { useForm, Controller } from "react-hook-form";
+import { useCustomQuery } from "@/hooks/useQuery";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -29,6 +30,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [showResetOTP, setShowResetOTP] = useState(false);
   const [showRegisterOTP, setShowRegisterOTP] = useState(false);
   const setTokens = useTokenStore((state) => state.setTokens);
+
+  const { data } = useCustomQuery("/core/footer/", ["footer"]);
+  const footerData = data?.data;
 
   const { register, handleSubmit, watch, control, reset, setValue, formState } =
     useForm<formData>({
@@ -85,10 +89,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         <div className="p-6 sm:p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-r from-(--brand) to-(--brand-light) rounded-2xl mb-4">
-              <GraduationCap className="w-8 h-8 text-white" />
-              <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
-            </div>
+            {footerData?.logo ? (
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4">
+                <img
+                  loading="lazy"
+                  src={footerData?.logo}
+                  alt="Logo"
+                  className="w-15 h-15"
+                />
+              </div>
+            ) : (
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-r from-(--brand) to-(--brand-light) rounded-2xl mb-4">
+                <GraduationCap className="w-8 h-8 text-white" />
+              </div>
+            )}
+            <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {forgetPassword && !showResetOTP
                 ? "نسيت كلمة السر "

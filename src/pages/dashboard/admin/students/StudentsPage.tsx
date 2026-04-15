@@ -28,6 +28,7 @@ import Pagination from "@/components/dashboard/core/Pagination";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 
 export interface Student {
   id: number;
@@ -313,13 +314,12 @@ const StudentsPage = () => {
               >
                 <Book size={16} />
               </button>
-              <button
-                onClick={() => requestStudentVisibilityToggle(student)}
-                className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) rounded-lg transition-colors"
-                title={student?.is_active ? "إخفاء الطالب" : "إظهار الطالب"}
-              >
-                {student?.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
-              </button>
+              <StatusToggleButton
+                isOn={Boolean(student?.is_active)}
+                onToggle={() => requestStudentVisibilityToggle(student)}
+                titleOn="إخفاء الطالب"
+                titleOff="إظهار الطالب"
+              />
             </div>
             <div>
               <button
@@ -698,23 +698,14 @@ const StudentsPage = () => {
                           >
                             <Info size={16} />
                           </button>
-                          <button
-                            onClick={() =>
+                          <StatusToggleButton
+                            isOn={Boolean(student?.is_active)}
+                            onToggle={() =>
                               requestStudentVisibilityToggle(student)
                             }
-                            className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) rounded-lg transition-colors"
-                            title={
-                              student?.is_active
-                                ? "إخفاء الطالب"
-                                : "إظهار الطالب"
-                            }
-                          >
-                            {student?.is_active ? (
-                              <Eye size={16} />
-                            ) : (
-                              <EyeOff size={16} />
-                            )}
-                          </button>
+                            titleOn="إخفاء الطالب"
+                            titleOff="إظهار الطالب"
+                          />
                           <button
                             onClick={() => {
                               handleResetIMEI(student?.id);
