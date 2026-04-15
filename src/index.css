@@ -34,3 +34,7 @@ body {
 .btn-brand-slide:hover {
   background-position: right;
 }
+
+input:focus {
+  outline: #3b7bdb;
+}

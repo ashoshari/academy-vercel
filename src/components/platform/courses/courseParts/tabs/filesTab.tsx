@@ -10,8 +10,8 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import { useParams } from "react-router";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
-import errorIllustation from "@/assets/illustration/Error_illustration.svg";
 import toast from "react-hot-toast";
+import EmptyState from "@/components/core/EmptyState";
 const FilesTab = () => {
   const token = window.localStorage.getItem("platform_auth_tokens");
   const { courseId } = useParams();
@@ -49,17 +49,13 @@ const FilesTab = () => {
         </div>
       </div>
       {files && files?.length === 0 ? (
-        <div className="p-3 flex flex-col items-center justify-center">
-          <img
-            loading="lazy"
-            src={errorIllustation}
-            alt="404"
-            className="w-50 h-50"
-          />
-          <p className="text-gray-600 text-xl text-center">
-            لا يوجد محتوى لعرضه
-          </p>
-        </div>
+        <EmptyState
+          title="لا يوجد محتوى لعرضه"
+          description="لا توجد ملفات مرفوعة لهذه الدورة حالياً."
+          tone="info"
+          size="sm"
+          className="py-2"
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {files?.map((file: any) => (

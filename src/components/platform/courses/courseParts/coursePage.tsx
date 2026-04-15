@@ -5,7 +5,8 @@ import { useParams } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import CourseContent from "./courseContent";
 import { useLesson } from "@/store/platform/useLesson";
-import errorIllustation from "@/assets/illustration/Error_illustration.svg";
+import EmptyState from "@/components/core/EmptyState";
+import { ShieldAlert, Inbox } from "lucide-react";
 const CoursePage = () => {
   const [allLessons, setAllLessons] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -115,29 +116,25 @@ const CoursePage = () => {
   ) {
     return (
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <img
-            loading="lazy"
-            src={errorIllustation}
-            alt="404"
-            className="w-50 h-50 mx-auto mb-4"
-          />
-          <p className="text-gray-600">ليس لديك الصلاحيات لمشاهدة الدورة</p>
-        </div>
+        <EmptyState
+          title="ليس لديك الصلاحيات لمشاهدة الدورة"
+          description="إذا كنت تعتقد أن هذا خطأ، تواصل مع الدعم."
+          icon={ShieldAlert}
+          tone="warning"
+          fullHeight
+        />
       </div>
     );
   } else if (allLessons.length === 0) {
     return (
       <div className="min-h-screen bg-linear-to-br px-2 from-gray-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <img
-            loading="lazy"
-            src={errorIllustation}
-            alt="404"
-            className="w-75 h-62.5"
-          />
-          <p className="text-gray-600">لا يوجد محتوى لهذه الدورة</p>
-        </div>
+        <EmptyState
+          title="لا يوجد محتوى لهذه الدورة"
+          description="سيتم إضافة المحتوى قريباً."
+          icon={Inbox}
+          tone="neutral"
+          fullHeight
+        />
       </div>
     );
   }

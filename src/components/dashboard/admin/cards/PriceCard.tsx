@@ -103,7 +103,7 @@ export default function PriceCard({
                     setSelectedCard(card);
                     setShowEditModal(true);
                   }}
-                  className="p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                  className="p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                   title="تعديل السعر"
                 >
                   <Edit size={16} />

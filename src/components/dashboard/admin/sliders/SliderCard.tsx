@@ -186,7 +186,7 @@ export default function SliderCard({
                 </p>
               </div>
               <div className="flex items-center gap-2 ml-4">
-                <span className="bg-orange-100 text-(--brand) px-2 py-1 rounded-full text-xs font-medium">
+                <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-full text-xs font-medium">
                   #{slide.order}
                 </span>
               </div>
@@ -226,7 +226,7 @@ export default function SliderCard({
                 <button
                   onClick={() => moveSlide("up")}
                   disabled={!prevId || !!isMoving}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title="تحريك للأعلى"
                 >
                   <ArrowUp size={16} />
@@ -234,7 +234,7 @@ export default function SliderCard({
                 <button
                   onClick={() => moveSlide("down")}
                   disabled={!nextId || !!isMoving}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title="تحريك للأسفل"
                 >
                   <ArrowDown size={16} />
@@ -281,7 +281,7 @@ export default function SliderCard({
                     setSelectedSlide(slide);
                     setShowEditModal(true);
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                   title="تعديل السلايد"
                 >
                   <Edit size={16} />
@@ -292,7 +292,7 @@ export default function SliderCard({
                   onClick={() => {
                     setPendingDelete(true);
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                   title="حذف السلايد"
                 >
                   <Trash2 size={16} />

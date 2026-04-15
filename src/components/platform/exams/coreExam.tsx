@@ -12,7 +12,8 @@ import { useExam } from "@/store/platform/useExam";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
-import errorIllustation from "@/assets/illustration/Error_illustration.svg";
+import EmptyState from "@/components/core/EmptyState";
+import { Inbox } from "lucide-react";
 
 interface ExamProps {
   examData: any;
@@ -177,16 +178,15 @@ const CoreExam = ({
               </div>
             </div>
           )}
-          <div className="h-100  p-3 bg-linear-to-br from-gray-50 to-white flex flex-col items-center justify-center">
-            <img
-              loading="lazy"
-              src={errorIllustation}
-              alt="404"
-              className="w-75 h-75"
+          <div className="h-100 p-3 bg-linear-to-br from-gray-50 to-white flex flex-col items-center justify-center">
+            <EmptyState
+              title="لا يوجد محتوى لعرضه"
+              description="لا توجد أسئلة/بيانات متاحة لهذا الامتحان حالياً."
+              icon={Inbox}
+              tone="info"
+              size="lg"
+              className="w-full"
             />
-            <p className="text-gray-600 text-xl text-center">
-              لا يوجد محتوى لعرضه
-            </p>
           </div>
         </>
       ) : (

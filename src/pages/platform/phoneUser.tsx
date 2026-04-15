@@ -1,15 +1,16 @@
-import errorIllustration from "../../assets/illustration/Error_illustration.svg";
+import EmptyState from "@/components/core/EmptyState";
+import { Smartphone } from "lucide-react";
 const PhoneUser = () => {
   return (
-    <div className="mx-5 relative flex flex-col items-center">
-      <img
-        className="absolute top-0 w-75 h-162.5 z-0"
-        src={errorIllustration}
-        alt="error"
+    <div className="min-h-screen flex content-center items-center">
+      <EmptyState
+        title="قم بتحميل التطبيق لتتمكن من مشاهدة الدورات"
+        description="تجربة أفضل ومناسبة لشاشة الهاتف."
+        icon={Smartphone}
+        tone="info"
+        size="md"
+        className="mx-5"
       />
-      <h1 className="pt-0 text-center absolute text-[1rem] top-112.5 z-1">
-        قم بتحميل التطبيق لتتمكن من مشاهدة الدورات{" "}
-      </h1>
     </div>
   );
 };

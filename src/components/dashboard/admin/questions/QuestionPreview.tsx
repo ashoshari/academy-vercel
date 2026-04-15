@@ -38,7 +38,7 @@ const QuestionPreview: React.FC<Props> = ({ question }) => {
   return (
     <div className="bg-white rounded-xl border border-(--brand) py-8 xl:px-36 px-8">
       <div className="flex items-start justify-start mb-2 gap-4">
-        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center shrink-0">
+        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
           <span className="font-bold text-(--brand) text-lg">
             {question.index + 1}
           </span>

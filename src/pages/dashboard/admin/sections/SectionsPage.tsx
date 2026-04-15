@@ -118,7 +118,7 @@ const AddSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     newSection.icon === option.id
-                      ? "border-(--brand) bg-orange-50 text-(--brand)"
+                      ? "border-(--brand) bg-gray-50 text-(--brand)"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -143,7 +143,7 @@ const AddSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     newSection.color === option.id
-                      ? "border-(--brand) bg-orange-50"
+                      ? "border-(--brand) bg-gray-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -291,7 +291,7 @@ const EditSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     selectedSection.icon === option.id
-                      ? "border-(--brand) bg-orange-50 text-(--brand)"
+                      ? "border-(--brand) bg-gray-50 text-(--brand)"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -319,7 +319,7 @@ const EditSectionModal = ({
                   }
                   className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
                     selectedSection.color === option.id
-                      ? "border-(--brand) bg-orange-50"
+                      ? "border-(--brand) bg-gray-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -621,7 +621,7 @@ const SectionsPage = () => {
                 onClick={() => setViewMode("table")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "table"
-                    ? "bg-orange-100 text-(--brand)"
+                    ? "bg-gray-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -631,7 +631,7 @@ const SectionsPage = () => {
                 onClick={() => setViewMode("grid")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "grid"
-                    ? "bg-orange-100 text-(--brand)"
+                    ? "bg-gray-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -845,7 +845,7 @@ const SectionsPage = () => {
                           });
                           setShowEditModal(true);
                         }}
-                        className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                        className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                         title="تعديل القسم"
                       >
                         <Edit size={16} />
@@ -1008,7 +1008,7 @@ const SectionsPage = () => {
                               });
                               setShowEditModal(true);
                             }}
-                            className="cursor-pointer text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                            className="cursor-pointer text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                             title="تعديل القسم"
                           >
                             <Edit size={16} />

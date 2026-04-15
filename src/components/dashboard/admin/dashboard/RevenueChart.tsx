@@ -129,8 +129,8 @@ export default function RevenueChart() {
                     className={`cursor-pointer w-full text-right px-3 py-2 text-sm transition-colors
               ${
                 y === year
-                  ? "bg-orange-100 text-(--brand) font-semibold"
-                  : "text-gray-700 hover:bg-orange-50"
+                  ? "bg-gray-100 text-(--brand) font-semibold"
+                  : "text-gray-700 hover:bg-gray-50"
               }`}
                     role="option"
                     aria-selected={y === year}

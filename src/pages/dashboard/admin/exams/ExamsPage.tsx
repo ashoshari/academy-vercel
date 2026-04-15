@@ -211,10 +211,11 @@ const ExamsPage = () => {
   // GET Codes
   // const { data: cards } = useCustomQuery("/cards/", ["cards"]);
   // const cardsData = cards?.data;
-  const { mutateAsync: updateExam, isPending: isUpdatingExam } = useCustomUpdate(
-    () => `/training/admin/exams/${selectedExamId ?? "noop"}/`,
-    ["exams"],
-  );
+  const { mutateAsync: updateExam, isPending: isUpdatingExam } =
+    useCustomUpdate(
+      () => `/training/admin/exams/${selectedExamId ?? "noop"}/`,
+      ["exams"],
+    );
 
   const singleExam = useCustomQuery(
     `/training/admin/exams/${selectedExam?.id}/`,
@@ -341,8 +342,8 @@ const ExamsPage = () => {
   };
   const toggleExamStatus = (status: boolean) => {
     updateExam({
-        is_published: !status,
-      })
+      is_published: !status,
+    })
       .then((res) => {
         if (res?.status) {
           toast.success("تم تحديث حالة الاختبار بنجاح");
@@ -522,7 +523,7 @@ const ExamsPage = () => {
                 setSelectedExam(exam);
                 setCurrentView("edit");
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="تعديل الامتحان"
             >
               <Edit size={16} />
@@ -755,10 +756,9 @@ const ExamsPage = () => {
                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                       >
                         <option value="">اختر مادة التخصص</option>
-                        {(
-                          (spec?.specialization_materials?.length ?? 0) > 0
-                            ? spec?.specialization_materials ?? []
-                            : subsub?.specialization_materials ?? []
+                        {((spec?.specialization_materials?.length ?? 0) > 0
+                          ? (spec?.specialization_materials ?? [])
+                          : (subsub?.specialization_materials ?? [])
                         ).map((specialization_material: any) => (
                           <option
                             key={specialization_material.id}
@@ -1324,10 +1324,9 @@ const ExamsPage = () => {
                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                           >
                             <option value="">اختر مادة التخصص</option>
-                            {(
-                              (spec?.specialization_materials?.length ?? 0) > 0
-                                ? spec?.specialization_materials ?? []
-                                : subsub?.specialization_materials ?? []
+                            {((spec?.specialization_materials?.length ?? 0) > 0
+                              ? (spec?.specialization_materials ?? [])
+                              : (subsub?.specialization_materials ?? [])
                             ).map((specialization_material: any) => (
                               <option
                                 key={specialization_material.id}
@@ -1711,7 +1710,7 @@ const ExamsPage = () => {
               onClick={() => setCurrentView("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 currentView === "table"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1721,7 +1720,7 @@ const ExamsPage = () => {
               onClick={() => setCurrentView("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 currentView === "grid"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1956,13 +1955,19 @@ const ExamsPage = () => {
         <ConfirmationModal
           open
           onClose={() => !isUpdatingExam && setPendingExamPublishToggle(null)}
-          onConfirm={() => toggleExamStatus(pendingExamPublishToggle.isPublished)}
+          onConfirm={() =>
+            toggleExamStatus(pendingExamPublishToggle.isPublished)
+          }
           title={
-            pendingExamPublishToggle.isPublished ? "إلغاء نشر الامتحان" : "نشر الامتحان"
+            pendingExamPublishToggle.isPublished
+              ? "إلغاء نشر الامتحان"
+              : "نشر الامتحان"
           }
           variant={pendingExamPublishToggle.isPublished ? "danger" : "success"}
           confirmLabel={
-            pendingExamPublishToggle.isPublished ? "نعم، إلغاء النشر" : "نعم، نشر"
+            pendingExamPublishToggle.isPublished
+              ? "نعم، إلغاء النشر"
+              : "نعم، نشر"
           }
           isPending={isUpdatingExam}
           description={

@@ -113,7 +113,7 @@ export default function RecentActivities() {
         {activities.map((act) => (
           <div
             key={act.id}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-orange-50/50 transition-colors"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50/50 transition-colors"
           >
             <div
               className={`w-2 h-2 ${colorForAction(act.action)} rounded-full`}

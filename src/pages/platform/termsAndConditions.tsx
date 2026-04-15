@@ -1,6 +1,6 @@
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
-import ErrorIllustration from "@/assets/illustration/Error_illustration.svg";
 import { ArrowRight } from "lucide-react";
+import EmptyState from "@/components/core/EmptyState";
 
 import { useNavigate } from "react-router";
 const TermsAndConditions = () => {
@@ -38,10 +38,7 @@ const TermsAndConditions = () => {
           />
         </>
       ) : (
-        <div className="h-screen flex flex-col justify-center items-center">
-          <img src={ErrorIllustration} className="h-80 w-80" alt="Error" />
-          <h2 className="text-2xl">لا يوجد محتوى لعرضه</h2>
-        </div>
+        <EmptyState title="لا يوجد محتوى لعرضه" tone="info" fullHeight />
       )}
     </>
   );

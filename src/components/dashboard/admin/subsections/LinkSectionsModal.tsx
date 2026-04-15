@@ -105,7 +105,7 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
                     onClick={toggleLink}
                     className={`flex items-center gap-4 rounded-lg border-2 p-4 transition-all ${
                       isLinked
-                        ? "border-(--brand) bg-orange-50"
+                        ? "border-(--brand) bg-gray-50"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
@@ -131,7 +131,7 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
                     </div>
 
                     {isLinked && (
-                      <span className="rounded-full bg-orange-100 px-2 py-1 text-xs text-(--brand)">
+                      <span className="rounded-full bg-gray-100 px-2 py-1 text-xs text-(--brand)">
                         مرتبط
                       </span>
                     )}
