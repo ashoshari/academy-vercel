@@ -279,7 +279,7 @@ const QuestionEditForm: React.FC<Props> = ({
                       ],
                     }))
                   }
-                  className="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="btn-brand-slide px-3 py-2 text-sm rounded-lg"
                 >
                   إضافة خيار
                 </button>
@@ -307,7 +307,7 @@ const QuestionEditForm: React.FC<Props> = ({
           </button>
           <button
             onClick={onSubmit}
-            className="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 flex items-center gap-2"
+            className="btn-brand-slide px-5 py-2 rounded-lg flex items-center gap-2"
           >
             <Save size={16} /> حفظ التغييرات
           </button>

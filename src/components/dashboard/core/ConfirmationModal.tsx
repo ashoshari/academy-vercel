@@ -39,8 +39,8 @@ const variantClass: Record<
     confirm:
       "btn-brand-slide text-white hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2",
     ring: "ring-(--brand)/20",
-    iconWrap: "bg-orange-50",
-    icon: "text-(--brand-secondary)",
+    iconWrap: "bg-gray-50",
+    icon: "text-(--brand)",
   },
 };
 
@@ -149,6 +149,7 @@ export function ConfirmationModal({
           </button>
         </div>
       </div>
-    </div>
-  , document.body);
+    </div>,
+    document.body,
+  );
 }

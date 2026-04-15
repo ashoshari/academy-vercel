@@ -590,7 +590,7 @@ const ResourcesPage = () => {
                     />
                     <label
                       htmlFor="file-upload"
-                      className="bg-(--brand) text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
+                      className="btn-brand-slide text-white px-6 py-2 rounded-lg transition-colors cursor-pointer inline-block"
                     >
                       اختيار الملف
                     </label>
@@ -651,7 +651,7 @@ const ResourcesPage = () => {
 
                       <label
                         htmlFor="image-upload"
-                        className="bg-(--brand) text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
+                        className="btn-brand-slide text-white px-6 py-2 rounded-lg transition-colors cursor-pointer inline-block"
                       >
                         اختيار صورة الملف
                       </label>
@@ -900,10 +900,9 @@ const ResourcesPage = () => {
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
                       <option value="">اختر مادة التخصص</option>
-                      {(
-                        (spec?.specialization_materials?.length ?? 0) > 0
-                          ? spec?.specialization_materials ?? []
-                          : subsub?.specialization_materials ?? []
+                      {((spec?.specialization_materials?.length ?? 0) > 0
+                        ? (spec?.specialization_materials ?? [])
+                        : (subsub?.specialization_materials ?? [])
                       ).map((specialization_material: any) => (
                         <option
                           key={specialization_material.id}
@@ -1052,7 +1051,7 @@ const ResourcesPage = () => {
                     />
                     <label
                       htmlFor="file-upload"
-                      className="bg-(--brand) text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
+                      className="btn-brand-slide text-white px-6 py-2 rounded-lg transition-colors cursor-pointer inline-block"
                     >
                       اختيار الملف
                     </label>
@@ -1113,7 +1112,7 @@ const ResourcesPage = () => {
 
                       <label
                         htmlFor="image-upload"
-                        className="bg-(--brand) text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
+                        className="btn-brand-slide text-white px-6 py-2 rounded-lg transition-colors cursor-pointer inline-block"
                       >
                         اختيار صورة الملف
                       </label>
@@ -1392,10 +1391,9 @@ const ResourcesPage = () => {
                           className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                         >
                           <option value="">اختر مادة التخصص</option>
-                          {(
-                            (spec?.specialization_materials?.length ?? 0) > 0
-                              ? spec?.specialization_materials ?? []
-                              : subsub?.specialization_materials ?? []
+                          {((spec?.specialization_materials?.length ?? 0) > 0
+                            ? (spec?.specialization_materials ?? [])
+                            : (subsub?.specialization_materials ?? [])
                           ).map((specialization_material: any) => (
                             <option
                               key={specialization_material.id}
@@ -1605,7 +1603,7 @@ const ResourcesPage = () => {
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1615,7 +1613,7 @@ const ResourcesPage = () => {
               onClick={() => setViewMode("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >

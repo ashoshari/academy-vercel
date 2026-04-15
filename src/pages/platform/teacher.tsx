@@ -24,12 +24,12 @@ import {
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import useTokenStore from "@/store/platform/useToken";
-import errorIllustation from "@/assets/illustration/Error_illustration.svg";
+import EmptyState from "@/components/core/EmptyState";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
-import ErrorIllustration from "@/assets/illustration/Error_illustration.svg";
+import { Inbox, Database, LayoutGrid } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const TeacherProfile: React.FC = () => {
@@ -741,12 +741,13 @@ const TeacherProfile: React.FC = () => {
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-gray-50 to-white">
-        <img
-          className="absolute top-0 w-75 h-162.5 z-0"
-          src={ErrorIllustration}
-          alt="error"
+        <EmptyState
+          title="لا يوجد بيانات لعرضها"
+          description="جرّب تحديث الصفحة أو العودة لاحقاً."
+          icon={Database}
+          tone="info"
+          fullHeight
         />
-        <h1 className="text-2xl">لا يوجد بيانات لعرضها</h1>
       </div>
     );
   }
@@ -893,16 +894,14 @@ const TeacherProfile: React.FC = () => {
                 {!isLoading && freeCoursesData?.length > 0 ? (
                   freeCoursesData?.map(renderFreeCourseCard)
                 ) : (
-                  <div className="col-span-3 relative flex flex-col items-center">
-                    <img
-                      loading="lazy"
-                      className="absolute top-0 w-100 h-87.5 z-0"
-                      src={errorIllustation}
-                      alt="error"
+                  <div className="col-span-3">
+                    <EmptyState
+                      title="لا يوجد محتوى لعرضه"
+                      description="لا توجد دورات مجانية متاحة حالياً."
+                      icon={Inbox}
+                      tone="info"
+                      size="lg"
                     />
-                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
-                      لا يوجد محتوى لعرضه
-                    </h1>
                   </div>
                 )}
               </div>
@@ -913,16 +912,14 @@ const TeacherProfile: React.FC = () => {
                 {!isLoading && coursesData?.length > 0 ? (
                   coursesData?.map(renderCourseCard)
                 ) : (
-                  <div className="col-span-3 relative flex flex-col items-center">
-                    <img
-                      loading="lazy"
-                      className="absolute top-0 w-100 h-87.5 z-0"
-                      src={errorIllustation}
-                      alt="error"
+                  <div className="col-span-3">
+                    <EmptyState
+                      title="لا يوجد محتوى لعرضه"
+                      description="لا توجد دورات لعرضها حالياً."
+                      icon={LayoutGrid}
+                      tone="info"
+                      size="lg"
                     />
-                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
-                      لا يوجد محتوى لعرضه
-                    </h1>
                   </div>
                 )}
               </div>
@@ -933,16 +930,14 @@ const TeacherProfile: React.FC = () => {
                 {!isLoading && filesData?.length > 0 ? (
                   filesData?.map(renderFileCard)
                 ) : (
-                  <div className="col-span-3 relative flex flex-col items-center">
-                    <img
-                      loading="lazy"
-                      className="absolute top-0 w-100 h-87.5 z-0"
-                      src={errorIllustation}
-                      alt="error"
+                  <div className="col-span-3">
+                    <EmptyState
+                      title="لا يوجد محتوى لعرضه"
+                      description="لا توجد ملفات متاحة حالياً."
+                      icon={Inbox}
+                      tone="info"
+                      size="lg"
                     />
-                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
-                      لا يوجد محتوى لعرضه
-                    </h1>
                   </div>
                 )}
               </div>
@@ -952,16 +947,14 @@ const TeacherProfile: React.FC = () => {
                 {!isLoading && booksesData?.length > 0 ? (
                   booksesData?.map(renderBooksesCard)
                 ) : (
-                  <div className="col-span-3 relative flex flex-col items-center">
-                    <img
-                      loading="lazy"
-                      className="absolute top-0 w-100 h-87.5 z-0"
-                      src={errorIllustation}
-                      alt="error"
+                  <div className="col-span-3">
+                    <EmptyState
+                      title="لا يوجد محتوى لعرضه"
+                      description="لا توجد كتب لعرضها حالياً."
+                      icon={Inbox}
+                      tone="info"
+                      size="lg"
                     />
-                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
-                      لا يوجد محتوى لعرضه
-                    </h1>
                   </div>
                 )}
               </div>
@@ -971,16 +964,14 @@ const TeacherProfile: React.FC = () => {
                 {!isLoading && ministerial_questions?.length > 0 ? (
                   ministerial_questions?.map(renderMinisterialQuestionsCard)
                 ) : (
-                  <div className="col-span-3 relative flex flex-col items-center">
-                    <img
-                      loading="lazy"
-                      className="absolute top-0 w-100 h-87.5 z-0"
-                      src={errorIllustation}
-                      alt="error"
+                  <div className="col-span-3">
+                    <EmptyState
+                      title="لا يوجد محتوى لعرضه"
+                      description="لا توجد أسئلة وزارية متاحة حالياً."
+                      icon={Inbox}
+                      tone="info"
+                      size="lg"
                     />
-                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
-                      لا يوجد محتوى لعرضه
-                    </h1>
                   </div>
                 )}
               </div>
@@ -991,16 +982,14 @@ const TeacherProfile: React.FC = () => {
                 {!isLoading && freeExamsData?.length > 0 ? (
                   freeExamsData?.map(renderExamCard)
                 ) : (
-                  <div className="col-span-3 relative flex flex-col items-center">
-                    <img
-                      loading="lazy"
-                      className="absolute top-0 w-100 h-87.5 z-0"
-                      src={errorIllustation}
-                      alt="error"
+                  <div className="col-span-3">
+                    <EmptyState
+                      title="لا يوجد محتوى لعرضه"
+                      description="لا توجد امتحانات مجانية متاحة حالياً."
+                      icon={Inbox}
+                      tone="info"
+                      size="lg"
                     />
-                    <h1 className="pt-20 absolute text-[2rem] top-50 z-1">
-                      لا يوجد محتوى لعرضه
-                    </h1>
                   </div>
                 )}
               </div>

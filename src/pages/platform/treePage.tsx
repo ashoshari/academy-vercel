@@ -3,7 +3,7 @@ import { ChevronDown, ChevronRight, Home, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useParams } from "react-router";
-import errorIllustation from "@/assets/illustration/Error_illustration.svg";
+import EmptyState from "@/components/core/EmptyState";
 
 /** Query params for `/training/students/teacher/:id/` so tabs reflect the tree path. */
 type TeacherTreeQueryFilters = {
@@ -318,16 +318,7 @@ const TreePage: React.FC = () => {
               return !hasChildren && !hasTeachers;
             }) ? (
               // Show empty state once if ALL subsections are empty
-              <div className="relative flex flex-col items-center">
-                <img
-                  className="absolute top-0 w-175 h-162.5 z-0"
-                  src={errorIllustation}
-                  alt="error"
-                />
-                <h1 className="pt-12.5 absolute text-[2rem] top-125 z-1">
-                  لا يوجد محتوى لعرضه
-                </h1>
-              </div>
+              <EmptyState title="لا يوجد محتوى لعرضه" tone="info" size="lg" />
             ) : (
               // Otherwise render the nodes normally
               data.subsections.map((node: any) => (
@@ -340,16 +331,7 @@ const TreePage: React.FC = () => {
               ))
             )
           ) : (
-            <div className="relative flex flex-col items-center">
-              <img
-                className="absolute top-0 w-175 h-162.5 z-0"
-                src={errorIllustation}
-                alt="error"
-              />
-              <h1 className="pt-12.5 absolute text-[2rem] top-125 z-1">
-                لا يوجد محتوى لعرضه
-              </h1>
-            </div>
+            <EmptyState title="لا يوجد محتوى لعرضه" tone="info" size="lg" />
           )}
         </div>
       </div>

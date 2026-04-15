@@ -79,7 +79,7 @@ export default function TreeItem({
                 onClick={() => {
                   toggleExpanded?.(item.id);
                 }}
-                className="cursor-pointer p-1 hover:bg-orange-50 rounded transition-colors"
+                className="cursor-pointer p-1 hover:bg-gray-50 rounded transition-colors"
               >
                 {isExpanded ? (
                   <ChevronDown size={16} className="text-(--brand)" />
@@ -89,7 +89,7 @@ export default function TreeItem({
               </button>
             ) : (
               <div className="w-6 h-6 flex items-center justify-center">
-                <div className="w-2 h-2 bg-orange-300 rounded-full"></div>
+                <div className="w-2 h-2 bg-(--brand) rounded-full"></div>
               </div>
             )}
 
@@ -121,7 +121,7 @@ export default function TreeItem({
 
               {/* Level Badge */}
               <div className="flex items-center gap-2 ml-4">
-                <span className="bg-orange-100 text-(--brand) px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                   <Hash size={12} />
                   المستوى
                   {type === "subsections"
@@ -177,7 +177,7 @@ export default function TreeItem({
                       setShowAddMaterialModal?.(true);
                     }
                   }}
-                  className="cursor-pointer mr-auto p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
+                  className="cursor-pointer mr-auto p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
                 >
                   <Plus size={16} />
                   {type === "subsections"
@@ -196,7 +196,7 @@ export default function TreeItem({
                     // setSelectedSpecialization?.(item);
                     setShowAddMaterialModal?.(true);
                   }}
-                  className=" p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
+                  className=" p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
                   title=" إضافة مادة  "
                 >
                   <Plus size={16} />
@@ -276,7 +276,7 @@ export default function TreeItem({
                       setShowEditMaterialModal?.(true);
                     }
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                   title="تعديل القسم"
                 >
                   <Edit size={16} />

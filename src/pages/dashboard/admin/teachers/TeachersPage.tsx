@@ -329,7 +329,7 @@ const TeachersPage = () => {
               onClick={() => {
                 navigate(`/dashboard/teachers/edit/${teacher.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
               title="تعديل المعلم"
             >
               <Edit size={16} />
@@ -477,7 +477,7 @@ const TeachersPage = () => {
                 onClick={() => setViewMode("table")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "table"
-                    ? "bg-orange-100 text-(--brand)"
+                    ? "bg-gray-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -487,7 +487,7 @@ const TeachersPage = () => {
                 onClick={() => setViewMode("grid")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "grid"
-                    ? "bg-orange-100 text-(--brand)"
+                    ? "bg-gray-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -763,7 +763,7 @@ const TeachersPage = () => {
 
             <button
               onClick={() => setShowPasswordModal(false)}
-              className="cursor-pointer w-full py-2 px-4 bg-(--brand) hover:bg-orange-600 text-white rounded-lg font-semibold"
+              className="btn-brand-slide cursor-pointer w-full py-2 px-4 text-white rounded-lg font-semibold"
             >
               إغلاق
             </button>

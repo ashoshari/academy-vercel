@@ -59,7 +59,7 @@ export default function EditSliderModal({
                   }
                   className={`cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
                     selectedSlide.type === "image"
-                      ? "border-(--brand) bg-orange-50 text-(--brand)"
+                      ? "border-(--brand)  text-(--brand)"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -160,7 +160,7 @@ export default function EditSliderModal({
                 onChange={(e) =>
                   setSelectedImageFile(e.target.files?.[0] ?? null)
                 }
-                className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-orange-50 file:text-(--brand) hover:file:bg-orange-100"
+                className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-(--brand) hover:file:bg-blue-100"
               />
             </div>
 

@@ -601,7 +601,7 @@ const FilesPage = () => {
             />
             <label
               htmlFor="file-upload"
-              className="bg-(--brand) text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors cursor-pointer inline-block"
+              className="btn-brand-slide text-white px-6 py-2 rounded-lg transition-colors cursor-pointer inline-block"
             >
               اختيار الملفات
             </label>
@@ -981,7 +981,7 @@ const FilesPage = () => {
               onClick={() => setViewMode("grid")}
               className={`p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -991,7 +991,7 @@ const FilesPage = () => {
               onClick={() => setViewMode("list")}
               className={`p-2 rounded-lg transition-colors ${
                 viewMode === "list"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >

@@ -566,7 +566,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
               {hasChildren && (
                 <button
                   onClick={() => toggleExpanded(item.id)}
-                  className="cursor-pointer p-1 hover:bg-orange-50 rounded transition-colors"
+                  className="cursor-pointer p-1 hover:bg-blue-50 rounded transition-colors"
                 >
                   {isExpanded ? (
                     <ChevronDown size={16} className="text-(--brand)" />
@@ -657,7 +657,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           setSelectedItem(item);
                           moveItem(item, "up");
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded transition-colors"
                         title="نقل لأعلى"
                       >
                         <ArrowUp size={14} />
@@ -667,7 +667,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           setSelectedItem(item);
                           moveItem(item, "down");
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded transition-colors"
+                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded transition-colors"
                         title="نقل لأسفل"
                       >
                         <ArrowDown size={14} />
@@ -844,7 +844,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 onClick={() => setShowUnpublished(!showUnpublished)}
                 className={`cursor-pointer px-3 py-1 text-sm ${
                   showUnpublished
-                    ? "bg-orange-50 text-(--brand)"
+                    ? "bg-blue-50 text-(--brand)"
                     : "bg-gray-100 text-gray-600 "
                 } rounded-lg hover:shadow-md transition-colors`}
               >
@@ -882,7 +882,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   collectIds(contentTree);
                   setExpandedItems(allIds);
                 }}
-                className="cursor-pointer px-3 py-1 text-sm bg-orange-100 text-(--brand) rounded-lg hover:bg-orange-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                className="cursor-pointer px-3 py-1 text-sm bg-gray-100 text-(--brand) rounded-lg hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 توسيع الكل
               </button>

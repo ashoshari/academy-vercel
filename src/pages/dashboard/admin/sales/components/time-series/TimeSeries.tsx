@@ -160,8 +160,8 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
                   }}
                   className={`cursor-pointer w-full text-right px-3 py-2 text-sm transition-colors ${
                     chartYear === ""
-                      ? "bg-orange-100 text-(--brand) font-semibold"
-                      : "text-gray-700 hover:bg-orange-50"
+                      ? "bg-gray-100 text-(--brand) font-semibold"
+                      : "text-gray-700 hover:bg-gray-50"
                   }`}
                 >
                   آخر 12 شهرًا
@@ -176,8 +176,8 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
                     }}
                     className={`cursor-pointer w-full text-right px-3 py-2 text-sm transition-colors ${
                       y === chartYear
-                        ? "bg-orange-100 text-(--brand) font-semibold"
-                        : "text-gray-700 hover:bg-orange-50"
+                        ? "bg-gray-100 text-(--brand) font-semibold"
+                        : "text-gray-700 hover:bg-gray-50"
                     }`}
                     role="option"
                   >

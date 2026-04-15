@@ -545,7 +545,7 @@ const CoursesPage = () => {
                 setSelectedCourse(course);
                 setCurrentView("edit");
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="تعديل الدورة"
             >
               <Edit size={16} />
@@ -554,7 +554,7 @@ const CoursesPage = () => {
               onClick={() => {
                 requestDeleteCourse(course);
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="حذف الدورة"
             >
               <Trash2 size={16} />
@@ -735,7 +735,7 @@ const CoursesPage = () => {
                 <div className="flex items-center gap-2">
                   <label
                     htmlFor="imageUpload"
-                    className="cursor-pointer px-4 py-3 bg-(--brand) text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                    className="btn-brand-slide cursor-pointer px-4 py-3 text-white text-sm font-medium rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-(--brand) transition-all"
                   >
                     اختر الصورة المصغرة
                   </label>
@@ -1263,7 +1263,7 @@ const CoursesPage = () => {
                 <div className="flex items-center gap-2">
                   <label
                     htmlFor="fileUpload"
-                    className="cursor-pointer px-4 py-3 bg-(--brand) text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                    className="btn-brand-slide cursor-pointer px-4 py-3 text-white text-sm font-medium rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-(--brand) transition-all"
                   >
                     اختر الصورة المصغرة
                   </label>
@@ -1810,7 +1810,7 @@ const CoursesPage = () => {
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -1820,7 +1820,7 @@ const CoursesPage = () => {
               onClick={() => setViewMode("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -2099,7 +2099,9 @@ const CoursesPage = () => {
               ? "إلغاء نشر الدورة"
               : "نشر الدورة"
           }
-          variant={pendingCoursePublishToggle.isPublished ? "danger" : "success"}
+          variant={
+            pendingCoursePublishToggle.isPublished ? "danger" : "success"
+          }
           confirmLabel={
             pendingCoursePublishToggle.isPublished
               ? "نعم، إلغاء النشر"

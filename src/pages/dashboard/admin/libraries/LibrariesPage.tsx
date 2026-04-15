@@ -281,7 +281,7 @@ const LibrariesPage = () => {
               onClick={() => setViewMode("table")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "table"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -291,7 +291,7 @@ const LibrariesPage = () => {
               onClick={() => setViewMode("grid")}
               className={`cursor-pointer p-2 rounded-lg transition-colors ${
                 viewMode === "grid"
-                  ? "bg-orange-100 text-(--brand)"
+                  ? "bg-gray-100 text-(--brand)"
                   : "text-gray-400 hover:bg-gray-100"
               }`}
             >
@@ -565,7 +565,7 @@ const LibrariesPage = () => {
 
             <button
               onClick={() => setShowPasswordModal(false)}
-              className="cursor-pointer w-full py-2 px-4 bg-(--brand) hover:bg-orange-600 text-white rounded-lg font-semibold"
+              className="btn-brand-slide cursor-pointer w-full py-2 px-4 text-white rounded-lg font-semibold"
             >
               إغلاق
             </button>

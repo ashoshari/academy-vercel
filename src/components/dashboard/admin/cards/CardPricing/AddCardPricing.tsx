@@ -179,7 +179,7 @@ const AddCardPricing = ({
             <div className="flex items-center gap-2">
               <label
                 htmlFor="imageUpload"
-                className="cursor-pointer px-4 py-3 bg-(--brand) text-white text-sm font-medium rounded-lg shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-(--brand) transition-all"
+                className="btn-brand-slide cursor-pointer px-4 py-3 text-white text-sm font-medium rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-(--brand) transition-all"
               >
                 اختر الصورة المصغرة
               </label>

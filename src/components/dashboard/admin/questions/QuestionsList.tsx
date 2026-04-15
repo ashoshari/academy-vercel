@@ -58,8 +58,8 @@ const QuestionsList: React.FC<Props> = ({
                 <tr key={q.id} className="hover:bg-gray-50">
                   <td className="px-6 py-3">
                     <div className="flex items-center justify-start gap-4">
-                      <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0">
-                        <span className="font-bold text-(--brand) text-sm">
+                      <div className="w-8 h-8 bg-(--brand) rounded-full flex items-center justify-center shrink-0">
+                        <span className="font-bold text-white text-sm">
                           {index + 1}
                         </span>
                       </div>

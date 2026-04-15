@@ -58,10 +58,11 @@ const CardPricingPage = () => {
   ]);
   const isLoadingStatistics = Boolean((cardStatistics as any)?.isLoading);
 
-  const { mutateAsync: updateCard, isPending: isUpdatingCard } = useCustomUpdate(
-    () => `cards/${selectedCardId ?? "noop"}/`,
-    ["cards", "card-statistics"],
-  );
+  const { mutateAsync: updateCard, isPending: isUpdatingCard } =
+    useCustomUpdate(
+      () => `cards/${selectedCardId ?? "noop"}/`,
+      ["cards", "card-statistics"],
+    );
 
   const requestCardStatusToggle = (card: any) => {
     const id = String(card?.id ?? "");
@@ -263,7 +264,7 @@ const CardPricingPage = () => {
                       setSelectedCard(card);
                       setShowEditModal(true);
                     }}
-                    className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors"
+                    className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                     title="تعديل السعر"
                   >
                     <Edit size={16} />
@@ -329,7 +330,9 @@ const CardPricingPage = () => {
           open
           onClose={() => !isUpdatingCard && setPendingCardStatusToggle(null)}
           onConfirm={confirmCardStatusToggle}
-          title={pendingCardStatusToggle.isActive ? "تعطيل البطاقة" : "تفعيل البطاقة"}
+          title={
+            pendingCardStatusToggle.isActive ? "تعطيل البطاقة" : "تفعيل البطاقة"
+          }
           variant={pendingCardStatusToggle.isActive ? "danger" : "success"}
           confirmLabel={
             pendingCardStatusToggle.isActive ? "نعم، تعطيل" : "نعم، تفعيل"
@@ -346,7 +349,10 @@ const CardPricingPage = () => {
               </p>
               <p className="text-sm text-gray-600">
                 السعر:{" "}
-                <span className="font-semibold text-(--brand-secondary)" dir="ltr">
+                <span
+                  className="font-semibold text-(--brand-secondary)"
+                  dir="ltr"
+                >
                   {pendingCardStatusToggle.price}
                 </span>
               </p>

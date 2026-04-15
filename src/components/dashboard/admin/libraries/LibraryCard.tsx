@@ -131,7 +131,7 @@ export default function LibraryCard({
               onClick={() => {
                 navigate(`/dashboard/libraries/edit/${library.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-(--brand) hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-gray-400 hover:text-(--brand) hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
               title="تعديل المكتبة"
             >
               <Edit size={16} />

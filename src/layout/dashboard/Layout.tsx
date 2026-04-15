@@ -129,7 +129,7 @@ const Layout = () => {
             )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="cursor-pointer p-2 rounded-lg hover:bg-orange-50 transition-colors"
+              className="cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors"
             >
               {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
             </button>

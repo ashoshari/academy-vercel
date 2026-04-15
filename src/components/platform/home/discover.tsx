@@ -4,7 +4,8 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
-import ErrorIllustration from "@/assets/illustration/Error_illustration.svg";
+import EmptyState from "@/components/core/EmptyState";
+import { LayoutGrid } from "lucide-react";
 
 const Discover: React.FC = () => {
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
@@ -52,10 +53,13 @@ const Discover: React.FC = () => {
 
         {/* Sections Grid */}
         {sections?.data?.length === 0 || !sections?.data ? (
-          <div className="h-full flex flex-col justify-center items-center">
-            <img src={ErrorIllustration} className="h-80 w-80" alt="Error" />
-            <h2 className="text-gray-800 text-2xl">لا يوجد أقسام لعرضها</h2>
-          </div>
+          <EmptyState
+            title="لا يوجد أقسام لعرضها"
+            description="جرّب تحديث الصفحة بعد قليل."
+            icon={LayoutGrid}
+            tone="info"
+            size="lg"
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sections?.data?.map((section: any, index: number) => {

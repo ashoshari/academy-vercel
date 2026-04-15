@@ -105,10 +105,10 @@ const ContactPage = () => {
                         {item.action ? (
                           <a
                             href={item.action}
-                            className="flex items-center gap-6 p-6 rounded-2xl hover:bg-orange-50/80 transition-all duration-300 border-2 border-transparent hover:border-(--brand) transform hover:scale-[1.02]"
+                            className="flex items-center gap-6 p-6 rounded-2xl hover:bg-blue-50/80 transition-all duration-300 border-2 border-transparent hover:border-(--brand) transform hover:scale-[1.02]"
                           >
-                            <div className="flex items-center justify-center w-16 h-16 bg-orange-100/80 rounded-xl group-hover:bg-orange-200/80 transition-colors shadow-lg">
-                              <item.icon className="w-8 h-8 text-(--brand)" />
+                            <div className="flex items-center justify-center w-16 h-16 bg-(--brand) rounded-xl  transition-colors shadow-lg">
+                              <item.icon className="w-8 h-8 text-white" />
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-semibold text-gray-500 mb-1">
@@ -121,8 +121,8 @@ const ContactPage = () => {
                           </a>
                         ) : (
                           <div className="flex items-center gap-6 p-6 rounded-2xl">
-                            <div className="flex items-center justify-center w-16 h-16 bg-orange-100/80 rounded-xl shadow-lg">
-                              <item.icon className="w-8 h-8 text-(--brand)" />
+                            <div className="flex items-center justify-center w-16 h-16 bg-(--brand) rounded-xl shadow-lg">
+                              <item.icon className="w-8 h-8 text-white" />
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-semibold text-gray-500 mb-1">
@@ -175,8 +175,8 @@ const ContactPage = () => {
                   <div className="space-y-8">
                     {features.map((feature, index) => (
                       <div key={index} className="flex items-start gap-6">
-                        <div className="flex items-center justify-center w-16 h-16 bg-orange-100/80 rounded-xl shrink-0 shadow-lg">
-                          <feature.icon className="w-8 h-8 text-(--brand)" />
+                        <div className="flex items-center justify-center w-16 h-16 bg-(--brand) rounded-xl shrink-0 shadow-lg">
+                          <feature.icon className="w-8 h-8 text-white" />
                         </div>
                         <div>
                           <h3 className="font-bold text-gray-800 mb-2 text-xl">
@@ -192,7 +192,7 @@ const ContactPage = () => {
                 </div>
 
                 {/* About Section */}
-                <div className="bg-linear-to-br from-orange-500/95 to-orange-600/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-white border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
+                <div className="bg-linear-to-br from-(--brand) to-(--brand-light) backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-white border border-(--brand) transform hover:scale-[1.02] transition-all duration-300">
                   <h2 className="text-3xl font-bold mb-6">عن الشركة</h2>
                   <p className="text-white leading-relaxed mb-8 text-lg">
                     نحن في Supervision Software نركز على تقديم حلول تقنية متطورة
@@ -232,7 +232,7 @@ const ContactPage = () => {
                   </a>
                   <a
                     href="mailto:contact@vision-jo.com"
-                    className="border-2 border-(--brand) text-(--brand) px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-50/80 transition-all duration-300 backdrop-blur-sm transform hover:scale-[1.05] shadow-lg"
+                    className="border-2 border-(--brand) text-(--brand) px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-50/80 transition-all duration-300 backdrop-blur-sm transform hover:scale-[1.05] shadow-lg"
                   >
                     راسلنا عبر البريد
                   </a>

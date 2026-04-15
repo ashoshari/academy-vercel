@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useCallback } from "react";
-import ErrorIllustration from "@/assets/illustration/Error_illustration.svg";
+import EmptyState from "@/components/core/EmptyState";
+import { Images } from "lucide-react";
 
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -221,9 +222,15 @@ const Hero: React.FC = () => {
             )}
           </>
         ) : (
-          <div className="h-full flex flex-col justify-center items-center">
-            <img src={ErrorIllustration} className="h-80 w-80" alt="Error" />
-            <h2 className="text-white text-2xl">لا يوجد سلايدات لعرضها</h2>
+          <div className="h-full flex items-center justify-center">
+            <EmptyState
+              title="لا يوجد سلايدات لعرضها"
+              description="سيتم إضافة سلايدات قريباً."
+              icon={Images}
+              tone="neutral"
+              size="lg"
+              dir="rtl"
+            />
           </div>
         )}
       </section>

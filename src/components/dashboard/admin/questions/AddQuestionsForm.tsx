@@ -389,7 +389,7 @@ const AddQuestionsForm: React.FC<Props> = ({
                       answers: [...d.answers, emptyAnswer()],
                     }))
                   }
-                  className="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-1"
+                  className="btn-brand-slide px-3 py-2 text-sm rounded-lg flex items-center gap-1"
                 >
                   <Plus size={14} /> إضافة خيار
                 </button>
@@ -420,7 +420,7 @@ const AddQuestionsForm: React.FC<Props> = ({
           <button
             type="button"
             onClick={onAddToBatch}
-            className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2"
+            className="btn-brand-slide px-5 py-2 rounded-lg flex items-center gap-2"
           >
             <Plus size={16} /> إضافة سؤال آخر (للدفعة)
           </button>
@@ -428,7 +428,7 @@ const AddQuestionsForm: React.FC<Props> = ({
           <button
             type="button"
             onClick={onSubmitAll}
-            className="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 flex items-center gap-2"
+            className="btn-brand-slide px-5 py-2 rounded-lg flex items-center gap-2"
           >
             <Save size={16} />
             {pending.length

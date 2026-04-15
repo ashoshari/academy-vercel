@@ -91,7 +91,7 @@ const CustomCardTable = () => {
                 onClick={() => setViewMode("table")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "table"
-                    ? "bg-orange-100 text-(--brand)"
+                    ? "bg-gray-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >
@@ -101,7 +101,7 @@ const CustomCardTable = () => {
                 onClick={() => setViewMode("grid")}
                 className={`cursor-pointer p-2 rounded-lg transition-colors ${
                   viewMode === "grid"
-                    ? "bg-orange-100 text-(--brand)"
+                    ? "bg-gray-100 text-(--brand)"
                     : "text-gray-400 hover:bg-gray-100"
                 }`}
               >

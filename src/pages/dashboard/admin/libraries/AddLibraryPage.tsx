@@ -336,7 +336,7 @@ export default function AddLibraryPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="curosor-pointer px-6 py-3 bg-(--brand) text-white rounded-lg cursor-pointer hover:bg-orange-600 transition-all disabled:opacity-50 flex items-center gap-2"
+            className="btn-brand-slide px-6 py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             <Save size={16} />
             إضافة المكتبة
