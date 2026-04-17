@@ -323,7 +323,7 @@ const TeacherProfile: React.FC = () => {
               </span>
             )}
             {course?.subsection?.title && (
-              <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
+              <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-lg">
                 {course?.subsection?.title}
               </span>
             )}
@@ -425,7 +425,7 @@ const TeacherProfile: React.FC = () => {
               </span>
             )}
             {course?.subsection?.title && (
-              <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
+              <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-lg">
                 {course?.subsection?.title || "-"}
               </span>
             )}
@@ -1017,7 +1017,7 @@ const TeacherProfile: React.FC = () => {
                 <p className="text-gray-600">{selectedCourse?.title}</p>
               </div>
 
-              <div className="bg-linear-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-6">
+              <div className="bg-linear-to-r from-gray-50 to-gray-50 rounded-2xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-700 font-medium">سعر الدورة:</span>
                   {selectedCourse?.card_price?.price ? (

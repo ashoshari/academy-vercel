@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Plus,
   Search,
-  Edit,
   Eye,
   EyeOff,
   BookOpen,
@@ -13,7 +12,6 @@ import {
   Rows,
   Grid,
   User,
-  Trash2,
   XCircle,
   Settings,
 } from "lucide-react";
@@ -32,6 +30,8 @@ import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 import { useQueryClient } from "@tanstack/react-query";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import CourseActivation from "./CourseActivation";
+import EditButton from "@/components/dashboard/core/EditButton";
+import DeleteButton from "@/components/dashboard/core/DeleteButton";
 import DashboardStatCard, {
   DASHBOARD_STATS_GRID_4,
 } from "@/components/dashboard/admin/cards/DashboardStatCard";
@@ -376,7 +376,7 @@ const CoursesPage = () => {
       case "مبتدئ":
         return "bg-green-100 text-green-800";
       case "متوسط":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-gray-100 text-(--brand)";
       case "متقدم":
         return "bg-red-100 text-red-800";
       default:
@@ -402,7 +402,7 @@ const CoursesPage = () => {
         {/* Status Badges */}
         <div className="absolute top-4 right-4 flex gap-2">
           {course?.is_special && (
-            <span className="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+            <span className="bg-(--brand) text-white px-2 py-1 rounded-full text-xs font-medium">
               مميز
             </span>
           )}
@@ -532,25 +532,20 @@ const CoursesPage = () => {
           </div>
 
           <div className="flex items-center gap-1">
-            <button
+            <EditButton
               onClick={() => {
                 setSelectedCourse(course);
                 setCurrentView("edit");
               }}
               className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="تعديل الدورة"
-            >
-              <Edit size={16} />
-            </button>
-            <button
+            />
+            <DeleteButton
               onClick={() => {
                 requestDeleteCourse(course);
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="حذف الدورة"
-            >
-              <Trash2 size={16} />
-            </button>
+            />
           </div>
         </div>
       </div>
@@ -2043,25 +2038,20 @@ const CoursesPage = () => {
                               )}
                             </button>
 
-                            <button
+                            <EditButton
                               onClick={() => {
                                 setSelectedCourse(course);
                                 setCurrentView("edit");
                               }}
                               className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="تعديل الدورة"
-                            >
-                              <Edit size={16} />
-                            </button>
-                            <button
+                            />
+                            <DeleteButton
                               onClick={() => {
                                 requestDeleteCourse(course);
                               }}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="حذف الدورة"
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            />
                           </div>
                         </td>
                       </tr>

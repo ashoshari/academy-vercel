@@ -199,7 +199,7 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
             points={salesPoints}
             selectedId={selectedIdForCharts}
             onSelect={setSelectedBarId}
-            summaryPrefix="المبيعات:"
+            summaryPrefix="المبيعات: "
             formatValue={(v) => String(Math.round(v))}
             loading={isLoading}
             emptyMessage="لا توجد بيانات للمبيعات في هذه الفترة."
@@ -213,7 +213,7 @@ export default function TimeSeries({ filters }: { filters: SalesFilters }) {
             points={sharePoints}
             selectedId={selectedIdForCharts}
             onSelect={setSelectedBarId}
-            summaryPrefix="القيمة:"
+            summaryPrefix="القيمة: "
             formatValue={(v) => v.toFixed(2)}
             loading={isLoading}
             emptyMessage="لا توجد بيانات لحصة المعلم في هذه الفترة."

@@ -1,8 +1,6 @@
 import {
   Plus,
-  Edit,
   Eye,
-  Book,
   Users,
   Phone,
   Mail,
@@ -13,7 +11,6 @@ import {
   Search,
   CircleX,
   EyeOff,
-  RefreshCcw,
   Info,
 } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -29,6 +26,9 @@ import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
+import DetailsButton from "@/components/dashboard/core/DetailsButton";
+import EditButton from "@/components/dashboard/core/EditButton";
+import RefreshButton from "@/components/dashboard/core/RefreshButton";
 
 export interface Student {
   id: number;
@@ -294,7 +294,7 @@ const StudentsPage = () => {
             <span className="truncate">{student?.imei || "-"}</span>
           </div>
           <div className="flex items-center h-full gap-2 text-sm text-gray-600">
-            <RefreshCcw size={14} />
+            <RefreshButton direction="ccw" aria-hidden="true" tabIndex={-1} />
             <span className="truncate">
               {student?.imei_reseted_count || "-"}
             </span>
@@ -305,15 +305,11 @@ const StudentsPage = () => {
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex justify-between items-center gap-1 w-full">
             <div>
-              <button
+              <DetailsButton
                 onClick={() => {
                   navigate(`/dashboard/students/${student.id}`);
                 }}
-                className="cursor-pointer p-2 text-gray-400 hover:text-green-600 rounded-lg transition-colors"
-                title="عرض التفاصيل"
-              >
-                <Book size={16} />
-              </button>
+              />
               <StatusToggleButton
                 isOn={Boolean(student?.is_active)}
                 onToggle={() => requestStudentVisibilityToggle(student)}
@@ -322,24 +318,20 @@ const StudentsPage = () => {
               />
             </div>
             <div>
-              <button
+              <RefreshButton
                 onClick={() => {
                   handleResetIMEI(student?.id);
                 }}
-                className="cursor-pointer p-2 text-gray-400 hover:text-purple-600 rounded-lg transition-colors"
                 title="إعادة تعيين رمز هوية الجهاز"
-              >
-                <RefreshCcw size={16} />
-              </button>
-              <button
+                direction="ccw"
+              />
+              <EditButton
                 onClick={() => {
                   navigate(`/dashboard/students/edit/${student.id}`);
                 }}
                 className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) rounded-lg transition-colors"
                 title="تعديل الطالب"
-              >
-                <Edit size={16} />
-              </button>
+              />
             </div>
           </div>
         </div>
@@ -660,7 +652,7 @@ const StudentsPage = () => {
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
                               student?.is_allow_to_use_web
                                 ? "bg-blue-100 text-(--brand-secondary)"
-                                : "bg-yellow-100 text-yellow-800"
+                                : "bg-gray-100 text-(--brand)"
                             }`}
                           >
                             {student?.is_allow_to_use_web ? "ويب" : "تطبيق"}
@@ -689,15 +681,11 @@ const StudentsPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <button
+                          <DetailsButton
                             onClick={() => {
                               navigate(`/dashboard/students/${student.id}`);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-green-600 transition-colors"
-                            title="عرض التفاصيل"
-                          >
-                            <Info size={16} />
-                          </button>
+                          />
                           <StatusToggleButton
                             isOn={Boolean(student?.is_active)}
                             onToggle={() =>
@@ -706,26 +694,21 @@ const StudentsPage = () => {
                             titleOn="إخفاء الطالب"
                             titleOff="إظهار الطالب"
                           />
-                          <button
+                          <RefreshButton
                             onClick={() => {
                               handleResetIMEI(student?.id);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-purple-600 transition-colors"
                             title="إعادة تعيين رمز هوية الجهاز"
-                          >
-                            <RefreshCcw size={16} />
-                          </button>
-                          <button
+                            direction="ccw"
+                          />
+                          <EditButton
                             onClick={() => {
                               navigate(
                                 `/dashboard/students/edit/${student.id}`,
                               );
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل الطالب"
-                          >
-                            <Edit size={16} />
-                          </button>
+                          />
                         </div>
                       </td>
                     </tr>

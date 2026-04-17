@@ -103,7 +103,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                 <GraduationCap className="w-8 h-8 text-white" />
               </div>
             )}
-            <Sparkles className="w-4 h-4 text-yellow-200 absolute -top-1 -right-1 animate-ping" />
+            <Sparkles className="w-4 h-4 text-(--brand) absolute -top-1 -right-1 animate-ping" />
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {forgetPassword && !showResetOTP
                 ? "نسيت كلمة السر "

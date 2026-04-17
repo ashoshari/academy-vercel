@@ -21,7 +21,7 @@ function SalesTableSection({
       <div className="p-6 border-b border-gray-200 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between w-full min-w-0">
         <h2 className="text-lg font-bold text-gray-800">{title}</h2>
         <div className="bg-gray-50 rounded-lg px-4 py-2 shrink-0">
-          <span className="text-sm text-gray-600 whitespace-nowrap">
+          <span className="text-sm text-white bg-(--brand) px-3 rounded-lg whitespace-nowrap">
             {count} {countLabel}
           </span>
         </div>

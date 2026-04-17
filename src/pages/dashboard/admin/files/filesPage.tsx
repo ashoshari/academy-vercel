@@ -9,7 +9,6 @@ import {
   Upload,
   Files,
   Download,
-  Trash2,
   Plus,
   Users,
   FolderOpen,
@@ -19,7 +18,6 @@ import {
   FileAudio,
   Archive,
   File,
-  Pen,
   EyeOff,
   Grid,
   Rows,
@@ -41,6 +39,8 @@ import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import EditButton from "@/components/dashboard/core/EditButton";
+import DeleteButton from "@/components/dashboard/core/DeleteButton";
 
 const ResourcesPage = () => {
   const user = readUserFromStorage();
@@ -436,24 +436,19 @@ const ResourcesPage = () => {
               <ExternalLink size={16} />
             </a> */}
 
-            <button
+            <EditButton
               onClick={() => {
                 setSelectedResources(resource);
                 setShowEditModal(true);
               }}
-              className={`cursor-pointer p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-blue-500/80 transition-colors`}
-              title={"تعديل الملف"}
-            >
-              <Pen size={16} />
-            </button>
+              className="cursor-pointer p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-blue-500/80 transition-colors"
+              title="تعديل الملف"
+            />
 
-            <button
+            <DeleteButton
               onClick={() => handleDeleteFile(resource?.id)}
-              className="cursor-pointer p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-red-500/80 transition-colors"
               title="حذف الملف"
-            >
-              <Trash2 size={16} />
-            </button>
+            />
           </div>
 
           {/* Status Badges */}
@@ -1746,24 +1741,19 @@ const ResourcesPage = () => {
                             <ExternalLink size={16} />
                           </a> */}
 
-                            <button
+                            <EditButton
                               onClick={() => {
                                 setShowEditModal(true);
                                 setSelectedResources(resource);
                               }}
-                              className={`cursor-pointer p-1 transition-colors text-gray-400 hover:text-blue-500`}
+                              className="cursor-pointer p-1 transition-colors text-gray-400 hover:text-blue-500"
                               title="تعديل الملف"
-                            >
-                              <Pen size={16} />
-                            </button>
+                            />
 
-                            <button
+                            <DeleteButton
                               onClick={() => handleDeleteFile(resource?.id)}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
                               title="حذف الملف"
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            />
                           </div>
                         </td>
                       </tr>

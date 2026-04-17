@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Edit, Users, Grid, Rows, CreditCard } from "lucide-react";
+import { Plus, Users, Grid, Rows, CreditCard } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import Pagination from "@/components/dashboard/core/Pagination";
 import { CustomCard } from "@/pages/dashboard/admin/cards/CardCustomPrice";
@@ -9,6 +9,7 @@ import AddCustomCard from "./AddCustomCard";
 import PricingCardsSkeleton from "@/components/dashboard/skeletons/PricingCardsSkeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
+import EditButton from "@/components/dashboard/core/EditButton";
 
 const CustomCardTable = () => {
   const [showEditModal, setShowEditModal] = useState(false);
@@ -256,16 +257,13 @@ const CustomCardTable = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <button
+                          <EditButton
                             onClick={() => {
                               setSelectedCard(card);
                               setShowEditModal(true);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل"
-                          >
-                            <Edit size={16} />
-                          </button>
+                          />
                           {/* <button
                           onClick={() => handleDeletecard()}
                           className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"

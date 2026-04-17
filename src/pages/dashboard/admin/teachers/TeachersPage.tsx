@@ -2,13 +2,11 @@ import { useState } from "react";
 import {
   Plus,
   Search,
-  Edit,
   Eye,
   Users,
   Phone,
   Mail,
   UserCheck,
-  RefreshCw,
   Check,
   ClipboardCopy,
   X,
@@ -16,7 +14,6 @@ import {
   Rows,
   CircleX,
   EyeOff,
-  Info,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -29,6 +26,9 @@ import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkele
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
+import DetailsButton from "@/components/dashboard/core/DetailsButton";
+import EditButton from "@/components/dashboard/core/EditButton";
+import RefreshButton from "@/components/dashboard/core/RefreshButton";
 
 export interface Teacher {
   id: number;
@@ -289,27 +289,20 @@ const TeachersPage = () => {
         {/* Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex items-center gap-1">
-            <button
+            <DetailsButton
               onClick={() => {
                 navigate(`/dashboard/teachers/${teacher.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
-              title="عرض التفاصيل"
-            >
-              <Info size={16} />
-            </button>
+            />
 
-            <button
+            <RefreshButton
               onClick={() => {
                 setSelectedTeacher(teacher);
                 resetPassword();
               }}
-              className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
               title="إعادة تعيين كلمة المرور"
               disabled={resetAccountPassword.isPending}
-            >
-              <RefreshCw size={16} />
-            </button>
+            />
           </div>
 
           <div className="flex items-center gap-1">
@@ -326,15 +319,13 @@ const TeachersPage = () => {
             >
               {teacher.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
-            <button
+            <EditButton
               onClick={() => {
                 navigate(`/dashboard/teachers/edit/${teacher.id}`);
               }}
               className="p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
               title="تعديل المعلم"
-            >
-              <Edit size={16} />
-            </button>
+            />
 
             {/* Delete Teacher */}
             {/* <button
@@ -663,37 +654,27 @@ const TeachersPage = () => {
                             titleOff="تفعيل المعلم"
                           />
 
-                          <button
+                          <RefreshButton
                             onClick={() => {
                               setSelectedTeacher(teacher);
                               resetPassword();
                             }}
-                            className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
                             title="إعادة تعيين كلمة المرور"
                             disabled={resetAccountPassword.isPending}
-                          >
-                            <RefreshCw size={16} />
-                          </button>
-                          <button
+                          />
+                          <DetailsButton
                             onClick={() => {
                               navigate(`/dashboard/teachers/${teacher.id}`);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
-                            title="عرض التفاصيل"
-                          >
-                            <Info size={16} />
-                          </button>
-                          <button
+                          />
+                          <EditButton
                             onClick={() => {
                               navigate(
                                 `/dashboard/teachers/edit/${teacher.id}`,
                               );
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل"
-                          >
-                            <Edit size={16} />
-                          </button>
+                          />
                           {/* <button
                           onClick={() => handleDeleteTeacher()}
                           className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"

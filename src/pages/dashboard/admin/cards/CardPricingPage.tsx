@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
-import { Plus, CreditCard, Eye, EyeOff, Users, Edit } from "lucide-react";
+import { Plus, CreditCard, Users } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
@@ -11,6 +11,8 @@ import AddCardPricing from "@/components/dashboard/admin/cards/CardPricing/AddCa
 import PricingCardsSkeleton from "@/components/dashboard/skeletons/PricingCardsSkeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import EditButton from "@/components/dashboard/core/EditButton";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 
 export interface CardPricing {
   id: string;
@@ -242,33 +244,34 @@ const CardPricingPage = () => {
                 {/* Actions */}
                 <div className="flex items-center justify-center gap-2">
                   {/* Toggle Status */}
-                  <button
-                    onClick={() => requestCardStatusToggle(card)}
-                    className={`p-2 rounded-lg transition-colors flex gap-2 items-center cursor-pointer ${
+                  <div
+                    className={`p-2 rounded-lg transition-colors flex gap-2 items-center ${
                       card.is_active
                         ? "text-green-600 bg-green-50 hover:bg-green-100"
                         : "text-gray-400 bg-gray-50 hover:bg-gray-100"
                     }`}
-                    title={card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
                   >
-                    {card.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
+                    <StatusToggleButton
+                      isOn={Boolean(card.is_active)}
+                      onToggle={() => requestCardStatusToggle(card)}
+                      titleOn="تعطيل البطاقة"
+                      titleOff="تفعيل البطاقة"
+                      className="p-0"
+                    />
                     <span className="text-sm">
-                      {" "}
                       {card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
                     </span>
-                  </button>
+                  </div>
 
                   {/* Edit */}
-                  <button
+                  <EditButton
                     onClick={() => {
                       setSelectedCard(card);
                       setShowEditModal(true);
                     }}
                     className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                     title="تعديل السعر"
-                  >
-                    <Edit size={16} />
-                  </button>
+                  />
 
                   {/* Delete */}
                   {/* <button

@@ -42,7 +42,7 @@ export default function SalesFiltersPanel({
   );
   const subsectionData = subsectionsRes?.data as any[] | undefined;
 
-  const { data: cardsRes } = useCustomQuery("cards/?page_size=500&page=1", [
+  const { data: cardsRes } = useCustomQuery("cards/", [
     "cards",
     "sales-filters",
   ]);
@@ -51,7 +51,7 @@ export default function SalesFiltersPanel({
       ?.data ?? (cardsRes as { data?: { id: string; price?: string }[] })?.data;
 
   const { data: coursesRes } = useCustomQuery(
-    "/training/admin/courses/?page_size=500&page=1",
+    "/training/admin/courses/?is_paginated=false",
     ["courses", "sales-filters"],
   );
   const coursesList =

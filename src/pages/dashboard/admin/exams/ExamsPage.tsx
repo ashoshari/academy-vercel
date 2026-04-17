@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Plus,
-  Edit,
   Search,
   Eye,
   EyeOff,
@@ -38,6 +37,7 @@ import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import EditButton from "@/components/dashboard/core/EditButton";
 export interface Exam {
   id: string;
   title: string;
@@ -391,7 +391,7 @@ const ExamsPage = () => {
       case "easy":
         return "bg-green-100 text-green-800";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-gray-100 text-(--brand)";
       case "hard":
         return "bg-red-100 text-red-800";
       default:
@@ -518,16 +518,14 @@ const ExamsPage = () => {
           </div>
 
           <div className="flex items-center gap-1">
-            <button
+            <EditButton
               onClick={() => {
                 setSelectedExam(exam);
                 setCurrentView("edit");
               }}
               className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="تعديل الامتحان"
-            >
-              <Edit size={16} />
-            </button>
+            />
           </div>
         </div>
       </div>
@@ -1910,16 +1908,13 @@ const ExamsPage = () => {
                           >
                             <BarChart3 size={16} />
                           </button>
-                          <button
+                          <EditButton
                             onClick={() => {
                               setSelectedExam(exam);
                               setCurrentView("edit");
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                             title="تعديل"
-                          >
-                            <Edit size={16} />
-                          </button>
+                          />
                           <button
                             onClick={() => {
                               requestExamPublishToggle(exam);

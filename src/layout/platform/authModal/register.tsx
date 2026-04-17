@@ -153,7 +153,7 @@ const Register = ({
                     value={field.value || ""}
                     type="text"
                     maxLength={1}
-                    className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-yellow-500 transition-all duration-300"
+                    className="w-12 h-12 text-center text-lg font-bold border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300"
                     onChange={(e) => {
                       const val = e.target.value.slice(-1); // keep only last digit
                       field.onChange(val);

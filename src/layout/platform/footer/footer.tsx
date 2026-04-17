@@ -52,8 +52,8 @@ const Footer: React.FC = () => {
     {
       name: "Snapchat",
       icon: RiSnapchatLine,
-      color: "bg-yellow-400",
-      hover: "bg-yellow-500",
+      color: "bg-(--brand)",
+      hover: "bg-(--brand-light)",
       link:
         Object.entries(footerData || {}).find(
           ([key]) => key.toLowerCase().replace("_url", "") === "snapchat",

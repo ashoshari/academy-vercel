@@ -1,12 +1,8 @@
 import { useState } from "react";
 import {
   Plus,
-  // Search,
-  Edit,
-  Eye,
   Users,
   UserCheck,
-  RefreshCw,
   Check,
   ClipboardCopy,
   X,
@@ -27,6 +23,9 @@ import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkele
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
+import DetailsButton from "@/components/dashboard/core/DetailsButton";
+import EditButton from "@/components/dashboard/core/EditButton";
+import RefreshButton from "@/components/dashboard/core/RefreshButton";
 
 export interface Library {
   id: string;
@@ -450,37 +449,26 @@ const LibrariesPage = () => {
                             titleOff="تفعيل المكتبة"
                           />
 
-                          <button
+                          <RefreshButton
                             onClick={() => {
                               setSelectedLibrary(library);
                               resetPassword();
                             }}
-                            className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
                             title="إعادة تعيين كلمة المرور"
                             disabled={resetAccountPassword.isPending}
-                          >
-                            <RefreshCw size={16} />
-                          </button>
-                          <button
+                          />
+                          <DetailsButton
                             onClick={() => {
                               navigate(`/dashboard/libraries/${library.id}`);
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
-                            title="عرض التفاصيل"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          <button
+                          />
+                          <EditButton
                             onClick={() => {
                               navigate(
                                 `/dashboard/libraries/edit/${library.id}`,
                               );
                             }}
-                            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
-                            title="تعديل"
-                          >
-                            <Edit size={16} />
-                          </button>
+                          />
 
                           <button
                             onClick={() => {

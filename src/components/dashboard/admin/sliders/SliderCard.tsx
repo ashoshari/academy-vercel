@@ -1,23 +1,15 @@
 import { useCustomRemove, useCustomUpdate } from "@/hooks/useMutation";
-// import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import handleErrorAlerts from "@/utils/showErrorMessages";
-import {
-  ArrowDown,
-  ArrowUp,
-  Edit,
-  // Eye,
-  Image,
-  Info,
-  Trash2,
-  // Trash2,
-  Video,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, Image, Video } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
+import DetailsButton from "@/components/dashboard/core/DetailsButton";
+import EditButton from "@/components/dashboard/core/EditButton";
+import DeleteButton from "@/components/dashboard/core/DeleteButton";
 
 interface SliderCardProps {
   slide: any;
@@ -254,39 +246,30 @@ export default function SliderCard({
                 />
 
                 {/* View details */}
-                <button
+                <DetailsButton
                   onClick={() => {
                     setSelectedSlide(slide);
                     setShowDetailsModal(true);
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
-                  title="عرض التفاصيل"
-                >
-                  <Info size={16} />
-                </button>
+                />
 
                 {/* Edit */}
-                <button
+                <EditButton
                   onClick={() => {
                     setSelectedSlide(slide);
                     setShowEditModal(true);
                   }}
                   className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                   title="تعديل السلايد"
-                >
-                  <Edit size={16} />
-                </button>
+                />
 
                 {/* Delete */}
-                <button
+                <DeleteButton
                   onClick={() => {
                     setPendingDelete(true);
                   }}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                   title="حذف السلايد"
-                >
-                  <Trash2 size={16} />
-                </button>
+                />
               </div>
             </div>
           </div>

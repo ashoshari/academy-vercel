@@ -107,7 +107,7 @@ const TreePage: React.FC = () => {
               )}&background=ffffff&color=2465c9&size=64`
             }
             alt={teacher?.name}
-            className="w-16 h-16 rounded-full object-cover border-4 border-gradient-to-r from-yellow-400 to-orange-500"
+            className="w-16 h-16 rounded-full object-cover border-4 border-gradient-to-r from-(--brand) to-(--brand-light)"
           />
         </div>
         <div className="flex-1 text-right">
@@ -260,7 +260,7 @@ const TreePage: React.FC = () => {
                 <h1 className="text-3xl font-bold">
                   {data?.title || "لا يوجد قسم"}
                 </h1>
-                <p className="text-yellow-100 text-lg">
+                <p className="text-gray-100 text-lg">
                   اختر المستوى والأستاذ المناسب
                 </p>
               </div>
@@ -271,7 +271,7 @@ const TreePage: React.FC = () => {
                 <div className="text-2xl font-bold">
                   {data?.statistics?.number_of_teachers || 0}
                 </div>
-                <div className="text-sm text-yellow-100">أستاذ</div>
+                <div className="text-sm text-gray-100">أستاذ</div>
               </div>
             </div>
           </div>

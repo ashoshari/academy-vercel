@@ -1094,7 +1094,7 @@ const CardCodesPage = () => {
                             {code?.is_downloaded && (
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium
-                                  bg-yellow-100 text-yellow-800
+                                  bg-gray-100 text-(--brand)
                               `}
                               >
                                 تم التحميل
