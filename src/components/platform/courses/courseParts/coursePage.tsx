@@ -67,6 +67,7 @@ const CoursePage = () => {
     ["courses", courseId],
   );
   const courseData = data?.data;
+  const hasImportOffers = Boolean(courseData?.import_offers?.length);
   const sidebarCollapseHandler = (state: boolean) => {
     setSidebarCollapsed(state);
   };
@@ -123,7 +124,7 @@ const CoursePage = () => {
         />
       </div>
     );
-  } else if (allLessons.length === 0) {
+  } else if (allLessons.length === 0 && !hasImportOffers) {
     return (
       <div className="min-h-screen bg-linear-to-br px-2 from-gray-50 to-white flex items-center justify-center">
         <EmptyState
@@ -162,8 +163,8 @@ const CoursePage = () => {
         setCurrentLessonIndex={setCurrentLessonIndex}
         courseData={courseData}
       />
-      <CourseContent courseData={courseData} allLessons={allLessons} />
-    </div>
+        <CourseContent courseData={courseData} allLessons={allLessons} />
+      </div>
   );
 };
 

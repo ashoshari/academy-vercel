@@ -29,6 +29,7 @@ interface teacher {
 }
 interface CourseData {
   id: string;
+  import_offers?: { id: string }[];
   is_show_general_questions: boolean;
   is_special: boolean;
   name: string;
@@ -99,6 +100,10 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
       toast.error(error?.response?.data?.error || "حدث خطأ أثناء إكمال الدرس");
     }
   };
+
+  const hasLessons = allLessons.length > 0;
+  const hasImportOffers = Boolean(courseData?.import_offers?.length);
+
   return (
     <>
       <div className="p-4 sm:p-6 lg:p-8">
@@ -137,54 +142,66 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
         {/* Tab Content */}
         {activeTab === "content" && (
           <div className="space-y-8">
-            {/* Main Content */}
-            {isExamMode ? (
-              <Exam markLessonComplete={markLessonComplete} />
-            ) : (
-              <VideoPlayer markLessonComplete={markLessonComplete} />
-            )}
-
-            {/* Navigation Controls */}
-            <div
-              className={`flex flex-col lg:flex-row gap-5 items-center justify-between bg-white rounded-2xl shadow-lg p-6`}
-            >
-              <button
-                onClick={() => navigateLesson("prev")}
-                disabled={currentLessonIndex === 0}
-                className="flex items-center w-full md:w-fit justify-center space-x-2 px-6 py-3 cursor-pointer border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="w-5 h-5" />
-                <span>الدرس السابق</span>
-              </button>
-
-              <div className="text-center">
-                <div className="text-sm text-gray-600 mb-1">
-                  الدرس {currentLessonIndex + 1} من {allLessons.length}
-                </div>
-                <div className="w-full md:w-48 bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-linear-to-r justify-center from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-300"
-                    style={{
-                      width: `${
-                        ((currentLessonIndex + 1) / allLessons.length) * 100
-                      }%`,
-                    }}
-                  ></div>
-                </div>
+            {!hasLessons ? (
+              <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50/60 p-8 text-center text-gray-700">
+                <p className="font-medium">لا يتوفر دروس في هذه الدورة بعد.</p>
+                {hasImportOffers ? (
+                  <p className="mt-2 text-sm text-gray-600">
+                    استخدم «استيراد الدورة» في أسفل الشريط الجانبي لجلب المحتوى من
+                    دورة أخرى.
+                  </p>
+                ) : null}
               </div>
+            ) : (
+              <>
+                {isExamMode ? (
+                  <Exam markLessonComplete={markLessonComplete} />
+                ) : (
+                  <VideoPlayer markLessonComplete={markLessonComplete} />
+                )}
 
-              <button
-                onClick={() => navigateLesson("next")}
-                disabled={
-                  currentLessonIndex === allLessons.length - 1 ||
-                  allLessons[currentLessonIndex + 1]?.isLocked
-                }
-                className="flex items-center w-full md:w-fit justify-center space-x-2 cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white rounded-xl font-semibold hover:from(--brand-secondary-dark) hover:to-(--brand-secondary) transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span>الدرس التالي</span>
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-            </div>
+                <div
+                  className={`flex flex-col lg:flex-row gap-5 items-center justify-between bg-white rounded-2xl shadow-lg p-6`}
+                >
+                  <button
+                    onClick={() => navigateLesson("prev")}
+                    disabled={currentLessonIndex === 0}
+                    className="flex items-center w-full md:w-fit justify-center space-x-2 px-6 py-3 cursor-pointer border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                    <span>الدرس السابق</span>
+                  </button>
+
+                  <div className="text-center">
+                    <div className="text-sm text-gray-600 mb-1">
+                      الدرس {currentLessonIndex + 1} من {allLessons.length}
+                    </div>
+                    <div className="w-full md:w-48 bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-linear-to-r justify-center from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-300"
+                        style={{
+                          width: `${
+                            ((currentLessonIndex + 1) / allLessons.length) * 100
+                          }%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => navigateLesson("next")}
+                    disabled={
+                      currentLessonIndex === allLessons.length - 1 ||
+                      allLessons[currentLessonIndex + 1]?.isLocked
+                    }
+                    className="flex items-center w-full md:w-fit justify-center space-x-2 cursor-pointer px-6 py-3 bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white rounded-xl font-semibold hover:from(--brand-secondary-dark) hover:to-(--brand-secondary) transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span>الدرس التالي</span>
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 

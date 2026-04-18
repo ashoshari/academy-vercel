@@ -144,13 +144,8 @@ const GenerateModal = ({
 
   const activeCardRows = useMemo(() => activeCards(cards), [cards?.data?.data]);
   const offerCardOptions = useMemo(
-    () =>
-      cardMultiOptions(
-        activeCardRows.filter(
-          (c) => String(c.id) !== String(generateForm.card || ""),
-        ),
-      ),
-    [activeCardRows, generateForm.card],
+    () => cardMultiOptions(activeCardRows),
+    [activeCardRows],
   );
 
   const submitDisabled =
