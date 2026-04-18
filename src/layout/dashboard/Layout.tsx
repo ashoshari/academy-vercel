@@ -22,6 +22,12 @@ import {
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 
+const DASHBOARD_ROLE_LABEL_AR: Record<string, string> = {
+  library: "مكتبة",
+  admin: "مسؤول",
+  teacher: "معلّم",
+};
+
 const Layout = () => {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuth();
@@ -43,6 +49,7 @@ const Layout = () => {
 
   const user = readUserFromStorage();
   const role = roleOf(user) ?? "";
+  const roleLabelAr = DASHBOARD_ROLE_LABEL_AR[role] ?? role;
 
   const menuItems = [
     { id: "", label: "الرئيسية", icon: Home },
@@ -123,7 +130,7 @@ const Layout = () => {
                   <h2 className="font-bold text-gray-800 text-sm">
                     لوحة التحكم
                   </h2>
-                  <p className="text-xs text-gray-500">مدير النظام</p>
+                  <p className="text-xs text-gray-500">{roleLabelAr}</p>
                 </div>
               </div>
             )}

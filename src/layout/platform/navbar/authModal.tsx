@@ -106,7 +106,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             <Sparkles className="w-4 h-4 text-(--brand) absolute -top-1 -right-1 animate-ping" />
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {forgetPassword && !showResetOTP
-                ? "نسيت كلمة السر "
+                ? "نسيت كلمة المرور "
                 : showResetOTP
                   ? "📱 تأكيد رقم الهاتف"
                   : isLogin
@@ -154,6 +154,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
               register={register}
               handleSubmit={handleSubmit}
               reset={reset}
+              setForgetPassword={setForgetPassword}
               formState={formState}
             />
           ) : (
@@ -179,7 +180,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
           {/* Switch Mode */}
           {!showResetOTP && !showRegisterOTP && !forgetPassword && (
-            <div className="mt-6 text-center flex gap-x-2.5">
+            <div className="mt-6 text-center">
               <button
                 onClick={switchMode}
                 className="cursor-pointer text-(--brand) hover:text-(--brand-light) text-sm font-semibold transition-all duration-300"
@@ -188,17 +189,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
                   ? "🆕 لا تملك حساب؟ إنشاء حساب جديد"
                   : "👋 لديك حساب؟ تسجيل الدخول"}
               </button>
-              {!forgetPassword && (
-                <button
-                  onClick={() => {
-                    reset();
-                    setForgetPassword(true);
-                  }}
-                  className="cursor-pointer text-gray-400 hover:text-gray-800 text-sm font-semibold transition-all duration-300"
-                >
-                  هل نسيت كلمة السر
-                </button>
-              )}
             </div>
           )}
         </div>

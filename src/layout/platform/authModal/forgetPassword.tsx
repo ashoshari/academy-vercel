@@ -59,7 +59,7 @@ const ForgetPassword = ({
           toast.error(res?.data);
           return;
         } else {
-          toast.success(res?.data || "تم تغيير كلمة السر");
+          toast.success(res?.data || "تم تغيير كلمة المرور");
           setResetPassword(false);
           setIsLogin(true);
           setForgetPassword(false);

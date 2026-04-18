@@ -5,7 +5,6 @@ import { useState } from "react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import EmptyState from "@/components/core/EmptyState";
-import { LayoutGrid } from "lucide-react";
 
 const Discover: React.FC = () => {
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
@@ -56,7 +55,6 @@ const Discover: React.FC = () => {
           <EmptyState
             title="لا يوجد أقسام لعرضها"
             description="جرّب تحديث الصفحة بعد قليل."
-            icon={LayoutGrid}
             tone="info"
             size="lg"
           />

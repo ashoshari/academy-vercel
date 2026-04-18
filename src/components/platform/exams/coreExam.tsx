@@ -13,7 +13,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import EmptyState from "@/components/core/EmptyState";
-import { Inbox, ShieldAlert } from "lucide-react";
 
 interface ExamProps {
   examData: any;
@@ -135,7 +134,6 @@ const CoreExam = ({
           <EmptyState
             title="ليس لديك الصلاحيات لمشاهدة هذا المحتوى"
             description="إذا كنت تعتقد أن هذا خطأ، تواصل مع الدعم."
-            icon={ShieldAlert}
             tone="warning"
             size="lg"
             fullHeight
@@ -182,7 +180,6 @@ const CoreExam = ({
             <EmptyState
               title="لا يوجد محتوى لعرضه"
               description="لا توجد أسئلة/بيانات متاحة لهذا الامتحان حالياً."
-              icon={Inbox}
               tone="info"
               size="lg"
               className="w-full"

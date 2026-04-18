@@ -6,7 +6,6 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import CourseContent from "./courseContent";
 import { useLesson } from "@/store/platform/useLesson";
 import EmptyState from "@/components/core/EmptyState";
-import { ShieldAlert, Inbox } from "lucide-react";
 const CoursePage = () => {
   const [allLessons, setAllLessons] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -119,7 +118,6 @@ const CoursePage = () => {
         <EmptyState
           title="ليس لديك الصلاحيات لمشاهدة الدورة"
           description="إذا كنت تعتقد أن هذا خطأ، تواصل مع الدعم."
-          icon={ShieldAlert}
           tone="warning"
           fullHeight
         />
@@ -131,7 +129,6 @@ const CoursePage = () => {
         <EmptyState
           title="لا يوجد محتوى لهذه الدورة"
           description="سيتم إضافة المحتوى قريباً."
-          icon={Inbox}
           tone="neutral"
           fullHeight
         />

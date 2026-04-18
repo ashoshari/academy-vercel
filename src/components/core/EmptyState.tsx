@@ -1,32 +1,19 @@
 import type { ReactNode } from "react";
-import type { LucideIcon } from "lucide-react";
-import { Inbox } from "lucide-react";
+import noDataIllustration from "@/assets/no-data-to-display.png";
 
 type EmptyStateTone = "neutral" | "info" | "warning";
 type EmptyStateSize = "sm" | "md" | "lg";
 
-const toneStyles: Record<
-  EmptyStateTone,
-  { ring: string; iconBg: string; icon: string; title: string; desc: string }
-> = {
+const toneStyles: Record<EmptyStateTone, { title: string; desc: string }> = {
   neutral: {
-    ring: "ring-gray-200",
-    iconBg: "bg-gray-100",
-    icon: "text-gray-700",
     title: "text-gray-900",
     desc: "text-gray-600",
   },
   info: {
-    ring: "ring-blue-200",
-    iconBg: "bg-blue-50",
-    icon: "text-blue-700",
     title: "text-gray-900",
     desc: "text-gray-600",
   },
   warning: {
-    ring: "ring-amber-200",
-    iconBg: "bg-amber-50",
-    icon: "text-amber-700",
     title: "text-gray-900",
     desc: "text-gray-600",
   },
@@ -34,26 +21,26 @@ const toneStyles: Record<
 
 const sizeStyles: Record<
   EmptyStateSize,
-  { wrap: string; iconWrap: string; iconSize: number; title: string; desc: string }
+  { wrap: string; image: string; title: string; desc: string }
 > = {
   sm: {
     wrap: "py-8",
-    iconWrap: "w-12 h-12",
-    iconSize: 22,
+    image:
+      "max-h-24 sm:max-h-28 w-auto max-w-[min(100%,11rem)] sm:max-w-[13rem]",
     title: "text-lg",
     desc: "text-sm",
   },
   md: {
     wrap: "py-10",
-    iconWrap: "w-16 h-16",
-    iconSize: 26,
+    image:
+      "max-h-32 sm:max-h-36 w-auto max-w-[min(100%,15rem)] sm:max-w-[17rem]",
     title: "text-xl",
     desc: "text-base",
   },
   lg: {
     wrap: "py-14",
-    iconWrap: "w-20 h-20",
-    iconSize: 32,
+    image:
+      "max-h-40 sm:max-h-48 w-auto max-w-[min(100%,18rem)] sm:max-w-[22rem]",
     title: "text-2xl",
     desc: "text-base",
   },
@@ -62,7 +49,6 @@ const sizeStyles: Record<
 export default function EmptyState({
   title,
   description,
-  icon: Icon = Inbox,
   action,
   tone = "neutral",
   size = "md",
@@ -72,7 +58,6 @@ export default function EmptyState({
 }: {
   title: string;
   description?: string;
-  icon?: LucideIcon;
   action?: ReactNode;
   tone?: EmptyStateTone;
   size?: EmptyStateSize;
@@ -90,55 +75,50 @@ export default function EmptyState({
         fullHeight ? "min-h-[60vh]" : "",
         "w-full flex items-center justify-center",
         className,
-      ].join(" ")}
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <div className={["w-full max-w-xl px-4", s.wrap].join(" ")}>
-        <div
+      <div
+        className={[
+          "w-full max-w-lg px-4 flex flex-col items-center text-center",
+          s.wrap,
+        ].join(" ")}
+      >
+        <img
+          src={noDataIllustration}
+          alt=""
+          width={440}
+          height={330}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
           className={[
-            "rounded-3xl bg-white/80 backdrop-blur-sm",
-            "shadow-lg shadow-black/5",
-            "ring-1",
-            t.ring,
-            "p-6 sm:p-8",
-            "text-center",
+            "block object-contain object-center select-none",
+            s.image,
+          ].join(" ")}
+        />
+
+        <h6
+          className={[
+            "text-(--brand) mt-10 font-bold tracking-tight",
+            t.title,
+            s.title,
           ].join(" ")}
         >
-          <div className="flex justify-center">
-            <div
-              className={[
-                s.iconWrap,
-                "rounded-2xl",
-                "flex items-center justify-center",
-                t.iconBg,
-                "ring-1",
-                t.ring,
-                "shadow-sm",
-              ].join(" ")}
-            >
-              <Icon size={s.iconSize} className={t.icon} />
-            </div>
-          </div>
+          {title}
+        </h6>
 
-          <h3
-            className={[
-              "mt-5 font-bold tracking-tight",
-              t.title,
-              s.title,
-            ].join(" ")}
-          >
-            {title}
-          </h3>
+        {description ? (
+          <p className={["mt-2 leading-relaxed", t.desc, s.desc].join(" ")}>
+            {description}
+          </p>
+        ) : null}
 
-          {description ? (
-            <p className={["mt-2 leading-relaxed", t.desc, s.desc].join(" ")}>
-              {description}
-            </p>
-          ) : null}
-
-          {action ? <div className="mt-6 flex justify-center">{action}</div> : null}
-        </div>
+        {action ? (
+          <div className="mt-6 flex justify-center">{action}</div>
+        ) : null}
       </div>
     </div>
   );
 }
-

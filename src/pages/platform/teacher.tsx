@@ -29,7 +29,6 @@ import AuthModal from "@/layout/platform/navbar/authModal";
 import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
-import { Inbox, Database, LayoutGrid } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const TeacherProfile: React.FC = () => {
@@ -744,7 +743,6 @@ const TeacherProfile: React.FC = () => {
         <EmptyState
           title="لا يوجد بيانات لعرضها"
           description="جرّب تحديث الصفحة أو العودة لاحقاً."
-          icon={Database}
           tone="info"
           fullHeight
         />
@@ -898,7 +896,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد دورات مجانية متاحة حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -916,7 +913,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد دورات لعرضها حالياً."
-                      icon={LayoutGrid}
                       tone="info"
                       size="lg"
                     />
@@ -934,7 +930,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد ملفات متاحة حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -951,7 +946,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد كتب لعرضها حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -968,7 +962,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد أسئلة وزارية متاحة حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -986,7 +979,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد امتحانات مجانية متاحة حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
