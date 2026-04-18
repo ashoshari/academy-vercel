@@ -1,6 +1,6 @@
 import { getStoredTokens } from "@/services/auth";
 import axios from "axios";
-
+const BASE_URL = import.meta.env.VITE_API_KEY;
 const axiosInstance = axios.create({
   // headers: {
   //   "Content-Type": "application/json",
@@ -8,20 +8,20 @@ const axiosInstance = axios.create({
   // },
   // baseURL: "https://lms.vision-jo.com/",
 });
-const getBaseURL = () => {
-  const hostname = window.location.hostname;
+// const getBaseURL = () => {
+//   const hostname = window.location.hostname;
 
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return "https://back.manasati-jo.com/";
-  }
+//   if (hostname === "localhost" || hostname === "127.0.0.1") {
+//     return "https://back.manasati-jo.com/";
+//   }
 
-  const cleanHost = hostname.replace(/^www\./, "");
-  return `https://back.${cleanHost}/`;
-};
+//   const cleanHost = hostname.replace(/^www\./, "");
+//   return `https://back.${cleanHost}/`;
+// };
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    config.baseURL = getBaseURL();
+    config.baseURL = BASE_URL;
 
     const token = getStoredTokens();
     if (token) {
