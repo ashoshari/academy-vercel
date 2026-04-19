@@ -147,6 +147,12 @@ const CardCodesPage = () => {
     undefined,
     loadAdminReferenceLists,
   );
+  const installmentPlans = useCustomQuery(
+    "/cards/installments/",
+    ["installments"],
+    undefined,
+    loadAdminReferenceLists,
+  );
   const { data: teachers } = useCustomQuery(
     "/account/admin/teachers/?pagination=false",
     ["teachers"],
@@ -256,6 +262,7 @@ const CardCodesPage = () => {
     notes: "",
     targetingType: "all" as "all" | "specific",
     is_installment: false,
+    installment: "",
     is_offer: false,
     offer_activation_cards: [] as string[],
     subsections: [],
@@ -359,6 +366,9 @@ const CardCodesPage = () => {
       card: generateForm.card,
       number_of_codes: generateForm.quantity,
       is_installment: generateForm.is_installment,
+      ...(generateForm.is_installment && generateForm.installment
+        ? { installment: generateForm.installment }
+        : {}),
       is_offer: generateForm.is_offer,
       ...(offerLines ? { offer_lines: offerLines } : {}),
       subsections: generateForm?.subsections,
@@ -380,6 +390,7 @@ const CardCodesPage = () => {
             notes: "",
             targetingType: "all",
             is_installment: false,
+            installment: "",
             is_offer: false,
             offer_activation_cards: [],
             subsections: [],
@@ -1047,7 +1058,10 @@ const CardCodesPage = () => {
                       السعر
                     </th>
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      بادئة الكود
+                      الكود
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      خطة التقسيط
                     </th>
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       الحالة
@@ -1072,6 +1086,8 @@ const CardCodesPage = () => {
                       code.created_at,
                     );
                     const offerLines = offerLinesFromGeneratedCode(code);
+
+                    console.log(code);
 
                     return (
                       <tr key={code.id} className="hover:bg-gray-50">
@@ -1133,6 +1149,9 @@ const CardCodesPage = () => {
                         </td>
                         <td className="px-4 py-3 text-gray-900">
                           {code.code_string.split("-")[0]}
+                        </td>
+                        <td className="px-4 py-3 text-gray-900">
+                          {code.code.installment?.name || "—"}
                         </td>
 
                         {/* <div className="text-xs text-gray-500">
@@ -1260,6 +1279,7 @@ const CardCodesPage = () => {
           handleGenerateCodes={handleGenerateCodes}
           setShowGenerateModal={setShowGenerateModal}
           setGenerateForm={setGenerateForm}
+          installmentPlans={installmentPlans}
           loading={addCode.isPending}
         />
       )}
@@ -1291,7 +1311,7 @@ const CardCodesPage = () => {
                 هذا الكود؟
               </p>
               <p className="text-sm text-gray-600">
-                بادئة الكود:{" "}
+                الكود
                 <span
                   className="font-mono font-semibold text-(--brand-secondary)"
                   dir="ltr"

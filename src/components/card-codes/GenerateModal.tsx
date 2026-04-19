@@ -35,6 +35,7 @@ const GenerateModal = ({
   cards,
   handleGenerateCodes,
   cardPricing,
+  installmentPlans,
   loading,
 }: {
   generateForm: any;
@@ -43,6 +44,7 @@ const GenerateModal = ({
   cards: any;
   handleGenerateCodes: any;
   cardPricing: any;
+  installmentPlans: any;
   loading: any;
 }) => {
   const [selectedSubsections, setSelectedSubsections] = useState<string[]>([]);
@@ -152,6 +154,7 @@ const GenerateModal = ({
     loading ||
     !generateForm.card ||
     generateForm.quantity <= 0 ||
+    (generateForm.is_installment && !generateForm.installment) ||
     (generateForm.is_offer &&
       !(generateForm.offer_activation_cards?.length > 0)) ||
     (generateForm.targetingType === "specific" &&
@@ -263,13 +266,43 @@ const GenerateModal = ({
                 type="checkbox"
                 checked={generateForm.is_installment}
                 onChange={(e) => {
+                  const checked = e.target.checked;
                   setGenerateForm({
                     ...generateForm,
-                    is_installment: e.target.checked,
+                    is_installment: checked,
+                    ...(!checked ? { installment: "" } : {}),
+                    ...(checked
+                      ? { is_offer: false, offer_activation_cards: [] }
+                      : {}),
                   });
                 }}
                 className="rounded border-gray-300 text-(--brand) focus:ring-(--brand-light)"
               />
+            </div>
+          )}
+
+          {generateForm.is_installment && (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                اختر خطة التقسيط *
+              </label>
+              <select
+                value={generateForm.installment}
+                onChange={(e) =>
+                  setGenerateForm({
+                    ...generateForm,
+                    installment: e.target.value,
+                  })
+                }
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+              >
+                <option value="">اختر خطة التقسيط</option>
+                {installmentPlans?.data?.data?.map((plan: any) => (
+                  <option key={plan.id} value={plan.id}>
+                    {plan.name} ({plan.number_of_installments} دفعات)
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
@@ -289,6 +322,7 @@ const GenerateModal = ({
                   ...prev,
                   is_offer: checked,
                   ...(!checked ? { offer_activation_cards: [] } : {}),
+                  ...(checked ? { is_installment: false, installment: "" } : {}),
                 }));
               }}
               className="rounded border-gray-300 text-(--brand) focus:ring-(--brand-light)"

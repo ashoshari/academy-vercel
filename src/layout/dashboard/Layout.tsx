@@ -69,6 +69,7 @@ const Layout = () => {
       label: "أسعار البطاقات المخصصة",
       icon: CreditCard,
     },
+    { id: "installment-plans", label: "خطط التقسيط", icon: CreditCard },
     { id: "card-codes", label: "كودات البطاقات", icon: Hash },
     // { id: "reports", label: "التقارير", icon: BarChart3 },
   ];
@@ -83,6 +84,7 @@ const Layout = () => {
     "sub-sections",
     "card-pricing",
     "custom-card-pricing",
+    "installment-plans",
     "card-codes",
   ]);
   const ADMIN_DISALLOWED = new Set(["sales"]);

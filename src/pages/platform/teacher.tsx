@@ -190,10 +190,8 @@ const TeacherProfile: React.FC = () => {
   ]);
 
   // POST ACTIVATION
-  const { mutateAsync: postActivation } = useCustomPost(
-    "/training/students/course/enroll/",
-    ["postActivation"],
-  );
+  const { mutateAsync: postActivation, isPending: isActivating } =
+    useCustomPost("/training/students/course/enroll/", ["postActivation"]);
   const handleCourseActivation = (course: any) => {
     setSelectedCourse(course);
     setShowActivationModal(true);
@@ -1053,11 +1051,12 @@ const TeacherProfile: React.FC = () => {
                   <button
                     onClick={handleActivationSubmit}
                     disabled={
-                      !selectedCourse?.is_free && !activationCode.trim()
+                      isActivating ||
+                      (!selectedCourse?.is_free && !activationCode.trim())
                     }
                     className="cursor-pointer flex-1 text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 py-3 px-6 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    تفعيل الدورة
+                    {isActivating ? "جاري التفعيل..." : "تفعيل الدورة"}
                   </button>
                   <button
                     onClick={() => {

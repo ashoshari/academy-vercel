@@ -271,7 +271,7 @@ const Sidebar = ({
       } fixed left-0 top-20 h-[calc(100vh-80px)] z-40 overflow-y-auto`}
     >
       {/* Sidebar Header */}
-      <div className="shrink-0 p-4 border-b border-gray-200 bg-linear-to-r from-blue-50 to-purple-50">
+      <div className="shrink-0 p-4 border-b border-gray-200 bg-linear-to-r from-blue-50 to-blue-50">
         <div className="flex items-center justify-between">
           {!sidebarCollapsed && (
             <div className="flex-1">
