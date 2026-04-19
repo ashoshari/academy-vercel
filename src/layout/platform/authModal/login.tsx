@@ -143,7 +143,7 @@ const Login = ({
               reset();
               setForgetPassword(true);
             }}
-            className="cursor-pointer text-(--brand) hover:text-(--brand-light) text-sm font-semibold transition-all duration-300 block w-full text-start mt-1"
+            className="cursor-pointer text-(--brand) hover:text-(--brand-light) text-sm font-semibold transition-all duration-300 block w-full text-end mt-1"
           >
             هل نسيت كلمة المرور
           </button>

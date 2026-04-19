@@ -62,7 +62,9 @@ const Sidebar = ({
     isPending: isImportOfferPending,
   } = useCustomPost(`/training/students/course/${courseId}/import-offer/`);
 
-  const importOffers: ImportOffer[] = (courseData?.import_offers ?? []).filter((offer: any) => offer.can_import !== false);
+  const importOffers: ImportOffer[] = (courseData?.import_offers ?? []).filter(
+    (offer: any) => offer.can_import !== false,
+  );
   const hasImportOffers = importOffers.length > 0;
 
   const handleConfirmImportOffer = async () => {
@@ -174,7 +176,7 @@ const Sidebar = ({
           };
         }
         return course;
-      })
+      }),
     );
   };
   const toggleUnit = (courseId: any, semesterId: any, unitId: any) => {
@@ -202,15 +204,20 @@ const Sidebar = ({
                       return unit;
                     }),
                   }
-                : sm
+                : sm,
             ),
           };
         }
         return course;
-      })
+      }),
     );
   };
-  const toggleTopic = (courseId: any, semesterId: any, unitId: any, topicId: any) => {
+  const toggleTopic = (
+    courseId: any,
+    semesterId: any,
+    unitId: any,
+    topicId: any,
+  ) => {
     setCoursesContent((prev: any) =>
       prev.map((course: any) => {
         if (course.id === courseId || (!course.id && course.isMainCourse)) {
@@ -227,18 +234,18 @@ const Sidebar = ({
                             topics: unit?.topics.map((topic: any) =>
                               topic?.id === topicId
                                 ? { ...topic, isExpanded: !topic?.isExpanded }
-                                : topic
+                                : topic,
                             ),
                           }
-                        : unit
+                        : unit,
                     ),
                   }
-                : sm
+                : sm,
             ),
           };
         }
         return course;
-      })
+      }),
     );
   };
   const handleLessonClick = (lesson: any) => {
@@ -261,7 +268,7 @@ const Sidebar = ({
         sidebarCollapsed ? "w-16" : "w-80"
       } ${
         sidebarVisible ? "translate-x-0" : "-translate-x-full"
-      } fixed left-0 top-[8vh] h-[calc(100vh-8vh)] z-40 overflow-y-auto`}
+      } fixed left-0 top-20 h-[calc(100vh-80px)] z-40 overflow-y-auto`}
     >
       {/* Sidebar Header */}
       <div className="shrink-0 p-4 border-b border-gray-200 bg-linear-to-r from-blue-50 to-purple-50">
@@ -316,7 +323,10 @@ const Sidebar = ({
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="min-h-0 flex-1 overflow-y-auto p-2">
           {coursesContent?.map((courseItem: any) => (
-            <div key={courseItem.id || 'main'} className={`${!courseItem.isMainCourse ? "mt-4 pt-4 border-t border-gray-200" : ""}`}>
+            <div
+              key={courseItem.id || "main"}
+              className={`${!courseItem.isMainCourse ? "mt-4 pt-4 border-t border-gray-200" : ""}`}
+            >
               {!courseItem.isMainCourse && !sidebarCollapsed && (
                 <h4 className="font-bold text-gray-800 text-sm mb-3 px-2 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-(--brand)" />
@@ -327,7 +337,8 @@ const Sidebar = ({
                 <div key={semester?.id} className="mb-2">
                   <button
                     onClick={() =>
-                      !sidebarCollapsed && toggleSemester(courseItem.id, semester?.id)
+                      !sidebarCollapsed &&
+                      toggleSemester(courseItem.id, semester?.id)
                     }
                     className={`w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer${
                       sidebarCollapsed ? "justify-center" : ""
@@ -356,7 +367,9 @@ const Sidebar = ({
                         {semester.units.map((unit: any) => (
                           <div key={unit.id}>
                             <button
-                              onClick={() => toggleUnit(courseItem.id, semester.id, unit.id)}
+                              onClick={() =>
+                                toggleUnit(courseItem.id, semester.id, unit.id)
+                              }
                               className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100 cursor-pointer"
                             >
                               <span className="text-sm">{unit.title}</span>
@@ -373,11 +386,18 @@ const Sidebar = ({
                                   <div key={topic.id}>
                                     <button
                                       onClick={() =>
-                                        toggleTopic(courseItem.id, semester.id, unit.id, topic.id)
+                                        toggleTopic(
+                                          courseItem.id,
+                                          semester.id,
+                                          unit.id,
+                                          topic.id,
+                                        )
                                       }
                                       className="w-full flex items-center justify-between p-2 rounded hover:bg-gray-100 cursor-pointer"
                                     >
-                                      <span className="text-xs">{topic.title}</span>
+                                      <span className="text-xs">
+                                        {topic.title}
+                                      </span>
 
                                       {topic.lessons.length > 0 ? (
                                         topic.isExpanded ? (
@@ -391,13 +411,14 @@ const Sidebar = ({
                                     {topic.isExpanded &&
                                       topic.lessons?.length > 0 && (
                                         <div className="my-2.5 flex-col text-start w-full">
-                                          {topic?.lessons?.map((lesson: any) => (
-                                            <button
-                                              onClick={() =>
-                                                handleLessonClick(lesson)
-                                              }
-                                              key={lesson?.id}
-                                              className={`my-2.5 px-2.5 h-12.5 w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
+                                          {topic?.lessons?.map(
+                                            (lesson: any) => (
+                                              <button
+                                                onClick={() =>
+                                                  handleLessonClick(lesson)
+                                                }
+                                                key={lesson?.id}
+                                                className={`my-2.5 px-2.5 h-12.5 w-full flex items-center text-[0.8rem] cursor-pointer text-gray-700 
                                                  ${
                                                    lesson?.is_completed &&
                                                    "bg-green-100 text-green-600 hover:bg-green-200 duration-500"
@@ -406,26 +427,29 @@ const Sidebar = ({
                                                      lesson?.id &&
                                                    "bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white"
                                                  }`}
-                                            >
-                                              <div className="flex justify-between items-center p-1.25 w-full">
-                                                <div className="text-start">
-                                                  <h6 className="">
-                                                    {lesson?.title}
-                                                  </h6>
-                                                  <p className="text-[0.7rem]">
-                                                    {lesson.time_in_minutes} دقيقة
-                                                  </p>
+                                              >
+                                                <div className="flex justify-between items-center p-1.25 w-full">
+                                                  <div className="text-start">
+                                                    <h6 className="">
+                                                      {lesson?.title}
+                                                    </h6>
+                                                    <p className="text-[0.7rem]">
+                                                      {lesson.time_in_minutes}{" "}
+                                                      دقيقة
+                                                    </p>
+                                                  </div>
+                                                  {currentLesson?.id ==
+                                                  lesson?.id ? (
+                                                    <Play className="w-4 h-4" />
+                                                  ) : (
+                                                    lesson?.is_completed && (
+                                                      <CheckCircle className="w-4 h-4" />
+                                                    )
+                                                  )}
                                                 </div>
-                                                {currentLesson?.id == lesson?.id ? (
-                                                  <Play className="w-4 h-4" />
-                                                ) : (
-                                                  lesson?.is_completed && (
-                                                    <CheckCircle className="w-4 h-4" />
-                                                  )
-                                                )}
-                                              </div>
-                                            </button>
-                                          ))}
+                                              </button>
+                                            ),
+                                          )}
                                         </div>
                                       )}
                                   </div>

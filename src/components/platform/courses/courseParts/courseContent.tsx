@@ -147,8 +147,8 @@ const CourseContent = ({ allLessons, courseData }: CourseContnetProps) => {
                 <p className="font-medium">لا يتوفر دروس في هذه الدورة بعد.</p>
                 {hasImportOffers ? (
                   <p className="mt-2 text-sm text-gray-600">
-                    استخدم «استيراد الدورة» في أسفل الشريط الجانبي لجلب المحتوى من
-                    دورة أخرى.
+                    استخدم «استيراد الدورة» في أسفل الشريط الجانبي لجلب المحتوى
+                    من دورة أخرى.
                   </p>
                 ) : null}
               </div>
