@@ -193,10 +193,10 @@ const ExamsPage = () => {
   const teachers = useCustomQuery("account/admin/teachers/?page_size=9999", [
     "teachers",
   ]);
-  const addExam = useCustomPost("training/admin/exams/", [
-    "addExams",
-    "exams-statistics",
-  ]);
+  const { mutateAsync: addExam, isPending } = useCustomPost(
+    "training/admin/exams/",
+    ["addExams", "exams-statistics"],
+  );
 
   // PUT Exams
   const { mutateAsync: putExam } = useCustomUpdate(
@@ -269,8 +269,7 @@ const ExamsPage = () => {
     (sp: any) => sp.id === selectedSpec,
   );
   const handleCreateExam = () => {
-    addExam
-      .mutateAsync(newExam)
+    addExam(newExam)
       .then((res) => {
         if (res?.status) {
           toast.success("تم إضافة الاختبار بنجاح");
@@ -436,7 +435,7 @@ const ExamsPage = () => {
               {exam?.type?.name}
             </span>
             {exam.isFree && (
-              <span className="bg-green-400/20 text-green-100 px-2 py-1 rounded-full text-xs font-medium">
+              <span className="bg-blue-400/20 text-white px-2 py-1 rounded-full text-xs font-medium">
                 مجاني
               </span>
             )}
@@ -1002,6 +1001,7 @@ const ExamsPage = () => {
             <button
               onClick={handleCreateExam}
               disabled={
+                isPending ||
                 !newExam?.title ||
                 (role !== "teacher" && !newExam?.teacher) ||
                 !newExam.subsection ||

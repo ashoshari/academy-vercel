@@ -46,10 +46,10 @@ const AddQuestionsForm: React.FC<Props> = ({
   const radioGroupId = useId();
   const [pending, setPending] = useState<DraftQuestion[]>([]);
 
-  const addQuestion = useCustomPost(`/training/admin/exam-questions/`, [
-    "exam-questions",
-    examId,
-  ]);
+  const { mutateAsync: addQuestion, isPending } = useCustomPost(
+    `/training/admin/exam-questions/`,
+    ["exam-questions", examId],
+  );
 
   const correctCount = useMemo(
     () => draft.answers.filter((a) => a.is_correct).length,
@@ -137,7 +137,7 @@ const AddQuestionsForm: React.FC<Props> = ({
 
     try {
       const json = await buildQuestionsJson(examId, payload);
-      const res = await addQuestion.mutateAsync(json as any);
+      const res = await addQuestion(json as any);
       if (res?.status) {
         toast.success("تم حفظ الأسئلة بنجاح");
         setPending([]);
@@ -428,7 +428,8 @@ const AddQuestionsForm: React.FC<Props> = ({
           <button
             type="button"
             onClick={onSubmitAll}
-            className="btn-brand-slide px-5 py-2 rounded-lg flex items-center gap-2"
+            disabled={isPending}
+            className="btn-brand-slide px-5 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
             {pending.length
