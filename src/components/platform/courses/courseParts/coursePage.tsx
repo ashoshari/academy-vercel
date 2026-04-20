@@ -6,7 +6,6 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import CourseContent from "./courseContent";
 import { useLesson } from "@/store/platform/useLesson";
 import EmptyState from "@/components/core/EmptyState";
-import { ShieldAlert, Inbox } from "lucide-react";
 const CoursePage = () => {
   const [allLessons, setAllLessons] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -68,6 +67,7 @@ const CoursePage = () => {
     ["courses", courseId],
   );
   const courseData = data?.data;
+  const hasImportOffers = Boolean(courseData?.import_offers?.length);
   const sidebarCollapseHandler = (state: boolean) => {
     setSidebarCollapsed(state);
   };
@@ -119,19 +119,17 @@ const CoursePage = () => {
         <EmptyState
           title="ليس لديك الصلاحيات لمشاهدة الدورة"
           description="إذا كنت تعتقد أن هذا خطأ، تواصل مع الدعم."
-          icon={ShieldAlert}
           tone="warning"
           fullHeight
         />
       </div>
     );
-  } else if (allLessons.length === 0) {
+  } else if (allLessons.length === 0 && !hasImportOffers) {
     return (
       <div className="min-h-screen bg-linear-to-br px-2 from-gray-50 to-white flex items-center justify-center">
         <EmptyState
           title="لا يوجد محتوى لهذه الدورة"
           description="سيتم إضافة المحتوى قريباً."
-          icon={Inbox}
           tone="neutral"
           fullHeight
         />
@@ -165,8 +163,8 @@ const CoursePage = () => {
         setCurrentLessonIndex={setCurrentLessonIndex}
         courseData={courseData}
       />
-      <CourseContent courseData={courseData} allLessons={allLessons} />
-    </div>
+        <CourseContent courseData={courseData} allLessons={allLessons} />
+      </div>
   );
 };
 

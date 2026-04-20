@@ -3,7 +3,6 @@ import {
   Calendar,
   ChevronDown,
   ChevronRight,
-  Edit,
   File,
   Folder,
   FolderOpen,
@@ -11,6 +10,7 @@ import {
   Link,
   Plus,
 } from "lucide-react";
+import EditButton from "@/components/dashboard/core/EditButton";
 
 export default function TreeItem({
   specialization,
@@ -121,7 +121,7 @@ export default function TreeItem({
 
               {/* Level Badge */}
               <div className="flex items-center gap-2 ml-4">
-                <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                <span className="bg-(--brand) text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                   <Hash size={12} />
                   المستوى
                   {type === "subsections"
@@ -151,9 +151,12 @@ export default function TreeItem({
                       return (
                         <span
                           key={sec.id}
-                          className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-full text-xs font-medium"
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-(--brand) rounded-full text-xs font-medium text-white"
                         >
-                          <IconComponent size={12} className={colorClass} />
+                          <IconComponent
+                            size={12}
+                            className={`${colorClass} text-white`}
+                          />
                           {section.title}
                         </span>
                       );
@@ -196,7 +199,7 @@ export default function TreeItem({
                     // setSelectedSpecialization?.(item);
                     setShowAddMaterialModal?.(true);
                   }}
-                  className=" p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
+                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2 text-sm"
                   title=" إضافة مادة  "
                 >
                   <Plus size={16} />
@@ -251,7 +254,7 @@ export default function TreeItem({
                   </button>
                 )}
 
-                <button
+                <EditButton
                   onClick={() => {
                     if (type === "subsections") {
                       setSelectedSubsection?.(item);
@@ -278,9 +281,7 @@ export default function TreeItem({
                   }}
                   className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                   title="تعديل القسم"
-                >
-                  <Edit size={16} />
-                </button>
+                />
 
                 {/* <button
                   onClick={() => handleDeleteSubsection(item.id)}

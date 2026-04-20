@@ -29,7 +29,6 @@ import AuthModal from "@/layout/platform/navbar/authModal";
 import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
-import { Inbox, Database, LayoutGrid } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const TeacherProfile: React.FC = () => {
@@ -191,10 +190,8 @@ const TeacherProfile: React.FC = () => {
   ]);
 
   // POST ACTIVATION
-  const { mutateAsync: postActivation } = useCustomPost(
-    "/training/students/course/enroll/",
-    ["postActivation"],
-  );
+  const { mutateAsync: postActivation, isPending: isActivating } =
+    useCustomPost("/training/students/course/enroll/", ["postActivation"]);
   const handleCourseActivation = (course: any) => {
     setSelectedCourse(course);
     setShowActivationModal(true);
@@ -323,7 +320,7 @@ const TeacherProfile: React.FC = () => {
               </span>
             )}
             {course?.subsection?.title && (
-              <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
+              <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-lg">
                 {course?.subsection?.title}
               </span>
             )}
@@ -425,7 +422,7 @@ const TeacherProfile: React.FC = () => {
               </span>
             )}
             {course?.subsection?.title && (
-              <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-lg">
+              <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-lg">
                 {course?.subsection?.title || "-"}
               </span>
             )}
@@ -744,7 +741,6 @@ const TeacherProfile: React.FC = () => {
         <EmptyState
           title="لا يوجد بيانات لعرضها"
           description="جرّب تحديث الصفحة أو العودة لاحقاً."
-          icon={Database}
           tone="info"
           fullHeight
         />
@@ -898,7 +894,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد دورات مجانية متاحة حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -916,7 +911,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد دورات لعرضها حالياً."
-                      icon={LayoutGrid}
                       tone="info"
                       size="lg"
                     />
@@ -934,7 +928,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد ملفات متاحة حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -951,7 +944,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد كتب لعرضها حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -968,7 +960,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد أسئلة وزارية متاحة حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -986,7 +977,6 @@ const TeacherProfile: React.FC = () => {
                     <EmptyState
                       title="لا يوجد محتوى لعرضه"
                       description="لا توجد امتحانات مجانية متاحة حالياً."
-                      icon={Inbox}
                       tone="info"
                       size="lg"
                     />
@@ -1017,7 +1007,7 @@ const TeacherProfile: React.FC = () => {
                 <p className="text-gray-600">{selectedCourse?.title}</p>
               </div>
 
-              <div className="bg-linear-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-6">
+              <div className="bg-linear-to-r from-gray-50 to-gray-50 rounded-2xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-700 font-medium">سعر الدورة:</span>
                   {selectedCourse?.card_price?.price ? (
@@ -1061,11 +1051,12 @@ const TeacherProfile: React.FC = () => {
                   <button
                     onClick={handleActivationSubmit}
                     disabled={
-                      !selectedCourse?.is_free && !activationCode.trim()
+                      isActivating ||
+                      (!selectedCourse?.is_free && !activationCode.trim())
                     }
                     className="cursor-pointer flex-1 text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 py-3 px-6 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    تفعيل الدورة
+                    {isActivating ? "جاري التفعيل..." : "تفعيل الدورة"}
                   </button>
                   <button
                     onClick={() => {

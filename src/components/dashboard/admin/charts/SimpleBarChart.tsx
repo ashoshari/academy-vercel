@@ -73,13 +73,13 @@ export default function SimpleBarChart({
             <span className="mx-2">•</span>
             {summaryPrefix ? (
               <span>
-                {summaryPrefix}{" "}
-                <strong className="text-gray-900">
-                  {formatValue(selectedPoint.value)}
+                {summaryPrefix}
+                <strong className="text-green-600">
+                  {formatValue(selectedPoint.value)} د.أ
                 </strong>
               </span>
             ) : (
-              <strong className="text-gray-900">
+              <strong className="text-green-600">
                 {formatValue(selectedPoint.value)}
               </strong>
             )}

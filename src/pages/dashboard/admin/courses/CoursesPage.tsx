@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Plus,
   Search,
-  Edit,
   Eye,
   EyeOff,
   BookOpen,
@@ -13,7 +12,6 @@ import {
   Rows,
   Grid,
   User,
-  Trash2,
   XCircle,
   Settings,
 } from "lucide-react";
@@ -32,12 +30,82 @@ import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 import { useQueryClient } from "@tanstack/react-query";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import CourseActivation from "./CourseActivation";
+import EditButton from "@/components/dashboard/core/EditButton";
+import DeleteButton from "@/components/dashboard/core/DeleteButton";
 import DashboardStatCard, {
   DASHBOARD_STATS_GRID_4,
 } from "@/components/dashboard/admin/cards/DashboardStatCard";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
+import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
+
+function parseImportOfferTargetIds(course: any): string[] {
+  const fromIds = Array.isArray(course?.import_offer_target_ids)
+    ? course.import_offer_target_ids
+    : [];
+  const fromTargets = Array.isArray(course?.import_offer_targets)
+    ? course.import_offer_targets
+    : [];
+
+  const ids: string[] = [];
+  const push = (item: unknown) => {
+    if (typeof item === "string" && item) ids.push(item);
+    else if (
+      item &&
+      typeof item === "object" &&
+      "id" in (item as Record<string, unknown>)
+    ) {
+      const id = String((item as { id: string }).id);
+      if (id) ids.push(id);
+    }
+  };
+  for (const item of fromIds) push(item);
+  for (const item of fromTargets) push(item);
+  return [...new Set(ids)];
+}
+
+function courseWithNormalizedOfferImports(course: any) {
+  if (!course) return course;
+
+  const ids = parseImportOfferTargetIds(course).slice(0, 1);
+
+  if (ids.length === 0) {
+    // ❌ remove the field completely
+    const { ...rest } = course;
+    return rest;
+  }
+
+  return { ...course, import_offer_target_ids: ids };
+}
+
+/** Ensures the current import-offer target appears in the picker (list may omit it). */
+function buildImportOfferEditOptions(
+  picklistData: any[] | undefined,
+  editingCourseId: string | undefined,
+  selectedCourse: any,
+) {
+  const base =
+    picklistData
+      ?.filter((c: any) => String(c.id) !== String(editingCourseId))
+      .map((c: any) => ({
+        id: String(c.id),
+        title: c.name ?? "—",
+      })) ?? [];
+
+  const selId = selectedCourse?.import_offer_target_ids?.[0];
+  if (!selId) return base;
+  if (base.some((o) => o.id === String(selId))) return base;
+
+  const fromApi = Array.isArray(selectedCourse?.import_offer_targets)
+    ? selectedCourse.import_offer_targets.find(
+        (t: any) => String(t.id) === String(selId),
+      )
+    : null;
+
+  return [{ id: String(selId), title: fromApi?.name ?? "—" }, ...base];
+}
+
 const CoursesPage = () => {
   const user = readUserFromStorage();
   const role = roleOf(user) ?? "";
@@ -97,6 +165,7 @@ const CoursesPage = () => {
 
   const courseData = data?.data;
   const paginationData = data?.pagination;
+
   // GET courses stats
   const { data: coursesStats, isLoading: isLoadingCourseStats } =
     useCustomQuery("/training/admin/courses-statistics/", [
@@ -178,7 +247,7 @@ const CoursesPage = () => {
     );
 
   // POST New Course
-  const { mutateAsync: createCourse } = useCustomPost(
+  const { mutateAsync: createCourse, isPending: isCreating } = useCustomPost(
     "/training/admin/courses/",
     ["postCourses"],
   );
@@ -242,6 +311,7 @@ const CoursesPage = () => {
         is_published: true,
         is_special: false,
         is_show_general_questions: true,
+        import_offer_target_ids: [],
       });
       setSelectedSubSection("");
       setSelectedSubSub("");
@@ -293,8 +363,11 @@ const CoursesPage = () => {
       const formData = new FormData();
 
       Object.entries(changedData).forEach(([key, value]) => {
+        if (key === "import_offer_targets") return;
         if (value instanceof File) {
           formData.append(key, value);
+        } else if (key === "import_offer_target_ids" && Array.isArray(value)) {
+          formData.append(key, value[0] ?? "");
         } else {
           formData.append(key, String(value));
         }
@@ -376,7 +449,7 @@ const CoursesPage = () => {
       case "مبتدئ":
         return "bg-green-100 text-green-800";
       case "متوسط":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-gray-100 text-(--brand)";
       case "متقدم":
         return "bg-red-100 text-red-800";
       default:
@@ -402,7 +475,7 @@ const CoursesPage = () => {
         {/* Status Badges */}
         <div className="absolute top-4 right-4 flex gap-2">
           {course?.is_special && (
-            <span className="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+            <span className="bg-(--brand) text-white px-2 py-1 rounded-full text-xs font-medium">
               مميز
             </span>
           )}
@@ -532,25 +605,20 @@ const CoursesPage = () => {
           </div>
 
           <div className="flex items-center gap-1">
-            <button
+            <EditButton
               onClick={() => {
-                setSelectedCourse(course);
+                setSelectedCourse(courseWithNormalizedOfferImports(course));
                 setCurrentView("edit");
               }}
               className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="تعديل الدورة"
-            >
-              <Edit size={16} />
-            </button>
-            <button
+            />
+            <DeleteButton
               onClick={() => {
                 requestDeleteCourse(course);
               }}
-              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="حذف الدورة"
-            >
-              <Trash2 size={16} />
-            </button>
+            />
           </div>
         </div>
       </div>
@@ -569,7 +637,7 @@ const CoursesPage = () => {
           //     course.id === updatedCourse.id ? updatedCourse : course
           //   )
           // );
-          setSelectedCourse(updatedCourse);
+          setSelectedCourse(courseWithNormalizedOfferImports(updatedCourse));
         }}
       />
     );
@@ -587,6 +655,7 @@ const CoursesPage = () => {
                 is_published: true,
                 is_special: false,
                 is_show_general_questions: true,
+                import_offer_target_ids: [],
               });
               setSelectedSubSection("");
               setSelectedSubSub("");
@@ -1067,6 +1136,33 @@ const CoursesPage = () => {
                     className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
+
+                <div className="col-span-1 lg:col-span-2 space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    استيراد عرض الأسئلة من دورة أخرى (اختياري)
+                  </label>
+                  <p className="text-xs text-gray-500">
+                    يمكن اختيار دورة واحدة فقط لنسخ إعدادات عرض الأسئلة المرتبطة
+                    بها.
+                  </p>
+                  <MultiSelectAutocomplete
+                    single
+                    value={newCourse.import_offer_target_ids || []}
+                    onChange={(ids) =>
+                      setNewCourse({
+                        ...newCourse,
+                        import_offer_target_ids: ids.slice(0, 1),
+                      })
+                    }
+                    options={
+                      courseData?.map((c: any) => ({
+                        id: String(c.id),
+                        title: c.name ?? "—",
+                      })) ?? []
+                    }
+                    placeholder="اختر الدورة المصدر..."
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1082,6 +1178,7 @@ const CoursesPage = () => {
             <button
               onClick={handleCreateCourse}
               disabled={
+                isCreating ||
                 !newCourse.name ||
                 !newCourse.start_date ||
                 !newCourse.end_date ||
@@ -1097,7 +1194,7 @@ const CoursesPage = () => {
               className="btn-brand-slide md:justify-start justify-center px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
-              إنشاء الدورة
+              {isCreating ? "جاري الإنشاء..." : "إنشاء الدورة"}
             </button>
           </div>
         </div>
@@ -1618,6 +1715,32 @@ const CoursesPage = () => {
                     className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
                   />
                 </div>
+
+                <div className="col-span-2 space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    استيراد عرض الأسئلة من دورة أخرى (اختياري)
+                  </label>
+                  <p className="text-xs text-gray-500">
+                    يمكن اختيار دورة واحدة فقط لنسخ إعدادات عرض الأسئلة المرتبطة
+                    بها.
+                  </p>
+                  <MultiSelectAutocomplete
+                    single
+                    value={selectedCourse.import_offer_target_ids || []}
+                    onChange={(ids) =>
+                      setSelectedCourse({
+                        ...selectedCourse,
+                        import_offer_target_ids: ids.slice(0, 1),
+                      })
+                    }
+                    options={buildImportOfferEditOptions(
+                      courseData,
+                      selectedCourse?.id,
+                      selectedCourse,
+                    )}
+                    placeholder="اختر الدورة المصدر..."
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1642,6 +1765,7 @@ const CoursesPage = () => {
                 handleEditCourse();
               }}
               disabled={
+                isEditing ||
                 !selectedCourse.name ||
                 !selectedCourse.start_date ||
                 !selectedCourse.end_date ||
@@ -1657,7 +1781,7 @@ const CoursesPage = () => {
               className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
-              حفظ التغييرات
+              {isEditing ? "جاري الحفظ..." : "حفظ التغييرات"}
             </button>
           </div>
         </div>
@@ -2043,25 +2167,22 @@ const CoursesPage = () => {
                               )}
                             </button>
 
-                            <button
+                            <EditButton
                               onClick={() => {
-                                setSelectedCourse(course);
+                                setSelectedCourse(
+                                  courseWithNormalizedOfferImports(course),
+                                );
                                 setCurrentView("edit");
                               }}
                               className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="تعديل الدورة"
-                            >
-                              <Edit size={16} />
-                            </button>
-                            <button
+                            />
+                            <DeleteButton
                               onClick={() => {
                                 requestDeleteCourse(course);
                               }}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="حذف الدورة"
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            />
                           </div>
                         </td>
                       </tr>

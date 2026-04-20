@@ -13,6 +13,40 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import Pagination from "@/components/dashboard/core/Pagination";
 
+const InstallmentProgressBar = ({
+  createdAt,
+  dueDate,
+  amount,
+}: {
+  createdAt: string;
+  dueDate: string;
+  amount: string;
+}) => {
+  const start = new Date(createdAt).getTime();
+  const end = new Date(dueDate).getTime();
+  const now = new Date().getTime();
+  const total = end - start;
+  const current = now - start;
+  const progress = Math.min(Math.max((current / total) * 100, 0), 100);
+  const daysLeft = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  const daysLabel = daysLeft > 0 ? `متبقي ${daysLeft} يوم` : "مستحق اليوم";
+
+  return (
+    <div className="bg-gray-50 rounded-xl p-3 mb-4">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm text-gray-600">موعد الاستحقاق ({amount} د.أ)</span>
+        <span className="text-sm font-medium text-gray-900">{daysLabel}</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div
+          className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
 const AllCourses = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -68,9 +102,10 @@ const AllCourses = () => {
           key={course?.course_id}
           className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group transform hover:scale-105"
         >
-          <div className="p-6">
+          <div className="p-6 flex flex-col h-full">
             {/* Header */}
-            <div className="flex items-start justify-between mb-4">
+        <div className="flex-1">
+                  <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium">
@@ -139,6 +174,9 @@ const AllCourses = () => {
               </div>
             </div>
 
+            {/* Days Progress */}
+            {/* Removed enrollment duration progress as per user request */}
+
             {/* Next Lesson */}
             <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
               <div className="flex items-center space-x-2 mb-1">
@@ -162,10 +200,48 @@ const AllCourses = () => {
               </div>
             </div>
 
+            {/* Installments */}
+            {course?.installment_schedule?.length > 0 && (
+              <div className="mb-4 space-y-2">
+                  <div
+                    key={course.installment_schedule[0].id}
+                    className={`p-2 rounded-lg text-xs flex items-center justify-between ${
+                      course.installment_schedule[0].is_paid
+                        ? "bg-green-50 text-green-700"
+                        : "bg-amber-50 text-amber-700"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          course.installment_schedule[0].is_paid ? "bg-green-500" : "bg-amber-500"
+                        }`}
+                      />
+                      <span>
+                        {course.installment_schedule[0].is_paid ? "تم دفع" : "يجب دفع"} {course.installment_schedule[0].amount} د.أ
+                        {!course.installment_schedule[0].is_paid && ` قبل ${course.installment_schedule[0].due_date}`}
+                      </span>
+                    </div>
+                    <span className="font-bold">
+                      {course.installment_schedule[0].is_paid ? "مكتمل" : "مستحق"}
+                    </span>
+                  </div>
+
+                  {!course.installment_schedule[0].is_paid && (
+                    <InstallmentProgressBar
+                      createdAt={course.enrollment_created_at}
+                      dueDate={course.installment_schedule[0].due_date}
+                      amount={course.installment_schedule[0].amount}
+                    />
+                  )}
+              </div>
+            )}
+        </div>
+
             {/* Continue Button */}
             <button
               onClick={() => navigate(`/coursePage/${course?.course_id}`)}
-              className="w-full cursor-pointer text-white py-2.5 px-4 rounded-xl font-semibold bg-[linear-gradient(to_right,var(--brand-secondary),var(--brand-secondary-dark),var(--brand-secondary))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
+              className="w-full cursor-pointer text-white py-2.5 px-4 rounded-xl font-semibold bg-[linear-gradient(to_right,var(--brand-secondary),var(--brand-secondary-dark),var(--brand-secondary))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm self-end"
             >
               <Play className="w-4 h-4" />
               <span>متابعة التعلم</span>
@@ -252,6 +328,44 @@ const AllCourses = () => {
                   ></div>
                 </div>
               </div>
+
+              {/* Days Progress Bar */}
+              {/* Removed enrollment duration progress as per user request */}
+
+              {/* Installment Due Date Progress */}
+              {course?.installment_schedule?.length > 0 &&
+                !course.installment_schedule[0].is_paid && (
+                  <InstallmentProgressBar
+                    createdAt={course.enrollment_created_at}
+                    dueDate={course.installment_schedule[0].due_date}
+                    amount={course.installment_schedule[0].amount}
+                  />
+                )}
+
+              {/* Installments List */}
+              {/* {course?.installment_schedule?.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {course.installment_schedule.map((ins: any) => (
+                    <div
+                      key={ins.id}
+                      className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 ${
+                        ins.is_paid
+                          ? "bg-green-50 text-green-700 border border-green-100"
+                          : "bg-amber-50 text-amber-700 border border-amber-100"
+                      }`}
+                    >
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          ins.is_paid ? "bg-green-500" : "bg-amber-500"
+                        }`}
+                      />
+                      <span>
+                        {ins.amount} د.أ - {ins.is_paid ? "مدفوع" : `مستحق في ${ins.due_date}`}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )} */}
             </div>
 
             {/* Action Button */}

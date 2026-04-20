@@ -241,7 +241,7 @@ export default function AddLibraryPage() {
           <div className="flex gap-2">
             <input
               type="text"
-              {...register("password", { required: "كلمة السر مطلوبة" })}
+              {...register("password", { required: "كلمة المرور مطلوبة" })}
               className={inputClass(!!errors.password)}
               placeholder="أدخل كلمة المرور"
             />

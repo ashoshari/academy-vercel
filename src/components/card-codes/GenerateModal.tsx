@@ -12,30 +12,39 @@ import {
   X,
 } from "lucide-react";
 import MultiSelectAutocomplete from "../dashboard/admin/subsections/MultiSelector";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { readUserFromStorage, roleOf } from "@/services/auth";
+
+type CardRow = { id: string; price: number; is_active?: boolean };
+
+function activeCards(cardsQuery: { data?: { data?: CardRow[] } } | undefined) {
+  return cardsQuery?.data?.data?.filter((c) => c.is_active) ?? [];
+}
+
+function cardMultiOptions(rows: CardRow[]) {
+  return rows.map((c) => ({
+    id: String(c.id),
+    title: `${c.price} دينار أردني`,
+  }));
+}
 
 const GenerateModal = ({
   generateForm,
   setShowGenerateModal,
   setGenerateForm,
   cards,
-  // renderSubsectionTree,
-  // subsectionTree,
-  // getSubsectionName,
   handleGenerateCodes,
   cardPricing,
+  installmentPlans,
   loading,
 }: {
   generateForm: any;
   setShowGenerateModal: any;
   setGenerateForm: any;
   cards: any;
-  // renderSubsectionTree: any;
-  subsectionTree: any;
-  getSubsectionName: any;
   handleGenerateCodes: any;
   cardPricing: any;
+  installmentPlans: any;
   loading: any;
 }) => {
   const [selectedSubsections, setSelectedSubsections] = useState<string[]>([]);
@@ -49,9 +58,15 @@ const GenerateModal = ({
     useState<string[]>([]);
   const [allSubsections, setAllSubstections] = useState(true);
 
-  const subsections = useCustomQuery("/training/admin/subsections/", [
-    "subsections",
-  ]);
+  const user = readUserFromStorage();
+  const role = roleOf(user) ?? "";
+
+  const subsections = useCustomQuery(
+    "/training/admin/subsections/",
+    ["subsections"],
+    undefined,
+    role !== "library",
+  );
 
   // Find all subsubsections of selected subsections
   const subsubOptions =
@@ -129,8 +144,21 @@ const GenerateModal = ({
     }));
   }, [selectedSpecializationMaterial]);
 
-  const user = readUserFromStorage();
-  const role = roleOf(user) ?? "";
+  const activeCardRows = useMemo(() => activeCards(cards), [cards?.data?.data]);
+  const offerCardOptions = useMemo(
+    () => cardMultiOptions(activeCardRows),
+    [activeCardRows],
+  );
+
+  const submitDisabled =
+    loading ||
+    !generateForm.card ||
+    generateForm.quantity <= 0 ||
+    (generateForm.is_installment && !generateForm.installment) ||
+    (generateForm.is_offer &&
+      !(generateForm.offer_activation_cards?.length > 0)) ||
+    (generateForm.targetingType === "specific" &&
+      generateForm.targetedSubsections?.length === 0);
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -150,54 +178,33 @@ const GenerateModal = ({
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Name */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              الاسم
-            </label>
-            <input
-              type="text"
-              value={generateForm.name}
-              onChange={(e) =>
-                setGenerateForm({
-                  ...generateForm,
-                  name: e.target.value,
-                })
-              }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-              placeholder="أدخل اسم الكودات..."
-              min="1"
-              max="10000"
-            />
-          </div> */}
-
-          {/* Price Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               سعر البطاقة
             </label>
             <select
               value={generateForm?.card}
-              onChange={(e) =>
-                setGenerateForm({
-                  ...generateForm,
-                  card: e.target.value,
-                })
-              }
+              onChange={(e) => {
+                const card = e.target.value;
+                setGenerateForm((prev: any) => ({
+                  ...prev,
+                  card,
+                  offer_activation_cards: (
+                    prev.offer_activation_cards || []
+                  ).filter((id: string) => String(id) !== String(card)),
+                }));
+              }}
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
             >
               <option value={0}>اختر سعر البطاقة</option>
-              {cards?.data?.data
-                .filter((p: any) => p.is_active)
-                .map((price: any) => (
-                  <option key={price.id} value={price.id}>
-                    {price.price} دينار أردني
-                  </option>
-                ))}
+              {activeCardRows.map((price) => (
+                <option key={price.id} value={price.id}>
+                  {price.price} دينار أردني
+                </option>
+              ))}
             </select>
           </div>
 
-          {/* Quantity */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               عدد الكودات
@@ -221,21 +228,6 @@ const GenerateModal = ({
             />
           </div>
 
-          {/* Prefix */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              بادئة الكود
-            </label>
-            <input
-              type="text"
-              value={generateForm.prefix}
-              onChange={(e) =>
-                setGenerateForm({ ...generateForm, prefix: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-              placeholder="CARD"
-            />
-          </div> */}
           {role !== "library" && (
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
@@ -274,9 +266,14 @@ const GenerateModal = ({
                 type="checkbox"
                 checked={generateForm.is_installment}
                 onChange={(e) => {
+                  const checked = e.target.checked;
                   setGenerateForm({
                     ...generateForm,
-                    is_installment: e.target.checked,
+                    is_installment: checked,
+                    ...(!checked ? { installment: "" } : {}),
+                    ...(checked
+                      ? { is_offer: false, offer_activation_cards: [] }
+                      : {}),
                   });
                 }}
                 className="rounded border-gray-300 text-(--brand) focus:ring-(--brand-light)"
@@ -284,9 +281,78 @@ const GenerateModal = ({
             </div>
           )}
 
+          {generateForm.is_installment && (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                اختر خطة التقسيط *
+              </label>
+              <select
+                value={generateForm.installment}
+                onChange={(e) =>
+                  setGenerateForm({
+                    ...generateForm,
+                    installment: e.target.value,
+                  })
+                }
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+              >
+                <option value="">اختر خطة التقسيط</option>
+                {installmentPlans?.data?.data?.map((plan: any) => (
+                  <option key={plan.id} value={plan.id}>
+                    {plan.name} ({plan.number_of_installments} دفعات)
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <p className="font-medium text-gray-800">كود عرض</p>
+              <p className="text-sm text-gray-500">
+                تحديد ما إذا كانت هذه الكودات مرتبطة بعرض ترويجي.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={Boolean(generateForm.is_offer)}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setGenerateForm((prev: any) => ({
+                  ...prev,
+                  is_offer: checked,
+                  ...(!checked ? { offer_activation_cards: [] } : {}),
+                  ...(checked ? { is_installment: false, installment: "" } : {}),
+                }));
+              }}
+              className="rounded border-gray-300 text-(--brand) focus:ring-(--brand-light)"
+            />
+          </div>
+
+          {generateForm.is_offer && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                بطاقات إضافية ضمن العرض
+              </label>
+
+              <div className="space-y-3">
+                <MultiSelectAutocomplete
+                  value={generateForm.offer_activation_cards || []}
+                  onChange={(ids) =>
+                    setGenerateForm((prev: any) => ({
+                      ...prev,
+                      offer_activation_cards: ids,
+                    }))
+                  }
+                  options={offerCardOptions}
+                  placeholder="اختر بطاقات العرض الإضافية..."
+                />
+              </div>
+            </div>
+          )}
+
           {!allSubsections && (
             <>
-              {/* subsections */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   اختر قسم
@@ -311,7 +377,6 @@ const GenerateModal = ({
                 </div>
               </div>
 
-              {/* subsubsections */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   اختر الاقسام الفرعية
@@ -330,7 +395,6 @@ const GenerateModal = ({
                 </div>
               </div>
 
-              {/* specializations */}
               {specializationOptions.length > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -348,7 +412,6 @@ const GenerateModal = ({
                 </div>
               )}
 
-              {/* specialization-materials */}
               {specializationMaterialOptions.length > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -365,7 +428,6 @@ const GenerateModal = ({
             </>
           )}
 
-          {/* Notes */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               ملاحظات (اختياري)
@@ -381,7 +443,6 @@ const GenerateModal = ({
             />
           </div>
 
-          {/* Preview */}
           {generateForm.priceId > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-600 mb-2">مثال على الكود:</p>
@@ -416,7 +477,6 @@ const GenerateModal = ({
             </div>
           )}
 
-          {/* Security Info Preview */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="text-sm font-medium text-(--brand-secondary) mb-2 flex items-center gap-2">
               <Shield size={16} />
@@ -452,18 +512,11 @@ const GenerateModal = ({
           </button>
           <button
             onClick={handleGenerateCodes}
-            disabled={
-              loading
-                ? true
-                : !generateForm.card ||
-                  generateForm.quantity <= 0 ||
-                  (generateForm.targetingType === "specific" &&
-                    generateForm.targetedSubsections.length === 0)
-            }
+            disabled={submitDisabled}
             className="btn-brand-slide cursor-pointer px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
-            {loading ? "جارى التحميل..." : "     إنشاء الكودات"}
+            {loading ? "جارى التحميل..." : "إنشاء الكودات"}
           </button>
         </div>
       </div>

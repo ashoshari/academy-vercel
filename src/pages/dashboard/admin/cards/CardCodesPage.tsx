@@ -1,5 +1,5 @@
 import { UAParser } from "ua-parser-js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Plus,
   Search,
@@ -38,6 +38,9 @@ import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 
 const DOWNLOAD_RESTRICTION_DATE = new Date("2026-03-01T00:00:00Z");
 
+/** Must match Pagination `pageSize` and `page_size` query param for list APIs */
+const CARD_CODES_PAGE_SIZE = 15;
+
 const isCodeDownloadAllowed = (createdAt: string) => {
   const created = new Date(createdAt);
 
@@ -45,6 +48,15 @@ const isCodeDownloadAllowed = (createdAt: string) => {
 
   return created >= DOWNLOAD_RESTRICTION_DATE;
 };
+
+/** codes-generated rows: offer_lines on code or nested code */
+function offerLinesFromGeneratedCode(code: any) {
+  const raw = code?.offer_lines ?? code?.code?.offer_lines;
+  if (!Array.isArray(raw) || raw.length === 0) return [];
+  return [...raw].sort(
+    (a, b) => (Number(a.order) || 0) - (Number(b.order) || 0),
+  );
+}
 export interface CardCode {
   id: number;
   code: string;
@@ -99,6 +111,7 @@ const CardCodesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const user = readUserFromStorage();
   const role = roleOf(user) ?? "";
+  const loadAdminReferenceLists = role !== "library";
   const canAddCode = import.meta.env.VITE_ADD_CODE === "true";
   // const [
   //   selectedPriceFilter,
@@ -124,33 +137,45 @@ const CardCodesPage = () => {
   ]);
   const isLoadingStatistics = Boolean((cardCodesStatistics as any)?.isLoading);
 
-  const cardCodes = useCustomQuery(`cards/codes/?page=${codePage}`, [
-    "card-codes",
-    codePage,
-  ]);
-  const subsections = useCustomQuery("training/admin/subsections/", [
-    "subsections",
-  ]);
-  // GET Teachers
+  const cardCodes = useCustomQuery(
+    `cards/codes/?page=${codePage}&page_size=${CARD_CODES_PAGE_SIZE}`,
+    ["card-codes", codePage, CARD_CODES_PAGE_SIZE],
+  );
+  const subsections = useCustomQuery(
+    "training/admin/subsections/",
+    ["subsections"],
+    undefined,
+    loadAdminReferenceLists,
+  );
+  const installmentPlans = useCustomQuery(
+    "/cards/installments/",
+    ["installments"],
+    undefined,
+    loadAdminReferenceLists,
+  );
   const { data: teachers } = useCustomQuery(
     "/account/admin/teachers/?pagination=false",
     ["teachers"],
+    undefined,
+    loadAdminReferenceLists,
   );
   const teacherData = teachers?.data;
-  // GET Libraries
-  const { data: libraries } = useCustomQuery("/account/admin/libraries/", [
-    "libraries",
-  ]);
+  const { data: libraries } = useCustomQuery(
+    "/account/admin/libraries/",
+    ["libraries"],
+    undefined,
+    loadAdminReferenceLists,
+  );
   const libraryData = libraries?.data;
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
   if (codesFilter && codesFilter.length > 0) {
-    queryParams.append("page_size", "9999999");
     queryParams.append(
       "code",
       `${codesFilter?.map((id: string) => id).join(",")}`,
     );
   }
+  queryParams.append("page_size", String(CARD_CODES_PAGE_SIZE));
   if (teachersFilter)
     queryParams.append(
       "generated_by",
@@ -187,8 +212,22 @@ const CardCodesPage = () => {
       isCodeDownloaded,
       statusFilter,
       page,
+      CARD_CODES_PAGE_SIZE,
     ],
   );
+
+  useEffect(() => {
+    setPage(1);
+  }, [
+    searchTerm,
+    codesFilter,
+    teachersFilter,
+    librariesFilter,
+    installmentFilter,
+    isUsed,
+    isCodeDownloaded,
+    statusFilter,
+  ]);
 
   const cards = useCustomQuery("cards/", ["cards"]);
 
@@ -223,12 +262,14 @@ const CardCodesPage = () => {
     notes: "",
     targetingType: "all" as "all" | "specific",
     is_installment: false,
+    installment: "",
+    is_offer: false,
+    offer_activation_cards: [] as string[],
     subsections: [],
     subsubsections: [],
     specializations: [],
     specialization_material: [],
   });
-  const subsectionTree = subsections?.data?.data;
 
   const getSubsectionName = (id: number) => {
     const subsection = subsections?.data?.data?.find((s: any) => s.id === id);
@@ -314,12 +355,22 @@ const CardCodesPage = () => {
     };
   };
   const handleGenerateCodes = () => {
+    const offerLines =
+      generateForm.is_offer && generateForm.offer_activation_cards?.length
+        ? generateForm.offer_activation_cards.map((id: string) => ({
+            activation_card: id,
+          }))
+        : null;
+
     const rawData = {
-      // name: generateForm.name,
       card: generateForm.card,
       number_of_codes: generateForm.quantity,
-      // prefix: generateForm.prefix,
       is_installment: generateForm.is_installment,
+      ...(generateForm.is_installment && generateForm.installment
+        ? { installment: generateForm.installment }
+        : {}),
+      is_offer: generateForm.is_offer,
+      ...(offerLines ? { offer_lines: offerLines } : {}),
       subsections: generateForm?.subsections,
       subsubsections: generateForm?.subsubsections,
       specializations: generateForm?.specializations,
@@ -334,13 +385,14 @@ const CardCodesPage = () => {
       .then((res) => {
         if (res.status) {
           setGenerateForm({
-            // name: "",
             card: "",
             quantity: 0,
-            // prefix: "M",
             notes: "",
             targetingType: "all",
             is_installment: false,
+            installment: "",
+            is_offer: false,
+            offer_activation_cards: [],
             subsections: [],
             subsubsections: [],
             specializations: [],
@@ -842,6 +894,7 @@ const CardCodesPage = () => {
             count={cardCodes?.data?.pagination?.count}
             currentPage={codePage}
             onPageChange={setCodePage}
+            pageSize={CARD_CODES_PAGE_SIZE}
           />
         </div>
       </div>
@@ -874,36 +927,40 @@ const CardCodesPage = () => {
               }))}
               fullHeight={true}
               placeholder="جميع المجموعات"
+              selectionDisplay="count"
+              formatSelectionCount={(n) => `${n} مجموعة مختارة`}
             />
           </div>
 
-          {/* Teachers Filter */}
-          <div className="space-y-3">
-            <MultiSelectAutocomplete
-              value={teachersFilter}
-              onChange={setTeachersFilter}
-              options={teacherData?.map((teacher: any) => ({
-                id: teacher.id,
-                title: teacher.name,
-              }))}
-              fullHeight={true}
-              placeholder="جميع المعلمين"
-            />
-          </div>
+          {loadAdminReferenceLists && (
+            <>
+              <div className="space-y-3">
+                <MultiSelectAutocomplete
+                  value={teachersFilter}
+                  onChange={setTeachersFilter}
+                  options={teacherData?.map((teacher: any) => ({
+                    id: teacher.id,
+                    title: teacher.name,
+                  }))}
+                  fullHeight={true}
+                  placeholder="جميع المعلمين"
+                />
+              </div>
 
-          {/* Libraries Filter */}
-          <div className="space-y-3">
-            <MultiSelectAutocomplete
-              value={librariesFilter}
-              onChange={setLibrariesFilter}
-              options={libraryData?.map((library: any) => ({
-                id: library.id,
-                title: library.name,
-              }))}
-              fullHeight={true}
-              placeholder="جميع المكتبات"
-            />
-          </div>
+              <div className="space-y-3">
+                <MultiSelectAutocomplete
+                  value={librariesFilter}
+                  onChange={setLibrariesFilter}
+                  options={libraryData?.map((library: any) => ({
+                    id: library.id,
+                    title: library.name,
+                  }))}
+                  fullHeight={true}
+                  placeholder="جميع المكتبات"
+                />
+              </div>
+            </>
+          )}
 
           {/* Installment Filter */}
           <select
@@ -1001,7 +1058,10 @@ const CardCodesPage = () => {
                       السعر
                     </th>
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      بادئة الكود
+                      الكود
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
+                      خطة التقسيط
                     </th>
                     <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
                       الحالة
@@ -1025,6 +1085,9 @@ const CardCodesPage = () => {
                     const isDownloadAllowed = isCodeDownloadAllowed(
                       code.created_at,
                     );
+                    const offerLines = offerLinesFromGeneratedCode(code);
+
+                    console.log(code);
 
                     return (
                       <tr key={code.id} className="hover:bg-gray-50">
@@ -1061,10 +1124,34 @@ const CardCodesPage = () => {
                         </td> */}
 
                         <td className="px-4 py-3 text-gray-900">
-                          {code.code.card.price} د.أ
+                          <div className="flex flex-col gap-2 min-w-0 max-w-56">
+                            <span className="text-sm font-semibold tabular-nums text-gray-900">
+                              {code.code?.card?.price} د.أ
+                            </span>
+                            {offerLines.length > 0 && (
+                              <div className="flex flex-col gap-1 w-full">
+                                <span className="text-[0.65rem] text-gray-500 font-medium">
+                                  بطاقات العرض الإضافيّة
+                                </span>
+                                <div className="flex flex-wrap gap-1">
+                                  {offerLines.map((line: any) => (
+                                    <span
+                                      key={line.id ?? line.activation_card?.id}
+                                      className="inline-flex rounded-md bg-(--brand)/10 text-(--brand) px-2 py-0.5 text-xs font-semibold tabular-nums"
+                                    >
+                                      {line.activation_card?.price} د.أ
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-3 text-gray-900">
                           {code.code_string.split("-")[0]}
+                        </td>
+                        <td className="px-4 py-3 text-gray-900">
+                          {code.code.installment?.name || "—"}
                         </td>
 
                         {/* <div className="text-xs text-gray-500">
@@ -1094,7 +1181,7 @@ const CardCodesPage = () => {
                             {code?.is_downloaded && (
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium
-                                  bg-yellow-100 text-yellow-800
+                                  bg-gray-100 text-(--brand)
                               `}
                               >
                                 تم التحميل
@@ -1123,18 +1210,16 @@ const CardCodesPage = () => {
                           {formatDateTimeSimple(code.created_at)}
                         </td>
 
-                        <td className="px-4 py-3 whitespace-nowrap flex gap-2">
-                          {role === "admin" && (
-                            <div className="flex items-center gap-2">
+                        <td className="px-4 py-3 align-middle whitespace-nowrap">
+                          <div className="flex items-center">
+                            {role === "admin" && (
                               <StatusToggleButton
                                 isOn={Boolean(code.is_active)}
                                 onToggle={() => requestCodeStatusToggle(code)}
                                 titleOn="تعطيل الكود"
                                 titleOff="تفعيل الكود"
                               />
-                            </div>
-                          )}
-                          <div className="flex items-center gap-2">
+                            )}
                             {isDownloadAllowed && (
                               <button
                                 onClick={() => handleCodeDownload(code?.id)}
@@ -1148,8 +1233,6 @@ const CardCodesPage = () => {
                                 <Download size={16} />
                               </button>
                             )}
-                          </div>
-                          <div className="flex items-center gap-2">
                             <button
                               className="cursor-pointer p-1 rounded transition-colors"
                               title={code?.code?.name}
@@ -1182,6 +1265,7 @@ const CardCodesPage = () => {
             count={generateCodes?.data?.pagination?.count}
             currentPage={page}
             onPageChange={setPage}
+            pageSize={CARD_CODES_PAGE_SIZE}
           />
         </>
       )}
@@ -1192,12 +1276,10 @@ const CardCodesPage = () => {
           cardPricing={cardPricing}
           cards={cards}
           generateForm={generateForm}
-          getSubsectionName={getSubsectionName}
           handleGenerateCodes={handleGenerateCodes}
-          // renderSubsectionTree={renderSubsectionTree}
           setShowGenerateModal={setShowGenerateModal}
           setGenerateForm={setGenerateForm}
-          subsectionTree={subsectionTree}
+          installmentPlans={installmentPlans}
           loading={addCode.isPending}
         />
       )}
@@ -1229,7 +1311,7 @@ const CardCodesPage = () => {
                 هذا الكود؟
               </p>
               <p className="text-sm text-gray-600">
-                بادئة الكود:{" "}
+                الكود
                 <span
                   className="font-mono font-semibold text-(--brand-secondary)"
                   dir="ltr"

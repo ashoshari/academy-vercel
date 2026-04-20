@@ -41,6 +41,7 @@ import LibraryDetailsPage from "@/pages/dashboard/admin/libraries/LibraryDetails
 import LibraryWalletPage from "@/pages/dashboard/admin/libraries/LibraryWallet";
 
 import CardPricingPage from "@/pages/dashboard/admin/cards/CardPricingPage";
+import InstallmentPlansPage from "@/pages/dashboard/admin/cards/installment-plans/InstallmentPlansPage";
 import CardCodesPage from "@/pages/dashboard/admin/cards/CardCodesPage";
 import AllCourses from "@/components/platform/courses/allCourses";
 import SectionsPage from "@/pages/dashboard/admin/sections/SectionsPage";
@@ -178,6 +179,7 @@ export default function AppRoutes() {
               {/* cards */}
               <Route path="card-pricing" element={<CardPricingPage />} />
               <Route path="custom-card-pricing" element={<CardCustomPrice />} />
+              <Route path="installment-plans" element={<InstallmentPlansPage />} />
               {/* cards */}
             </Route>
 

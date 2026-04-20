@@ -455,7 +455,7 @@ const FilesPage = () => {
               onClick={() => toggleFileFavorite(file.id)}
               className={`p-2 backdrop-blur-sm rounded-lg transition-colors ${
                 file.isFavorite
-                  ? "bg-yellow-500/80 text-white"
+                  ? "bg-(--brand) text-white"
                   : "bg-white/20 text-white hover:bg-white/30"
               }`}
               title={file.isFavorite ? "إزالة من المفضلة" : "إضافة للمفضلة"}
@@ -475,7 +475,7 @@ const FilesPage = () => {
           {/* Status Badges */}
           <div className="absolute top-2 right-2 flex gap-1">
             {file.isFavorite && (
-              <Star size={14} className="text-yellow-500 fill-current" />
+              <Star size={14} className="text-(--brand) fill-current" />
             )}
             {file.isShared && <Share size={14} className="text-blue-500" />}
             {file.accessLevel === "public" ? (
@@ -1163,8 +1163,8 @@ const FilesPage = () => {
                             onClick={() => toggleFileFavorite(file.id)}
                             className={`p-1 transition-colors ${
                               file.isFavorite
-                                ? "text-yellow-500"
-                                : "text-gray-400 hover:text-yellow-500"
+                                ? "text-(--brand)"
+                                : "text-gray-400 hover:text-(--brand)"
                             }`}
                             title={
                               file.isFavorite

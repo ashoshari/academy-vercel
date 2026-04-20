@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useCallback } from "react";
 import EmptyState from "@/components/core/EmptyState";
-import { Images } from "lucide-react";
 
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -43,8 +42,8 @@ const Hero: React.FC = () => {
     return () => clearInterval(timer);
   }, [nextSlide, slides.length, stopSlider]);
   return (
-    <section className="relative h-[75vh] overflow-hidden bg-gray-900">
-      <section className="relative h-full overflow-hidden bg-linear-to-br from-indigo-900 via-purple-900 to-blue-900">
+    <section className="relative h-[75vh] overflow-hidden">
+      <section className="relative h-full overflow-hidden">
         {/* Background Slider  /// */}
         {slides?.length > 0 ? (
           <>
@@ -226,7 +225,6 @@ const Hero: React.FC = () => {
             <EmptyState
               title="لا يوجد سلايدات لعرضها"
               description="سيتم إضافة سلايدات قريباً."
-              icon={Images}
               tone="neutral"
               size="lg"
               dir="rtl"

@@ -18,8 +18,10 @@ import {
   CheckCircle,
   Target,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import { useCustomQuery } from "@/hooks/useQuery";
 import {
   useCustomPost,
@@ -64,6 +66,13 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [currentView, setCurrentView] = useState<"tree" | "add" | "edit">(
     "tree",
   );
+
+  // Delete modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
   // GET courseContent
   const { data: courseContent, isLoading } = useCustomQuery(
     `/training/admin/courses/${course?.id}/`,
@@ -318,6 +327,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       ...(newItem.order !== undefined && { order: newItem.order }),
       ...(newItem.resources !== undefined && { resources: newItem.resources }),
     };
+    setIsSaving(true);
     try {
       const response =
         newItem.type === "semester"
@@ -336,12 +346,14 @@ const CourseContentPage = ({ course, onBack }: any) => {
       });
       toast.success(response?.message ?? "تم الحفظ بنجاح");
       setSelectedResources([]);
+      // إعادة تعيين النموذج
+      setNewItem({});
+      setCurrentView("tree");
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
+    } finally {
+      setIsSaving(false);
     }
-    // إعادة تعيين النموذج
-    setNewItem({});
-    setCurrentView("tree");
   };
   const handleEditItem = async () => {
     const editedContent = {
@@ -361,6 +373,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
       ...(selectedItem?.order && { order: selectedItem?.order }),
       ...(selectedItem?.resources && { resources: selectedItem?.resources }),
     };
+    setIsSaving(true);
     try {
       const response = selectedItem?.course
         ? await putSemesters(editedContent)
@@ -378,35 +391,37 @@ const CourseContentPage = ({ course, onBack }: any) => {
       setSelectedResources([]);
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
+    } finally {
+      setIsSaving(false);
     }
   };
-  const handleDeleteItem = async (itemData: any) => {
-    if (
-      !confirm(
-        "هل أنت متأكد من حذف هذا العنصر؟ سيتم حذف جميع العناصر التابعة له.",
-      )
-    )
-      return;
-    console.log("itemData", itemData);
+  const handleDeleteClick = (item: any) => {
+    setSelectedItem(item);
+    setItemToDelete(item);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
+
+    setIsDeleting(true);
     try {
       let response;
-      if (itemData?.course) {
-        console.log("itemData", itemData);
-        response = await deleteContentSemester(itemData?.id);
-      } else if (itemData?.semester) {
-        console.log("itemData", itemData);
-        response = await deleteContentUnit(itemData?.id);
-      } else if (itemData?.unit) {
-        console.log("itemData", itemData);
-        response = await deleteContentTopic(itemData?.id);
+      if (itemToDelete?.course) {
+        response = await deleteContentSemester(itemToDelete?.id);
+      } else if (itemToDelete?.semester) {
+        response = await deleteContentUnit(itemToDelete?.id);
+      } else if (itemToDelete?.unit) {
+        response = await deleteContentTopic(itemToDelete?.id);
       } else {
-        console.log("itemData", itemData);
-        response = await deleteContentLesson(itemData?.id);
+        response = await deleteContentLesson(itemToDelete?.id);
       }
+
       toast.success(response?.message || "تم حذف المحتوى بنجاح");
+
       const deleteFromTree = (items: TreeItem[]): TreeItem[] => {
         return items
-          .filter((item) => item.id !== itemData?.id)
+          .filter((item) => item.id !== itemToDelete?.id)
           .map((item) => {
             const childKey = Object.keys(item).find(
               (key) =>
@@ -430,8 +445,13 @@ const CourseContentPage = ({ course, onBack }: any) => {
           });
       };
       setContentTree(deleteFromTree(contentTree));
+      setIsDeleteModalOpen(false);
+      setItemToDelete(null);
+      setSelectedItem(null);
     } catch (err: any) {
       toast.error(err?.response?.data?.error || "حدث خطأ اثناء حذف العنصر");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -688,8 +708,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                       {/* Delete */}
                       <button
                         onClick={() => {
-                          setSelectedItem(item);
-                          handleDeleteItem(item);
+                          handleDeleteClick(item);
                         }}
                         className="cursor-pointer p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                         title="حذف"
@@ -745,10 +764,39 @@ const CourseContentPage = ({ course, onBack }: any) => {
     return parents;
   };
 
+  const deleteModal = (
+    <ConfirmationModal
+      open={isDeleteModalOpen}
+      onClose={() => setIsDeleteModalOpen(false)}
+      onConfirm={handleConfirmDelete}
+      title="تأكيد حذف المحتوى"
+      description={
+        <div className="flex flex-col items-center gap-4 py-2">
+          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center">
+            <AlertTriangle className="w-8 h-8 text-red-600" />
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-gray-900 leading-relaxed">
+              هل أنت متأكد من حذف <span className="text-red-600">"{itemToDelete?.title}"</span>؟
+            </p>
+            <p className="text-gray-500 mt-2 text-sm">
+              سيتم حذف هذا العنصر وجميع العناصر التابعة له بشكل نهائي. لا يمكن التراجع عن هذا الإجراء.
+            </p>
+          </div>
+        </div>
+      }
+      confirmLabel="حذف نهائي"
+      cancelLabel="إلغاء"
+      variant="danger"
+      isPending={isDeleting}
+    />
+  );
+
   // Tree View
   if (currentView === "tree") {
     return (
-      <div className="space-y-6">
+      <>
+        <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
@@ -929,13 +977,16 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
         </div>
       </div>
+      {deleteModal}
+    </>
     );
   }
 
   // Add Content View
   if (currentView === "add") {
     return (
-      <div className="space-y-6">
+      <>
+        <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
@@ -1320,23 +1371,27 @@ const CourseContentPage = ({ course, onBack }: any) => {
                   !newItem.videoUrl) ||
                 (newItem.type === "lesson" &&
                   newItem.lessonType === "exam" &&
-                  !newItem.examId)
+                  !newItem.examId) ||
+                isSaving
               }
               className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
-              إضافة المحتوى
+              {isSaving ? "جاري الإضافة..." : "إضافة المحتوى"}
             </button>
           </div>
         </div>
       </div>
+      {deleteModal}
+    </>
     );
   }
 
   // Edit Content View (similar to add but with existing data)
   if (currentView === "edit" && selectedItem) {
     return (
-      <div className="space-y-6">
+      <>
+        <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
@@ -1620,15 +1675,17 @@ const CourseContentPage = ({ course, onBack }: any) => {
                 // setContentTree(updateInTree(contentTree));
                 handleEditItem();
               }}
-              disabled={!selectedItem.title}
+              disabled={!selectedItem.title || isSaving}
               className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
-              حفظ التغييرات
+              {isSaving ? "جاري الحفظ..." : "حفظ التغييرات"}
             </button>
           </div>
         </div>
       </div>
+      {deleteModal}
+    </>
     );
   }
 

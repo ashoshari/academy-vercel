@@ -14,6 +14,10 @@ interface Props {
   disabled?: boolean;
   big?: boolean;
   fullHeight?: boolean;
+  /** When set to "count", selected items are summarized as a count (no title chips). */
+  selectionDisplay?: "chips" | "count";
+  /** Used with selectionDisplay="count" to build the summary text (default: n => `${n} محدد`). */
+  formatSelectionCount?: (count: number) => string;
 }
 
 const MultiSelectAutocomplete: React.FC<Props> = ({
@@ -25,6 +29,8 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   single = false,
   fullHeight = false,
   disabled = false,
+  selectionDisplay = "chips",
+  formatSelectionCount = (n) => `${n} محدد`,
 }) => {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -47,8 +53,6 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
   }, []);
 
   const add = (id: string) => {
-    console.log("id", id);
-    console.log("value", value);
     if (disabled) return;
     onChange(single ? [id] : [...value, id]);
     setQuery("");
@@ -75,29 +79,52 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
           setOpen(true);
         }}
       >
-        {value?.map((id) => {
-          const opt = options.find((o) => o.id === id);
-          if (!opt) return null;
-          return (
-            <span
-              key={id}
-              className="flex items-center gap-1 bg-gray-100 text-(--brand) text-xs
-                        rounded-full pl-2 pr-1 py-1"
-            >
-              {opt.title}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (disabled) return;
-                  remove(id);
-                }}
-                className="w-4 h-4 flex items-center justify-center hover:text-red-600"
-              >
-                ×
-              </button>
+        {selectionDisplay === "count" && value?.length ? (
+          <span
+            className="inline-flex items-center gap-1.5 shrink-0 rounded-md bg-gray-100 px-2.5 py-1 text-xs font-semibold text-(--brand)"
+            dir="rtl"
+          >
+            <span className="tabular-nums text-gray-900">
+              {formatSelectionCount(value.length)}
             </span>
-          );
-        })}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (disabled) return;
+                onChange([]);
+              }}
+              className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-gray-500 hover:bg-gray-200 hover:text-red-600"
+              aria-label="مسح التحديد"
+            >
+              ×
+            </button>
+          </span>
+        ) : (
+          value?.map((id) => {
+            const opt = options.find((o) => o.id === id);
+            if (!opt) return null;
+            return (
+              <span
+                key={id}
+                className="flex items-center gap-1 bg-gray-100 text-(--brand) text-xs
+                        rounded-full pl-2 pr-1 py-1"
+              >
+                {opt.title}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (disabled) return;
+                    remove(id);
+                  }}
+                  className="w-4 h-4 flex items-center justify-center hover:text-red-600"
+                >
+                  ×
+                </button>
+              </span>
+            );
+          })
+        )}
 
         <input
           value={query}
@@ -109,7 +136,9 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
           readOnly={disabled}
           aria-disabled={disabled}
           className="flex-1 min-w-20 bg-transparent outline-none text-sm read-only:cursor-not-allowed"
-          placeholder={placeholder}
+          placeholder={
+            selectionDisplay === "count" && value?.length ? "" : placeholder
+          }
           dir="rtl"
         />
       </div>

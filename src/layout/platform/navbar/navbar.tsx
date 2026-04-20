@@ -196,7 +196,7 @@ const Navbar: React.FC = () => {
                     setIsMenuOpen(!isMenuOpen);
                     if (open) setOpen(false);
                   }}
-                  className="cursor-pointer lg:hidden p-2 text-gray-600 hover:text-(--brand) hover:bg-yellow-50 rounded-lg transition-all duration-200"
+                  className="cursor-pointer lg:hidden p-2 text-gray-600 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-all duration-200"
                 >
                   {isMenuOpen ? (
                     <X className="w-5 h-5" />

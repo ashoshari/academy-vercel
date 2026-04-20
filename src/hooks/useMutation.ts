@@ -48,11 +48,17 @@ export const useCustomPatch = (endpoint: string, queryKey: string[]) => {
   });
 };
 
-export const useCustomRemove = (endpoint: string, queryKey: string[]) => {
+export const useCustomRemove = (
+  endpoint: string | (() => string),
+  queryKey: string[],
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => remove(endpoint),
+    mutationFn: () => {
+      const url = typeof endpoint === "function" ? endpoint() : endpoint;
+      return remove(url);
+    },
     onSuccess: () => {
       queryKey?.forEach((key) => {
         queryClient.resetQueries({ queryKey: [key] });
