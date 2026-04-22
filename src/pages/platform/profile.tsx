@@ -1,4 +1,4 @@
-import { User, Calendar, ArrowRight, Phone } from "lucide-react";
+import { User, ArrowRight, Phone, Mail, School, Users } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import EditProfileForm from "./profile/EditProfileForm";
@@ -10,18 +10,32 @@ const Profile = () => {
     "user-profile",
   ]);
   const userProfileData = userProfile?.data;
+  const gender = userProfileData?.gender === "M" ? "ذكر" : "أنثى";
   const formValues = [
     {
       label: "الاسم الكامل",
-      type: "name",
       value: userProfileData?.name || "-",
       icon: User,
     },
     {
       label: "رقم الهاتف",
-      type: "phone_number",
       value: userProfileData?.mobile_number || "-",
       icon: Phone,
+    },
+    {
+      label: "البريد الإلكتروني",
+      value: userProfileData?.email || "-",
+      icon: Mail,
+    },
+    {
+      label: "اسم المدرسة",
+      value: userProfileData?.school_name || "-",
+      icon: School,
+    },
+    {
+      label: "الجنس",
+      value: gender || "-",
+      icon: Users,
     },
   ];
   return (
@@ -68,18 +82,20 @@ const Profile = () => {
                 key={index}
                 className="flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition"
               >
-                <div className="w-10 h-10 flex items-center justify-center bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white rounded-lg shadow-sm">
+                <div className="w-10 h-10 flex items-center justify-center bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white rounded-lg shadow-sm shrink-0">
                   <item.icon size={18} />
                 </div>
                 <div className="flex flex-col">
                   <p className="text-xs text-gray-500">{item.label}</p>
-                  <p className="font-semibold text-gray-800">{item.value}</p>
+                  <p className="font-semibold text-gray-800 break-all">
+                    {item.value}
+                  </p>
                 </div>
               </div>
             ))}
 
             {/* Create Date */}
-            <div className="md:col-span-2 flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition">
+            {/* <div className="md:col-span-2 flex items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition">
               <div className="w-10 h-10 flex items-center justify-center bg-linear-to-r from-(--brand) to-(--brand-light) text-white rounded-lg shadow-sm">
                 <Calendar size={18} />
               </div>
@@ -87,7 +103,7 @@ const Profile = () => {
                 <p className="text-xs text-gray-500">تاريخ الانضمام</p>
                 <p className="font-semibold text-gray-800">01 يناير 2024</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -191,7 +191,7 @@ function EditProfileForm({ userProfileData }: Props) {
           disabled={isPending || !hasValuesChanged()}
           className="cursor-pointer px-5 py-2 rounded-lg text-white font-medium shadow-sm hover:shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isPending ? <FaSpinner /> : "حفظ التغييرات"}
+          {isPending ? <FaSpinner className="animate-spin" /> : "حفظ التغييرات"}
         </button>
       </div>
     </form>
