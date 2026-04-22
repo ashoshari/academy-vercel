@@ -120,10 +120,15 @@ const InstallmentPlansPage = () => {
                             (line: any, idx: number) => (
                               <div
                                 key={line.id || idx}
-                                className="text-xs bg-(--brand) text-white p-1 rounded"
+                                className="text-xs bg-gray-100 text-(--brand-secondary) p-1 rounded"
                               >
                                 {line.name} - {line.amount} د.أ (بعد{" "}
-                                {line.due_after_days} أيام)
+                                {line.due_after_days === 1
+                                  ? "يوم واحد"
+                                  : line.due_after_days === 2
+                                  ? "يومين"
+                                  : `${line.due_after_days} أيام`}
+                                )
                               </div>
                             ),
                           )}

@@ -35,11 +35,33 @@ export const useCustomUpdate = (
   });
 };
 
-export const useCustomPatch = (endpoint: string, queryKey: string[]) => {
+export const useCustomPatch = (
+  endpoint: UpdateEndpoint,
+  queryKey?: string[],
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (body: any) => patch(endpoint, body),
+    mutationFn: (body: any) => {
+      const url = typeof endpoint === "function" ? endpoint() : endpoint;
+      return patch(url, body);
+    },
+    onSuccess: () => {
+      queryKey?.forEach((key) => {
+        queryClient.resetQueries({ queryKey: [key] });
+      });
+    },
+  });
+};
+
+export const useCustomPut = (endpoint: UpdateEndpoint, queryKey?: string[]) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: any) => {
+      const url = typeof endpoint === "function" ? endpoint() : endpoint;
+      return edit(url, body);
+    },
     onSuccess: () => {
       queryKey?.forEach((key) => {
         queryClient.resetQueries({ queryKey: [key] });

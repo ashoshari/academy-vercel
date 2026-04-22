@@ -19,6 +19,10 @@ import {
   FolderTree,
   Upload,
   Image as ImageIcon,
+  DollarSign,
+  Calendar,
+  Banknote,
+  Wallet,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 
@@ -53,7 +57,7 @@ const Layout = () => {
 
   const menuItems = [
     { id: "", label: "الرئيسية", icon: Home },
-    { id: "sales", label: "المبيعات", icon: Home },
+    { id: "sales", label: "المبيعات", icon: DollarSign },
     { id: "students", label: "الطلاب", icon: GraduationCap },
     { id: "teachers", label: "المعلمين", icon: Users },
     { id: "libraries", label: "المكتبات", icon: Library },
@@ -69,12 +73,20 @@ const Layout = () => {
       label: "أسعار البطاقات المخصصة",
       icon: CreditCard,
     },
-    { id: "installment-plans", label: "خطط التقسيط", icon: CreditCard },
+    { id: "installment-plans", label: "خطط التقسيط", icon: Calendar },
     { id: "card-codes", label: "كودات البطاقات", icon: Hash },
+    { id: "enrollment-installments", label: "دفعات الطلاب", icon: Banknote },
+    {
+      id: "teacher/enrollment-installments",
+      label: "دفعات الطلاب",
+      icon: Banknote,
+    },
+    { id: "teacher-used-codes", label: "حصص المدرسين (كودات)", icon: Wallet },
+
     // { id: "reports", label: "التقارير", icon: BarChart3 },
   ];
 
-  const LIBRARY_ALLOWED = new Set(["", "card-codes"]);
+  const LIBRARY_ALLOWED = new Set(["", "card-codes", "installment-plans"]);
   const TEACHER_DISALLOWED = new Set([
     "teachers",
     "students",
@@ -85,9 +97,14 @@ const Layout = () => {
     "card-pricing",
     "custom-card-pricing",
     "installment-plans",
+    "enrollment-installments",
     "card-codes",
+    "teacher-used-codes",
   ]);
-  const ADMIN_DISALLOWED = new Set(["sales"]);
+  const ADMIN_DISALLOWED = new Set([
+    "sales",
+    "teacher/enrollment-installments",
+  ]);
 
   const filteredMenuItems =
     role === "library"

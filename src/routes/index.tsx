@@ -57,6 +57,9 @@ import SliderPage from "@/pages/dashboard/admin/sliders/SliderPage";
 import { RequireRole } from "./guards";
 import CardCustomPrice from "@/pages/dashboard/admin/cards/CardCustomPrice";
 import SalesPage from "@/pages/dashboard/admin/sales/SalesPage";
+import EnrollmentInstallmentsPage from "@/pages/dashboard/admin/cards/EnrollmentInstallmentsPage";
+import TeacherEnrollmentInstallmentsPage from "@/pages/dashboard/admin/teacher-students-enrollments/TeacherEnrollmentInstallmentsPage";
+import TeacherUsedCodesPage from "@/pages/dashboard/admin/cards/TeacherUsedCodesPage";
 // import { readUserFromStorage, roleOf } from "@/services/auth";
 
 // function DashboardIndexGate() {
@@ -127,12 +130,19 @@ export default function AppRoutes() {
               <Route path="sections" element={<SectionsPage />} />
               <Route path="sub-sections" element={<SubsectionsPage />} />
               {/* sections */}
+              <Route
+                path="teacher-used-codes"
+                element={<TeacherUsedCodesPage />}
+              />
             </Route>
 
             <Route element={<RequireRole exclude={["teacher"]} />}>
               {/* Codes */}
               <Route path="card-codes" element={<CardCodesPage />} />
-              {/* Codes */}
+              <Route
+                path="installment-plans"
+                element={<InstallmentPlansPage />}
+              />
             </Route>
 
             <Route element={<RequireRole exclude={["library"]} />}>
@@ -142,7 +152,10 @@ export default function AppRoutes() {
               <Route path="students/edit/:id" element={<EditStudentPage />} />
               <Route path="students/:id" element={<StudentDetailsPage />} />
               {/* students */}
-
+              <Route
+                path="enrollment-installments"
+                element={<EnrollmentInstallmentsPage />}
+              />
               {/* libraries */}
               <Route path="libraries" element={<LibrariesPage />} />
               <Route path="libraries/add" element={<AddLibraryPage />} />
@@ -157,8 +170,12 @@ export default function AppRoutes() {
               {/* courses */}
               <Route path="courses" element={<CoursesPage />} />
               {/* courses */}
-              <Route element={<RequireRole exclude={["admin"]} />}>
+              <Route element={<RequireRole exclude={["admin", "library"]} />}>
                 <Route path="sales" element={<SalesPage />} />
+                <Route
+                  path="teacher/enrollment-installments"
+                  element={<TeacherEnrollmentInstallmentsPage />}
+                />
               </Route>
 
               {/* exams */}
@@ -179,7 +196,7 @@ export default function AppRoutes() {
               {/* cards */}
               <Route path="card-pricing" element={<CardPricingPage />} />
               <Route path="custom-card-pricing" element={<CardCustomPrice />} />
-              <Route path="installment-plans" element={<InstallmentPlansPage />} />
+
               {/* cards */}
             </Route>
 
