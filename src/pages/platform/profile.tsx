@@ -1,6 +1,7 @@
 import { User, Calendar, ArrowRight, Phone } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
+import EditProfileForm from "./profile/EditProfileForm";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -88,6 +89,12 @@ const Profile = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="flex justify-center w-full mb-10">
+        <div className="bg-white rounded-2xl shadow-xl p-7 w-3/4 md:w-2/3 border border-gray-100">
+          <EditProfileForm userProfileData={userProfileData} />
         </div>
       </div>
     </div>

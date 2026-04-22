@@ -163,8 +163,8 @@ const CoursePage = () => {
         setCurrentLessonIndex={setCurrentLessonIndex}
         courseData={courseData}
       />
-        <CourseContent courseData={courseData} allLessons={allLessons} />
-      </div>
+      <CourseContent courseData={courseData} allLessons={allLessons} />
+    </div>
   );
 };
 

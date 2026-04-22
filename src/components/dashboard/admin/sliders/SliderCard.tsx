@@ -242,7 +242,7 @@ export default function SliderCard({
                     })
                   }
                   titleOn="إلغاء التفعيل"
-                  titleOff="تفعيل شريط التمرير"
+                  titleOff="تفعيل السلايدر"
                 />
 
                 {/* View details */}
@@ -288,8 +288,8 @@ export default function SliderCard({
           }}
           title={
             pendingSlideStatusToggle.isPublished
-              ? "إلغاء تفعيل شريط التمرير"
-              : "تفعيل شريط التمرير"
+              ? "إلغاء تفعيل السلايدر "
+              : "تفعيل السلايدر "
           }
           variant={pendingSlideStatusToggle.isPublished ? "danger" : "success"}
           confirmLabel={

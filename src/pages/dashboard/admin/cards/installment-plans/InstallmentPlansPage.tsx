@@ -136,14 +136,14 @@ const InstallmentPlansPage = () => {
                               setSelectedPlan(plan);
                               setShowEditModal(true);
                             }}
-                            className="p-2 text-gray-400 hover:text-(--brand) hover:bg-blue-50 rounded-lg transition-colors"
+                            className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-blue-50 rounded-lg transition-colors"
                             title="تعديل"
                           >
                             <Edit size={18} />
                           </button>
                           <button
                             onClick={() => setPlanToDelete(plan.id)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="حذف"
                           >
                             <Trash2 size={18} />
