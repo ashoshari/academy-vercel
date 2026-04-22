@@ -68,6 +68,7 @@ const CoreExam = ({
     }, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line
   }, [timeLeft]);
 
   const formatTime = (seconds: number) => {
