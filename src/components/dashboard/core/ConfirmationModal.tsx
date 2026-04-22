@@ -98,8 +98,11 @@ export function ConfirmationModal({
         aria-labelledby="confirmation-modal-title"
         className={`relative w-full max-w-md rounded-2xl bg-white shadow-2xl ring-1 ${styles.ring} border border-(--brand) overflow-hidden`}
       >
-        <div className="flex items-start justify-between gap-3 border-b border-gray-100 bg-linear-to-l from-white to-orange-50/40 px-5 py-4">
-          <div className="flex items-start gap-3 min-w-0 text-right">
+        <div
+          dir="rtl"
+          className="flex items-start justify-between gap-3 border-b border-gray-100 bg-linear-to-l from-white to-orange-50/40 px-5 py-4"
+        >
+          <div className="flex items-center gap-3 min-w-0 text-right">
             {Icon ? (
               <span
                 className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${styles.iconWrap}`}
@@ -133,19 +136,19 @@ export function ConfirmationModal({
         <div className="flex flex-row-reverse flex-wrap items-center justify-start gap-2 border-t border-gray-100 bg-gray-50/80 px-5 py-4">
           <button
             type="button"
-            onClick={() => void onConfirm()}
-            disabled={isPending}
-            className={`cursor-pointer min-w-28 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all disabled:opacity-60 disabled:pointer-events-none ${styles.confirm}`}
-          >
-            {isPending ? "جاري التنفيذ…" : confirmLabel}
-          </button>
-          <button
-            type="button"
             onClick={() => !isPending && onClose()}
             disabled={isPending}
             className="cursor-pointer rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
           >
             {cancelLabel}
+          </button>
+          <button
+            type="button"
+            onClick={() => void onConfirm()}
+            disabled={isPending}
+            className={`cursor-pointer min-w-28 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all disabled:opacity-60 disabled:pointer-events-none ${styles.confirm}`}
+          >
+            {isPending ? "جاري التنفيذ…" : confirmLabel}
           </button>
         </div>
       </div>

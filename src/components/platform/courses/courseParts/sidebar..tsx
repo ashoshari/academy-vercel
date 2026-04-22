@@ -268,7 +268,7 @@ const Sidebar = ({
         sidebarCollapsed ? "w-16" : "w-80"
       } ${
         sidebarVisible ? "translate-x-0" : "-translate-x-full"
-      } fixed left-0 top-20 h-[calc(100vh-80px)] z-40 overflow-y-auto`}
+      } fixed left-0 top-20 h-[calc(100vh-80px)] z-999 overflow-y-auto`}
     >
       {/* Sidebar Header */}
       <div className="shrink-0 p-4 border-b border-gray-200 bg-linear-to-r from-blue-50 to-blue-50">
