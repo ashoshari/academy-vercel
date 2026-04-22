@@ -19,7 +19,7 @@ export async function storeTokens(
   navigate?: NavigateFunction,
   setIsAuthenticated?: () => void,
 ): Promise<void> {
-  await localStorage.setItem(TOKEN_KEY, JSON.stringify(tokens));
+  await localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(tokens));
 
   if (setIsAuthenticated) setIsAuthenticated();
 
@@ -30,7 +30,7 @@ export async function removeTokens(
   navigate?: NavigateFunction,
   setIsAuthenticated?: () => void,
 ): Promise<void> {
-  await localStorage.removeItem(TOKEN_KEY);
+  await localStorage.removeItem(AUTH_TOKEN_KEY);
   await localStorage.removeItem("company_domian");
 
   if (setIsAuthenticated) setIsAuthenticated();
