@@ -232,7 +232,7 @@ const StudentsPage = () => {
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                   student?.is_active
-                    ? "bg-green-400/20 text-green-100"
+                    ? "bg-blue-400/20 text-white"
                     : "bg-red-400/20 text-red-100"
                 }`}
               >
@@ -243,7 +243,7 @@ const StudentsPage = () => {
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                   student?.is_active
-                    ? "bg-green-400/20 text-green-100"
+                    ? "bg-blue-400/20 text-white"
                     : "bg-red-400/20 text-red-100"
                 }`}
               >
@@ -304,7 +304,7 @@ const StudentsPage = () => {
         {/* Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex justify-between items-center gap-1 w-full">
-            <div>
+            <div className="flex items-center">
               <DetailsButton
                 onClick={() => {
                   navigate(`/dashboard/students/${student.id}`);

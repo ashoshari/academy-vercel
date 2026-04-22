@@ -8,7 +8,7 @@ type DetailsButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export default function DetailsButton({
   title = "عرض التفاصيل",
-  iconSize = 16,
+  iconSize = 18,
   className = "cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors",
   ...props
 }: DetailsButtonProps) {

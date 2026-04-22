@@ -29,7 +29,14 @@ const InstallmentProgressBar = ({
   const current = now - start;
   const progress = Math.min(Math.max((current / total) * 100, 0), 100);
   const daysLeft = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
-  const daysLabel = daysLeft > 0 ? `متبقي ${daysLeft} يوم` : "مستحق اليوم";
+  const daysLabel =
+    daysLeft === 1
+      ? "متبقّي: يوم واحد"
+      : daysLeft === 2
+      ? "متبقّي: يومين"
+      : daysLeft > 2
+      ? `متبقّي: ${daysLeft} أيام`
+      : "مستحق اليوم";
 
   return (
     <div className="bg-gray-50 rounded-xl p-3 mb-4">
