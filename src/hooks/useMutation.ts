@@ -8,7 +8,7 @@ export const useCustomPost = (endpoint: string, queryKey?: string[]) => {
     mutationFn: (body: any) => post(endpoint, body),
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
@@ -29,7 +29,7 @@ export const useCustomUpdate = (
     },
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
@@ -48,7 +48,7 @@ export const useCustomPatch = (
     },
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
@@ -64,7 +64,7 @@ export const useCustomPut = (endpoint: UpdateEndpoint, queryKey?: string[]) => {
     },
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
@@ -83,7 +83,7 @@ export const useCustomRemove = (
     },
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
