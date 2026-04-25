@@ -1,13 +1,10 @@
 import { NavigateFunction } from "react-router";
 
 const AUTH_TOKEN_KEY = "auth_tokens";
-const PLATFORM_TOKEN_KEY = "platform_auth_tokens";
 
 export function getStoredTokens(): string | null {
   try {
-    const tokens =
-      localStorage.getItem(AUTH_TOKEN_KEY) ??
-      localStorage.getItem(PLATFORM_TOKEN_KEY);
+    const tokens = localStorage.getItem(AUTH_TOKEN_KEY);
     return tokens ? JSON.parse(tokens) : null;
   } catch {
     return null;

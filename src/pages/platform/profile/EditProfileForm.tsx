@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useCustomUpdate } from "@/hooks/useMutation";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import toast from "react-hot-toast";
 import { FaSpinner } from "react-icons/fa";
 import { User } from "lucide-react";
+import { useCustomUpdate } from "@/hooks/platform/usePlatformMutation";
 
 interface Props {
   userProfileData: any;
