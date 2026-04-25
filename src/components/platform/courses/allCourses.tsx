@@ -33,15 +33,17 @@ const InstallmentProgressBar = ({
     daysLeft === 1
       ? "متبقّي: يوم واحد"
       : daysLeft === 2
-      ? "متبقّي: يومين"
-      : daysLeft > 2
-      ? `متبقّي: ${daysLeft} أيام`
-      : "مستحق اليوم";
+        ? "متبقّي: يومين"
+        : daysLeft > 2
+          ? `متبقّي: ${daysLeft} أيام`
+          : "مستحق اليوم";
 
   return (
     <div className="bg-gray-50 rounded-xl p-3 mb-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-600">موعد الاستحقاق ({amount} د.أ)</span>
+        <span className="text-sm text-gray-600">
+          موعد الاستحقاق ({amount} د.أ)
+        </span>
         <span className="text-sm font-medium text-gray-900">{daysLabel}</span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-2">
@@ -111,105 +113,105 @@ const AllCourses = () => {
         >
           <div className="p-6 flex flex-col h-full">
             {/* Header */}
-        <div className="flex-1">
-                  <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
-                  <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium">
-                    {course?.specialization_material?.name || "-"}
+            <div className="flex-1">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium">
+                      {course?.specialization_material?.name || "-"}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-(--brand-secondary) transition-colors duration-300">
+                    {course.course_name || "-"}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {course.teacher || "-"}
+                  </p>
+                </div>
+
+                {/* Circular Progress */}
+                <div className="relative w-12 h-12 shrink-0">
+                  <svg
+                    className="w-12 h-12 transform -rotate-90"
+                    viewBox="0 0 48 48"
+                  >
+                    <circle
+                      cx="24"
+                      cy="24"
+                      r="20"
+                      stroke="#e5e7eb"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <circle
+                      cx="24"
+                      cy="24"
+                      r="20"
+                      stroke="#3b82f6"
+                      strokeWidth="4"
+                      fill="none"
+                      strokeDasharray={2 * Math.PI * 20}
+                      strokeDashoffset={
+                        (1 - course?.progress / 100) * (2 * Math.PI * 20)
+                      }
+                      strokeLinecap="round"
+                      className="transition-all duration-500"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-xs font-bold text-(--brand-secondary)">
+                      {course?.progress}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress Details */}
+              <div className="bg-gray-50 rounded-xl p-3 mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600">التقدم</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {course?.total_number_of_completed_lessons}/
+                    {course?.total_lessons}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-(--brand-secondary) transition-colors duration-300">
-                  {course.course_name || "-"}
-                </h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  {course.teacher || "-"}
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${course?.progress}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Days Progress */}
+              {/* Removed enrollment duration progress as per user request */}
+
+              {/* Next Lesson */}
+              <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
+                <div className="flex items-center space-x-2 mb-1">
+                  <Play className="w-4 h-4 text-(--brand-secondary)" />
+                  <span className="text-sm font-medium text-gray-900">
+                    الدرس التالي:
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 line-clamp-1 mb-2">
+                  {course?.next_lesson ?? "لا يوجد"}
                 </p>
               </div>
 
-              {/* Circular Progress */}
-              <div className="relative w-12 h-12 shrink-0">
-                <svg
-                  className="w-12 h-12 transform -rotate-90"
-                  viewBox="0 0 48 48"
-                >
-                  <circle
-                    cx="24"
-                    cy="24"
-                    r="20"
-                    stroke="#e5e7eb"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <circle
-                    cx="24"
-                    cy="24"
-                    r="20"
-                    stroke="#3b82f6"
-                    strokeWidth="4"
-                    fill="none"
-                    strokeDasharray={2 * Math.PI * 20}
-                    strokeDashoffset={
-                      (1 - course?.progress / 100) * (2 * Math.PI * 20)
-                    }
-                    strokeLinecap="round"
-                    className="transition-all duration-500"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xs font-bold text-(--brand-secondary)">
-                    {course?.progress}%
+              {/* Stats */}
+              <div className="flex gap-3 mb-4 text-xs justify-between">
+                <div className="flex items-center space-x-1">
+                  <Clock className="w-3 h-3 text-gray-500" />
+                  <span className="text-gray-600">
+                    {formatDateTimeSimple(course?.enrollment_created_at)}
                   </span>
                 </div>
               </div>
-            </div>
 
-            {/* Progress Details */}
-            <div className="bg-gray-50 rounded-xl p-3 mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">التقدم</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {course?.total_number_of_completed_lessons}/
-                  {course?.total_lessons}
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${course?.progress}%` }}
-                ></div>
-              </div>
-            </div>
-
-            {/* Days Progress */}
-            {/* Removed enrollment duration progress as per user request */}
-
-            {/* Next Lesson */}
-            <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
-              <div className="flex items-center space-x-2 mb-1">
-                <Play className="w-4 h-4 text-(--brand-secondary)" />
-                <span className="text-sm font-medium text-gray-900">
-                  الدرس التالي:
-                </span>
-              </div>
-              <p className="text-sm text-gray-600 line-clamp-1 mb-2">
-                {course?.next_lesson ?? "لا يوجد"}
-              </p>
-            </div>
-
-            {/* Stats */}
-            <div className="flex gap-3 mb-4 text-xs justify-between">
-              <div className="flex items-center space-x-1">
-                <Clock className="w-3 h-3 text-gray-500" />
-                <span className="text-gray-600">
-                  {formatDateTimeSimple(course?.enrollment_created_at)}
-                </span>
-              </div>
-            </div>
-
-            {/* Installments */}
-            {course?.installment_schedule?.length > 0 && (
-              <div className="mb-4 space-y-2">
+              {/* Installments */}
+              {course?.installment_schedule?.length > 0 && (
+                <div className="mb-4 space-y-2">
                   <div
                     key={course.installment_schedule[0].id}
                     className={`p-2 rounded-lg text-xs flex items-center justify-between ${
@@ -221,16 +223,24 @@ const AllCourses = () => {
                     <div className="flex items-center gap-2">
                       <div
                         className={`w-2 h-2 rounded-full ${
-                          course.installment_schedule[0].is_paid ? "bg-green-500" : "bg-amber-500"
+                          course.installment_schedule[0].is_paid
+                            ? "bg-green-500"
+                            : "bg-amber-500"
                         }`}
                       />
                       <span>
-                        {course.installment_schedule[0].is_paid ? "تم دفع" : "يجب دفع"} {course.installment_schedule[0].amount} د.أ
-                        {!course.installment_schedule[0].is_paid && ` قبل ${course.installment_schedule[0].due_date}`}
+                        {course.installment_schedule[0].is_paid
+                          ? "تم دفع"
+                          : "يجب دفع"}{" "}
+                        {course.installment_schedule[0].amount} د.أ
+                        {!course.installment_schedule[0].is_paid &&
+                          ` قبل ${course.installment_schedule[0].due_date}`}
                       </span>
                     </div>
                     <span className="font-bold">
-                      {course.installment_schedule[0].is_paid ? "مكتمل" : "مستحق"}
+                      {course.installment_schedule[0].is_paid
+                        ? "مكتمل"
+                        : "مستحق"}
                     </span>
                   </div>
 
@@ -241,9 +251,9 @@ const AllCourses = () => {
                       amount={course.installment_schedule[0].amount}
                     />
                   )}
-              </div>
-            )}
-        </div>
+                </div>
+              )}
+            </div>
 
             {/* Continue Button */}
             <button
@@ -462,7 +472,7 @@ const AllCourses = () => {
                   placeholder="البحث في الدورات..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300"
+                  className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300"
                 />
               </div>
               {/* View Mode */}

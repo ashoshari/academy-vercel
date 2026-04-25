@@ -8,7 +8,7 @@ export const useCustomPost = (endpoint: string, queryKey?: string[]) => {
     mutationFn: (body: any) => post(endpoint, body),
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
@@ -21,7 +21,7 @@ export const useCustomUpdate = (endpoint: string, queryKey?: string[]) => {
     mutationFn: (body: any) => edit(endpoint, body),
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
@@ -34,7 +34,7 @@ export const useCustomPatch = (endpoint: string, queryKey: string[]) => {
     mutationFn: (body: any) => patch(endpoint, body),
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
@@ -47,7 +47,7 @@ export const useCustomRemove = (endpoint: string, queryKey: string[]) => {
     mutationFn: () => remove(endpoint),
     onSuccess: () => {
       queryKey?.forEach((key) => {
-        queryClient.resetQueries({ queryKey: [key] });
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
   });
