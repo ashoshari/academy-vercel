@@ -58,7 +58,7 @@ export default function Pagination({
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`flex items-center justify-center ${
+        className={`cursor-pointer flex items-center justify-center ${
           compact
             ? "px-2 py-1.5 text-xs rounded-lg"
             : "px-3 py-2 text-sm rounded-xl"
@@ -83,7 +83,7 @@ export default function Pagination({
           <button
             key={page}
             onClick={() => onPageChange(Number(page))}
-            className={`border font-medium transition-all ${
+            className={`cursor-pointer border font-medium transition-all ${
               compact
                 ? "px-2.5 py-1.5 text-xs rounded-lg"
                 : "px-4 py-2 text-sm rounded-xl"
@@ -102,7 +102,7 @@ export default function Pagination({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`flex items-center justify-center ${
+        className={`cursor-pointer flex items-center justify-center ${
           compact
             ? "px-2 py-1.5 text-xs rounded-lg"
             : "px-3 py-2 text-sm rounded-xl"
