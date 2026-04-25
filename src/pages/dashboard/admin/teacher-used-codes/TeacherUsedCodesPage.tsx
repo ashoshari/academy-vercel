@@ -23,8 +23,8 @@ const TeacherUsedCodesPage = () => {
   const [paidFilter, setPaidFilter] = useState<string>("all");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [targetPaidStatus, setTargetPaidStatus] = useState(true);
   const [activeRecord, setActiveRecord] = useState<any>(null);
+
 
   const queryParams = new URLSearchParams();
   queryParams.append("page", page.toString());
@@ -58,10 +58,21 @@ const TeacherUsedCodesPage = () => {
   const teachersList = teachersData?.data || teachersData || [];
   const coursesList = coursesData?.data || [];
 
+    const selectedRecords = results.filter((r: any) => selectedIds.has(r.id));
+  const totalTeacherShare = activeRecord
+    ? parseFloat(activeRecord.teacher_share) || 0
+    : selectedRecords.reduce(
+        (sum: number, r: any) => sum + (parseFloat(r.teacher_share) || 0),
+        0
+      );
+
+
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      const allIds = results.map((r: any) => r.id);
-      setSelectedIds(new Set(allIds));
+      const unpaidIds = results
+        .filter((r: any) => !r.is_admin_paid)
+        .map((r: any) => r.id);
+      setSelectedIds(new Set(unpaidIds));
     } else {
       setSelectedIds(new Set());
     }
@@ -79,9 +90,7 @@ const TeacherUsedCodesPage = () => {
 
   const handleBulkPay = async () => {
     const ids = activeRecord ? [activeRecord.id] : Array.from(selectedIds);
-    const isPaid = activeRecord
-      ? !activeRecord.is_admin_paid
-      : targetPaidStatus;
+    const isPaid = true;
 
     if (ids.length === 0) return;
     try {
@@ -114,25 +123,13 @@ const TeacherUsedCodesPage = () => {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => {
-                setTargetPaidStatus(true);
                 setIsModalOpen(true);
               }}
               disabled={isBulkPaying}
               className="btn-brand-slide px-4 py-2.5 rounded-xl font-medium shadow-lg flex items-center gap-2 text-sm disabled:opacity-50"
             >
               <CheckCircle size={18} />
-              تم الدفع ({selectedIds.size})
-            </button>
-            <button
-              onClick={() => {
-                setTargetPaidStatus(false);
-                setIsModalOpen(true);
-              }}
-              disabled={isBulkPaying}
-              className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2.5 rounded-xl font-medium shadow-sm flex items-center gap-2 text-sm disabled:opacity-50 border border-red-200"
-            >
-              <XCircle size={18} />
-              إلغاء الدفع ({selectedIds.size})
+              تأكيد دفع ({selectedIds.size})
             </button>
           </div>
         )}
@@ -226,10 +223,13 @@ const TeacherUsedCodesPage = () => {
                       type="checkbox"
                       checked={
                         results.length > 0 &&
-                        selectedIds.size === results.length
+                        results.some((r: any) => !r.is_admin_paid) &&
+                        selectedIds.size ===
+                          results.filter((r: any) => !r.is_admin_paid).length
                       }
                       onChange={(e) => handleSelectAll(e.target.checked)}
-                      className="w-4 h-4 text-(--brand) rounded border-gray-300 focus:ring-(--brand)"
+                      className="w-4 h-4 text-(--brand) rounded border-gray-300 focus:ring-(--brand) disabled:opacity-30"
+                      disabled={results.every((r: any) => r.is_admin_paid)}
                     />
                   </th>
                   <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
@@ -271,7 +271,8 @@ const TeacherUsedCodesPage = () => {
                         onChange={(e) =>
                           handleSelectRow(item.id, e.target.checked)
                         }
-                        className="w-4 h-4 text-(--brand) rounded border-gray-300 focus:ring-(--brand)"
+                        disabled={item.is_admin_paid}
+                        className={`w-4 h-4 text-(--brand) rounded border-gray-300 focus:ring-(--brand) ${item.is_admin_paid ? "opacity-30 cursor-not-allowed" : ""}`}
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -320,24 +321,22 @@ const TeacherUsedCodesPage = () => {
                       {formatDateTimeSimple(item.created_at)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <button
-                        className="cursor-pointer hover:scale-110 transition-transform"
-                        onClick={() => {
-                          setActiveRecord(item);
-                          setIsModalOpen(true);
-                        }}
-                        title={
-                          item.is_admin_paid
-                            ? "تغيير إلى لم يتم الدفع"
-                            : "تغيير إلى تم الدفع"
-                        }
-                      >
-                        {item.is_admin_paid ? (
-                          <CheckCircle size={18} className="text-green-500" />
-                        ) : (
+                      {!item.is_admin_paid ? (
+                        <button
+                          className="cursor-pointer hover:scale-110 transition-transform"
+                          onClick={() => {
+                            setActiveRecord(item);
+                            setIsModalOpen(true);
+                          }}
+                          title="تأكيد الدفع"
+                        >
                           <XCircle size={18} className="text-red-500" />
-                        )}
-                      </button>
+                        </button>
+                      ) : (
+                        <div className="flex justify-center" title="تم الدفع">
+                          <CheckCircle size={18} className="text-green-500" />
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -363,48 +362,35 @@ const TeacherUsedCodesPage = () => {
           setActiveRecord(null);
         }}
         onConfirm={handleBulkPay}
-        title={
-          activeRecord
-            ? "تغيير حالة الدفع"
-            : targetPaidStatus
-              ? "تأكيد الدفع"
-              : "تأكيد إلغاء الدفع"
-        }
+        title="تأكيد الدفع للمدرس"
         description={
-          activeRecord ? (
+          <div className="space-y-3">
             <p>
-              هل أنت متأكد من تغيير حالة الدفع لهذا السجل إلى{" "}
-              <span className="font-bold">
-                {activeRecord.is_admin_paid ? "لم يتم الدفع" : "تم الدفع"}
-              </span>
-              ؟
+              {activeRecord ? (
+                <>
+                  هل أنت متأكد من تمييز هذا السجل كمدفوع؟
+                  <br />
+                  المدرس:{" "}
+                  <span className="font-bold">{activeRecord.teacher?.name}</span>
+                </>
+              ) : (
+                `هل أنت متأكد من تمييز ${selectedIds.size} سجلات كمدفوعة؟`
+              )}
             </p>
-          ) : targetPaidStatus ? (
-            `هل أنت متأكد من تمييز ${selectedIds.size} سجلات كمدفوعة؟`
-          ) : (
-            `هل أنت متأكد من إلغاء دفع ${selectedIds.size} سجلات؟`
-          )
+            <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-3 flex justify-between items-center">
+              <span className="text-emerald-800 font-medium">
+                إجمالي المبلغ المستحق:
+              </span>
+              <span className="text-emerald-700 font-bold text-lg">
+                {totalTeacherShare.toLocaleString()} د.أ
+              </span>
+            </div>
+          </div>
         }
-        confirmLabel="تأكيد"
+        confirmLabel="تأكيد الدفع"
         cancelLabel="تراجع"
-        variant={
-          activeRecord
-            ? activeRecord.is_admin_paid
-              ? "danger"
-              : "success"
-            : targetPaidStatus
-              ? "success"
-              : "danger"
-        }
-        icon={
-          activeRecord
-            ? activeRecord.is_admin_paid
-              ? XCircle
-              : CheckCircle
-            : targetPaidStatus
-              ? CheckCircle
-              : XCircle
-        }
+        variant="success"
+        icon={CheckCircle}
         isPending={isBulkPaying}
       />
     </div>
