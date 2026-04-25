@@ -582,7 +582,7 @@ const CardCodesPage = () => {
   return (
     <div className="space-y-6 w-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">
             إدارة كودات البطاقات
@@ -591,8 +591,7 @@ const CardCodesPage = () => {
             إنشاء وإدارة كودات تفعيل البطاقات مع استهداف الأقسام وتتبع أمني شامل
           </p>
         </div>
-        <div className="flex gap-3">
-          {/* <button
+        {/* <button
             onClick={exportToExcel}
             className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
           >
@@ -606,16 +605,15 @@ const CardCodesPage = () => {
             <FileText size={16} />
             تصدير PDF
           </button> */}
-          {canAddCode && (
-            <button
-              onClick={() => setShowGenerateModal(true)}
-              className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
-            >
-              <Plus size={16} />
-              إضافة كودات
-            </button>
-          )}
-        </div>
+        {canAddCode && (
+          <button
+            onClick={() => setShowGenerateModal(true)}
+            className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
+          >
+            <Plus size={16} />
+            إضافة كودات
+          </button>
+        )}
       </div>
 
       {/* Stats Cards */}

@@ -5,32 +5,43 @@ import {
   XCircle,
   CreditCard,
   Users,
+  BookOpen,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomUpdate } from "@/hooks/useMutation";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import Pagination from "@/components/dashboard/core/Pagination";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import toast from "react-hot-toast";
 
 const TeacherUsedCodesPage = () => {
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(15);
   const [teacherFilter, setTeacherFilter] = useState("");
+  const [courseFilter, setCourseFilter] = useState("");
   const [paidFilter, setPaidFilter] = useState<string>("all");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [targetPaidStatus, setTargetPaidStatus] = useState(true);
+  const [activeRecord, setActiveRecord] = useState<any>(null);
 
   const queryParams = new URLSearchParams();
   queryParams.append("page", page.toString());
   queryParams.append("page_size", pageSize.toString());
 
   if (teacherFilter) queryParams.append("teacher", teacherFilter);
+  if (courseFilter) queryParams.append("course", courseFilter);
   if (paidFilter !== "all") queryParams.append("is_admin_paid", paidFilter);
 
   const { data, isLoading } = useCustomQuery(
-    `/card/teacher-used-codes/?${queryParams.toString()}`,
-    ["teacher-used-codes", page, teacherFilter, paidFilter],
+    `/cards/teacher-used-codes/?${queryParams.toString()}`,
+    ["teacher-used-codes", page, teacherFilter, courseFilter, paidFilter],
   );
+
+  const { data: coursesData } = useCustomQuery("/training/admin/courses/", [
+    "courses",
+  ]);
 
   const { data: teachersData } = useCustomQuery(
     "/account/admin/teachers/?pagination=false",
@@ -38,13 +49,14 @@ const TeacherUsedCodesPage = () => {
   );
 
   const { mutateAsync: bulkMarkPaid, isPending: isBulkPaying } =
-    useCustomUpdate("/card/teacher-used-codes/bulk-mark-paid/", [
+    useCustomUpdate("/cards/teacher-used-codes/bulk-mark-paid/", [
       "teacher-used-codes",
     ]);
 
-  const results = data?.results || [];
-  const count = data?.count || 0;
+  const results = data?.data || [];
+  const count = data?.pagination?.count || 0;
   const teachersList = teachersData?.data || teachersData || [];
+  const coursesList = coursesData?.data || [];
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -66,21 +78,28 @@ const TeacherUsedCodesPage = () => {
   };
 
   const handleBulkPay = async () => {
-    if (selectedIds.size === 0) return;
+    const ids = activeRecord ? [activeRecord.id] : Array.from(selectedIds);
+    const isPaid = activeRecord
+      ? !activeRecord.is_admin_paid
+      : targetPaidStatus;
+
+    if (ids.length === 0) return;
     try {
       await bulkMarkPaid({
-        ids: Array.from(selectedIds),
-        is_admin_paid: true,
+        ids: ids,
+        is_admin_paid: isPaid,
       });
       toast.success("تم تحديث الحالة بنجاح");
       setSelectedIds(new Set());
+      setActiveRecord(null);
+      setIsModalOpen(false);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "حدث خطأ أثناء التحديث");
     }
   };
 
   return (
-    <div className="space-y-6" dir="rtl">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -92,14 +111,30 @@ const TeacherUsedCodesPage = () => {
           </p>
         </div>
         {selectedIds.size > 0 && (
-          <button
-            onClick={handleBulkPay}
-            disabled={isBulkPaying}
-            className="btn-brand-slide px-6 py-2.5 rounded-xl font-medium shadow-lg flex items-center gap-2 text-sm disabled:opacity-50"
-          >
-            <CheckCircle size={18} />
-            تم الدفع ({selectedIds.size})
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => {
+                setTargetPaidStatus(true);
+                setIsModalOpen(true);
+              }}
+              disabled={isBulkPaying}
+              className="btn-brand-slide px-4 py-2.5 rounded-xl font-medium shadow-lg flex items-center gap-2 text-sm disabled:opacity-50"
+            >
+              <CheckCircle size={18} />
+              تم الدفع ({selectedIds.size})
+            </button>
+            <button
+              onClick={() => {
+                setTargetPaidStatus(false);
+                setIsModalOpen(true);
+              }}
+              disabled={isBulkPaying}
+              className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2.5 rounded-xl font-medium shadow-sm flex items-center gap-2 text-sm disabled:opacity-50 border border-red-200"
+            >
+              <XCircle size={18} />
+              إلغاء الدفع ({selectedIds.size})
+            </button>
+          </div>
         )}
       </div>
 
@@ -122,6 +157,27 @@ const TeacherUsedCodesPage = () => {
                 teachersList.map((teacher: any) => (
                   <option key={teacher.id} value={teacher.id}>
                     {teacher.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          {/* Course Filter */}
+          <div className="relative">
+            <BookOpen className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <select
+              value={courseFilter}
+              onChange={(e) => {
+                setCourseFilter(e.target.value);
+                setPage(1);
+              }}
+              className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all text-sm appearance-none bg-white"
+            >
+              <option value="">جميع الدورات</option>
+              {Array.isArray(coursesList) &&
+                coursesList.map((course: any) => (
+                  <option key={course.id} value={course.id}>
+                    {course.name}
                   </option>
                 ))}
             </select>
@@ -176,26 +232,29 @@ const TeacherUsedCodesPage = () => {
                       className="w-4 h-4 text-(--brand) rounded border-gray-300 focus:ring-(--brand)"
                     />
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     المدرس
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     الطالب
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     الدورة
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     الكود
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     حصة المدرس
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     الحالة
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     التاريخ
+                  </th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    الإجراءات
                   </th>
                 </tr>
               </thead>
@@ -246,7 +305,7 @@ const TeacherUsedCodesPage = () => {
                           </span>
                           {item.admin_paid_by && (
                             <span className="text-[10px] text-gray-400 mr-1">
-                              بواسطة: {item.admin_paid_by}
+                              بواسطة: {item.admin_paid_by.name}
                             </span>
                           )}
                         </div>
@@ -259,6 +318,26 @@ const TeacherUsedCodesPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-[10px] text-gray-400 font-mono">
                       {formatDateTimeSimple(item.created_at)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <button
+                        className="cursor-pointer hover:scale-110 transition-transform"
+                        onClick={() => {
+                          setActiveRecord(item);
+                          setIsModalOpen(true);
+                        }}
+                        title={
+                          item.is_admin_paid
+                            ? "تغيير إلى لم يتم الدفع"
+                            : "تغيير إلى تم الدفع"
+                        }
+                      >
+                        {item.is_admin_paid ? (
+                          <CheckCircle size={18} className="text-green-500" />
+                        ) : (
+                          <XCircle size={18} className="text-red-500" />
+                        )}
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -276,6 +355,58 @@ const TeacherUsedCodesPage = () => {
           pageSize={pageSize}
         />
       )}
+
+      <ConfirmationModal
+        open={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setActiveRecord(null);
+        }}
+        onConfirm={handleBulkPay}
+        title={
+          activeRecord
+            ? "تغيير حالة الدفع"
+            : targetPaidStatus
+              ? "تأكيد الدفع"
+              : "تأكيد إلغاء الدفع"
+        }
+        description={
+          activeRecord ? (
+            <p>
+              هل أنت متأكد من تغيير حالة الدفع لهذا السجل إلى{" "}
+              <span className="font-bold">
+                {activeRecord.is_admin_paid ? "لم يتم الدفع" : "تم الدفع"}
+              </span>
+              ؟
+            </p>
+          ) : targetPaidStatus ? (
+            `هل أنت متأكد من تمييز ${selectedIds.size} سجلات كمدفوعة؟`
+          ) : (
+            `هل أنت متأكد من إلغاء دفع ${selectedIds.size} سجلات؟`
+          )
+        }
+        confirmLabel="تأكيد"
+        cancelLabel="تراجع"
+        variant={
+          activeRecord
+            ? activeRecord.is_admin_paid
+              ? "danger"
+              : "success"
+            : targetPaidStatus
+              ? "success"
+              : "danger"
+        }
+        icon={
+          activeRecord
+            ? activeRecord.is_admin_paid
+              ? XCircle
+              : CheckCircle
+            : targetPaidStatus
+              ? CheckCircle
+              : XCircle
+        }
+        isPending={isBulkPaying}
+      />
     </div>
   );
 };

@@ -17,7 +17,7 @@ const TeacherEnrollmentInstallmentsPage = () => {
 
   const queryParams = new URLSearchParams();
   queryParams.append("page", page.toString());
-  queryParams.append("page_size", "10");
+  queryParams.append("page_size", "15");
 
   if (paidFilter !== "all") queryParams.append("is_paid", paidFilter);
   if (overdueFilter !== "all") queryParams.append("is_overdue", overdueFilter);
@@ -68,7 +68,7 @@ const TeacherEnrollmentInstallmentsPage = () => {
   };
 
   return (
-    <div className="space-y-6" dir="rtl">
+    <div className="flex flex-col gap-6 min-h-full" dir="rtl">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -132,8 +132,8 @@ const TeacherEnrollmentInstallmentsPage = () => {
           </p>
         </div>
       ) : (
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) flex flex-col min-h-0">
+          <div className="overflow-x-auto overflow-y-auto max-h-[60vh] lg:max-h-[calc(100vh-350px)]">
             <table className="min-w-full table-auto">
               <thead className="bg-gray-50/50">
                 <tr>
@@ -218,7 +218,7 @@ const TeacherEnrollmentInstallmentsPage = () => {
           currentPage={page}
           onPageChange={setPage}
           count={data?.pagination?.count || data?.count}
-          pageSize={10}
+          pageSize={15}
         />
       )}
     </div>
