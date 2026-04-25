@@ -42,7 +42,7 @@ import LibraryWalletPage from "@/pages/dashboard/admin/libraries/LibraryWallet";
 
 import CardPricingPage from "@/pages/dashboard/admin/cards/CardPricingPage";
 import InstallmentPlansPage from "@/pages/dashboard/admin/cards/installment-plans/InstallmentPlansPage";
-import CardCodesPage from "@/pages/dashboard/admin/cards/CardCodesPage";
+import CardCodesPage from "@/pages/dashboard/admin/card-codes/CardCodesPage";
 import AllCourses from "@/components/platform/courses/allCourses";
 import SectionsPage from "@/pages/dashboard/admin/sections/SectionsPage";
 import PhoneUser from "@/pages/platform/phoneUser";
@@ -57,9 +57,9 @@ import SliderPage from "@/pages/dashboard/admin/sliders/SliderPage";
 import { RequireRole } from "./guards";
 import CardCustomPrice from "@/pages/dashboard/admin/cards/CardCustomPrice";
 import SalesPage from "@/pages/dashboard/admin/sales/SalesPage";
-import EnrollmentInstallmentsPage from "@/pages/dashboard/admin/cards/EnrollmentInstallmentsPage";
+import EnrollmentInstallmentsPage from "@/pages/dashboard/admin/enrollment-installments/EnrollmentInstallmentsPage";
 import TeacherEnrollmentInstallmentsPage from "@/pages/dashboard/admin/teacher-students-enrollments/TeacherEnrollmentInstallmentsPage";
-import TeacherUsedCodesPage from "@/pages/dashboard/admin/cards/TeacherUsedCodesPage";
+import TeacherUsedCodesPage from "@/pages/dashboard/admin/teacher-used-codes/TeacherUsedCodesPage";
 // import { readUserFromStorage, roleOf } from "@/services/auth";
 
 // function DashboardIndexGate() {

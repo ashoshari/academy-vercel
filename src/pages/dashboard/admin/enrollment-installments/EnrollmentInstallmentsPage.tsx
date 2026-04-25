@@ -27,7 +27,7 @@ const EnrollmentInstallmentsPage = () => {
 
   const queryParams = new URLSearchParams();
   queryParams.append("page", page.toString());
-  queryParams.append("page_size", "10");
+  queryParams.append("page_size", "15");
 
   if (courseFilter) queryParams.append("course_id", courseFilter);
   if (studentSearch) queryParams.append("student_search", studentSearch); // Assuming search or student_id
@@ -89,7 +89,7 @@ const EnrollmentInstallmentsPage = () => {
   };
 
   return (
-    <div className="space-y-6" dir="rtl">
+    <div className="flex flex-col gap-6 min-h-full" dir="rtl">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -102,7 +102,7 @@ const EnrollmentInstallmentsPage = () => {
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-4 gap-4">
           {/* Student Search */}
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -189,7 +189,7 @@ const EnrollmentInstallmentsPage = () => {
           </p>
         </div>
       ) : (
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) flex flex-col min-h-0">
           <div className="overflow-x-auto">
             <table className="min-w-full table-auto">
               <thead className="bg-gray-50/50">
@@ -291,7 +291,7 @@ const EnrollmentInstallmentsPage = () => {
           currentPage={page}
           onPageChange={setPage}
           count={data?.pagination?.count}
-          pageSize={10}
+          pageSize={15}
         />
       )}
       {showConfirmModal && selectedInstallment && (

@@ -59,7 +59,9 @@ const Layout = () => {
     { id: "", label: "الرئيسية", icon: Home },
     { id: "sales", label: "المبيعات", icon: DollarSign },
     { id: "students", label: "الطلاب", icon: GraduationCap },
+    { id: "enrollment-installments", label: "دفعات الطلاب", icon: Banknote },
     { id: "teachers", label: "المعلمين", icon: Users },
+    { id: "teacher-used-codes", label: "حصص المعلمين (كودات)", icon: Wallet },
     { id: "libraries", label: "المكتبات", icon: Library },
     { id: "courses", label: "الدورات", icon: BookOpen },
     { id: "exams", label: "الامتحانات", icon: BookOpen },
@@ -75,13 +77,11 @@ const Layout = () => {
     },
     { id: "installment-plans", label: "خطط التقسيط", icon: Calendar },
     { id: "card-codes", label: "كودات البطاقات", icon: Hash },
-    { id: "enrollment-installments", label: "دفعات الطلاب", icon: Banknote },
     {
       id: "teacher/enrollment-installments",
       label: "دفعات الطلاب",
       icon: Banknote,
     },
-    { id: "teacher-used-codes", label: "حصص المدرسين (كودات)", icon: Wallet },
 
     // { id: "reports", label: "التقارير", icon: BarChart3 },
   ];
@@ -130,12 +130,12 @@ const Layout = () => {
   }, [headerData, isLoading]);
 
   return (
-    <div className="min-h-screen flex" dir="rtl">
+    <div className="h-screen flex overflow-hidden" dir="rtl">
       {/* Sidebar */}
       <div
         className={`${smallScreen && sidebarOpen ? "fixed z-100 h-full" : ""} ${
           sidebarOpen ? "min-w-64" : "min-w-16"
-        } transition-all duration-300 bg-white/95 backdrop-blur-xl shadow-lg border-l border-(--brand)`}
+        } overflow-y-auto transition-all duration-300 bg-white/95 backdrop-blur-xl shadow-lg border-l border-(--brand)`}
       >
         <div className="p-4">
           {/* Header */}
@@ -204,11 +204,13 @@ const Layout = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6">
-        <div className="min-h-screen relative overflow-auto" dir="rtl">
+      <div className="flex-1 flex flex-col min-w-0 bg-gray-50/50">
+        <main className="flex-1 overflow-y-auto relative p-4 md:p-6" dir="rtl">
           {/* <AnimatedBackground /> */}
-          <div className="relative z-10">{<Outlet />}</div>
-        </div>
+          <div className="relative z-10">
+            <Outlet />
+          </div>
+        </main>
       </div>
     </div>
   );
