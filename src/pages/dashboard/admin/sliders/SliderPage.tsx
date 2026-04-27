@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, Image as ImageIcon } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
 import SliderCard from "@/components/dashboard/admin/sliders/SliderCard";
@@ -11,6 +11,7 @@ import ShowSliderModal from "@/components/dashboard/admin/sliders/ShowSliderModa
 import { useQueryClient } from "@tanstack/react-query";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
+import EmptyState from "@/components/core/EmptyState";
 // import Pagination from "@/components/dashboard/core/Pagination";
 
 export type SlideType = "image" | "video";
@@ -261,25 +262,27 @@ const SliderPage = () => {
             })}
 
             {sorted?.length === 0 && (
-              <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
-                <ImageIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-800 mb-2">
-                  {searchTerm ? "لا توجد نتائج" : "لا توجد سلايدات"}
-                </h3>
-                <p className="text-gray-500 mb-6">
-                  {searchTerm
-                    ? "لم يتم العثور على سلايدات تطابق البحث"
-                    : "ابدأ بإضافة سلايد جديد للصفحة الرئيسية"}
-                </p>
-                {!searchTerm && (
-                  <button
-                    onClick={() => setShowAddModal(true)}
-                    className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
-                  >
-                    <Plus size={16} />
-                    إضافة سلايد جديد
-                  </button>
-                )}
+              <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
+                <EmptyState
+                  title="لا توجد نتائج"
+                  description={
+                    searchTerm
+                      ? "لم يتم العثور على سلايدات تطابق البحث"
+                      : "ابدأ بإضافة سلايد جديد للصفحة الرئيسية"
+                  }
+                  size="md"
+                  action={
+                    !searchTerm && (
+                      <button
+                        onClick={() => setShowAddModal(true)}
+                        className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
+                      >
+                        <Plus size={16} />
+                        إضافة سلايد جديد
+                      </button>
+                    )
+                  }
+                />
               </div>
             )}
           </div>

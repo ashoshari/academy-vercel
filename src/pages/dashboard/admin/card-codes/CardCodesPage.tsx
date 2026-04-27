@@ -1,172 +1,66 @@
-import { UAParser } from "ua-parser-js";
 import { useEffect, useState } from "react";
-import {
-  Plus,
-  Search,
-  Hash,
-  Calendar,
-  CreditCard,
-  CheckCircle,
-  User,
-  Clock,
-  Target,
-  Globe,
-  Folder,
-  Users,
-  Monitor,
-  Download,
-  Info,
-  Power,
-  PowerOff,
-} from "lucide-react";
+import { Plus, Power, PowerOff } from "lucide-react";
 import { readUserFromStorage, roleOf } from "@/services/auth";
 import { useCustomQuery } from "@/hooks/useQuery";
-import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
+import { useCustomPost } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import GenerateModal from "@/components/card-codes/GenerateModal";
-import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import Pagination from "@/components/dashboard/core/Pagination";
-import { formatDate } from "@/services/date";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { edit, get } from "@/api";
-import { formatDateTimeSimple } from "@/utils/formatDateTime";
-import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
-import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
-
-const DOWNLOAD_RESTRICTION_DATE = new Date("2026-03-01T00:00:00Z");
+import EmptyState from "@/components/core/EmptyState";
+import { PendingCodeStatusToggle } from "./types";
+import { cleanObject, getClientInfo } from "./utils";
+import Header from "./Header";
+import CardCodesStats from "./CardCodesStats";
+import CardCodesFilters from "./CardCodesFilters";
+import CardCodesTable from "./CardCodesTable";
 
 /** Must match Pagination `pageSize` and `page_size` query param for list APIs */
 const CARD_CODES_PAGE_SIZE = 15;
-
-const isCodeDownloadAllowed = (createdAt: string) => {
-  const created = new Date(createdAt);
-
-  if (Number.isNaN(created.getTime())) return true;
-
-  return created >= DOWNLOAD_RESTRICTION_DATE;
-};
-
-/** codes-generated rows: offer_lines on code or nested code */
-function offerLinesFromGeneratedCode(code: any) {
-  const raw = code?.offer_lines ?? code?.code?.offer_lines;
-  if (!Array.isArray(raw) || raw.length === 0) return [];
-  return [...raw].sort(
-    (a, b) => (Number(a.order) || 0) - (Number(b.order) || 0),
-  );
-}
-export interface CardCode {
-  id: number;
-  code: string;
-  card: string;
-  price: number;
-  isUsed: boolean;
-  is_installment: boolean;
-  isDownloadeded: boolean;
-  isActive: boolean;
-  usedBy?: string;
-  usedAt?: string;
-  createdAt: string;
-  batchId: string;
-  // NEW: Subsection targeting
-  targetedSubsections: number[]; // Empty array means all subsections
-}
-
-export interface CodeBatch {
-  id: string;
-  card: string;
-  price: number;
-  totalCodes: number;
-  usedCodes: number;
-  activeCodes: number;
-  createdAt: string;
-  isActive: boolean;
-  // Security and admin info
-  createdBy: string;
-  createdByRole: string;
-  createdFromIP: string;
-  createdFromDevice: string;
-  lastModified?: string;
-  lastModifiedBy?: string;
-  notes?: string;
-  // NEW: Subsection targeting
-  targetedSubsections: number[]; // Empty array means all subsections
-  targetingType: "all" | "specific"; // 'all' for all subsections, 'specific' for selected ones
-}
-
-type PendingCodeStatusToggle = {
-  id: string;
-  isActive: boolean;
-  codePrefix: string;
-};
 
 const CardCodesPage = () => {
   const queryClient = useQueryClient();
   const cardPricing: any = [];
   const [page, setPage] = useState(1);
-  const [codePage, setCodePage] = useState(1);
+  const [codePage] = useState(1);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const user = readUserFromStorage();
   const role = roleOf(user) ?? "";
   const loadAdminReferenceLists = role !== "library";
   const canAddCode = import.meta.env.VITE_ADD_CODE === "true";
-  // const [
-  //   selectedPriceFilter,
-  //   // , setSelectedPriceFilter
-  // ] = useState<string | null>(null);
-  const [isUsed, setIsUsed] = useState<"all" | "true" | "false">("all");
+  const [isUsed, setIsUsed] = useState<"" | "all" | "true" | "false">("all");
   const [isCodeDownloaded, setisCodeDownloaded] = useState<
-    "all" | "true" | "false"
+    "" | "all" | "true" | "false"
   >("all");
   const [codesFilter, setCodesFilter] = useState<string[]>([]);
   const [teachersFilter, setTeachersFilter] = useState<string[]>([]);
   const [librariesFilter, setLibrariesFilter] = useState<string[]>([]);
-  const [installmentFilter, setInstallmentFilter] = useState<any>("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "true" | "false">(
-    "all",
-  );
-  const [codeBatches, setCodeBatches] = useState<any>();
+  const [installmentFilter, setInstallmentFilter] = useState<
+    "" | "all" | "true" | "false"
+  >("");
+  const [statusFilter, setStatusFilter] = useState<
+    "" | "all" | "true" | "false"
+  >("all");
   const [pendingCodeStatusToggle, setPendingCodeStatusToggle] =
     useState<PendingCodeStatusToggle | null>(null);
-
-  const cardCodesStatistics = useCustomQuery("cards/codes-statistics/", [
-    "card-codes-statistics",
-  ]);
-  const isLoadingStatistics = Boolean((cardCodesStatistics as any)?.isLoading);
 
   const cardCodes = useCustomQuery(
     `cards/codes/?page=${codePage}&page_size=${CARD_CODES_PAGE_SIZE}`,
     ["card-codes", codePage, CARD_CODES_PAGE_SIZE],
   );
-  const subsections = useCustomQuery(
-    "training/admin/subsections/",
-    ["subsections"],
-    undefined,
-    loadAdminReferenceLists,
-  );
+
   const installmentPlans = useCustomQuery(
     "/cards/installments/",
     ["installments"],
     undefined,
     loadAdminReferenceLists,
   );
-  const { data: teachers } = useCustomQuery(
-    "/account/admin/teachers/?pagination=false",
-    ["teachers"],
-    undefined,
-    loadAdminReferenceLists,
-  );
-  const teacherData = teachers?.data;
-  const { data: libraries } = useCustomQuery(
-    "/account/admin/libraries/",
-    ["libraries"],
-    undefined,
-    loadAdminReferenceLists,
-  );
-  const libraryData = libraries?.data;
+
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("code_string", searchTerm);
   if (codesFilter && codesFilter.length > 0) {
@@ -231,12 +125,6 @@ const CardCodesPage = () => {
 
   const cards = useCustomQuery("cards/", ["cards"]);
 
-  const toggleCodeState = useCustomUpdate(`cards/codes/${codeBatches}/`, [
-    "card-codes",
-    "card-codes-statistics",
-    "codes-generated",
-  ]);
-
   const toggleGeneratedCodeMutation = useMutation({
     mutationFn: (id: string) => edit(`cards/codes-generated/${id}/`, {}),
     onSuccess: () => {
@@ -271,89 +159,6 @@ const CardCodesPage = () => {
     specialization_material: [],
   });
 
-  const getSubsectionName = (id: number) => {
-    const subsection = subsections?.data?.data?.find((s: any) => s.id === id);
-    return subsection ? subsection.title : `قسم ${id}`;
-  };
-
-  const getTargetingDisplay = (
-    targetedSubsections: number[],
-    targetingType: string,
-  ) => {
-    if (targetingType === "all" || targetedSubsections?.length === 0) {
-      return {
-        type: "all",
-        display: "جميع الأقسام",
-        icon: Globe,
-        color: "text-(--brand-secondary)",
-      };
-    }
-
-    if (targetedSubsections?.length === 1) {
-      return {
-        type: "specific",
-        display: getSubsectionName(targetedSubsections[0]),
-        icon: Target,
-        color: "text-(--brand)",
-      };
-    }
-
-    return {
-      type: "specific",
-      display: `${targetedSubsections?.length} أقسام محددة`,
-      icon: Target,
-      color: "text-(--brand)",
-    };
-  };
-
-  const cleanObject = (obj: any) => {
-    return Object.fromEntries(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      Object.entries(obj).filter(([_, v]) => {
-        if (Array.isArray(v)) return v.length > 0;
-        return v !== null && v !== undefined && v !== "";
-      }),
-    );
-  };
-  const getClientInfo = () => {
-    const parser = new UAParser();
-    const result = parser.getResult();
-    return {
-      // 🧠 عام
-      ua: result.ua, // user-agent string
-
-      // 💻 الجهاز
-      device: {
-        model: result.device.model || "unknown",
-        type: result.device.type || "desktop",
-        vendor: result.device.vendor || "unknown",
-      },
-
-      // 💽 نظام التشغيل
-      os: {
-        name: result.os.name || "unknown",
-        version: result.os.version || "unknown",
-      },
-
-      // 🌐 المتصفح
-      browser: {
-        name: result.browser.name || "unknown",
-        version: result.browser.version || "unknown",
-        major: result.browser.major || "unknown",
-      },
-
-      // ⚙️ محرك التصفح (Rendering Engine)
-      engine: {
-        name: result.engine.name || "unknown",
-        version: result.engine.version || "unknown",
-      },
-
-      // 🧱 منصة التشغيل (CPU architecture)
-      cpu: {
-        architecture: result.cpu.architecture || "unknown",
-      },
-    };
-  };
   const handleGenerateCodes = () => {
     const offerLines =
       generateForm.is_offer && generateForm.offer_activation_cards?.length
@@ -413,14 +218,14 @@ const CardCodesPage = () => {
 
   const requestCodeStatusToggle = (row: {
     id: string | number;
-    is_active: boolean;
+    is_active?: boolean;
     code_string?: string;
   }) => {
     const raw = String(row.code_string ?? "");
     const codePrefix = raw.split("-")[0] || raw || "—";
     setPendingCodeStatusToggle({
       id: String(row.id),
-      isActive: row.is_active,
+      isActive: Boolean(row.is_active),
       codePrefix,
     });
   };
@@ -487,531 +292,40 @@ const CardCodesPage = () => {
       toast.error(error?.response?.data?.error ?? "فشل تحميل الكود");
     }
   };
-  // const handleBatchDownload = async (batchId: string) => {
-  //   try {
-  //     // Download Codes File
-  //     const res = await get(`/cards/codes/${batchId}/?export=pdf`, {
-  //       responseType: "blob",
-  //     });
-
-  //     // Create a URL for the blob
-  //     const url = window.URL.createObjectURL(new Blob([res]));
-  //     // Create a hidden <a> element and click it
-  //     const link = document.createElement("a");
-  //     link.href = url;
-  //     link.setAttribute("download", `code_${batchId}.pdf`);
-  //     document.body.appendChild(link);
-  //     link.click();
-
-  //     // Cleanup
-  //     link.remove();
-  //     window.URL.revokeObjectURL(url);
-  //     queryClient.invalidateQueries({
-  //       queryKey: ["card-codes", codePage],
-  //     });
-  //   } catch (error: any) {
-  //     console.error("Download failed:", error);
-  //     toast.error(error?.response?.data?.error ?? "فشل تحميل مجموعة الكودات");
-  //   }
-  // };
-
-  const toggleBatchStatus = (batchId: string) => {
-    setCodeBatches(batchId);
-
-    toggleCodeState.mutateAsync({}).then((res) => {
-      if (res) {
-        toast.success("تم تحديث حالة البطاقة بنجاح");
-      } else {
-        toast.error("حدث خطأ أثناء تحديث حالة البطاقة");
-      }
-    });
-  };
-
-  // const copyToClipboard = (text: string) => {
-  //   navigator.clipboard.writeText(text);
-  // };
-
-  // const exportToExcel = () => {
-  //   // Enhanced CSV export with batch info and targeting
-  //   const csvContent = [
-  //     [
-  //       "الكود",
-  //       "السعر",
-  //       "الحالة",
-  //       "مستخدم",
-  //       "تاريخ الاستخدام",
-  //       "تاريخ الإنشاء",
-  //       "المجموعة",
-  //       "منشئ المجموعة",
-  //       "الاستهداف",
-  //     ],
-  //     ...filteredCodes.map((code) => {
-  //       const batch = codeBatches.find((b) => b.id === code.batchId);
-  //       const targeting = getTargetingDisplay(
-  //         code.targetedSubsections,
-  //         batch?.targetingType || "all"
-  //       );
-  //       return [
-  //         code.code,
-  //         code.price,
-  //         code.isUsed ? "مستخدم" : "غير مستخدم",
-  //         code.usedBy || "-",
-  //         code.usedAt || "-",
-  //         code.createdAt,
-  //         code.batchId,
-  //         batch?.createdBy || "-",
-  //         targeting.display,
-  //       ];
-  //     }),
-  //   ]
-  //     .map((row) => row.join(","))
-  //     .join("\n");
-
-  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  //   const link = document.createElement("a");
-  //   link.href = URL.createObjectURL(blob);
-  //   link.download = `card-codes-${new Date().toISOString().split("T")[0]}.csv`;
-  //   link.click();
-  // };
-
-  // const exportToPDF = () => {
-  //   // Simulate PDF export
-  //   alert("سيتم تصدير البيانات إلى PDF قريباً");
-  // };
 
   return (
     <div className="space-y-6 w-full">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            إدارة كودات البطاقات
-          </h1>
-          <p className="text-gray-600 text-sm">
-            إنشاء وإدارة كودات تفعيل البطاقات مع استهداف الأقسام وتتبع أمني شامل
-          </p>
-        </div>
-        {/* <button
-            onClick={exportToExcel}
-            className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
-          >
-            <FileSpreadsheet size={16} />
-            تصدير Excel
-          </button>
-          <button
-            onClick={exportToPDF}
-            className="cursor-pointer bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-all duration-300 flex items-center gap-2 text-sm"
-          >
-            <FileText size={16} />
-            تصدير PDF
-          </button> */}
-        {canAddCode && (
-          <button
-            onClick={() => setShowGenerateModal(true)}
-            className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
-          >
-            <Plus size={16} />
-            إضافة كودات
-          </button>
-        )}
-      </div>
+      <Header
+        canAddCode={canAddCode}
+        setShowGenerateModal={setShowGenerateModal}
+      />
 
       {/* Stats Cards */}
-      {isLoadingStatistics ? (
-        <StatsCardsSkeleton
-          count={3}
-          gridClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">إجمالي الكودات</p>
-                <p className="text-3xl font-bold text-gray-800">
-                  {cardCodesStatistics?.data?.data?.total_generated_codes ??
-                    "-"}
-                </p>
-              </div>
-              <Hash className="w-12 h-12 text-(--brand)" />
-            </div>
-          </div>
-
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">الكودات المستخدمة</p>
-                <p className="text-3xl font-bold text-red-600">
-                  {cardCodesStatistics?.data?.data?.used_generated_codes ?? "-"}
-                </p>
-              </div>
-              <CheckCircle className="w-12 h-12 text-red-500" />
-            </div>
-          </div>
-
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">الكودات المتاحة</p>
-                <p className="text-3xl font-bold text-green-600">
-                  {cardCodesStatistics?.data?.data?.unused_generated_codes ??
-                    "-"}
-                </p>
-              </div>
-              <CreditCard className="w-12 h-12 text-green-500" />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Enhanced Batches Section with Targeting Info */}
-      <div>
-        {/* className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand)" */}
-        {/* <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="cursor-pointer p-6 hover:bg-gray-50 w-full flex justify-between"
-        >
-          <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-            <FolderTree className="w-5 h-5 text-(--brand)" />
-            مجموعات الكودات مع الاستهداف ومعلومات الأمان
-          </h2>
-          {isExpanded ? <ChevronDown /> : <ChevronUp />}
-        </button> */}
-        <div
-          className={`overflow-hidden transition-all duration-500 ease-in-out max-h-0 opacity-0`}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {cardCodes?.data?.data?.map((batch: any) => {
-              const targeting = getTargetingDisplay(
-                batch.subsubsections,
-                "specific",
-              );
-              // batch.targetingType
-
-              return (
-                <div
-                  key={batch.id}
-                  className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all"
-                >
-                  {/* Header */}
-                  <div className="btn-brand-slide p-4 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-lg">
-                        {batch?.name || "-"}
-                      </h3>
-                      <div className="flex justify-center items-center gap-1">
-                        {/* Installment */}
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            batch?.card?.is_installment &&
-                            "bg-blue-400/20 text-white"
-                          }`}
-                        >
-                          {batch?.is_installment && "أقساط"}
-                        </span>
-                        {/* Active */}
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            batch.card.is_active
-                              ? "bg-blue-400/20 text-white"
-                              : "bg-red-400/20 text-red-100"
-                          }`}
-                        >
-                          {batch?.is_active ? "مفعل" : "معطل"}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-2xl font-bold">
-                      {batch?.card?.price} د.أ
-                    </div>
-                  </div>
-
-                  {/* Targeting Info */}
-                  <div className="flex flex-col justify-center items-center p-4 bg-linear-to-r from-blue-50 to-orange-50 h-22">
-                    <div className="flex items-center gap-2 text-sm">
-                      <targeting.icon size={16} className={targeting.color} />
-                      <span className={`font-medium ${targeting.color}`}>
-                        الأقسام المحددة: {batch.subsubsections.length}
-                      </span>
-                    </div>
-                    {/* {batch.targetingType === "specific" && */}
-                    {batch?.subsubsections?.length >= 1 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {batch?.subsubsections?.slice(0, 3).map((sec: any) => (
-                          <span
-                            key={sec.id}
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-white/60 rounded-full text-xs"
-                          >
-                            <Folder size={10} />
-                            {sec.title}
-                          </span>
-                        ))}
-                        {batch?.subsubsections?.length > 3 && (
-                          <span className="px-2 py-1 bg-white/60 rounded-full text-xs">
-                            +{batch?.subsubsections?.length - 3} أخرى
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Stats */}
-                  <div className="p-4 bg-gray-50">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-gray-800">
-                          {batch.total_generated_codes}
-                        </div>
-                        <div className="text-gray-600">إجمالي</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-red-600">
-                          {batch.total_used_generated_codes}
-                        </div>
-                        <div className="text-gray-600">مستخدم</div>
-                      </div>
-                    </div>
-                    <div className="mt-3">
-                      <div className="flex justify-between text-sm text-gray-600 mb-1">
-                        <span>معدل الاستخدام</span>
-                        <span>{Math.round(batch.avg_usage * 100)}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-(--brand) h-2 rounded-full transition-all duration-300"
-                          style={{
-                            width: `${batch.avg_usage * 100}%`,
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Security Info */}
-                  <div className="p-4 space-y-3">
-                    <div className="flex items-center gap-2 text-sm">
-                      <User className="w-4 h-4 text-gray-400" />
-                      <div>
-                        <span className="font-medium text-gray-800">
-                          {batch.generated_by.name}
-                        </span>
-                        <span className="text-gray-500 text-xs block">
-                          {batch.generated_by.type.name}
-                        </span>
-                      </div>
-                    </div>
-                    {/* Location */}
-                    {/* <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600 font-mono text-xs">
-                        {batch?.security_information?.ip || "-"}
-                      </span>
-                    </div> */}
-
-                    {/* Device Info */}
-                    <div className="flex items-center gap-2 text-sm">
-                      <Monitor className="w-4 h-4 text-gray-400" />
-                      <span>
-                        {/* {batch?.security_information?.device?.vendor}
-                        {" - "}
-                        {batch?.security_information?.device?.model}
-                        {" - "}
-                        {batch?.security_information?.device?.type}
-                        {" - "} */}
-                        {batch?.security_information?.browser?.name}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">
-                        {formatDate(batch.created_at)}
-                      </span>
-                    </div>
-
-                    {batch.updated_at && (
-                      <div className="pt-2 border-t border-gray-200">
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Clock className="w-3 h-3" />
-                          <span>
-                            آخر تعديل: {formatDate(batch.updated_at)}{" "}
-                            {/* بواسطة {batch.updated_at} */}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex flex-col gap-y-2.5 min-h-20 overflow-y-auto">
-                      {batch.note && (
-                        <div className="bg-blue-50 p-3 rounded-lg">
-                          <div className="text-xs text-(--brand-secondary) font-medium mb-1">
-                            ملاحظات:
-                          </div>
-                          <div className="text-sm text-(--brand-secondary) mb-4 wrap-break-word">
-                            {batch.note}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  {role === "admin" && (
-                    <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-                      <StatusToggleButton
-                        isOn={Boolean(batch.is_active)}
-                        onToggle={() => toggleBatchStatus(batch.id)}
-                        titleOn="تعطيل المجموعة"
-                        titleOff="تفعيل المجموعة"
-                      />
-                      {/* <button
-                      onClick={() => handleBatchDownload(batch?.id)}
-                      className={`cursor-pointer p-1 rounded transition-colors ${
-                        batch.is_downloaded
-                          ? "text-(--brand-secondary) hover:bg-green-50"
-                          : "text-gray-400 hover:bg-gray-50"
-                      }`}
-                      title={"تحميل الكود"}
-                    >
-                      <Download size={16} />
-                    </button> */}
-
-                      {/* <button
-                      onClick={() => deleteBatch(batch.id)}
-                      className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="حذف المجموعة"
-                    >
-                      <Trash2 size={16} />
-                    </button> */}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          <Pagination
-            count={cardCodes?.data?.pagination?.count}
-            currentPage={codePage}
-            onPageChange={setCodePage}
-            pageSize={CARD_CODES_PAGE_SIZE}
-          />
-        </div>
-      </div>
+      <CardCodesStats />
 
       {/* Enhanced Filters */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-3">
-          {/* Search */}
-          <div className="relative col-span-1 lg:col-span-2">
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="البحث في الكودات..."
-              className="w-full h-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
-            />
-          </div>
-
-          {/* Patchs Filter */}
-          <div className="space-y-3">
-            <MultiSelectAutocomplete
-              value={codesFilter}
-              onChange={setCodesFilter}
-              options={cardCodes?.data?.data?.map((card: any) => ({
-                id: card?.id,
-                title: `${card?.name} - ${
-                  card?.card?.price
-                } - ${formatDateTimeSimple(card?.created_at)}`,
-              }))}
-              fullHeight={true}
-              placeholder="جميع المجموعات"
-              selectionDisplay="count"
-              formatSelectionCount={(n) => `${n} مجموعة مختارة`}
-            />
-          </div>
-
-          {loadAdminReferenceLists && (
-            <>
-              <div className="space-y-3">
-                <MultiSelectAutocomplete
-                  value={teachersFilter}
-                  onChange={setTeachersFilter}
-                  options={teacherData?.map((teacher: any) => ({
-                    id: teacher.id,
-                    title: teacher.name,
-                  }))}
-                  fullHeight={true}
-                  placeholder="جميع المعلمين"
-                />
-              </div>
-
-              <div className="space-y-3">
-                <MultiSelectAutocomplete
-                  value={librariesFilter}
-                  onChange={setLibrariesFilter}
-                  options={libraryData?.map((library: any) => ({
-                    id: library.id,
-                    title: library.name,
-                  }))}
-                  fullHeight={true}
-                  placeholder="جميع المكتبات"
-                />
-              </div>
-            </>
-          )}
-
-          {/* Installment Filter */}
-          <select
-            value={installmentFilter}
-            onChange={(e) => setInstallmentFilter(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
-          >
-            <option value="">جميع حالات التقسيط</option>
-            <option value="true">يوجد تقسيط</option>
-            <option value="false">لا يوجد تقسيط</option>
-          </select>
-
-          {/* Batch Filter */}
-          <select
-            value={isUsed || ""}
-            onChange={(e) => setIsUsed(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
-          >
-            <option value="all">جميع حالات الاستخدام</option>
-            <option value="false">متاح</option>
-            <option value="true">مستخدم</option>
-          </select>
-
-          {/* Download Filter */}
-          <select
-            value={isCodeDownloaded || ""}
-            onChange={(e) => setisCodeDownloaded(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
-          >
-            <option value="all">جميع حالات التحميل</option>
-            <option value="true">تم التحميل</option>
-            <option value="false">لم يتم التحميل</option>
-          </select>
-
-          {/* Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
-          >
-            <option value="all">جميع حالات التفعيل</option>
-            <option value="true">مفعل</option>
-            <option value="false">غير مفعل</option>
-          </select>
-
-          {/* Results Count */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 flex items-center justify-center bg-gray-50 rounded-lg px-4 py-2">
-            <span className="text-sm text-gray-600">
-              {generateCodes?.data?.pagination?.count} كود
-            </span>
-          </div>
-        </div>
-      </div>
+      <CardCodesFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        codesFilter={codesFilter}
+        setCodesFilter={setCodesFilter}
+        teachersFilter={teachersFilter}
+        setTeachersFilter={setTeachersFilter}
+        librariesFilter={librariesFilter}
+        setLibrariesFilter={setLibrariesFilter}
+        installmentFilter={installmentFilter}
+        setInstallmentFilter={setInstallmentFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        loadAdminReferenceLists={loadAdminReferenceLists}
+        cardCodes={cardCodes}
+        isUsed={isUsed}
+        setIsUsed={setIsUsed}
+        isCodeDownloaded={isCodeDownloaded}
+        setisCodeDownloaded={setisCodeDownloaded}
+        generateCodes={generateCodes}
+      />
 
       {/* Enhanced Codes Table */}
       {generateCodes?.isLoading ? (
@@ -1019,245 +333,32 @@ const CardCodesPage = () => {
       ) : !generateCodes?.data?.data ||
         generateCodes?.data?.data?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
-          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
-            لا توجد نتائج
-          </h3>
-          <p className="text-gray-500 mb-6">ابدأ بإضافة كودات جديدة للمنصة</p>
-
-          {canAddCode && (
-            <button
-              onClick={() => setShowGenerateModal(true)}
-              className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
-            >
-              <Plus size={16} />
-              إضافة كودات جديدة
-            </button>
-          )}
+          <EmptyState
+            title="لا توجد نتائج"
+            description="ابدأ بإضافة كودات جديدة للمنصة"
+            size="md"
+            action={
+              canAddCode && (
+                <button
+                  onClick={() => setShowGenerateModal(true)}
+                  className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
+                >
+                  <Plus size={16} />
+                  إضافة كودات جديدة
+                </button>
+              )
+            }
+          />
         </div>
       ) : (
         <>
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) w-full">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-bold text-gray-800">قائمة الكودات</h2>
-            </div>
-            {/* Responsive Table */}
-            <div className="w-full max-w-75 min-w-full overflow-auto pb-6">
-              <table className="min-w-250 w-full text-sm bg-white">
-                <thead className="bg-gray-50">
-                  <tr>
-                    {/* <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      الكود
-                    </th> */}
-                    {/* <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      المجموعة
-                    </th> */}
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      السعر
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      الكود
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      خطة التقسيط
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      الحالة
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      مستخدم بواسطة
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      تاريخ الاستخدام
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      تاريخ الإنشاء
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 whitespace-nowrap">
-                      الإجراءات
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {generateCodes?.data?.data?.map((code: any) => {
-                    const isDownloadAllowed = isCodeDownloadAllowed(
-                      code.created_at,
-                    );
-                    const offerLines = offerLinesFromGeneratedCode(code);
-
-                    console.log(code);
-
-                    return (
-                      <tr key={code.id} className="hover:bg-gray-50">
-                        {/* <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs font-medium text-gray-900 truncate max-w-[100px]">
-                              {code.code_string}
-                            </span>
-                            <button
-                              onClick={() => copyToClipboard(code.code_string)}
-                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
-                              title="نسخ الكود"
-                            >
-                              <Copy size={14} />
-                            </button>
-                          </div>
-                        </td> */}
-
-                        {/* <td className="px-4 py-3 whitespace-nowrap relative">
-                          <div className="group text-sm font-medium text-gray-900 cursor-default inline-block">
-                            {code.code.name}
-
-                            <div
-                              className="fixed z-9999 opacity-0 group-hover:opacity-100 transition-all duration-200 
-                            bg-gray-800 text-white text-xs rounded-md px-2 py-1 whitespace-nowrap 
-                              pointer-events-none shadow-lg"
-                              style={{
-                                transform: "translateY(-8px)",
-                              }}
-                            >
-                              ID: {code.code.id}
-                            </div>
-                          </div>
-                        </td> */}
-
-                        <td className="px-4 py-3 text-gray-900">
-                          <div className="flex flex-col gap-2 min-w-0 max-w-56">
-                            <span className="text-sm font-semibold tabular-nums text-gray-900">
-                              {code.code?.card?.price} د.أ
-                            </span>
-                            {offerLines.length > 0 && (
-                              <div className="flex flex-col gap-1 w-full">
-                                <span className="text-[0.65rem] text-gray-500 font-medium">
-                                  بطاقات العرض الإضافيّة
-                                </span>
-                                <div className="flex flex-wrap gap-1">
-                                  {offerLines.map((line: any) => (
-                                    <span
-                                      key={line.id ?? line.activation_card?.id}
-                                      className="inline-flex rounded-md bg-(--brand)/10 text-(--brand) px-2 py-0.5 text-xs font-semibold tabular-nums"
-                                    >
-                                      {line.activation_card?.price} د.أ
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-gray-900">
-                          {code.code_string.split("-")[0]}
-                        </td>
-                        <td className="px-4 py-3 text-gray-900">
-                          {code.code.installment?.name || "—"}
-                        </td>
-
-                        {/* <div className="text-xs text-gray-500">
-                            بواسطة: {code.code.generated_by}
-                          </div> */}
-
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex gap-2">
-                            <span
-                              className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                code.is_used
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-green-100 text-green-800"
-                              }`}
-                            >
-                              {code.is_used ? "مستخدم" : "متاح"}
-                            </span>
-                            <span
-                              className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                code.is_active
-                                  ? "bg-blue-100 text-(--brand-secondary)"
-                                  : "bg-gray-100 text-gray-800"
-                              }`}
-                            >
-                              {code.is_active ? "مفعل" : "معطل"}
-                            </span>
-                            {code?.is_downloaded && (
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium
-                                  bg-gray-100 text-(--brand)
-                              `}
-                              >
-                                تم التحميل
-                              </span>
-                            )}
-                          </div>
-                        </td>
-
-                        <td className="px-4 py-3 text-sm text-gray-900">
-                          {code.used_by?.user?.name ?? "-"}
-                        </td>
-                        <td
-                          dir="ltr"
-                          className="px-4 py-3 text-end text-sm text-gray-900"
-                        >
-                          {code.used_by?.user?.created_at
-                            ? formatDateTimeSimple(
-                                code.used_by?.user?.created_at,
-                              )
-                            : "-"}
-                        </td>
-                        <td
-                          dir="ltr"
-                          className="px-4 py-3 text-end text-sm w-fit text-gray-900"
-                        >
-                          {formatDateTimeSimple(code.created_at)}
-                        </td>
-
-                        <td className="px-4 py-3 align-middle whitespace-nowrap">
-                          <div className="flex items-center">
-                            {role === "admin" && (
-                              <StatusToggleButton
-                                isOn={Boolean(code.is_active)}
-                                onToggle={() => requestCodeStatusToggle(code)}
-                                titleOn="تعطيل الكود"
-                                titleOff="تفعيل الكود"
-                              />
-                            )}
-                            {isDownloadAllowed && (
-                              <button
-                                onClick={() => handleCodeDownload(code?.id)}
-                                className={`cursor-pointer p-1 rounded transition-colors ${
-                                  code.is_downloaded
-                                    ? "text-(--brand-secondary) hover:bg-green-50"
-                                    : "text-gray-400 hover:bg-gray-50"
-                                }`}
-                                title={"تحميل الكود"}
-                              >
-                                <Download size={16} />
-                              </button>
-                            )}
-                            <button
-                              className="cursor-pointer p-1 rounded transition-colors"
-                              title={code?.code?.name}
-                            >
-                              <Info size={16} className="text-gray-300" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-
-              {cardCodes?.data?.data?.generated_codes?.length === 0 && (
-                <div className="text-center py-12">
-                  <Hash className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-800 mb-2">
-                    لا توجد كودات
-                  </h3>
-                  <p className="text-gray-500">
-                    لم يتم العثور على كودات تطابق المعايير المحددة
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+          <CardCodesTable
+            cardCodes={cardCodes}
+            handleCodeDownload={handleCodeDownload}
+            requestCodeStatusToggle={requestCodeStatusToggle}
+            generateCodes={generateCodes}
+            role={role}
+          />
           <Pagination
             small={true}
             count={generateCodes?.data?.pagination?.count}
