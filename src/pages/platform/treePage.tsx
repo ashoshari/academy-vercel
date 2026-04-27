@@ -149,7 +149,8 @@ const TreePage: React.FC = () => {
     return (
       <div key={node?.id} className="mb-4">
         <div
-          className={`flex items-center space-x-3 p-4 rounded-xl cursor-pointer transition-all duration-300 hover:bg-(--brand) hover:text-white`}
+          // if div is active, change its background
+          className={`${isExpanded ? "bg-gray-100" : ""} flex items-center space-x-3 p-4 rounded-xl cursor-pointer transition-all duration-300 hover:bg-(--brand) hover:text-white`}
           style={{ marginRight: `${level * 20}px` }}
           onClick={() => toggleNode(node.id)}
         >

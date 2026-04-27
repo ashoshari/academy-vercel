@@ -60,6 +60,7 @@ import SalesPage from "@/pages/dashboard/admin/sales/SalesPage";
 import EnrollmentInstallmentsPage from "@/pages/dashboard/admin/enrollment-installments/EnrollmentInstallmentsPage";
 import TeacherEnrollmentInstallmentsPage from "@/pages/dashboard/admin/teacher-students-enrollments/TeacherEnrollmentInstallmentsPage";
 import TeacherUsedCodesPage from "@/pages/dashboard/admin/teacher-used-codes/TeacherUsedCodesPage";
+import MaterialsPage from "@/pages/dashboard/admin/materials/MaterialsPage";
 // import { readUserFromStorage, roleOf } from "@/services/auth";
 
 // function DashboardIndexGate() {
@@ -198,6 +199,7 @@ export default function AppRoutes() {
               <Route path="custom-card-pricing" element={<CardCustomPrice />} />
 
               {/* cards */}
+              <Route path="materials" element={<MaterialsPage />} />
             </Route>
 
             {/* cards */}
