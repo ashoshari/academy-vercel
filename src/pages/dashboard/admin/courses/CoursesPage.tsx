@@ -14,6 +14,7 @@ import {
   User,
   XCircle,
   Settings,
+  Copy,
 } from "lucide-react";
 import CourseContentPage from "@/components/dashboard/admin/courses/CourseContentPage";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -39,6 +40,91 @@ import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
+
+type CourseFormMode = "create" | "clone";
+
+function buildCourseFormData(
+  course: any,
+  mode: CourseFormMode,
+  role: string,
+): FormData {
+  const fd = new FormData();
+  const append = (key: string, value: unknown) => {
+    if (value === undefined || value === null || value === "") return;
+    fd.append(key, value instanceof File ? value : String(value));
+  };
+
+  append("name", course?.name);
+  append("short_description", course?.short_description);
+  append("long_description", course?.long_description);
+  if (role !== "teacher") append("teacher", course?.teacher);
+  append("time_in_hours", course?.time_in_hours);
+  append("image", course?.image instanceof File ? course?.image : undefined);
+
+  // booleans: in clone everything optional; in create we still keep your defaults
+  const appendBool = (key: string, value: unknown) => {
+    if (mode === "clone") {
+      if (value === undefined || value === null) return;
+      fd.append(key, String(Boolean(value)));
+      return;
+    }
+    // create: preserve existing behavior (only append when truthy)
+    if (value) fd.append(key, String(Boolean(value)));
+  };
+
+  appendBool("is_free", course?.is_free);
+  append("card_price", course?.card_price);
+  append("start_date", course?.start_date);
+  append("end_date", course?.end_date);
+  appendBool("is_published", course?.is_published);
+  appendBool("is_special", course?.is_special);
+  appendBool("is_show_general_questions", course?.is_show_general_questions);
+
+  append("subsection", course?.subsection);
+  append("subsubsection", course?.subsubsection);
+  append("specialization", course?.specialization);
+  append("specialization_material", course?.specialization_material);
+
+  if (
+    Array.isArray(course?.import_offer_target_ids) &&
+    course.import_offer_target_ids.length > 0
+  ) {
+    // UI is single-select → send a single UUID value (only if present)
+    const id = course.import_offer_target_ids[0];
+    if (id) fd.append("import_offer_target_ids", String(id));
+  }
+
+  return fd;
+}
+
+function toCloneDraft(course: any) {
+  const normalized = courseWithNormalizedOfferImports(course);
+  return {
+    name: normalized?.name,
+    short_description: normalized?.short_description ?? null,
+    long_description: normalized?.long_description ?? null,
+    teacher: normalized?.teacher?.id ?? normalized?.teacher ?? undefined,
+    time_in_hours: normalized?.time_in_hours ?? undefined,
+    image: undefined, // do not prefill file input
+    is_free: normalized?.is_free,
+    card_price: normalized?.card_price?.id ?? normalized?.card_price ?? null,
+    start_date: normalized?.start_date ?? null,
+    end_date: normalized?.end_date ?? null,
+    is_published: normalized?.is_published,
+    is_special: normalized?.is_special,
+    is_show_general_questions: normalized?.is_show_general_questions,
+    subsection: normalized?.subsection?.id ?? normalized?.subsection ?? null,
+    subsubsection:
+      normalized?.subsubsection?.id ?? normalized?.subsubsection ?? null,
+    specialization:
+      normalized?.specialization?.id ?? normalized?.specialization ?? null,
+    specialization_material:
+      normalized?.specialization_material?.id ??
+      normalized?.specialization_material ??
+      null,
+    import_offer_target_ids: normalized?.import_offer_target_ids ?? [],
+  };
+}
 
 function parseImportOfferTargetIds(course: any): string[] {
   const fromIds = Array.isArray(course?.import_offer_target_ids)
@@ -110,9 +196,11 @@ const CoursesPage = () => {
   const user = readUserFromStorage();
   const role = roleOf(user) ?? "";
   const [currentView, setCurrentView] = useState<
-    "list" | "create" | "edit" | "content" | "activate"
+    "list" | "create" | "clone" | "edit" | "content" | "activate"
   >("list");
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [cloneSourceCourse, setCloneSourceCourse] = useState<any>(null);
+  const [cloneBaseDraft, setCloneBaseDraft] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [teacherFilter, setTeacherFilter] = useState<any>(null);
   // const [categoryFilter, setCategoryFilter] = useState<string>("");
@@ -252,6 +340,11 @@ const CoursesPage = () => {
     ["postCourses"],
   );
 
+  const { mutateAsync: cloneCourse, isPending: isCloning } = useCustomPost(
+    `/training/admin/courses/${cloneSourceCourse?.id ?? "noop"}/clone/`,
+    ["courses", "courses-stats"],
+  );
+
   // DELETE Courses
   const { mutateAsync: deleteCourse, isPending: isDeleting } = useCustomRemove(
     `/training/admin/courses/${courseId}/`,
@@ -259,50 +352,7 @@ const CoursesPage = () => {
   );
 
   const handleCreateCourse = async () => {
-    const formData = new FormData();
-    if (newCourse.name) formData.append("name", newCourse.name);
-    if (newCourse.short_description)
-      formData.append("short_description", newCourse.short_description);
-    if (newCourse.long_description)
-      formData.append("long_description", newCourse.long_description);
-    if (role !== "teacher" && newCourse.teacher)
-      formData.append("teacher", newCourse.teacher);
-    // newCourse.level && formData.append("level", newCourse?.level);
-    if (newCourse.time_in_hours)
-      formData.append("time_in_hours", newCourse.time_in_hours);
-    if (newCourse.is_free)
-      formData.append("is_free", newCourse.is_free || true);
-    if (newCourse.card_price)
-      formData.append("card_price", newCourse.card_price || null);
-    if (newCourse.start_date)
-      formData.append("start_date", newCourse.start_date);
-    if (newCourse.end_date) formData.append("end_date", newCourse.end_date);
-    if (newCourse.subsection)
-      formData.append("subsection", newCourse.subsection);
-    if (newCourse.subsubsection)
-      formData.append("subsubsection", newCourse.subsubsection);
-    if (newCourse.specialization)
-      formData.append("specialization", newCourse.specialization);
-    if (newCourse.specialization_material)
-      formData.append(
-        "specialization_material",
-        newCourse.specialization_material,
-      );
-    if (newCourse.is_published) {
-      formData.append("is_published", newCourse.is_published ?? true);
-    }
-    if (newCourse.is_special) {
-      formData.append("is_special", newCourse.is_special || false);
-    }
-    if (newCourse.is_show_general_questions) {
-      formData.append(
-        "is_show_general_questions",
-        newCourse.is_show_general_questions || true,
-      );
-    }
-    if (newCourse.image instanceof File && newCourse.image) {
-      formData.append("image", newCourse.image);
-    }
+    const formData = buildCourseFormData(newCourse, "create", role);
     try {
       const res = await createCourse(formData);
       toast.success(res.message ?? "تم الحفظ بنجاح");
@@ -330,6 +380,130 @@ const CoursesPage = () => {
       queryClient.invalidateQueries({ queryKey: ["courses-stats"] });
     } catch (err: any) {
       toast.error(err?.response?.data?.error);
+    }
+  };
+
+  const handleCloneCourse = async () => {
+    if (!cloneSourceCourse?.id) {
+      toast.error("لم يتم تحديد دورة للنسخ");
+      return;
+    }
+    const base = cloneBaseDraft ?? {};
+    const changedData: Record<string, any> = {};
+
+    const keys = [
+      "name",
+      "short_description",
+      "long_description",
+      "teacher",
+      "time_in_hours",
+      "image",
+      "is_free",
+      "card_price",
+      "start_date",
+      "end_date",
+      "is_published",
+      "is_special",
+      "is_show_general_questions",
+      "subsection",
+      "subsubsection",
+      "specialization",
+      "specialization_material",
+      "import_offer_target_ids",
+    ];
+
+    const normalizeScalar = (v: any) => {
+      if (v === undefined) return undefined;
+      if (v === null) return null;
+      if (typeof v === "string") return v.trim();
+      return v;
+    };
+
+    for (const key of keys) {
+      const nextVal = (newCourse as any)?.[key];
+      const baseVal = (base as any)?.[key];
+
+      if (key === "image") {
+        // Only send image if user picked a new file
+        if (nextVal instanceof File) changedData.image = nextVal;
+        continue;
+      }
+
+      if (key === "import_offer_target_ids") {
+        const nextId = Array.isArray(nextVal) ? nextVal[0] : undefined;
+        const baseId = Array.isArray(baseVal) ? baseVal[0] : undefined;
+        if (nextId !== baseId) changedData.import_offer_target_ids = [nextId];
+        continue;
+      }
+
+      const a = normalizeScalar(nextVal);
+      const b = normalizeScalar(baseVal);
+      if (a !== b) changedData[key] = nextVal;
+    }
+
+    // Build FormData only from changed keys (all optional)
+    const fd = new FormData();
+    const append = (k: string, v: unknown) => {
+      if (v === undefined || v === null || v === "") return;
+      fd.append(k, v instanceof File ? v : String(v));
+    };
+    const appendBool = (k: string, v: unknown) => {
+      if (v === undefined || v === null) return;
+      fd.append(k, String(Boolean(v)));
+    };
+
+    append("name", changedData.name);
+    append("short_description", changedData.short_description);
+    append("long_description", changedData.long_description);
+    if (role !== "teacher") append("teacher", changedData.teacher);
+    append("time_in_hours", changedData.time_in_hours);
+    append(
+      "image",
+      changedData.image instanceof File ? changedData.image : undefined,
+    );
+    appendBool("is_free", changedData.is_free);
+    append("card_price", changedData.card_price);
+    append("start_date", changedData.start_date);
+    append("end_date", changedData.end_date);
+    appendBool("is_published", changedData.is_published);
+    appendBool("is_special", changedData.is_special);
+    appendBool(
+      "is_show_general_questions",
+      changedData.is_show_general_questions,
+    );
+    append("subsection", changedData.subsection);
+    append("subsubsection", changedData.subsubsection);
+    append("specialization", changedData.specialization);
+    append("specialization_material", changedData.specialization_material);
+    if (
+      Array.isArray(changedData.import_offer_target_ids) &&
+      changedData.import_offer_target_ids.length > 0
+    ) {
+      const id = changedData.import_offer_target_ids[0];
+      if (id) fd.append("import_offer_target_ids", String(id));
+    }
+
+    try {
+      const res = await cloneCourse(fd);
+      toast.success(res.message ?? "تم نسخ الدورة بنجاح");
+      setCloneSourceCourse(null);
+      setCloneBaseDraft(null);
+      setNewCourse({
+        is_free: true,
+        is_published: true,
+        is_special: false,
+        is_show_general_questions: true,
+        import_offer_target_ids: [],
+      });
+      setSelectedSubSection("");
+      setSelectedSubSub("");
+      setSelectedSpec("");
+      setCurrentView("list");
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      queryClient.invalidateQueries({ queryKey: ["courses-stats"] });
+      return res;
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error || "حدث خطأ أثناء نسخ الدورة");
     }
   };
   const handleEditCourse = async () => {
@@ -367,7 +541,8 @@ const CoursesPage = () => {
         if (value instanceof File) {
           formData.append(key, value);
         } else if (key === "import_offer_target_ids" && Array.isArray(value)) {
-          formData.append(key, value[0] ?? "");
+          const id = value[0];
+          if (id) formData.append(key, String(id));
         } else {
           formData.append(key, String(value));
         }
@@ -613,6 +788,23 @@ const CoursesPage = () => {
               className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
               title="تعديل الدورة"
             />
+            <button
+              onClick={() => {
+                setCloneSourceCourse(course);
+                const draft = toCloneDraft(course);
+                setCloneBaseDraft(draft);
+                setNewCourse(draft);
+                setSelectedSubSection("");
+                setSelectedSubSub("");
+                setSelectedSpec("");
+                setCurrentView("clone");
+              }}
+              className="cursor-pointer p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors"
+              title="نسخ الدورة"
+              type="button"
+            >
+              <Copy size={16} />
+            </button>
             <DeleteButton
               onClick={() => {
                 requestDeleteCourse(course);
@@ -642,8 +834,11 @@ const CoursesPage = () => {
       />
     );
   }
-  // Create Course View
-  if (currentView === "create") {
+  const renderCourseForm = (mode: CourseFormMode) => {
+    const isClone = mode === "clone";
+    const isPendingSubmit = isClone ? isCloning : isCreating;
+    const onSubmit = isClone ? handleCloneCourse : handleCreateCourse;
+
     return (
       <div className="space-y-6">
         {/* Header */}
@@ -657,6 +852,7 @@ const CoursesPage = () => {
                 is_show_general_questions: true,
                 import_offer_target_ids: [],
               });
+              setCloneSourceCourse(null);
               setSelectedSubSection("");
               setSelectedSubSub("");
               setSelectedSpec("");
@@ -668,10 +864,12 @@ const CoursesPage = () => {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
-              إنشاء دورة جديدة
+              {isClone ? "نسخ الدورة" : "إنشاء دورة جديدة"}
             </h1>
             <p className="text-gray-600 text-sm">
-              أضف دورة تعليمية جديدة للمنصة
+              {isClone
+                ? `قم بنسخ دورة${cloneSourceCourse?.name ? `: ${cloneSourceCourse.name}` : ""} (كل الحقول اختيارية)`
+                : "أضف دورة تعليمية جديدة للمنصة"}
             </p>
           </div>
         </div>
@@ -1176,31 +1374,44 @@ const CoursesPage = () => {
               إلغاء
             </button>
             <button
-              onClick={handleCreateCourse}
+              onClick={onSubmit}
               disabled={
-                isCreating ||
-                !newCourse.name ||
-                !newCourse.start_date ||
-                !newCourse.end_date ||
-                (!newCourse.is_free && !newCourse.card_price) ||
-                (role !== "teacher" && !newCourse.teacher) ||
-                !newCourse.subsection ||
-                !newCourse.subsubsection ||
-                (subsub?.specializations.length > 0
-                  ? !newCourse.specialization
-                  : false) ||
-                !newCourse.specialization_material
+                isPendingSubmit ||
+                (!isClone &&
+                  (!newCourse.name ||
+                    !newCourse.start_date ||
+                    !newCourse.end_date ||
+                    (!newCourse.is_free && !newCourse.card_price) ||
+                    (role !== "teacher" && !newCourse.teacher) ||
+                    !newCourse.subsection ||
+                    !newCourse.subsubsection ||
+                    (subsub?.specializations.length > 0
+                      ? !newCourse.specialization
+                      : false) ||
+                    !newCourse.specialization_material))
               }
               className="btn-brand-slide md:justify-start justify-center px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
-              {isCreating ? "جاري الإنشاء..." : "إنشاء الدورة"}
+              {isPendingSubmit
+                ? isClone
+                  ? "جاري النسخ..."
+                  : "جاري الإنشاء..."
+                : isClone
+                  ? "نسخ الدورة"
+                  : "إنشاء الدورة"}
             </button>
           </div>
         </div>
       </div>
     );
-  }
+  };
+
+  // Create Course View
+  if (currentView === "create") return renderCourseForm("create");
+
+  // Clone Course View (no semesters/units; all fields optional)
+  if (currentView === "clone") return renderCourseForm("clone");
 
   // Edit Course View
   if (currentView === "edit" && selectedCourse) {
@@ -2177,6 +2388,23 @@ const CoursesPage = () => {
                               className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) transition-colors"
                               title="تعديل الدورة"
                             />
+                            <button
+                              onClick={() => {
+                                setCloneSourceCourse(course);
+                                const draft = toCloneDraft(course);
+                                setCloneBaseDraft(draft);
+                                setNewCourse(draft);
+                                setSelectedSubSection("");
+                                setSelectedSubSub("");
+                                setSelectedSpec("");
+                                setCurrentView("clone");
+                              }}
+                              className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
+                              title="نسخ الدورة"
+                              type="button"
+                            >
+                              <Copy size={16} />
+                            </button>
                             <DeleteButton
                               onClick={() => {
                                 requestDeleteCourse(course);
