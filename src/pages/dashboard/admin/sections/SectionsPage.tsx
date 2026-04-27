@@ -11,7 +11,6 @@ import {
   Search,
   Rows,
   Grid,
-  Users,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDate } from "@/services/date";
@@ -22,6 +21,7 @@ import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
+import EmptyState from "@/components/core/EmptyState";
 // import { formatDateTimeSimple } from "@/utils/formatDateTime";
 // import Pagination from "@/components/dashboard/core/Pagination";
 
@@ -680,21 +680,20 @@ const SectionsPage = () => {
         )
       ) : !sections?.data?.data || sections?.data?.data?.length === 0 ? (
         <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
-          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
-            لا توجد نتائج
-          </h3>
-          <p className="text-gray-500 mb-6">
-            ابدأ بإضافة أقسام رئيسية جديدة للمنصة
-          </p>
-
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
-          >
-            <Plus size={16} />
-            إضافة قسم رئيسي جديد
-          </button>
+          <EmptyState
+            title="لا توجد نتائج"
+            description="ابدأ بإضافة أقسام رئيسية جديدة للمنصة"
+            size="md"
+            action={
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
+              >
+                <Plus size={16} />
+                إضافة قسم رئيسي جديد
+              </button>
+            }
+          />
         </div>
       ) : // Sections Grid
       viewMode === "grid" ? (

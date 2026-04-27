@@ -6,7 +6,6 @@ import {
   CheckCircle,
   XCircle,
   BookOpen,
-  CreditCard,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
@@ -15,6 +14,7 @@ import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import toast from "react-hot-toast";
 import { useCustomPut } from "@/hooks/useMutation";
+import EmptyState from "@/components/core/EmptyState";
 
 const EnrollmentInstallmentsPage = () => {
   const [page, setPage] = useState(1);
@@ -30,7 +30,7 @@ const EnrollmentInstallmentsPage = () => {
   queryParams.append("page_size", "15");
 
   if (courseFilter) queryParams.append("course_id", courseFilter);
-  if (studentSearch) queryParams.append("student_search", studentSearch); // Assuming search or student_id
+  if (studentSearch) queryParams.append("student_name", studentSearch); // Assuming search or student_id
   if (paidFilter !== "all") queryParams.append("is_paid", paidFilter);
   if (overdueFilter !== "all") queryParams.append("is_overdue", overdueFilter);
 
@@ -180,13 +180,11 @@ const EnrollmentInstallmentsPage = () => {
         <TableSkeleton rows={8} />
       ) : !installments || installments.length === 0 ? (
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
-          <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
-            لا توجد أقساط
-          </h3>
-          <p className="text-gray-500">
-            لا توجد بيانات تطابق فلاتر البحث الحالية.
-          </p>
+          <EmptyState
+            title="لا توجد نتائج"
+            description="لا توجد بيانات تطابق فلاتر البحث الحالية."
+            size="md"
+          />
         </div>
       ) : (
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) flex flex-col min-h-0">

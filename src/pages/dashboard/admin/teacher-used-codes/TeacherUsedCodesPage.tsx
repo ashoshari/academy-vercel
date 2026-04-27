@@ -3,7 +3,6 @@ import {
   DollarSign,
   CheckCircle,
   XCircle,
-  CreditCard,
   Users,
   BookOpen,
 } from "lucide-react";
@@ -14,6 +13,7 @@ import Pagination from "@/components/dashboard/core/Pagination";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
 import toast from "react-hot-toast";
+import EmptyState from "@/components/core/EmptyState";
 
 const TeacherUsedCodesPage = () => {
   const [page, setPage] = useState(1);
@@ -24,7 +24,6 @@ const TeacherUsedCodesPage = () => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeRecord, setActiveRecord] = useState<any>(null);
-
 
   const queryParams = new URLSearchParams();
   queryParams.append("page", page.toString());
@@ -58,14 +57,13 @@ const TeacherUsedCodesPage = () => {
   const teachersList = teachersData?.data || teachersData || [];
   const coursesList = coursesData?.data || [];
 
-    const selectedRecords = results.filter((r: any) => selectedIds.has(r.id));
+  const selectedRecords = results.filter((r: any) => selectedIds.has(r.id));
   const totalTeacherShare = activeRecord
     ? parseFloat(activeRecord.teacher_share) || 0
     : selectedRecords.reduce(
         (sum: number, r: any) => sum + (parseFloat(r.teacher_share) || 0),
-        0
+        0,
       );
-
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -204,13 +202,11 @@ const TeacherUsedCodesPage = () => {
         <TableSkeleton rows={8} />
       ) : results.length === 0 ? (
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
-          <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
-            لا توجد سجلات
-          </h3>
-          <p className="text-gray-500">
-            لا توجد بيانات تطابق فلاتر البحث الحالية.
-          </p>
+          <EmptyState
+            title="لا توجد نتائج"
+            description=" لا توجد بيانات تطابق فلاتر البحث الحالية."
+            size="md"
+          />
         </div>
       ) : (
         <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden">
@@ -371,7 +367,9 @@ const TeacherUsedCodesPage = () => {
                   هل أنت متأكد من تمييز هذا السجل كمدفوع؟
                   <br />
                   المدرس:{" "}
-                  <span className="font-bold">{activeRecord.teacher?.name}</span>
+                  <span className="font-bold">
+                    {activeRecord.teacher?.name}
+                  </span>
                 </>
               ) : (
                 `هل أنت متأكد من تمييز ${selectedIds.size} سجلات كمدفوعة؟`

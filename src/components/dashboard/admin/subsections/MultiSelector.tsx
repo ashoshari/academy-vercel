@@ -85,7 +85,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
             dir="rtl"
           >
             <span className="tabular-nums text-gray-900">
-              {formatSelectionCount(value.length)}
+              {formatSelectionCount(value?.length)}
             </span>
             <button
               type="button"
@@ -143,7 +143,7 @@ const MultiSelectAutocomplete: React.FC<Props> = ({
         />
       </div>
 
-      {open && !disabled && available.length > 0 && (
+      {open && !disabled && available?.length > 0 && (
         <ul
           className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto bg-white
                     border border-gray-200 rounded-lg shadow-lg space-y-1 py-1"

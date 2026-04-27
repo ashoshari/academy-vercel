@@ -29,6 +29,7 @@ import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 import DetailsButton from "@/components/dashboard/core/DetailsButton";
 import EditButton from "@/components/dashboard/core/EditButton";
 import RefreshButton from "@/components/dashboard/core/RefreshButton";
+import EmptyState from "@/components/core/EmptyState";
 
 export interface Teacher {
   id: number;
@@ -510,20 +511,21 @@ const TeachersPage = () => {
         )
       ) : !dataTeachers?.data?.data ||
         dataTeachers?.data?.data?.length === 0 ? (
-        <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
-          <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
-            لا توجد نتائج
-          </h3>
-          <p className="text-gray-500 mb-6">ابدأ بإضافة معلمين جدد للمنصة</p>
-
-          <button
-            onClick={() => navigate("/dashboard/teachers/add")}
-            className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
-          >
-            <Plus size={16} />
-            إضافة معلم جديد
-          </button>
+        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
+          <EmptyState
+            title="لا توجد نتائج"
+            description="ابدأ بإضافة معلمين جدد للمنصة"
+            size="md"
+            action={
+              <button
+                onClick={() => navigate("/dashboard/teachers/add")}
+                className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
+              >
+                <Plus size={16} />
+                إضافة معلم جديد
+              </button>
+            }
+          />
         </div>
       ) : viewMode === "grid" ? (
         <>
