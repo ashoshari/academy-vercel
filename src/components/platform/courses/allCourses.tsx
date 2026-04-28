@@ -63,6 +63,20 @@ const AllCourses = () => {
   const [page, setPage] = useState(1);
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
+  const getPrimaryInstallment = (course: any) => {
+    const schedule = Array.isArray(course?.installment_schedule)
+      ? course.installment_schedule
+      : [];
+
+    if (schedule.length === 0) return null;
+
+    const sorted = [...schedule].sort(
+      (a, b) => (a?.sequence ?? 0) - (b?.sequence ?? 0),
+    );
+
+    return sorted.find((i) => i?.is_paid === false) ?? sorted[0];
+  };
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchTerm); // update after delay
@@ -106,14 +120,17 @@ const AllCourses = () => {
 
   const renderCourseCard = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {myCoursesData?.map((course: any) => (
-        <div
-          key={course?.course_id}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group transform hover:scale-105"
-        >
-          <div className="p-6 flex flex-col h-full">
-            {/* Header */}
-            <div className="flex-1">
+      {myCoursesData?.map((course: any) => {
+        const primaryInstallment = getPrimaryInstallment(course);
+
+        return (
+          <div
+            key={course?.course_id}
+            className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group transform hover:scale-105"
+          >
+            <div className="p-6 flex flex-col h-full">
+              {/* Header */}
+              <div className="flex-1">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
@@ -213,9 +230,9 @@ const AllCourses = () => {
               {course?.installment_schedule?.length > 0 && (
                 <div className="mb-4 space-y-2">
                   <div
-                    key={course.installment_schedule[0].id}
+                    key={primaryInstallment?.id}
                     className={`p-2 rounded-lg text-xs flex items-center justify-between ${
-                      course.installment_schedule[0].is_paid
+                      primaryInstallment?.is_paid
                         ? "bg-green-50 text-green-700"
                         : "bg-amber-50 text-amber-700"
                     }`}
@@ -223,32 +240,32 @@ const AllCourses = () => {
                     <div className="flex items-center gap-2">
                       <div
                         className={`w-2 h-2 rounded-full ${
-                          course.installment_schedule[0].is_paid
+                          primaryInstallment?.is_paid
                             ? "bg-green-500"
                             : "bg-amber-500"
                         }`}
                       />
                       <span>
-                        {course.installment_schedule[0].is_paid
+                        {primaryInstallment?.is_paid
                           ? "تم دفع"
                           : "يجب دفع"}{" "}
-                        {course.installment_schedule[0].amount} د.أ
-                        {!course.installment_schedule[0].is_paid &&
-                          ` قبل ${course.installment_schedule[0].due_date}`}
+                        {primaryInstallment?.amount} د.أ
+                        {primaryInstallment?.is_paid === false &&
+                          ` قبل ${primaryInstallment?.due_date}`}
                       </span>
                     </div>
                     <span className="font-bold">
-                      {course.installment_schedule[0].is_paid
+                      {primaryInstallment?.is_paid
                         ? "مكتمل"
                         : "مستحق"}
                     </span>
                   </div>
 
-                  {!course.installment_schedule[0].is_paid && (
+                  {primaryInstallment?.is_paid === false && (
                     <InstallmentProgressBar
                       createdAt={course.enrollment_created_at}
-                      dueDate={course.installment_schedule[0].due_date}
-                      amount={course.installment_schedule[0].amount}
+                      dueDate={primaryInstallment?.due_date}
+                      amount={primaryInstallment?.amount}
                     />
                   )}
                 </div>
@@ -265,15 +282,19 @@ const AllCourses = () => {
             </button>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 
   const renderCourseList = () => (
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group">
-      {myCoursesData?.map((course: any) => (
-        <div className="p-6">
-          <div className="flex md:flex-row flex-col items-center gap-6 w-full">
+      {myCoursesData?.map((course: any) => {
+        const primaryInstallment = getPrimaryInstallment(course);
+
+        return (
+          <div key={course?.course_id ?? course?.id} className="p-6">
+            <div className="flex md:flex-row flex-col items-center gap-6 w-full">
             {/* Progress Circle */}
             <div className="relative w-20 h-20 md:w-12 md:h-12 shrink-0">
               <svg
@@ -346,43 +367,49 @@ const AllCourses = () => {
                 </div>
               </div>
 
-              {/* Days Progress Bar */}
-              {/* Removed enrollment duration progress as per user request */}
-
-              {/* Installment Due Date Progress */}
-              {course?.installment_schedule?.length > 0 &&
-                !course.installment_schedule[0].is_paid && (
-                  <InstallmentProgressBar
-                    createdAt={course.enrollment_created_at}
-                    dueDate={course.installment_schedule[0].due_date}
-                    amount={course.installment_schedule[0].amount}
-                  />
-                )}
-
-              {/* Installments List */}
-              {/* {course?.installment_schedule?.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {course.installment_schedule.map((ins: any) => (
-                    <div
-                      key={ins.id}
-                      className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 ${
-                        ins.is_paid
-                          ? "bg-green-50 text-green-700 border border-green-100"
-                          : "bg-amber-50 text-amber-700 border border-amber-100"
-                      }`}
-                    >
+              {course?.installment_schedule?.length > 0 && (
+                <div className="mb-4 space-y-2">
+                  <div
+                    key={primaryInstallment?.id}
+                    className={`p-2 rounded-lg text-xs flex items-center justify-between ${
+                      primaryInstallment?.is_paid
+                        ? "bg-green-50 text-green-700"
+                        : "bg-amber-50 text-amber-700"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
                       <div
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          ins.is_paid ? "bg-green-500" : "bg-amber-500"
+                        className={`w-2 h-2 rounded-full ${
+                          primaryInstallment?.is_paid
+                            ? "bg-green-500"
+                            : "bg-amber-500"
                         }`}
                       />
                       <span>
-                        {ins.amount} د.أ - {ins.is_paid ? "مدفوع" : `مستحق في ${ins.due_date}`}
+                        {primaryInstallment?.is_paid
+                          ? "تم دفع"
+                          : "يجب دفع"}{" "}
+                        {primaryInstallment?.amount} د.أ
+                        {primaryInstallment?.is_paid === false &&
+                          ` قبل ${primaryInstallment?.due_date}`}
                       </span>
                     </div>
-                  ))}
+                    <span className="font-bold">
+                      {primaryInstallment?.is_paid
+                        ? "مكتمل"
+                        : "مستحق"}
+                    </span>
+                  </div>
+
+                  {primaryInstallment?.is_paid === false && (
+                    <InstallmentProgressBar
+                      createdAt={course.enrollment_created_at}
+                      dueDate={primaryInstallment?.due_date}
+                      amount={primaryInstallment?.amount}
+                    />
+                  )}
                 </div>
-              )} */}
+              )}
             </div>
 
             {/* Action Button */}
@@ -396,8 +423,9 @@ const AllCourses = () => {
               </button>
             </div>
           </div>
-        </div>
-      ))}
+          </div>
+        );
+      })}
     </div>
   );
 
