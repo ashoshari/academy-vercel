@@ -313,25 +313,28 @@ const TeacherUsedCodesPage = () => {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-[10px] text-gray-400 font-mono">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                       {formatDateTimeSimple(item.created_at)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       {!item.is_admin_paid ? (
                         <button
-                          className="cursor-pointer hover:scale-110 transition-transform"
+                          className="cursor-pointer rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800 transition-colors hover:bg-amber-100"
                           onClick={() => {
                             setActiveRecord(item);
                             setIsModalOpen(true);
                           }}
-                          title="تأكيد الدفع"
+                          title="تأكيد أن هذا السجل تم دفعه"
                         >
-                          <XCircle size={18} className="text-red-500" />
+                          تأكيد الدفع الآن
                         </button>
                       ) : (
-                        <div className="flex justify-center" title="تم الدفع">
-                          <CheckCircle size={18} className="text-green-500" />
-                        </div>
+                        <span
+                          className="flex items-center justify-center rounded-lg border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700"
+                          title="تم تأكيد الدفع لهذا السجل"
+                        >
+                          مدفوع
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -376,11 +379,12 @@ const TeacherUsedCodesPage = () => {
               )}
             </p>
             <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-3 flex justify-between items-center">
-              <span className="text-emerald-800 font-medium">
-                إجمالي المبلغ المستحق:
-              </span>
               <span className="text-emerald-700 font-bold text-lg">
-                {totalTeacherShare.toLocaleString()} د.أ
+                {"د.أ "}
+                <span dir="ltr">{totalTeacherShare.toLocaleString()}</span>
+              </span>
+              <span className="text-emerald-800 font-medium">
+                :إجمالي المبلغ المستحق
               </span>
             </div>
           </div>

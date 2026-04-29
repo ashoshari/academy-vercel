@@ -138,9 +138,7 @@ const CoursePage = () => {
   }
   return (
     <div
-      className={`transition-all duration-300 ${
-        sidebarVisible ? (sidebarCollapsed ? "md:ml-16" : "md:ml-80") : "ml-0"
-      }`}
+      className="transition-all duration-300"
       onContextMenu={(e) => e.preventDefault()}
     >
       {/* Mobile Sidebar Overlay */}
@@ -155,15 +153,19 @@ const CoursePage = () => {
         sidebarVisible={sidebarVisible}
         courseData={courseData}
       />
-      <Sidebar
-        setSidebarVisible={setSidebarVisible}
-        sidebarVisible={sidebarVisible}
-        sidebarCollapsed={sidebarCollapsed}
-        sidebarCollapseHandler={sidebarCollapseHandler}
-        setCurrentLessonIndex={setCurrentLessonIndex}
-        courseData={courseData}
-      />
-      <CourseContent courseData={courseData} allLessons={allLessons} />
+      <div className="md:flex md:flex-row-reverse">
+        <Sidebar
+          setSidebarVisible={setSidebarVisible}
+          sidebarVisible={sidebarVisible}
+          sidebarCollapsed={sidebarCollapsed}
+          sidebarCollapseHandler={sidebarCollapseHandler}
+          setCurrentLessonIndex={setCurrentLessonIndex}
+          courseData={courseData}
+        />
+        <div className="min-w-0 flex-1">
+          <CourseContent courseData={courseData} allLessons={allLessons} />
+        </div>
+      </div>
     </div>
   );
 };
