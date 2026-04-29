@@ -437,10 +437,10 @@ const CoreExam = ({
                           (examData?.passing_marks / examData?.total_marks) *
                           100
                         }%)`
-                      : `تحتاج إلى ${
+                      : `تحتاج إلى ${(
                           (examData?.passing_marks / examData?.total_marks) *
                           100
-                        }% للنجاح`}
+                        ).toFixed(2)}% للنجاح`}
                   </p>
                 </div>
                 {/* Detailed Results */}
