@@ -1,74 +1,134 @@
-import { CheckCircle, FileText, Download, Clock } from "lucide-react";
-import { useLesson } from "@/store/platform/useLesson";
+import {
+  CheckCircle,
+  Clock,
+  Download,
+  FileText,
+} from "lucide-react";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import AppLogo from "@/assets/manasaty-logo.jpg";
 import { getYoutubeVideoId } from "@/utils/getYoutubeVideoId";
-import { useState } from "react";
-// import { useState, useEffect } from "react";
+import { useLesson } from "@/store/platform/useLesson";
+import { useMemo, useState } from "react";
+import ReactPlayer from "react-player";
+import {
+  resolveLessonVideoSrc,
+  suppressDefaultInteraction,
+  youtubeHqThumbnailUrl,
+  youtubeIframeConfig,
+} from "./videoPlayerUtils";
+import {
+  LessonFullscreenButton,
+  YoutubeLessonChrome,
+  secureReactPlayerWrapper,
+} from "./youtubePlayerChrome";
+import { useLessonVideoFullscreen } from "./useLessonVideoFullscreen";
+import { useYoutubeControlledSeek } from "./useYoutubeControlledSeek";
 
-const VideoPlayer = ({ markLessonComplete }: any) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const user = JSON.parse(localStorage.getItem("platform_user") || "{}");
-  const isAllowToUseWeb = user.is_allow_to_use_web;
-  console.log(isAllowToUseWeb);
-  const PROVIDER = "youtube";
-  const currentLesson = useLesson((state) => state.currentLesson);
+const LESSON_PROVIDER = "youtube";
+
+type VideoPlayerProps = {
+  markLessonComplete: () => void;
+};
+
+function LessonPlayTriangle({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden
+    >
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  );
+}
+
+const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
+  const [inlinePlayerActive, setInlinePlayerActive] = useState(false);
+
+  const user = JSON.parse(
+    globalThis.localStorage?.getItem("platform_user") || "{}",
+  );
+  const isAllowToUseWeb = user?.is_allow_to_use_web;
+
+  const currentLesson = useLesson((s) => s.currentLesson);
+
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
     ["downloadFiles"],
   );
-  const youtubeVideoId = getYoutubeVideoId(currentLesson?.link);
-  // const [isFullscreen, setIsFullscreen] = useState(false);
-  // useEffect(() => {
-  //   const handleFullscreenChange = () => {
-  //     setIsFullscreen(!!document.fullscreenElement);
-  //   };
 
-  //   document.addEventListener("fullscreenchange", handleFullscreenChange);
-  //   return () => {
-  //     document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  //   };
-  // }, []);
-  const handleDownload = async (resourceId: any) => {
+  const rawLinkTrimmed =
+    typeof currentLesson?.link === "string"
+      ? currentLesson.link.trim()
+      : "";
+
+  const youtubeVideoId = getYoutubeVideoId(currentLesson?.link);
+
+  const resolvedSrc = useMemo(
+    () =>
+      resolveLessonVideoSrc(
+        youtubeVideoId,
+        rawLinkTrimmed,
+        ReactPlayer.canPlay,
+      ),
+    [youtubeVideoId, rawLinkTrimmed],
+  );
+
+  const thumbnailUrl =
+    youtubeVideoId != null ? youtubeHqThumbnailUrl(youtubeVideoId) : undefined;
+
+  const showPlayerChrome = resolvedSrc != null && inlinePlayerActive;
+  const isYoutubeEmbed = youtubeVideoId != null;
+
+  const yt = useYoutubeControlledSeek({
+    lessonKey: currentLesson?.id,
+    showPlayer: showPlayerChrome && isYoutubeEmbed,
+  });
+
+  const lessonFs = useLessonVideoFullscreen();
+
+  const handleDownload = async (resourceId: string | number) => {
     try {
-      await downloadFiles({
-        resource_id: resourceId,
-      });
+      await downloadFiles({ resource_id: resourceId });
     } catch (error) {
       console.log(error);
     }
   };
+
+  const useWebRestricted =
+    isAllowToUseWeb === false || isAllowToUseWeb === "false";
+
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video rounded-t-2xl overflow-hidden">
-        {isAllowToUseWeb === false || isAllowToUseWeb === "false" ? (
-          // Application
+        {useWebRestricted ? (
           <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-2xl group shadow-md">
-            {/* Background placeholder image */}
             <img
               src={AppLogo}
               alt="Video Placeholder"
               className="absolute top-0 left-0 w-full h-full object-cover bg-gray-900"
+              draggable={false}
+              onContextMenu={suppressDefaultInteraction}
             />
-
-            {/* Dark overlay */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-all duration-300"></div>
-
-            {/* Button overlay */}
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent transition-all duration-300 group-hover:from-black/90" />
             <a
-              href={`manasaty://open?provider=${PROVIDER}&video_id=${currentLesson?.link}`}
+              href={
+                currentLesson?.link
+                  ? `manasaty://open?provider=${LESSON_PROVIDER}&video_id=${currentLesson.link}`
+                  : "#"
+              }
               className="absolute inset-0 flex flex-col items-center justify-center text-white no-underline"
+              draggable={false}
+              onClick={(e) => {
+                if (!currentLesson?.link) e.preventDefault();
+              }}
+              onDragStart={(e) => void e.preventDefault()}
             >
               <div className="flex flex-col items-center gap-3">
-                <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-10 h-10 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/40 bg-white/20 backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
+                  <LessonPlayTriangle className="h-10 w-10 text-white" />
                 </div>
                 <span className="text-lg font-semibold tracking-wide drop-shadow-md">
                   فتح الفيديو في التطبيق
@@ -77,152 +137,197 @@ const VideoPlayer = ({ markLessonComplete }: any) => {
             </a>
           </div>
         ) : (
-          // Youtube
-          <>
-            <div className="relative pb-[56.25%] h-0 overflow-hidden">
-              {!isPlaying ? (
-                <>
-                  {/* Thumbnail */}
+          <div className="relative isolate h-0 select-none overflow-hidden pb-[56.25%]">
+            {!showPlayerChrome ? (
+              <>
+                {thumbnailUrl ? (
                   <img
-                    src={`https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`}
-                    className="absolute top-0 left-0 w-full h-full object-cover"
-                    alt="Video Thumbnail"
+                    src={thumbnailUrl}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    draggable={false}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    onContextMenu={suppressDefaultInteraction}
                   />
-
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <button
-                      onClick={() => setIsPlaying(true)}
-                      className="cursor-pointer w-17 h-17 rounded-full flex items-center justify-center border border-white hover:scale-110 transition"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-10 h-10 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <iframe
-                  src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
-                  className="absolute top-0 left-0 w-full h-full border-none"
-                  allowFullScreen
-                />
-              )}
-            </div>
-          </>
+                ) : (
+                  <div className="absolute inset-0 bg-neutral-950" />
+                )}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <button
+                    type="button"
+                    disabled={resolvedSrc == null}
+                    title={
+                      resolvedSrc == null
+                        ? "لا يوجد مصدر تشغيل صالح"
+                        : undefined
+                    }
+                    onClick={() =>
+                      resolvedSrc != null &&
+                      setInlinePlayerActive(true)
+                    }
+                    className="flex h-17 w-17 cursor-pointer items-center justify-center rounded-full border border-white transition hover:scale-110 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <LessonPlayTriangle className="h-10 w-10 text-white" />
+                  </button>
+                </div>
+              </>
+            ) : (
+              resolvedSrc != null && (
+                <div
+                  ref={lessonFs.containerRef}
+                  className="absolute inset-0 bg-black"
+                >
+                  <ReactPlayer
+                    ref={isYoutubeEmbed ? yt.playerRef : undefined}
+                    src={resolvedSrc}
+                    playing={isYoutubeEmbed ? yt.mediaPlaying : true}
+                    controls={!isYoutubeEmbed}
+                    muted={isYoutubeEmbed ? yt.muted : true}
+                    pip={false}
+                    playsInline
+                    width="100%"
+                    height="100%"
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    controlsList={
+                      isYoutubeEmbed ? undefined : "nodownload noplaybackrate"
+                    }
+                    wrapper={secureReactPlayerWrapper}
+                    className="absolute inset-0"
+                    style={{ position: "absolute", top: 0, left: 0 }}
+                    config={{
+                      html: {},
+                      mux: {},
+                      youtube: youtubeIframeConfig(),
+                    }}
+                    {...(isYoutubeEmbed ? yt.youtubeReactPlayerEvents : {})}
+                  />
+                  {isYoutubeEmbed && (
+                    <YoutubeLessonChrome
+                      onSuppressContextMenu={
+                        suppressDefaultInteraction
+                      }
+                      scrubDisplayedSeconds={
+                        yt.scrubDisplayedSeconds
+                      }
+                      playedSeconds={yt.playedSeconds}
+                      durationSeconds={yt.durationSeconds}
+                      isMuted={yt.muted}
+                      isPlaying={yt.mediaPlaying}
+                      seekInputRef={yt.seekInputRef}
+                      onSeekInputChange={yt.onSeekInputChange}
+                      onSeekCommit={yt.finalizeSeek}
+                      onToggleMute={() =>
+                        yt.setMuted((m) => !m)
+                      }
+                      onTogglePlay={() =>
+                        yt.setMediaPlaying((p) => !p)
+                      }
+                      isFullscreen={lessonFs.isFullscreen}
+                      onToggleFullscreen={lessonFs.toggleFullscreen}
+                    />
+                  )}
+                  {!isYoutubeEmbed && (
+                    <div className="pointer-events-none absolute inset-0 z-[35] flex items-end justify-end p-3 pb-14 pt-24 md:pb-3">
+                      <div className="pointer-events-auto flex rounded-full bg-black/55 shadow-lg backdrop-blur-sm ring-1 ring-white/10">
+                        <LessonFullscreenButton
+                          isFullscreen={lessonFs.isFullscreen}
+                          onToggleFullscreen={lessonFs.toggleFullscreen}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            )}
+          </div>
         )}
-        {/* Mux */}
-        <div className="relative aspect-video bg-black rounded-t-2xl overflow-hidden">
-          {/* <iframe
-            src={`https://player.mux.com/${currentLesson?.link}?metadata-video-title=%${currentLesson?.title}&video-title=${currentLesson?.title}`}
-            className="w-full border-none aspect-video"
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen
-          ></iframe> */}
-
-          {/* Overlays – positions in percentages so they always match */}
-          {/* {isFullscreen ? (
-            <>
-              <div className="absolute top-[0%] left-[0%] w-[100%] h-[30%] bg-black"></div>
-              <div className="absolute top-[35%] left-[55%] w-[25%] md:w-[20%] lg:w-[15%] h-[30%] bg-transparent"></div>
-              <div className="absolute bottom-[0%] left-[0%] w-[14%] sm:w-[12%] md:w-[9.8%] lg:w-[8.4%] xl:w-[6.3%] 2xl:w-[4.85%] h-[25%] bg-transparent"></div>
-            </>
-          ) : (
-            <>
-              <div className="absolute top-[0%] left-[0%] w-[100%] sm:w-[92.5%] md:w-[94%] lg:w-[96%] xl:w-[96%] 2xl:w-[96.5%] h-[30%] lg:h-[15%] bg-transparent"></div>
-              <div className="absolute top-[35%] left-[55%] w-[25%] md:w-[20%] lg:w-[15%] h-[30%] bg-transparent"></div>
-              <div className="absolute bottom-[0%] left-[0%] w-[14%] sm:w-[12%] md:w-[9.8%] lg:w-[8.4%] xl:w-[6.3%] 2xl:w-[4.85%] h-[25%] bg-transparent"></div>
-            </>
-          )} */}
-        </div>
-        {/* Youtube */}
-        <div>
-          {/* <iframe
-          width="100%"
-          height="100%"
-          src={
-            // "https://www.youtube.com/embed/" + currentLesson?.link
-            }
-            title={currentLesson?.title}
-            frameBorder="0"
-            // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-            ></iframe> */}
-        </div>
       </div>
 
       <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
+        <div className="mb-4 flex items-start justify-between">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="mb-2 text-2xl font-bold text-gray-900">
               {currentLesson?.title}
             </h2>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="leading-relaxed text-gray-600">
               {currentLesson?.description}
             </p>
           </div>
-          <div className="flex items-center space-x-2 ml-4">
+          <div className="ml-4 flex items-center space-x-2">
             <div className="flex items-center space-x-1 text-sm text-gray-500">
-              <Clock className="w-4 h-4" />
+              <Clock className="h-4 w-4" />
               <span>{currentLesson?.time_in_minutes} دقيقة</span>
             </div>
           </div>
         </div>
 
-        {/* Lesson Files */}
         {currentLesson?.resources && currentLesson.resources.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            <h3 className="mb-3 text-lg font-semibold text-gray-900">
               ملفات الدرس
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {currentLesson?.resources.map((resource: any) => (
-                <a
-                  href={resource.file}
-                  target="_blank"
-                  key={resource?.id}
-                  onClick={() => handleDownload(resource?.id)}
-                  className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200"
-                  download
-                >
-                  <FileText className="w-5 h-5 text-blue-500" />
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900 text-sm">
-                      {resource?.title ?? "ملف"}
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {currentLesson.resources.map(
+                (resource: {
+                  id?: string | number;
+                  title?: string;
+                  file?: string;
+                  file_size?: number;
+                }) => (
+                  <a
+                    key={resource?.id}
+                    href={resource.file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    onClick={() =>
+                      resource?.id != null &&
+                      handleDownload(resource.id)
+                    }
+                    className="flex items-center space-x-3 rounded-xl bg-gray-50 p-3 transition-colors duration-200 hover:bg-gray-100"
+                  >
+                    <FileText className="h-5 w-5 text-blue-500" />
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-gray-900">
+                        {resource?.title ?? "ملف"}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {resource.file_size != null
+                          ? (resource.file_size / 1024).toFixed(1)
+                          : 0}{" "}
+                        MB
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {(resource?.file_size / 1024).toFixed(1) ?? 0} MB
-                    </div>
-                  </div>
-                  <button className="p-2 text-(--brand-secondary) cursor-pointer hover:bg-blue-50 rounded-lg transition-colors duration-200">
-                    <Download className="w-4 h-4" />
-                  </button>
-                </a>
-              ))}
+                    <span
+                      className="rounded-lg p-2 text-(--brand-secondary)"
+                      aria-hidden
+                    >
+                      <Download className="h-4 w-4" />
+                    </span>
+                  </a>
+                ),
+              )}
             </div>
           </div>
         )}
 
-        {/* Mark Complete Button */}
         <div className="flex items-center justify-between">
           <button
+            type="button"
             onClick={markLessonComplete}
-            disabled={currentLesson?.is_completed}
-            className={`cursor-pointer disabled:cursor-not-allowed px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 ${
+            disabled={Boolean(currentLesson?.is_completed)}
+            className={`flex cursor-pointer items-center space-x-2 rounded-xl px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-75 ${
               currentLesson?.is_completed
-                ? "bg-green-100 text-green-800 cursor-not-allowed transition-all duration-300"
-                : "text-white shadow-sm hover:shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
+                ? "cursor-not-allowed bg-green-100 text-green-800 transition-all duration-300"
+                : "transform bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left text-white shadow-sm transition-all duration-700 hover:scale-105 hover:bg-right hover:shadow-md"
             }`}
           >
-            <CheckCircle className="w-5 h-5" />
+            <CheckCircle className="h-5 w-5" />
             <span>
-              {currentLesson?.is_completed ? "مكتمل" : "وضع علامة مكتمل"}
+              {currentLesson?.is_completed
+                ? "مكتمل"
+                : "وضع علامة مكتمل"}
             </span>
           </button>
         </div>
