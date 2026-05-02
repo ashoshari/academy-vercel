@@ -113,14 +113,43 @@ const CoursesPage = () => {
   const [selectedSubSection, setSelectedSubSection] = useState<string>("");
   const [selectedSubSub, setSelectedSubSub] = useState<string>("");
   const [selectedSpec, setSelectedSpec] = useState<string>("");
+
+  const idFromRef = (ref: unknown) => {
+    if (ref == null || ref === "") return "";
+    if (typeof ref === "object" && ref !== null && "id" in ref) {
+      const rid = (ref as { id: unknown }).id;
+      if (rid == null || rid === "") return "";
+      return String(rid);
+    }
+    return String(ref);
+  };
+
+  const subsectionLookupId =
+    selectedSubSection ||
+    (currentView === "edit" && selectedCourse
+      ? idFromRef(selectedCourse.subsection)
+      : "");
+
+  const subSubLookupId =
+    selectedSubSub ||
+    (currentView === "edit" && selectedCourse
+      ? idFromRef(selectedCourse.subsubsection)
+      : "");
+
+  const specLookupId =
+    selectedSpec ||
+    (currentView === "edit" && selectedCourse
+      ? idFromRef(selectedCourse.specialization)
+      : "");
+
   const subSection = subsectionData?.find(
-    (s: any) => s.id === selectedSubSection,
+    (s: any) => String(s.id) === String(subsectionLookupId),
   );
   const subsub = subSection?.subsubsections?.find(
-    (ss: any) => ss.id === selectedSubSub,
+    (ss: any) => String(ss.id) === String(subSubLookupId),
   );
   const spec = subsub?.specializations?.find(
-    (sp: any) => sp.id === selectedSpec,
+    (sp: any) => String(sp.id) === String(specLookupId),
   );
 
   const [courses, setCourses] = useState<any>();

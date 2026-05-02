@@ -218,7 +218,7 @@ function CoursesTable({
                           setCurrentView("activate");
                         }}
                         className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
-                        title="تفعيل دورة"
+                        title="تفعيل الدورة"
                       >
                         <CheckCircle size={16} />
                       </button>

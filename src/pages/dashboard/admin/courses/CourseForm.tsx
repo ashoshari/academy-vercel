@@ -4,6 +4,21 @@ import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/Mu
 
 export type CourseFormMode = "create" | "clone" | "edit";
 
+const formatDateForInput = (date?: string) => {
+  if (!date) return "";
+  return date.split("T")[0];
+};
+
+const idFromRef = (ref: unknown): string => {
+  if (ref == null || ref === "") return "";
+  if (typeof ref === "object" && ref !== null && "id" in ref) {
+    const rid = (ref as { id: unknown }).id;
+    if (rid == null || rid === "") return "";
+    return String(rid);
+  }
+  return String(ref);
+};
+
 export type CourseFormProps = {
   mode: CourseFormMode;
   role: string;
@@ -14,7 +29,6 @@ export type CourseFormProps = {
   cardsData: any[] | undefined;
   courseData: any[] | undefined;
   importOfferOptions?: { id: string; title: string }[];
-
   selectedSubSection: string;
   setSelectedSubSection: Dispatch<SetStateAction<string>>;
   selectedSubSub: string;
@@ -43,7 +57,6 @@ export default function CourseForm({
   cardsData,
   courseData,
   importOfferOptions,
-  selectedSubSection,
   setSelectedSubSection,
   selectedSubSub,
   setSelectedSubSub,
@@ -61,6 +74,20 @@ export default function CourseForm({
   const isClone = mode === "clone";
   const isEdit = mode === "edit";
 
+  const effectiveSubSubId =
+    selectedSubSub || idFromRef(newCourse?.subsubsection) || "";
+  const effectiveSpecId =
+    selectedSpec || idFromRef(newCourse?.specialization) || "";
+  const specializationMaterialValue =
+    typeof newCourse?.specialization_material === "object" &&
+    newCourse.specialization_material !== null &&
+    "id" in newCourse.specialization_material
+      ? String(
+          (newCourse.specialization_material as { id: unknown }).id ?? "",
+        )
+      : (newCourse?.specialization_material as string | number | undefined) ??
+        "";
+
   const disableSubmit =
     isPendingSubmit ||
     (!isClone &&
@@ -70,9 +97,11 @@ export default function CourseForm({
         (!newCourse.is_free && !newCourse.card_price) ||
         (role !== "teacher" && !newCourse.teacher) ||
         !newCourse.subsection ||
-        !newCourse.subsubsection ||
-        (subsub?.specializations.length > 0 ? !newCourse.specialization : false) ||
-        !newCourse.specialization_material));
+        !effectiveSubSubId ||
+        ((subsub?.specializations?.length ?? 0) > 0
+          ? !effectiveSpecId
+          : false) ||
+        !specializationMaterialValue));
 
   return (
     <div className="space-y-6">
@@ -87,7 +116,11 @@ export default function CourseForm({
         </button>
         <div>
           <h1 className="text-2xl font-bold text-gray-800">
-            {isClone ? "نسخ الدورة" : isEdit ? "تعديل الدورة" : "إنشاء دورة جديدة"}
+            {isClone
+              ? "نسخ الدورة"
+              : isEdit
+                ? "تعديل الدورة"
+                : "إنشاء دورة جديدة"}
           </h1>
           <p className="text-gray-600 text-sm">
             {isClone
@@ -115,7 +148,9 @@ export default function CourseForm({
               <input
                 type="text"
                 value={newCourse?.name || ""}
-                onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
+                onChange={(e) =>
+                  setNewCourse({ ...newCourse, name: e.target.value })
+                }
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 placeholder="أدخل عنوان الدورة..."
               />
@@ -165,7 +200,7 @@ export default function CourseForm({
                     المعلم *
                   </label>
                   <select
-                    value={newCourse?.teacher || ""}
+                    value={newCourse?.teacher?.id || ""}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
@@ -211,7 +246,10 @@ export default function CourseForm({
 
             {/* Media */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="imageUpload" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="imageUpload"
+                className="block text-sm font-medium text-gray-700"
+              >
                 الصورة المصغرة
               </label>
               <div className="flex items-center gap-2">
@@ -236,9 +274,12 @@ export default function CourseForm({
                 />
 
                 <span id="fileName" className="text-sm text-gray-500">
-                  {newCourse?.image ? newCourse?.image?.name : "لم يتم اختيار صورة"}
+                  {newCourse?.image
+                    ? newCourse?.image?.name
+                    : "لم يتم اختيار صورة"}
                 </span>
-                {(typeof newCourse?.image === "string" || newCourse?.image instanceof File) && (
+                {(typeof newCourse?.image === "string" ||
+                  newCourse?.image instanceof File) && (
                   <img
                     loading="lazy"
                     src={
@@ -287,7 +328,9 @@ export default function CourseForm({
                     type="radio"
                     name="pricing"
                     checked={newCourse?.is_free === false}
-                    onChange={() => setNewCourse({ ...newCourse, is_free: false })}
+                    onChange={() =>
+                      setNewCourse({ ...newCourse, is_free: false })
+                    }
                     className="text-(--brand) focus:ring-(--brand)"
                   />
                   <span>دورة مدفوعة</span>
@@ -301,7 +344,7 @@ export default function CourseForm({
                         البطاقة *
                       </label>
                       <select
-                        value={newCourse?.card_price}
+                        value={newCourse?.card_price?.id}
                         onChange={(e) => {
                           setNewCourse({
                             ...newCourse,
@@ -333,8 +376,10 @@ export default function CourseForm({
                 </label>
                 <input
                   type="date"
-                  value={newCourse?.start_date || ""}
-                  onChange={(e) => setNewCourse({ ...newCourse, start_date: e.target.value })}
+                  value={formatDateForInput(newCourse?.start_date)}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, start_date: e.target.value })
+                  }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 />
               </div>
@@ -345,8 +390,10 @@ export default function CourseForm({
                 </label>
                 <input
                   type="date"
-                  value={newCourse?.end_date || ""}
-                  onChange={(e) => setNewCourse({ ...newCourse, end_date: e.target.value })}
+                  value={formatDateForInput(newCourse?.end_date)}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, end_date: e.target.value })
+                  }
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                 />
               </div>
@@ -355,9 +402,11 @@ export default function CourseForm({
             {/* SubSection */}
             <div>
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">القسم *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  القسم *
+                </label>
                 <select
-                  value={selectedSubSection}
+                  value={newCourse?.subsection?.id}
                   onChange={(e) => {
                     setSelectedSubSection(e.target.value);
                     setSelectedSubSub("");
@@ -383,12 +432,14 @@ export default function CourseForm({
             </div>
 
             {/* SubSubSection */}
-            {subSection?.subsubsections.length > 0 && (
+            {(subSection?.subsubsections?.length ?? 0) > 0 && (
               <div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">الصف *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    الصف *
+                  </label>
                   <select
-                    value={selectedSubSub}
+                    value={effectiveSubSubId}
                     onChange={(e) => {
                       setSelectedSubSub(e.target.value);
                       setSelectedSpec("");
@@ -413,12 +464,14 @@ export default function CourseForm({
             )}
 
             {/* Specialization */}
-            {subsub?.specializations.length > 0 && (
+            {(subsub?.specializations?.length ?? 0) > 0 && (
               <div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">التخصص *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    التخصص *
+                  </label>
                   <select
-                    value={selectedSpec}
+                    value={effectiveSpecId}
                     onChange={(e) => {
                       setSelectedSpec(e.target.value);
                       setNewCourse({
@@ -441,23 +494,23 @@ export default function CourseForm({
             )}
 
             {/* Specialization Material */}
-            {selectedSubSub &&
-              subsub?.specialization_materials.length == 0 &&
-              subsub?.specializations.length == 0 && (
+            {effectiveSubSubId &&
+              (subsub?.specialization_materials?.length ?? 0) === 0 &&
+              (subsub?.specializations?.length ?? 0) === 0 && (
                 <p className="col-span-1 lg:col-span-2 text-center text-md text-red-600 font-semibold">
                   لا يوجد مواد تخصص لعرضها برجاء اختيار مسار صحيح
                 </p>
               )}
-            {(spec?.specialization_materials.length > 0 ||
-              (subsub?.specializations?.length == 0 &&
-                subsub?.specialization_materials?.length > 0)) && (
+            {((spec?.specialization_materials?.length ?? 0) > 0 ||
+              ((subsub?.specializations?.length ?? 0) === 0 &&
+                (subsub?.specialization_materials?.length ?? 0) > 0)) && (
               <div>
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     مادة التخصص *
                   </label>
                   <select
-                    value={newCourse?.specialization_material}
+                    value={specializationMaterialValue}
                     onChange={(e) => {
                       setNewCourse({
                         ...newCourse,
@@ -543,7 +596,8 @@ export default function CourseForm({
                   استيراد عرض الأسئلة من دورة أخرى (اختياري)
                 </label>
                 <p className="text-xs text-gray-500">
-                  يمكن اختيار دورة واحدة فقط لنسخ إعدادات عرض الأسئلة المرتبطة بها.
+                  يمكن اختيار دورة واحدة فقط لنسخ إعدادات عرض الأسئلة المرتبطة
+                  بها.
                 </p>
                 <MultiSelectAutocomplete
                   single
@@ -556,10 +610,11 @@ export default function CourseForm({
                   }
                   options={
                     importOfferOptions ??
-                    (courseData?.map((c: any) => ({
+                    courseData?.map((c: any) => ({
                       id: String(c.id),
                       title: c.name ?? "—",
-                    })) ?? [])
+                    })) ??
+                    []
                   }
                   placeholder="اختر الدورة المصدر..."
                 />
@@ -601,4 +656,3 @@ export default function CourseForm({
     </div>
   );
 }
-

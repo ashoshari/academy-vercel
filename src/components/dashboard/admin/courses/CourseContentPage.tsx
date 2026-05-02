@@ -777,10 +777,12 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
           <div className="text-center">
             <p className="text-lg font-bold text-gray-900 leading-relaxed">
-              هل أنت متأكد من حذف <span className="text-red-600">"{itemToDelete?.title}"</span>؟
+              هل أنت متأكد من حذف{" "}
+              <span className="text-red-600">"{itemToDelete?.title}"</span>؟
             </p>
             <p className="text-gray-500 mt-2 text-sm">
-              سيتم حذف هذا العنصر وجميع العناصر التابعة له بشكل نهائي. لا يمكن التراجع عن هذا الإجراء.
+              سيتم حذف هذا العنصر وجميع العناصر التابعة له بشكل نهائي. لا يمكن
+              التراجع عن هذا الإجراء.
             </p>
           </div>
         </div>
@@ -797,188 +799,190 @@ const CourseContentPage = ({ course, onBack }: any) => {
     return (
       <>
         <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onBack}
-            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowRight size={20} />
-          </button>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gray-800">
-              إدارة محتوى الدورة
-            </h1>
-            <p className="text-gray-600 text-sm">{course?.name}</p>
+          {/* Header */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={onBack}
+              className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <ArrowRight size={20} />
+            </button>
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-gray-800">
+                إدارة محتوى الدورة
+              </h1>
+              <p className="text-gray-600 text-sm">{course?.name}</p>
+            </div>
+            <button
+              onClick={() => setCurrentView("add")}
+              className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2"
+            >
+              <Plus size={16} />
+              إضافة محتوى
+            </button>
           </div>
-          <button
-            onClick={() => setCurrentView("add")}
-            className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2"
-          >
-            <Plus size={16} />
-            إضافة محتوى
-          </button>
-        </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm">الفصول</p>
+                  <p className="text-3xl font-bold text-(--brand)">
+                    {contentStatisticsData?.total_semesters}
+                  </p>
+                </div>
+                <BookOpen className="w-12 h-12 text-(--brand)" />
+              </div>
+            </div>
+
+            <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm">الوحدات</p>
+                  <p className="text-3xl font-bold text-(--brand-secondary)">
+                    {contentStatisticsData?.total_units}
+                  </p>
+                </div>
+                <Folder className="w-12 h-12 text-blue-500" />
+              </div>
+            </div>
+
+            <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm">المواضيع</p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {contentStatisticsData?.total_topics}
+                  </p>
+                </div>
+                <File className="w-12 h-12 text-green-500" />
+              </div>
+            </div>
+
+            <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm">الدروس</p>
+                  <p className="text-3xl font-bold text-purple-600">
+                    {contentStatisticsData?.total_topics}
+                  </p>
+                </div>
+                <Video className="w-12 h-12 text-purple-500" />
+              </div>
+            </div>
+          </div>
+
+          {/* Filters */}
           <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">الفصول</p>
-                <p className="text-3xl font-bold text-(--brand)">
-                  {contentStatisticsData?.total_semesters}
-                </p>
-              </div>
-              <BookOpen className="w-12 h-12 text-(--brand)" />
-            </div>
-          </div>
+            <div className="flex justify-between gap-4">
+              {/* Search */}
+              <div className="flex items-center w-[50%] gap-x-5">
+                <div className="relative w-full">
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="البحث في المحتوى..."
+                    className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                  />
+                </div>
+                {/* Published Filter */}
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">الوحدات</p>
-                <p className="text-3xl font-bold text-(--brand-secondary)">
-                  {contentStatisticsData?.total_units}
-                </p>
-              </div>
-              <Folder className="w-12 h-12 text-blue-500" />
-            </div>
-          </div>
-
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">المواضيع</p>
-                <p className="text-3xl font-bold text-green-600">
-                  {contentStatisticsData?.total_topics}
-                </p>
-              </div>
-              <File className="w-12 h-12 text-green-500" />
-            </div>
-          </div>
-
-          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">الدروس</p>
-                <p className="text-3xl font-bold text-purple-600">
-                  {contentStatisticsData?.total_topics}
-                </p>
-              </div>
-              <Video className="w-12 h-12 text-purple-500" />
-            </div>
-          </div>
-        </div>
-
-        {/* Filters */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="flex justify-between gap-4">
-            {/* Search */}
-            <div className="flex items-center w-[50%] gap-x-5">
-              <div className="relative w-full">
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="البحث في المحتوى..."
-                  className="w-full pr-10 pl-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                />
-              </div>
-              {/* Published Filter */}
-
-              <button
-                onClick={() => setShowUnpublished(!showUnpublished)}
-                className={`cursor-pointer px-3 py-1 text-sm ${
-                  showUnpublished
-                    ? "bg-blue-50 text-(--brand)"
-                    : "bg-gray-100 text-gray-600 "
-                } rounded-lg hover:shadow-md transition-colors`}
-              >
-                {showUnpublished == true ? "إخفاء المسودات" : "إظهار المسودات"}
-              </button>
-            </div>
-
-            {/* Expand All */}
-            <div className="flex gap-2">
-              <button
-                disabled={isLoading}
-                onClick={() => {
-                  const allIds: any[] = [];
-                  const collectIds = (items: any[]) => {
-                    items.forEach((item: any) => {
-                      const childKey: any = Object.keys(item).find(
-                        (key) =>
-                          Array.isArray(item[key]) &&
-                          item[key].length > 0 &&
-                          item[key].every(
-                            (child: any) =>
-                              typeof child === "object" && "id" in child,
-                          ),
-                      );
-
-                      const hasChildren = Boolean(childKey);
-                      const children = hasChildren ? item[childKey] : [];
-
-                      allIds.push(item?.id);
-
-                      if (hasChildren) collectIds(children);
-                    });
-                  };
-
-                  collectIds(contentTree);
-                  setExpandedItems(allIds);
-                }}
-                className="cursor-pointer px-3 py-1 text-sm bg-gray-100 text-(--brand) rounded-lg hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                توسيع الكل
-              </button>
-              <button
-                disabled={isLoading}
-                onClick={() => setExpandedItems([])}
-                className="cursor-pointer px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                طي الكل
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Content Tree */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-          <div className="space-y-4">
-            {isLoading ? (
-              <div className="space-y-2">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton key={i} className="h-12 w-full rounded-lg" />
-                ))}
-              </div>
-            ) : filteredContent?.length > 0 ? (
-              filteredContent?.map((item: any) => renderTreeItem(item))
-            ) : (
-              <div className="text-center py-12">
-                <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-800 mb-2">
-                  لا يوجد محتوى لعرضه
-                </h3>
-                <p className="text-gray-500 mb-6">
-                  ابدأ بإضافة فصول ووحدات ودروس للدورة
-                </p>
                 <button
-                  onClick={() => setCurrentView("add")}
-                  className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 mx-auto"
+                  onClick={() => setShowUnpublished(!showUnpublished)}
+                  className={`cursor-pointer px-3 py-1 text-sm ${
+                    showUnpublished
+                      ? "bg-blue-50 text-(--brand)"
+                      : "bg-gray-100 text-gray-600 "
+                  } rounded-lg hover:shadow-md transition-colors`}
                 >
-                  <Plus size={16} />
-                  إضافة محتوى جديد
+                  {showUnpublished == true
+                    ? "إخفاء المسودات"
+                    : "إظهار المسودات"}
                 </button>
               </div>
-            )}
+
+              {/* Expand All */}
+              <div className="flex gap-2">
+                <button
+                  disabled={isLoading}
+                  onClick={() => {
+                    const allIds: any[] = [];
+                    const collectIds = (items: any[]) => {
+                      items.forEach((item: any) => {
+                        const childKey: any = Object.keys(item).find(
+                          (key) =>
+                            Array.isArray(item[key]) &&
+                            item[key].length > 0 &&
+                            item[key].every(
+                              (child: any) =>
+                                typeof child === "object" && "id" in child,
+                            ),
+                        );
+
+                        const hasChildren = Boolean(childKey);
+                        const children = hasChildren ? item[childKey] : [];
+
+                        allIds.push(item?.id);
+
+                        if (hasChildren) collectIds(children);
+                      });
+                    };
+
+                    collectIds(contentTree);
+                    setExpandedItems(allIds);
+                  }}
+                  className="cursor-pointer px-3 py-1 text-sm bg-gray-100 text-(--brand) rounded-lg hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  توسيع الكل
+                </button>
+                <button
+                  disabled={isLoading}
+                  onClick={() => setExpandedItems([])}
+                  className="cursor-pointer px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  طي الكل
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Tree */}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
+            <div className="space-y-4">
+              {isLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <Skeleton key={i} className="h-12 w-full rounded-lg" />
+                  ))}
+                </div>
+              ) : filteredContent?.length > 0 ? (
+                filteredContent?.map((item: any) => renderTreeItem(item))
+              ) : (
+                <div className="text-center py-12">
+                  <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">
+                    لا يوجد محتوى لعرضه
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    ابدأ بإضافة فصول ووحدات ودروس للدورة
+                  </p>
+                  <button
+                    onClick={() => setCurrentView("add")}
+                    className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 mx-auto"
+                  >
+                    <Plus size={16} />
+                    إضافة محتوى جديد
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      {deleteModal}
-    </>
+        {deleteModal}
+      </>
     );
   }
 
@@ -987,403 +991,407 @@ const CourseContentPage = ({ course, onBack }: any) => {
     return (
       <>
         <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => {
-              setCurrentView("tree");
-              setSelectedResources([]);
-            }}
-            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowRight size={20} />
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              إضافة محتوى جديد
-            </h1>
-            <p className="text-gray-600 text-sm">{course.title}</p>
+          {/* Header */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => {
+                setCurrentView("tree");
+                setSelectedResources([]);
+              }}
+              className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <ArrowRight size={20} />
+            </button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">
+                إضافة محتوى جديد
+              </h1>
+              <p className="text-gray-600 text-sm">{course.title}</p>
+            </div>
           </div>
-        </div>
 
-        {/* Add Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Basic Info */}
-            <div className="space-y-6">
-              <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
-                المعلومات الأساسية
-              </h2>
+          {/* Add Form */}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Basic Info */}
+              <div className="space-y-6">
+                <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
+                  المعلومات الأساسية
+                </h2>
 
-              {/* Type Selection */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  نوع المحتوى *
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    {
-                      value: "semester",
-                      label: "فصل",
-                      icon: BookOpen,
-                      color: "orange",
-                    },
-                    {
-                      value: "unit",
-                      label: "وحدة",
-                      icon: Folder,
-                      color: "blue",
-                    },
-                    {
-                      value: "topic",
-                      label: "موضوع",
-                      icon: File,
-                      color: "green",
-                    },
-                    {
-                      value: "lesson",
-                      label: "درس",
-                      icon: Video,
-                      color: "purple",
-                    },
-                  ].map((type) => (
-                    <button
-                      key={type.value}
-                      onClick={() =>
+                {/* Type Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    نوع المحتوى *
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      {
+                        value: "semester",
+                        label: "فصل",
+                        icon: BookOpen,
+                        color: "blue",
+                      },
+                      {
+                        value: "unit",
+                        label: "وحدة",
+                        icon: Folder,
+                        color: "blue",
+                      },
+                      {
+                        value: "topic",
+                        label: "موضوع",
+                        icon: File,
+                        color: "blue",
+                      },
+                      {
+                        value: "lesson",
+                        label: "درس",
+                        icon: Video,
+                        color: "blue",
+                      },
+                    ].map((type) => (
+                      <button
+                        key={type.value}
+                        onClick={() =>
+                          setNewItem({
+                            ...newItem,
+                            type: type.value,
+                          })
+                        }
+                        className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+                          newItem.type === type.value
+                            ? `border-${type.color}-500 bg-${type.color}-50 text-${type.color}-700`
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <type.icon size={20} />
+                        <span className="font-medium">{type.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Parent Selection */}
+                {newItem.type !== "semester" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {newItem.type === "unit"
+                        ? "الفصل الأب"
+                        : newItem.type === "topic"
+                          ? "الوحدة الأب"
+                          : "الموضوع الأب"}{" "}
+                      *
+                    </label>
+                    <select
+                      value={newItem.parentId || ""}
+                      onChange={(e) =>
                         setNewItem({
                           ...newItem,
-                          type: type.value,
+                          parentId: e.target.value,
                         })
                       }
-                      className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                        newItem.type === type.value
-                          ? `border-${type.color}-500 bg-${type.color}-50 text-${type.color}-700`
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                     >
-                      <type.icon size={20} />
-                      <span className="font-medium">{type.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+                      <option value="">اختر العنصر الأب</option>
+                      {getAvailableParents(newItem.type).map((parent: any) => (
+                        <option key={parent.id} value={parent.id}>
+                          {parent.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
-              {/* Parent Selection */}
-              {newItem.type !== "semester" && (
+                {/* Title */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {newItem.type === "unit"
-                      ? "الفصل الأب"
-                      : newItem.type === "topic"
-                        ? "الوحدة الأب"
-                        : "الموضوع الأب"}{" "}
-                    *
+                    العنوان *
                   </label>
-                  <select
-                    value={newItem.parentId || ""}
+                  <input
+                    type="text"
+                    value={newItem.title || ""}
+                    onChange={(e) =>
+                      setNewItem({ ...newItem, title: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    placeholder="أدخل عنوان المحتوى..."
+                  />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    الوصف
+                  </label>
+                  <textarea
+                    value={newItem.description || ""}
+                    onChange={(e) =>
+                      setNewItem({ ...newItem, description: e.target.value })
+                    }
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
+                    placeholder="وصف تفصيلي للمحتوى..."
+                  />
+                </div>
+
+                {/* Duration */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    المدة المقدرة (بالدقائق)
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    value={newItem.estimatedDuration || ""}
                     onChange={(e) =>
                       setNewItem({
                         ...newItem,
-                        parentId: e.target.value,
+                        estimatedDuration: parseInt(e.target.value) || 0,
                       })
                     }
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                  >
-                    <option value="">اختر العنصر الأب</option>
-                    {getAvailableParents(newItem.type).map((parent: any) => (
-                      <option key={parent.id} value={parent.id}>
-                        {parent.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  العنوان *
-                </label>
-                <input
-                  type="text"
-                  value={newItem.title || ""}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, title: e.target.value })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                  placeholder="أدخل عنوان المحتوى..."
-                />
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الوصف
-                </label>
-                <textarea
-                  value={newItem.description || ""}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, description: e.target.value })
-                  }
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
-                  placeholder="وصف تفصيلي للمحتوى..."
-                />
-              </div>
-
-              {/* Duration */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  المدة المقدرة (بالدقائق)
-                </label>
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  pattern="[0-9]*"
-                  value={newItem.estimatedDuration || ""}
-                  onChange={(e) =>
-                    setNewItem({
-                      ...newItem,
-                      estimatedDuration: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                  placeholder="30"
-                  min="0"
-                />
-              </div>
-            </div>
-
-            {/* lesson Specific Settings */}
-            <div className="space-y-6">
-              <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
-                الإعدادات
-              </h2>
-
-              {/* lesson Type (only for lessons) */}
-              {newItem.type === "lesson" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    نوع الدرس *
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() =>
-                        setNewItem({ ...newItem, lessonType: "video" })
-                      }
-                      className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                        newItem.lessonType === "video"
-                          ? "border-purple-500 bg-purple-50 text-purple-700"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <Video size={20} />
-                      <div className="text-right">
-                        <div className="font-medium">فيديو</div>
-                        <div className="text-sm text-gray-500">
-                          محاضرة مرئية
-                        </div>
-                      </div>
-                    </button>
-                    <button
-                      onClick={() =>
-                        setNewItem({ ...newItem, lessonType: "exam" })
-                      }
-                      className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                        newItem.lessonType === "exam"
-                          ? "border-red-500 bg-red-50 text-red-700"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <CheckCircle size={20} />
-                      <div className="text-right">
-                        <div className="font-medium">امتحان</div>
-                        <div className="text-sm text-gray-500">
-                          اختبار تقييمي
-                        </div>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Video URL (for video lessons) */}
-              {newItem.type === "lesson" && newItem.lessonType === "video" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    رابط الفيديو *
-                  </label>
-                  <input
-                    type="url"
-                    value={newItem.videoUrl || ""}
-                    onChange={(e) =>
-                      setNewItem({ ...newItem, videoUrl: e.target.value })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                    placeholder="أدخل ال ID الخاص بالفيديو..."
-                  />
-                </div>
-              )}
-
-              {/* Exam Selection (for exam lessons) */}
-              {newItem.type === "lesson" && newItem.lessonType === "exam" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    الامتحان *
-                  </label>
-                  <div className="space-y-3">
-                    <MultiSelectAutocomplete
-                      single
-                      big
-                      value={
-                        newItem.examId
-                          ? [String(newItem.examId)]
-                          : ([] as string[])
-                      }
-                      onChange={(ids) =>
-                        setNewItem({
-                          ...newItem,
-                          examId: ids[0] ?? "",
-                        })
-                      }
-                      options={examOptionsForCourse}
-                      placeholder="ابحث أو اختر الامتحان..."
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Status Settings */}
-              <div className="">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-800">منشور</p>
-                    <p className="text-sm text-gray-500">متاح للطلاب</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={newItem?.isPublished ?? true}
-                    onChange={(e) =>
-                      setNewItem({ ...newItem, isPublished: e.target.checked })
-                    }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-4 h-4"
+                    placeholder="30"
+                    min="0"
                   />
                 </div>
               </div>
-              {/* Resources */}
-              {newItem.type === "lesson" &&
-                resourceData?.filter(
-                  (resource: any) =>
-                    resource.specialization_material ==
-                      course?.specialization_material?.id &&
-                    (resource?.type == "resources" ||
-                      resource?.type == "مصادر"),
-                ) && (
+
+              {/* lesson Specific Settings */}
+              <div className="space-y-6">
+                <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
+                  الإعدادات
+                </h2>
+
+                {/* lesson Type (only for lessons) */}
+                {newItem.type === "lesson" && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                      اختر الملفات
+                      نوع الدرس *
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() =>
+                          setNewItem({ ...newItem, lessonType: "video" })
+                        }
+                        className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+                          newItem.lessonType === "video"
+                            ? "border-purple-500 bg-purple-50 text-purple-700"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <Video size={20} />
+                        <div className="text-right">
+                          <div className="font-medium">فيديو</div>
+                          <div className="text-sm text-gray-500">
+                            محاضرة مرئية
+                          </div>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() =>
+                          setNewItem({ ...newItem, lessonType: "exam" })
+                        }
+                        className={`cursor-pointer flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+                          newItem.lessonType === "exam"
+                            ? "border-red-500 bg-red-50 text-red-700"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <CheckCircle size={20} />
+                        <div className="text-right">
+                          <div className="font-medium">امتحان</div>
+                          <div className="text-sm text-gray-500">
+                            اختبار تقييمي
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Video URL (for video lessons) */}
+                {newItem.type === "lesson" &&
+                  newItem.lessonType === "video" && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        رابط الفيديو *
+                      </label>
+                      <input
+                        type="url"
+                        value={newItem.videoUrl || ""}
+                        onChange={(e) =>
+                          setNewItem({ ...newItem, videoUrl: e.target.value })
+                        }
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                        placeholder="أدخل ال ID الخاص بالفيديو..."
+                      />
+                    </div>
+                  )}
+
+                {/* Exam Selection (for exam lessons) */}
+                {newItem.type === "lesson" && newItem.lessonType === "exam" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      الامتحان *
                     </label>
                     <div className="space-y-3">
                       <MultiSelectAutocomplete
-                        value={selectedResources}
-                        onChange={setSelectedResources}
-                        big={true}
-                        options={
-                          resourceData?.filter(
-                            (resource: any) =>
-                              resource?.teacher?.id === course?.teacher?.id &&
-                              (resource?.type == "resources" ||
-                                resource?.type == "مصادر"),
-                          ) || []
+                        single
+                        big
+                        value={
+                          newItem.examId
+                            ? [String(newItem.examId)]
+                            : ([] as string[])
                         }
-                        placeholder="اختر الملفات..."
+                        onChange={(ids) =>
+                          setNewItem({
+                            ...newItem,
+                            examId: ids[0] ?? "",
+                          })
+                        }
+                        options={examOptionsForCourse}
+                        placeholder="ابحث أو اختر الامتحان..."
                       />
                     </div>
                   </div>
                 )}
 
-              {/* Order */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الترتيب
-                </label>
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  pattern="[0-9]*"
-                  lang="en"
-                  value={newItem.order ?? ""}
-                  onChange={(e) =>
-                    setNewItem({
-                      ...newItem,
-                      order: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                  placeholder="أدخل الترتيب..."
-                />
-              </div>
-
-              {/* Preview */}
-              {newItem.title && (
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-(--brand-secondary) mb-2">
-                    معاينة
-                  </h4>
-                  <div className="flex items-center gap-2 text-blue-700">
-                    {newItem.type === "semester" && <BookOpen size={16} />}
-                    {newItem.type === "unit" && <Folder size={16} />}
-                    {newItem.type === "topic" && <File size={16} />}
-                    {newItem.type === "lesson" &&
-                      newItem.lessonType === "video" && <Video size={16} />}
-                    {newItem.type === "lesson" &&
-                      newItem.lessonType === "exam" && (
-                        <CheckCircle size={16} />
-                      )}
-                    <span className="font-medium">{newItem.title}</span>
+                {/* Status Settings */}
+                <div className="">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-800">منشور</p>
+                      <p className="text-sm text-gray-500">متاح للطلاب</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={newItem?.isPublished ?? true}
+                      onChange={(e) =>
+                        setNewItem({
+                          ...newItem,
+                          isPublished: e.target.checked,
+                        })
+                      }
+                      className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-4 h-4"
+                    />
                   </div>
-                  <p className="text-sm text-(--brand-secondary) mt-1">
-                    {newItem.description}
-                  </p>
                 </div>
-              )}
+                {/* Resources */}
+                {newItem.type === "lesson" &&
+                  resourceData?.filter(
+                    (resource: any) =>
+                      resource.specialization_material ==
+                        course?.specialization_material?.id &&
+                      (resource?.type == "resources" ||
+                        resource?.type == "مصادر"),
+                  ) && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        اختر الملفات
+                      </label>
+                      <div className="space-y-3">
+                        <MultiSelectAutocomplete
+                          value={selectedResources}
+                          onChange={setSelectedResources}
+                          big={true}
+                          options={
+                            resourceData?.filter(
+                              (resource: any) =>
+                                resource?.teacher?.id === course?.teacher?.id &&
+                                (resource?.type == "resources" ||
+                                  resource?.type == "مصادر"),
+                            ) || []
+                          }
+                          placeholder="اختر الملفات..."
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                {/* Order */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    الترتيب
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
+                    value={newItem.order ?? ""}
+                    onChange={(e) =>
+                      setNewItem({
+                        ...newItem,
+                        order: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    placeholder="أدخل الترتيب..."
+                  />
+                </div>
+
+                {/* Preview */}
+                {newItem.title && (
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h4 className="font-medium text-(--brand-secondary) mb-2">
+                      معاينة
+                    </h4>
+                    <div className="flex items-center gap-2 text-blue-700">
+                      {newItem.type === "semester" && <BookOpen size={16} />}
+                      {newItem.type === "unit" && <Folder size={16} />}
+                      {newItem.type === "topic" && <File size={16} />}
+                      {newItem.type === "lesson" &&
+                        newItem.lessonType === "video" && <Video size={16} />}
+                      {newItem.type === "lesson" &&
+                        newItem.lessonType === "exam" && (
+                          <CheckCircle size={16} />
+                        )}
+                      <span className="font-medium">{newItem.title}</span>
+                    </div>
+                    <p className="text-sm text-(--brand-secondary) mt-1">
+                      {newItem.description}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  setSelectedResources([]);
+                  setCurrentView("tree");
+                }}
+                className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                إلغاء
+              </button>
+              <button
+                onClick={() => handleAddItem()}
+                disabled={
+                  !newItem.title ||
+                  (newItem.type !== "semester" && !newItem.parentId) ||
+                  (newItem.type === "lesson" &&
+                    newItem.lessonType === "video" &&
+                    !newItem.videoUrl) ||
+                  (newItem.type === "lesson" &&
+                    newItem.lessonType === "exam" &&
+                    !newItem.examId) ||
+                  isSaving
+                }
+                className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Save size={16} />
+                {isSaving ? "جاري الإضافة..." : "إضافة المحتوى"}
+              </button>
             </div>
           </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
-            <button
-              onClick={() => {
-                setSelectedResources([]);
-                setCurrentView("tree");
-              }}
-              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              إلغاء
-            </button>
-            <button
-              onClick={() => handleAddItem()}
-              disabled={
-                !newItem.title ||
-                (newItem.type !== "semester" && !newItem.parentId) ||
-                (newItem.type === "lesson" &&
-                  newItem.lessonType === "video" &&
-                  !newItem.videoUrl) ||
-                (newItem.type === "lesson" &&
-                  newItem.lessonType === "exam" &&
-                  !newItem.examId) ||
-                isSaving
-              }
-              className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Save size={16} />
-              {isSaving ? "جاري الإضافة..." : "إضافة المحتوى"}
-            </button>
-          </div>
         </div>
-      </div>
-      {deleteModal}
-    </>
+        {deleteModal}
+      </>
     );
   }
 
@@ -1392,300 +1400,305 @@ const CourseContentPage = ({ course, onBack }: any) => {
     return (
       <>
         <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => {
-              setCurrentView("tree");
-              setSelectedResources([]);
-            }}
-            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowRight size={20} />
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">تعديل المحتوى</h1>
-            <p className="text-gray-600 text-sm">{selectedItem?.title}</p>
-          </div>
-        </div>
-
-        {/* Edit Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Basic Info */}
-            <div className="space-y-6">
-              <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
-                المعلومات الأساسية
-              </h2>
-
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  العنوان *
-                </label>
-                <input
-                  type="text"
-                  value={selectedItem?.title}
-                  onChange={(e) =>
-                    setSelectedItem({ ...selectedItem, title: e.target.value })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                  placeholder="أدخل عنوان المحتوى..."
-                />
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الوصف
-                </label>
-                <textarea
-                  value={selectedItem?.description}
-                  onChange={(e) =>
-                    setSelectedItem({
-                      ...selectedItem,
-                      description: e.target.value,
-                    })
-                  }
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
-                  placeholder="وصف تفصيلي للمحتوى..."
-                />
-              </div>
-
-              {/* Duration */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  المدة المقدرة (بالدقائق)
-                </label>
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  pattern="[0-9]*"
-                  value={selectedItem?.time_in_minutes}
-                  onChange={(e) =>
-                    setSelectedItem({
-                      ...selectedItem,
-                      time_in_minutes: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                  placeholder="30"
-                />
-              </div>
-
-              {/* Video URL (for video lessons) */}
-              {selectedItem?.topic &&
-                selectedItem?.type.toLowerCase() === "video" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      رابط الفيديو *
-                    </label>
-                    <input
-                      type="url"
-                      value={selectedItem?.link || ""}
-                      onChange={(e) =>
-                        setSelectedItem({
-                          ...selectedItem,
-                          link: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                      placeholder="أدخل ال ID الخاص بالفيديو..."
-                    />
-                  </div>
-                )}
-
-              {/* Exam Selection (for exam lessons) */}
-              {selectedItem?.topic &&
-                selectedItem?.type.toLowerCase() === "exam" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      الامتحان *
-                    </label>
-                    <div className="space-y-3">
-                      <MultiSelectAutocomplete
-                        single
-                        value={(() => {
-                          const id = getExamIdFromSelectedItem(
-                            selectedItem.exam,
-                          );
-                          return id ? [id] : ([] as string[]);
-                        })()}
-                        onChange={(ids) => {
-                          const id = ids[0];
-                          setSelectedItem({
-                            ...selectedItem,
-                            exam: id
-                              ? (examData?.find(
-                                  (ex: any) => String(ex.id) === id,
-                                ) ?? { id })
-                              : null,
-                          });
-                        }}
-                        options={examOptionsForCourse}
-                        placeholder="ابحث أو اختر الامتحان..."
-                      />
-                    </div>
-                  </div>
-                )}
-            </div>
-
-            {/* Settings */}
-            <div className="space-y-6">
-              <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
-                الإعدادات
-              </h2>
-
-              {/* Status Settings */}
-              <div className="">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-800">منشور</p>
-                    <p className="text-sm text-gray-500">متاح للطلاب</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={selectedItem.is_published}
-                    onChange={(e) =>
-                      setSelectedItem({
-                        ...selectedItem,
-                        is_published: e.target.checked,
-                      })
-                    }
-                    className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-4 h-4"
-                  />
-                </div>
-              </div>
-
-              {/* Type Info */}
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-(--brand-secondary) mb-2">
-                  معلومات النوع
-                </h4>
-                <div className="flex items-center gap-2 text-blue-700">
-                  {selectedItem?.course && <BookOpen size={16} />}
-                  {selectedItem?.semester && <Folder size={16} />}
-                  {selectedItem?.unit && <File size={16} />}
-                  {selectedItem?.topic &&
-                    selectedItem?.type.toLowerCase() === "video" && (
-                      <Video size={16} />
-                    )}
-                  {selectedItem?.topic &&
-                    selectedItem?.type.toLowerCase() === "exam" && (
-                      <CheckCircle size={16} />
-                    )}
-                  <span className="font-medium">
-                    {selectedItem?.course
-                      ? "فصل"
-                      : selectedItem?.semester
-                        ? "وحدة"
-                        : selectedItem?.unit
-                          ? "موضوع"
-                          : selectedItem?.type?.toLowerCase() === "video"
-                            ? "درس فيديو"
-                            : "درس امتحان"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Resources */}
-              {(selectedItem?.type?.toLowerCase() === "video" ||
-                selectedItem?.type?.toLowerCase() === "exam") &&
-                resourceData?.filter(
-                  (resource: any) =>
-                    resource.specialization_material ==
-                      course?.specialization_material?.id &&
-                    (resource?.type == "resources" ||
-                      resource?.type == "مصادر"),
-                ) && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      اختر الملفات
-                    </label>
-                    <div className="space-y-3">
-                      <MultiSelectAutocomplete
-                        value={selectedResources}
-                        onChange={setSelectedResources}
-                        options={
-                          resourceData?.filter(
-                            (resource: any) =>
-                              resource?.teacher?.id === course?.teacher?.id &&
-                              (resource?.type == "resources" ||
-                                resource?.type == "مصادر"),
-                          ) || []
-                        }
-                        placeholder="اختر الملفات..."
-                      />
-                    </div>
-                  </div>
-                )}
-              {/* Order */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  الترتيب
-                </label>
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  pattern="[0-9]*"
-                  lang="en"
-                  value={selectedItem.order ?? ""}
-                  onChange={(e) =>
-                    setSelectedItem({
-                      ...selectedItem,
-                      order: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                  placeholder="أدخل الترتيب..."
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
+          {/* Header */}
+          <div className="flex items-center gap-4">
             <button
               onClick={() => {
                 setCurrentView("tree");
                 setSelectedResources([]);
               }}
-              className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              إلغاء
+              <ArrowRight size={20} />
             </button>
-            <button
-              onClick={() => {
-                // Update the item in the tree
-                // const updateInTree = (items: any) => {
-                //   return items.map((item: any) => {
-                //     if (item.id === selectedItem.id) {
-                //       return selectedItem;
-                //     }
-                //     if (item.children) {
-                //       return {
-                //         ...item,
-                //         children: updateInTree(item.children),
-                //       };
-                //     }
-                //     return item;
-                //   });
-                // };
-                // setContentTree(updateInTree(contentTree));
-                handleEditItem();
-              }}
-              disabled={!selectedItem.title || isSaving}
-              className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Save size={16} />
-              {isSaving ? "جاري الحفظ..." : "حفظ التغييرات"}
-            </button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">
+                تعديل المحتوى
+              </h1>
+              <p className="text-gray-600 text-sm">{selectedItem?.title}</p>
+            </div>
+          </div>
+
+          {/* Edit Form */}
+          <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-8 border border-(--brand)">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Basic Info */}
+              <div className="space-y-6">
+                <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
+                  المعلومات الأساسية
+                </h2>
+
+                {/* Title */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    العنوان *
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedItem?.title}
+                    onChange={(e) =>
+                      setSelectedItem({
+                        ...selectedItem,
+                        title: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    placeholder="أدخل عنوان المحتوى..."
+                  />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    الوصف
+                  </label>
+                  <textarea
+                    value={selectedItem?.description}
+                    onChange={(e) =>
+                      setSelectedItem({
+                        ...selectedItem,
+                        description: e.target.value,
+                      })
+                    }
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
+                    placeholder="وصف تفصيلي للمحتوى..."
+                  />
+                </div>
+
+                {/* Duration */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    المدة المقدرة (بالدقائق)
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    value={selectedItem?.time_in_minutes}
+                    onChange={(e) =>
+                      setSelectedItem({
+                        ...selectedItem,
+                        time_in_minutes: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    placeholder="30"
+                  />
+                </div>
+
+                {/* Video URL (for video lessons) */}
+                {selectedItem?.topic &&
+                  selectedItem?.type.toLowerCase() === "video" && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        رابط الفيديو *
+                      </label>
+                      <input
+                        type="url"
+                        value={selectedItem?.link || ""}
+                        onChange={(e) =>
+                          setSelectedItem({
+                            ...selectedItem,
+                            link: e.target.value,
+                          })
+                        }
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                        placeholder="أدخل ال ID الخاص بالفيديو..."
+                      />
+                    </div>
+                  )}
+
+                {/* Exam Selection (for exam lessons) */}
+                {selectedItem?.topic &&
+                  selectedItem?.type.toLowerCase() === "exam" && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        الامتحان *
+                      </label>
+                      <div className="space-y-3">
+                        <MultiSelectAutocomplete
+                          single
+                          value={(() => {
+                            const id = getExamIdFromSelectedItem(
+                              selectedItem.exam,
+                            );
+                            return id ? [id] : ([] as string[]);
+                          })()}
+                          onChange={(ids) => {
+                            const id = ids[0];
+                            setSelectedItem({
+                              ...selectedItem,
+                              exam: id
+                                ? (examData?.find(
+                                    (ex: any) => String(ex.id) === id,
+                                  ) ?? { id })
+                                : null,
+                            });
+                          }}
+                          options={examOptionsForCourse}
+                          placeholder="ابحث أو اختر الامتحان..."
+                        />
+                      </div>
+                    </div>
+                  )}
+              </div>
+
+              {/* Settings */}
+              <div className="space-y-6">
+                <h2 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2">
+                  الإعدادات
+                </h2>
+
+                {/* Status Settings */}
+                <div className="">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-800">منشور</p>
+                      <p className="text-sm text-gray-500">متاح للطلاب</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={selectedItem.is_published}
+                      onChange={(e) =>
+                        setSelectedItem({
+                          ...selectedItem,
+                          is_published: e.target.checked,
+                        })
+                      }
+                      className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-4 h-4"
+                    />
+                  </div>
+                </div>
+
+                {/* Type Info */}
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-(--brand-secondary) mb-2">
+                    معلومات النوع
+                  </h4>
+                  <div className="flex items-center gap-2 text-blue-700">
+                    {selectedItem?.course && <BookOpen size={16} />}
+                    {selectedItem?.semester && <Folder size={16} />}
+                    {selectedItem?.unit && <File size={16} />}
+                    {selectedItem?.topic &&
+                      selectedItem?.type.toLowerCase() === "video" && (
+                        <Video size={16} />
+                      )}
+                    {selectedItem?.topic &&
+                      selectedItem?.type.toLowerCase() === "exam" && (
+                        <CheckCircle size={16} />
+                      )}
+                    <span className="font-medium">
+                      {selectedItem?.course
+                        ? "فصل"
+                        : selectedItem?.semester
+                          ? "وحدة"
+                          : selectedItem?.unit
+                            ? "موضوع"
+                            : selectedItem?.type?.toLowerCase() === "video"
+                              ? "درس فيديو"
+                              : "درس امتحان"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Resources */}
+                {(selectedItem?.type?.toLowerCase() === "video" ||
+                  selectedItem?.type?.toLowerCase() === "exam") &&
+                  resourceData?.filter(
+                    (resource: any) =>
+                      resource.specialization_material ==
+                        course?.specialization_material?.id &&
+                      (resource?.type == "resources" ||
+                        resource?.type == "مصادر"),
+                  ) && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        اختر الملفات
+                      </label>
+                      <div className="space-y-3">
+                        <MultiSelectAutocomplete
+                          value={selectedResources}
+                          onChange={setSelectedResources}
+                          options={
+                            resourceData?.filter(
+                              (resource: any) =>
+                                resource?.teacher?.id === course?.teacher?.id &&
+                                (resource?.type == "resources" ||
+                                  resource?.type == "مصادر"),
+                            ) || []
+                          }
+                          placeholder="اختر الملفات..."
+                        />
+                      </div>
+                    </div>
+                  )}
+                {/* Order */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    الترتيب
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    pattern="[0-9]*"
+                    lang="en"
+                    value={selectedItem.order ?? ""}
+                    onChange={(e) =>
+                      setSelectedItem({
+                        ...selectedItem,
+                        order: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    placeholder="أدخل الترتيب..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 justify-end mt-8 pt-8 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  setCurrentView("tree");
+                  setSelectedResources([]);
+                }}
+                className="cursor-pointer px-6 py-3 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                إلغاء
+              </button>
+              <button
+                onClick={() => {
+                  // Update the item in the tree
+                  // const updateInTree = (items: any) => {
+                  //   return items.map((item: any) => {
+                  //     if (item.id === selectedItem.id) {
+                  //       return selectedItem;
+                  //     }
+                  //     if (item.children) {
+                  //       return {
+                  //         ...item,
+                  //         children: updateInTree(item.children),
+                  //       };
+                  //     }
+                  //     return item;
+                  //   });
+                  // };
+                  // setContentTree(updateInTree(contentTree));
+                  handleEditItem();
+                }}
+                disabled={!selectedItem.title || isSaving}
+                className="btn-brand-slide px-6 py-3 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Save size={16} />
+                {isSaving ? "جاري الحفظ..." : "حفظ التغييرات"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      {deleteModal}
-    </>
+        {deleteModal}
+      </>
     );
   }
 
