@@ -35,6 +35,8 @@ body {
   background-position: right;
 }
 
-input:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: #3b7bdb;
 }
