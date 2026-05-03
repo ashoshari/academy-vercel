@@ -371,108 +371,121 @@ const TeacherProfile: React.FC = () => {
       </div>
     </div>
   );
-  const renderCourseCard = (course: any) => (
-    <div
-      key={course?.id}
-      className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
-    >
-      <div className="relative">
-        <img
-          loading="lazy"
-          src={
-            course?.image ||
-            "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
-          }
-          alt={course?.name}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute top-4 right-4">
-          {course?.is_enrolled ? (
-            <div
-              className={`${
-                course?.is_enrollment_active ? "bg-green-500" : "bg-blue-500"
-              } text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}
-            >
-              <CheckCircle className="w-4 h-4" />
-              <span>{course?.is_enrollment_active ? "مفعلة" : "معطلة"}</span>
-            </div>
-          ) : (
-            <div
-              className={`bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}
-            >
-              <Lock className="w-4 h-4" />
-              <span>غير مفعلة</span>
-            </div>
-          )}
+  const renderCourseCard = (course: any) => {
+    const userDidntPay = course?.has_overdue_installment;
+    return (
+      <div
+        key={course?.id}
+        className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
+      >
+        <div className="relative">
+          <img
+            loading="lazy"
+            src={
+              course?.image ||
+              "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            }
+            alt={course?.name}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute top-4 right-4">
+            {course?.is_enrolled ? (
+              <div
+                className={`${
+                  course?.is_enrollment_active ? "bg-green-500" : "bg-blue-500"
+                } text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}
+              >
+                <CheckCircle className="w-4 h-4" />
+                <span>{course?.is_enrollment_active ? "مفعلة" : "معطلة"}</span>
+              </div>
+            ) : (
+              <div
+                className={`bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}
+              >
+                <Lock className="w-4 h-4" />
+                <span>غير مفعلة</span>
+              </div>
+            )}
+          </div>
+          <div className="absolute top-4 left-4 bg-(--brand-secondary) text-white px-3 py-1 rounded-full text-sm font-bold">
+            {course?.card_price?.price} دينار
+          </div>
         </div>
-        <div className="absolute top-4 left-4 bg-(--brand-secondary) text-white px-3 py-1 rounded-full text-sm font-bold">
-          {course?.card_price?.price} دينار
+
+        <div className="flex flex-col p-6">
+          <div className="flex flex-col space-between mb-4 h-25">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+              {course?.name}
+            </h3>
+
+            <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+              {course?.level?.name && (
+                <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg">
+                  {course?.level?.name || "-"}
+                </span>
+              )}
+              {course?.subsection?.title && (
+                <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-lg">
+                  {course?.subsection?.title || "-"}
+                </span>
+              )}
+              {course?.material?.name && (
+                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-lg">
+                  {course?.material?.name || "-"}
+                </span>
+              )}
+            </div>
+            {userDidntPay && (
+              <p className="text-sm text-red-500 mb-4">
+                تم حظرك من الدخول إلى الدورة بسبب عدم قيامك بتسديد الدفعة
+                بالموعد المحدد، يرجى تسديد الدفعة أو الدفعات المتبقية
+              </p>
+            )}
+          </div>
+
+          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+            {course?.short_description || "-"}
+          </p>
+          <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+            <div className="flex items-center space-x-2">
+              <Clock className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {course?.time_in_hours} ساعة
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Play className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600">
+                {course?.total_number_of_lessons} درس
+              </span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => handleCourseClick(course)}
+            disabled={userDidntPay}
+            className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+              course?.is_enrolled && course?.is_enrollment_active
+                ? "bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transform hover:scale-105"
+                : "text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
+            }`}
+          >
+            {course?.is_enrolled && course?.is_enrollment_active ? (
+              <>
+                <Play className="w-5 h-5" />
+                <span>دخول الدورة</span>
+              </>
+            ) : (
+              <>
+                <CreditCard className="w-5 h-5" />
+                <span>تفعيل الدورة</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
-
-      <div className="flex flex-col p-6">
-        <div className="flex flex-col space-between mb-4 h-25">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-            {course?.name}
-          </h3>
-          <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-            {course?.level?.name && (
-              <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg">
-                {course?.level?.name || "-"}
-              </span>
-            )}
-            {course?.subsection?.title && (
-              <span className="bg-gray-100 text-(--brand) px-2 py-1 rounded-lg">
-                {course?.subsection?.title || "-"}
-              </span>
-            )}
-            {course?.material?.name && (
-              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-lg">
-                {course?.material?.name || "-"}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-          {course?.short_description || "-"}
-        </p>
-        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-          <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">{course?.time_in_hours} ساعة</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Play className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-600">
-              {course?.total_number_of_lessons} درس
-            </span>
-          </div>
-        </div>
-
-        <button
-          onClick={() => handleCourseClick(course)}
-          className={`w-full py-3 px-4 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center space-x-2 ${
-            course?.is_enrolled && course?.is_enrollment_active
-              ? "bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transform hover:scale-105"
-              : "text-white bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700 transform hover:scale-105"
-          }`}
-        >
-          {course?.is_enrolled && course?.is_enrollment_active ? (
-            <>
-              <Play className="w-5 h-5" />
-              <span>دخول الدورة</span>
-            </>
-          ) : (
-            <>
-              <CreditCard className="w-5 h-5" />
-              <span>تفعيل الدورة</span>
-            </>
-          )}
-        </button>
-      </div>
-    </div>
-  );
+    );
+  };
   const renderFileCard = (file: any) => (
     <div
       key={file.id}

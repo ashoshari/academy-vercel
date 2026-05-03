@@ -6,6 +6,63 @@ import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { isArray } from "lodash";
 
+const getPrimaryInstallment = (course: any) => {
+  const schedule = Array.isArray(course?.installment_schedule)
+    ? course.installment_schedule
+    : [];
+
+  if (schedule.length === 0) return null;
+
+  const sorted = [...schedule].sort(
+    (a, b) => (a?.sequence ?? 0) - (b?.sequence ?? 0),
+  );
+
+  return sorted.find((i) => i?.is_paid === false) ?? sorted[0];
+};
+
+const InstallmentProgressBar = ({
+  createdAt,
+  dueDate,
+  amount,
+}: {
+  createdAt: string;
+  dueDate: string;
+  amount: string;
+}) => {
+  const start = new Date(createdAt).getTime();
+  const end = new Date(dueDate).getTime();
+  const now = new Date().getTime();
+  const total = end - start;
+  const current = now - start;
+  const progress = Math.min(Math.max((current / total) * 100, 0), 100);
+  const daysLeft = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  const daysLabel =
+    daysLeft === 1
+      ? "متبقّي: يوم واحد"
+      : daysLeft === 2
+        ? "متبقّي: يومين"
+        : daysLeft > 2
+          ? `متبقّي: ${daysLeft} أيام`
+          : "مستحق اليوم";
+
+  return (
+    <div className="bg-gray-50 rounded-xl p-3 mb-4">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm text-gray-600">
+          موعد الاستحقاق ({amount} د.أ)
+        </span>
+        <span className="text-sm font-medium text-gray-900">{daysLabel}</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div
+          className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
 const EnrolledCourses: React.FC = () => {
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
   const navigate = useNavigate();
@@ -88,132 +145,196 @@ const EnrolledCourses: React.FC = () => {
 
             {/* Courses Grid - Compact Design */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {myCoursesData?.map((course: any, index: number) => (
-                <div
-                  key={index}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group transform hover:scale-105"
-                  //   onClick={() => onCourseClick(course.id)}
-                >
-                  <div className="p-6">
-                    {/* Header */}
-                    <div className="flex items-start justify-between mb-4">
+              {myCoursesData?.map((course: any, index: number) => {
+                const userDidntPay = course?.has_overdue_installment;
+                const primaryInstallment = getPrimaryInstallment(course);
+
+                return (
+                  <div
+                    key={index}
+                    className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 group transform hover:scale-105"
+                    //   onClick={() => onCourseClick(course.id)}
+                  >
+                    <div className="p-6 flex flex-col h-full">
+                      {/* Header */}
                       <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-2">
-                          {isArray(course?.specialization_material) ? (
-                            course?.specialization_material?.map(
-                              (material: any, index: number) => (
-                                <span
-                                  key={index}
-                                  className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium"
-                                >
-                                  {material?.name}
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-2">
+                              {isArray(course?.specialization_material) ? (
+                                course?.specialization_material?.map(
+                                  (material: any, index: number) => (
+                                    <span
+                                      key={index}
+                                      className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium"
+                                    >
+                                      {material?.name}
+                                    </span>
+                                  ),
+                                )
+                              ) : (
+                                <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium">
+                                  {course?.specialization_material?.name || "-"}
                                 </span>
-                              ),
-                            )
-                          ) : (
-                            <span className="bg-blue-100 text-(--brand-secondary) px-2 py-1 rounded-lg text-xs font-medium">
-                              {course?.specialization_material?.name || "-"}
+                              )}
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-(--brand-secondary) transition-colors duration-300">
+                              {course?.course_name || "-"}
+                            </h3>
+                            <p className="text-sm text-gray-600 mb-3">
+                              {course?.teacher || "-"}
+                            </p>
+                          </div>
+
+                          {/* Circular Progress */}
+                          <div className="relative w-12 h-12 shrink-0">
+                            <svg
+                              className="w-12 h-12 transform -rotate-90"
+                              viewBox="0 0 48 48"
+                            >
+                              <circle
+                                cx="24"
+                                cy="24"
+                                r="20"
+                                stroke="#e5e7eb"
+                                strokeWidth="4"
+                                fill="none"
+                              />
+                              <circle
+                                cx="24"
+                                cy="24"
+                                r="20"
+                                stroke="#3b82f6"
+                                strokeWidth="4"
+                                fill="none"
+                                strokeDasharray={2 * Math.PI * 20}
+                                strokeDashoffset={
+                                  (1 - course?.progress / 100) *
+                                  (2 * Math.PI * 20)
+                                }
+                                strokeLinecap="round"
+                                className="transition-all duration-500"
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="text-xs font-bold text-(--brand-secondary)">
+                                {course?.progress}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Progress Details */}
+                        <div className="bg-gray-50 rounded-xl p-3 mb-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-gray-600">
+                              التقدم
                             </span>
-                          )}
+                            <span className="text-sm font-medium text-gray-900">
+                              {course?.total_number_of_completed_lessons}/
+                              {course?.total_lessons}
+                            </span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${course?.progress}%` }}
+                            ></div>
+                          </div>
                         </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-(--brand-secondary) transition-colors duration-300">
-                          {course?.course_name || "-"}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-3">
-                          {course?.teacher || "-"}
+
+                        {/* Next Lesson */}
+                        <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <Play className="w-4 h-4 text-(--brand-secondary)" />
+                            <span className="text-sm font-medium text-gray-900">
+                              الدرس التالي:
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 line-clamp-1 mb-2">
+                            {course?.next_lesson || "لا يوجد"}
+                          </p>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="flex gap-3 mb-4 text-xs justify-between">
+                          <div className="flex items-center space-x-1">
+                            <Clock className="w-3 h-3 text-gray-500" />
+                            <span className="text-gray-600">
+                              {formatDateTimeSimple(
+                                course?.enrollment_created_at,
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                        {/* Installments */}
+                        {course?.installment_schedule?.length > 0 && (
+                          <div className="mb-4 space-y-2">
+                            <div
+                              key={primaryInstallment?.id}
+                              className={`p-2 rounded-lg text-xs flex items-center justify-between ${
+                                primaryInstallment?.is_paid
+                                  ? "bg-green-50 text-green-700"
+                                  : "bg-amber-50 text-amber-700"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className={`w-2 h-2 rounded-full ${
+                                    primaryInstallment?.is_paid
+                                      ? "bg-green-500"
+                                      : "bg-amber-500"
+                                  }`}
+                                />
+                                <span>
+                                  {primaryInstallment?.is_paid
+                                    ? "تم دفع"
+                                    : "يجب دفع"}{" "}
+                                  {primaryInstallment?.amount} د.أ
+                                  {primaryInstallment?.is_paid === false &&
+                                    ` بتاريخ ${primaryInstallment?.due_date} كحد أقصى`}
+                                </span>
+                              </div>
+                              <span className="font-bold">
+                                {primaryInstallment?.is_paid
+                                  ? "مكتمل"
+                                  : "مستحق"}
+                              </span>
+                            </div>
+
+                            {primaryInstallment?.is_paid === false && (
+                              <InstallmentProgressBar
+                                createdAt={course.enrollment_created_at}
+                                dueDate={primaryInstallment?.due_date}
+                                amount={primaryInstallment?.amount}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {userDidntPay && (
+                        <p className="text-sm text-red-500 mb-4">
+                          تم حظرك من الدخول إلى الدورة بسبب عدم قيامك بتسديد
+                          الدفعة بالموعد المحدد، يرجى تسديد الدفعة أو الدفعات
+                          المتبقية
                         </p>
-                      </div>
+                      )}
 
-                      {/* Circular Progress */}
-                      <div className="relative w-12 h-12 shrink-0">
-                        <svg
-                          className="w-12 h-12 transform -rotate-90"
-                          viewBox="0 0 48 48"
-                        >
-                          <circle
-                            cx="24"
-                            cy="24"
-                            r="20"
-                            stroke="#e5e7eb"
-                            strokeWidth="4"
-                            fill="none"
-                          />
-                          <circle
-                            cx="24"
-                            cy="24"
-                            r="20"
-                            stroke="#3b82f6"
-                            strokeWidth="4"
-                            fill="none"
-                            strokeDasharray={2 * Math.PI * 20}
-                            strokeDashoffset={
-                              (1 - course?.progress / 100) * (2 * Math.PI * 20)
-                            }
-                            strokeLinecap="round"
-                            className="transition-all duration-500"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-xs font-bold text-(--brand-secondary)">
-                            {course?.progress}%
-                          </span>
-                        </div>
-                      </div>
+                      {/* Continue Button */}
+                      <button
+                        onClick={() =>
+                          navigate(`/coursePage/${course?.course_id}`)
+                        }
+                        className="w-full cursor-pointer bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white py-2.5 px-4 rounded-xl font-semibold hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
+                      >
+                        <Play className="w-4 h-4" />
+                        <span>متابعة التعلم</span>
+                      </button>
                     </div>
-
-                    {/* Progress Details */}
-                    <div className="bg-gray-50 rounded-xl p-3 mb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-600">التقدم</span>
-                        <span className="text-sm font-medium text-gray-900">
-                          {course?.total_number_of_completed_lessons}/
-                          {course?.total_lessons}
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${course?.progress}%` }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    {/* Next Lesson */}
-                    <div className="bg-linear-to-r from-blue-50 to-purple-50 rounded-xl p-3 mb-4">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <Play className="w-4 h-4 text-(--brand-secondary)" />
-                        <span className="text-sm font-medium text-gray-900">
-                          الدرس التالي:
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 line-clamp-1 mb-2">
-                        {course?.next_lesson || "لا يوجد"}
-                      </p>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="flex gap-3 mb-4 text-xs justify-between">
-                      <div className="flex items-center space-x-1">
-                        <Clock className="w-3 h-3 text-gray-500" />
-                        <span className="text-gray-600">
-                          {formatDateTimeSimple(course?.enrollment_created_at)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Continue Button */}
-                    <button
-                      onClick={() =>
-                        navigate(`/coursePage/${course?.course_id}`)
-                      }
-                      className="w-full cursor-pointer bg-linear-to-r from-(--brand-secondary) to-(--brand-secondary-dark) text-white py-2.5 px-4 rounded-xl font-semibold hover:from-(--brand-secondary-dark) hover:to-(--brand-secondary) transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2 text-sm"
-                    >
-                      <Play className="w-4 h-4" />
-                      <span>متابعة التعلم</span>
-                    </button>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* View All Button - Mobile */}
