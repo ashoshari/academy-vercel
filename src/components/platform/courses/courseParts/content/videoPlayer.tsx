@@ -1,16 +1,11 @@
-import {
-  CheckCircle,
-  Clock,
-  Download,
-  FileText,
-} from "lucide-react";
+import { CheckCircle, Clock, Download, FileText } from "lucide-react";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
-import AppLogo from "@/assets/manasaty-logo.jpg";
 import { getYoutubeVideoId } from "@/utils/getYoutubeVideoId";
 import { useLesson } from "@/store/platform/useLesson";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactPlayer from "react-player";
 import {
+  decryptAESGCM,
   resolveLessonVideoSrc,
   suppressDefaultInteraction,
   youtubeHqThumbnailUrl,
@@ -24,7 +19,7 @@ import {
 import { useLessonVideoFullscreen } from "./useLessonVideoFullscreen";
 import { useYoutubeControlledSeek } from "./useYoutubeControlledSeek";
 
-const LESSON_PROVIDER = "youtube";
+const encryptionKey = import.meta.env.VITE_LESSON_LINK_ENCRYPTION_KEY ?? "";
 
 type VideoPlayerProps = {
   markLessonComplete: () => void;
@@ -46,6 +41,8 @@ function LessonPlayTriangle({ className }: { className?: string }) {
 
 const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
   const [inlinePlayerActive, setInlinePlayerActive] = useState(false);
+  const [decryptedLink, setDecryptedLink] = useState("");
+  const [decryptBusy, setDecryptBusy] = useState(false);
 
   const user = JSON.parse(
     globalThis.localStorage?.getItem("platform_user") || "{}",
@@ -54,17 +51,51 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
 
   const currentLesson = useLesson((s) => s.currentLesson);
 
+  useEffect(() => {
+    const link =
+      typeof currentLesson?.link === "string" ? currentLesson.link.trim() : "";
+
+    setDecryptedLink("");
+
+    if (!link) {
+      setDecryptBusy(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const run = async () => {
+      if (!encryptionKey) {
+        setDecryptBusy(false);
+        setDecryptedLink(link);
+        return;
+      }
+
+      setDecryptBusy(true);
+      try {
+        const plain = await decryptAESGCM(link, encryptionKey);
+        if (!cancelled) setDecryptedLink(plain);
+      } catch (err) {
+        console.error("Decrypt failed:", err);
+        if (!cancelled) setDecryptedLink("");
+      } finally {
+        if (!cancelled) setDecryptBusy(false);
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentLesson?.id, currentLesson?.link]);
   const { mutateAsync: downloadFiles } = useCustomPost(
     "/training/students/resources-download/",
     ["downloadFiles"],
   );
 
-  const rawLinkTrimmed =
-    typeof currentLesson?.link === "string"
-      ? currentLesson.link.trim()
-      : "";
+  const rawLinkTrimmed = decryptedLink.trim();
 
-  const youtubeVideoId = getYoutubeVideoId(currentLesson?.link);
+  const youtubeVideoId = getYoutubeVideoId(rawLinkTrimmed || null);
 
   const resolvedSrc = useMemo(
     () =>
@@ -104,37 +135,51 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video rounded-t-2xl overflow-hidden">
         {useWebRestricted ? (
-          <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-2xl group shadow-md">
-            <img
-              src={AppLogo}
-              alt="Video Placeholder"
-              className="absolute top-0 left-0 w-full h-full object-cover bg-gray-900"
-              draggable={false}
-              onContextMenu={suppressDefaultInteraction}
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent transition-all duration-300 group-hover:from-black/90" />
-            <a
-              href={
-                currentLesson?.link
-                  ? `manasaty://open?provider=${LESSON_PROVIDER}&video_id=${currentLesson.link}`
-                  : "#"
-              }
-              className="absolute inset-0 flex flex-col items-center justify-center text-white no-underline"
-              draggable={false}
-              onClick={(e) => {
-                if (!currentLesson?.link) e.preventDefault();
-              }}
-              onDragStart={(e) => void e.preventDefault()}
-            >
-              <div className="flex flex-col items-center gap-3">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/40 bg-white/20 backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
-                  <LessonPlayTriangle className="h-10 w-10 text-white" />
-                </div>
-                <span className="text-lg font-semibold tracking-wide drop-shadow-md">
-                  فتح الفيديو في التطبيق
-                </span>
+          <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-2xl shadow-md">
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/85 via-black/55 to-black/45" />
+            <div className="absolute inset-0 z-1 flex flex-col items-center justify-center gap-6 px-5 py-8 text-center sm:px-8">
+              <div className="max-w-xl space-y-2">
+                <h3 className="text-xl font-bold text-white drop-shadow-sm sm:text-2xl">
+                  متابعة هذا الدرس عبر التطبيق
+                </h3>
+                <p className="text-sm leading-relaxed text-white/92 sm:text-base">
+                  وفقًا لسياسات الوصول لهذا الحساب، لا يمكن تشغيل الفيديو عبر
+                  المتصفح. لمتابعة الدرس، يرجى استخدام التطبيق الرسمي. إذا لم
+                  يكن مثبتًا لديك، اضغط على الزر أدناه لتحميل التطبيق.
+                </p>
               </div>
-            </a>
+
+              <div className="flex w-full max-w-md flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
+                <a
+                  href=""
+                  draggable={false}
+                  onClick={(e) => {
+                    if (!currentLesson?.link) e.preventDefault();
+                  }}
+                  onDragStart={(e) => void e.preventDefault()}
+                  className={`btn-brand-slide no-underline inline-flex items-center justify-center gap-2.5 rounded-xl px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-[transform,box-shadow] hover:shadow-xl  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 sm:min-h-12.5 sm:flex-initial`}
+                >
+                  <Download
+                    className="size-5 shrink-0 opacity-95"
+                    aria-hidden
+                  />
+                  فتح الدرس في التطبيق
+                </a>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  draggable={false}
+                  onDragStart={(e) => void e.preventDefault()}
+                  className={`cursor-pointer no-underline inline-flex items-center justify-center gap-2.5 rounded-xl border-2 border-white/90 bg-white/12 px-7 py-3.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm transition-[transform,box-shadow,background-color] hover:border-white hover:bg-white/20 hover:shadow-xl  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--brand-light) focus-visible:ring-offset-2 focus-visible:ring-offset-black/60 sm:min-h-12.5 sm:flex-initial`}
+                >
+                  <Download
+                    className="size-5 shrink-0 opacity-95"
+                    aria-hidden
+                  />
+                  تحميل التطبيق
+                </a>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="relative isolate h-0 select-none overflow-hidden pb-[56.25%]">
@@ -155,15 +200,14 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
                 <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                   <button
                     type="button"
-                    disabled={resolvedSrc == null}
+                    disabled={resolvedSrc == null || decryptBusy}
                     title={
                       resolvedSrc == null
                         ? "لا يوجد مصدر تشغيل صالح"
                         : undefined
                     }
                     onClick={() =>
-                      resolvedSrc != null &&
-                      setInlinePlayerActive(true)
+                      resolvedSrc != null && setInlinePlayerActive(true)
                     }
                     className="flex h-17 w-17 cursor-pointer items-center justify-center rounded-full border border-white transition hover:scale-110 disabled:cursor-not-allowed disabled:opacity-40"
                   >
@@ -204,12 +248,8 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
                   />
                   {isYoutubeEmbed && (
                     <YoutubeLessonChrome
-                      onSuppressContextMenu={
-                        suppressDefaultInteraction
-                      }
-                      scrubDisplayedSeconds={
-                        yt.scrubDisplayedSeconds
-                      }
+                      onSuppressContextMenu={suppressDefaultInteraction}
+                      scrubDisplayedSeconds={yt.scrubDisplayedSeconds}
                       playedSeconds={yt.playedSeconds}
                       durationSeconds={yt.durationSeconds}
                       isMuted={yt.muted}
@@ -217,18 +257,14 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
                       seekInputRef={yt.seekInputRef}
                       onSeekInputChange={yt.onSeekInputChange}
                       onSeekCommit={yt.finalizeSeek}
-                      onToggleMute={() =>
-                        yt.setMuted((m) => !m)
-                      }
-                      onTogglePlay={() =>
-                        yt.setMediaPlaying((p) => !p)
-                      }
+                      onToggleMute={() => yt.setMuted((m) => !m)}
+                      onTogglePlay={() => yt.setMediaPlaying((p) => !p)}
                       isFullscreen={lessonFs.isFullscreen}
                       onToggleFullscreen={lessonFs.toggleFullscreen}
                     />
                   )}
                   {!isYoutubeEmbed && (
-                    <div className="pointer-events-none absolute inset-0 z-[35] flex items-end justify-end p-3 pb-14 pt-24 md:pb-3">
+                    <div className="pointer-events-none absolute inset-0 z-35 flex items-end justify-end p-3 pb-14 pt-24 md:pb-3">
                       <div className="pointer-events-auto flex rounded-full bg-black/55 shadow-lg backdrop-blur-sm ring-1 ring-white/10">
                         <LessonFullscreenButton
                           isFullscreen={lessonFs.isFullscreen}
@@ -282,8 +318,7 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
                     rel="noopener noreferrer"
                     download
                     onClick={() =>
-                      resource?.id != null &&
-                      handleDownload(resource.id)
+                      resource?.id != null && handleDownload(resource.id)
                     }
                     className="flex items-center space-x-3 rounded-xl bg-gray-50 p-3 transition-colors duration-200 hover:bg-gray-100"
                   >
@@ -325,9 +360,7 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
           >
             <CheckCircle className="h-5 w-5" />
             <span>
-              {currentLesson?.is_completed
-                ? "مكتمل"
-                : "وضع علامة مكتمل"}
+              {currentLesson?.is_completed ? "مكتمل" : "وضع علامة مكتمل"}
             </span>
           </button>
         </div>

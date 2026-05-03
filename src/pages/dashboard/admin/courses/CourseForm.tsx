@@ -86,6 +86,8 @@ export default function CourseForm({
       : ((newCourse?.specialization_material as string | number | undefined) ??
         "");
 
+  const effectiveTeacherId = idFromRef(newCourse?.teacher);
+
   const disableSubmit =
     isPendingSubmit ||
     (!isClone &&
@@ -93,7 +95,7 @@ export default function CourseForm({
         !newCourse.start_date ||
         !newCourse.end_date ||
         (!newCourse.is_free && !newCourse.card_price) ||
-        (role !== "teacher" && !newCourse.teacher) ||
+        (role !== "teacher" && !effectiveTeacherId) ||
         !newCourse.subsection ||
         !effectiveSubSubId ||
         ((subsub?.specializations?.length ?? 0) > 0
@@ -198,7 +200,7 @@ export default function CourseForm({
                     المعلم *
                   </label>
                   <select
-                    value={newCourse?.teacher || ""}
+                    value={effectiveTeacherId}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
