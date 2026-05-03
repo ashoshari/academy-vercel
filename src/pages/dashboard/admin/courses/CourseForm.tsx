@@ -82,11 +82,9 @@ export default function CourseForm({
     typeof newCourse?.specialization_material === "object" &&
     newCourse.specialization_material !== null &&
     "id" in newCourse.specialization_material
-      ? String(
-          (newCourse.specialization_material as { id: unknown }).id ?? "",
-        )
-      : (newCourse?.specialization_material as string | number | undefined) ??
-        "";
+      ? String((newCourse.specialization_material as { id: unknown }).id ?? "")
+      : ((newCourse?.specialization_material as string | number | undefined) ??
+        "");
 
   const disableSubmit =
     isPendingSubmit ||
@@ -200,7 +198,7 @@ export default function CourseForm({
                     المعلم *
                   </label>
                   <select
-                    value={newCourse?.teacher?.id || ""}
+                    value={newCourse?.teacher || ""}
                     onChange={(e) =>
                       setNewCourse({
                         ...newCourse,
