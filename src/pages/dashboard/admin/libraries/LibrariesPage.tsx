@@ -1,3 +1,4 @@
+import { flushSync } from "react-dom";
 import { useState } from "react";
 import {
   Plus,
@@ -10,6 +11,7 @@ import {
   Rows,
   CircleX,
   Wallet,
+  KeyRound,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -53,6 +55,9 @@ const LibrariesPage = () => {
     isActive: boolean;
     name: string;
   } | null>(null);
+  const [pendingPasswordReset, setPendingPasswordReset] = useState<Library | null>(
+    null,
+  );
 
   const navigate = useNavigate();
   // filter
@@ -96,16 +101,6 @@ const LibrariesPage = () => {
     ["libraries"],
   );
 
-  // const handleDeletelibrary = () => {
-  //   if (
-  //     confirm(
-  //       "هل أنت متأكد من حذف هذا المكتبة؟ سيتم حذف جميع الدورات المرتبطة به."
-  //     )
-  //   ) {
-  //     // setlibraries(libraries.filter((library) => library.id !== id));
-  //   }
-  // };
-
   const toggleLibraryStatus = () => {
     libraryStatus
       ?.mutateAsync({})
@@ -134,49 +129,33 @@ const LibrariesPage = () => {
     });
   };
 
-  const resetPassword = () => {
-    resetAccountPassword.mutateAsync({}).then((res) => {
+  const requestPasswordReset = (library: Library) => {
+    setPendingPasswordReset(library);
+  };
+
+  const confirmPasswordReset = async () => {
+    if (!pendingPasswordReset) return;
+    const library = pendingPasswordReset;
+    flushSync(() => {
+      setSelectedLibrary(library);
+    });
+    try {
+      const res = await resetAccountPassword.mutateAsync({});
       if (res.status) {
         toast.success(res?.data?.message);
         setNewPassword(res?.data?.new_password);
         setShowPasswordModal(true);
+        setPendingPasswordReset(null);
       } else {
         toast.error(res.error);
       }
-    });
+    } catch (error: any) {
+      handleErrorAlerts(
+        error?.response?.data?.message ||
+          "حدث خطأ أثناء إعادة تعيين كلمة المرور",
+      );
+    }
   };
-
-  // const exportToExcel = () => {
-  //   const csvContent = [
-  //     [
-  //       "الاسم",
-  //       "البريد الإلكتروني",
-  //       "الهاتف",
-  //       "التخصص",
-  //       "المؤهل",
-  //       "الحالة",
-  //       "الطلاب",
-  //       "الدورات",
-  //     ],
-  //     dataLibraries?.data?.data?.map((library: any) => [
-  //       library.name,
-  //       library.email,
-  //       library.mobile_number,
-  //       library?.materials?.map((el: any) => el?.name).join(", "),
-  //       library.is_active ? "نشط" : "غير نشط",
-  //       library.number_of_students_enrolled,
-  //       library.number_of_courses_has,
-  //     ]),
-  //   ]
-  //     .map((row) => row.join(","))
-  //     .join("\n");
-
-  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  //   const link = document.createElement("a");
-  //   link.href = URL.createObjectURL(blob);
-  //   link.download = `libraries-${new Date().toISOString().split("T")[0]}.csv`;
-  //   link.click();
-  // };
 
   return (
     <div
@@ -192,13 +171,6 @@ const LibrariesPage = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          {/* <button
-            onClick={exportToExcel}
-            className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 flex items-center gap-2 text-sm"
-          >
-            <Download size={16} />
-            تصدير Excel
-          </button> */}
           <button
             onClick={() => navigate("/dashboard/libraries/add")}
             className="btn-brand-slide px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 text-sm"
@@ -257,20 +229,6 @@ const LibrariesPage = () => {
 
       {/* Filters */}
       <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand) w-full">
-        {/* Search
-          <div className="col-span-2 relative min-w-0">
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              value={filters.search}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, search: e.target.value }))
-              }
-              placeholder="البحث في المكتبات..."
-              className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
-            />
-          </div> */}
-
         {/* View Mode + Count */}
         <div className="flex justify-between items-center gap-3 mt-1 w-full">
           {/* View Mode */}
@@ -344,8 +302,7 @@ const LibrariesPage = () => {
                 key={library.id}
                 library={library}
                 resetAccountPassword={resetAccountPassword}
-                resetPassword={resetPassword}
-                setSelectedLibrary={setSelectedLibrary}
+                requestPasswordReset={requestPasswordReset}
                 toggleLibraryStatus={() => requestLibraryStatusToggle(library)}
               />
             ))}
@@ -450,10 +407,7 @@ const LibrariesPage = () => {
                           />
 
                           <RefreshButton
-                            onClick={() => {
-                              setSelectedLibrary(library);
-                              resetPassword();
-                            }}
+                            onClick={() => requestPasswordReset(library)}
                             title="إعادة تعيين كلمة المرور"
                             disabled={resetAccountPassword.isPending}
                           />
@@ -481,13 +435,6 @@ const LibrariesPage = () => {
                           >
                             <Wallet size={16} />
                           </button>
-                          {/* <button
-                          onClick={() => handleDeletelibrary()}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
-                          title="حذف"
-                        >
-                          <Trash2 size={16} />
-                        </button> */}
                         </div>
                       </td>
                     </tr>
@@ -545,6 +492,36 @@ const LibrariesPage = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {pendingPasswordReset && (
+        <ConfirmationModal
+          open
+          onClose={() =>
+            !resetAccountPassword.isPending && setPendingPasswordReset(null)
+          }
+          onConfirm={confirmPasswordReset}
+          title="تأكيد إعادة تعيين كلمة المرور"
+          variant="danger"
+          icon={KeyRound}
+          confirmLabel="نعم، إعادة تعيين كلمة المرور"
+          isPending={resetAccountPassword.isPending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد إعادة تعيين كلمة مرور المكتبة{" "}
+                <span className="font-bold text-(--brand-secondary)">
+                  {pendingPasswordReset.name}
+                </span>
+                ؟
+              </p>
+              <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3 mt-3">
+                سيتم إنشاء كلمة مرور جديدة وعرضها لك بعد التأكيد، ولن تتمكن من
+                استرجاع كلمة المرور القديمة.
+              </p>
+            </>
+          }
+        />
       )}
 
       {pendingLibraryStatusToggle && (

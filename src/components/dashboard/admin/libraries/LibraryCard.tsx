@@ -1,30 +1,23 @@
 import { Library } from "@/pages/dashboard/admin/libraries/LibrariesPage";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 import { UseMutationResult } from "@tanstack/react-query";
-import {
-  CheckCircle,
-  Edit,
-  Eye,
-  Mail,
-  Phone,
-  RefreshCw,
-  XCircle,
-} from "lucide-react";
-import { SetStateAction } from "react";
+import { Mail, Phone, Wallet } from "lucide-react";
 import { useNavigate } from "react-router";
+import RefreshButton from "../../core/RefreshButton";
+import DetailsButton from "../../core/DetailsButton";
+import EditButton from "../../core/EditButton";
 
 interface Props {
   library: Library;
   resetAccountPassword: UseMutationResult<any, Error, any, unknown>;
-  resetPassword: () => void;
-  setSelectedLibrary: (value: SetStateAction<Library | null>) => void;
+  requestPasswordReset: (library: Library) => void;
   toggleLibraryStatus: () => void;
 }
 
 export default function LibraryCard({
   library,
   resetAccountPassword,
-  resetPassword,
-  setSelectedLibrary,
+  requestPasswordReset,
   toggleLibraryStatus,
 }: Props) {
   const navigate = useNavigate();
@@ -83,68 +76,45 @@ export default function LibraryCard({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => {
-                resetPassword();
-              }}
-              className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
+        <div className="pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-end gap-1">
+            <StatusToggleButton
+              isOn={Boolean(library?.is_active)}
+              onToggle={toggleLibraryStatus}
+              titleOn="إلغاء التفعيل"
+              titleOff="تفعيل المكتبة"
+              className="p-2"
+            />
+
+            <RefreshButton
+              onClick={() => requestPasswordReset(library)}
               title="إعادة تعيين كلمة المرور"
               disabled={resetAccountPassword.isPending}
-            >
-              <RefreshCw size={16} />
-            </button>
-          </div>
+            />
 
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => {
-                setSelectedLibrary(library);
-                toggleLibraryStatus();
-              }}
-              className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                library.is_active
-                  ? "text-(--brand-secondary) hover:bg-blue-100"
-                  : "text-gray-400 hover:bg-gray-100"
-              }`}
-              title={library?.is_active ? "إلغاء التفعيل" : "تفعيل المكتبة"}
-            >
-              {library?.is_active ? (
-                <CheckCircle size={16} />
-              ) : (
-                <XCircle size={16} />
-              )}
-            </button>
-
-            <button
+            <DetailsButton
               onClick={() => {
                 navigate(`/dashboard/libraries/${library.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
-              title="عرض التفاصيل"
-            >
-              <Eye size={16} />
-            </button>
+            />
 
-            <button
+            <EditButton
               onClick={() => {
                 navigate(`/dashboard/libraries/edit/${library.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-(--brand) hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
               title="تعديل المكتبة"
-            >
-              <Edit size={16} />
-            </button>
+            />
 
-            {/* Delete library */}
-            {/* <button
-              onClick={() => handleDeletelibrary()}
-              className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-              title="حذف المكتبة"
+            <button
+              type="button"
+              onClick={() => {
+                navigate(`/dashboard/libraries/wallet/${library.id}`);
+              }}
+              className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+              title="المحفظة"
             >
-              <Trash2 size={16} />
-            </button> */}
+              <Wallet size={16} />
+            </button>
           </div>
         </div>
       </div>

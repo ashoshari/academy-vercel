@@ -7,6 +7,7 @@ export default function StatusToggleButton({
   titleOff = "تفعيل",
   disabled = false,
   className = "",
+  iconSize = 24,
 }: {
   isOn: boolean;
   onToggle: () => void;
@@ -14,6 +15,7 @@ export default function StatusToggleButton({
   titleOff?: string;
   disabled?: boolean;
   className?: string;
+  iconSize?: number;
 }) {
   const title = isOn ? titleOn : titleOff;
   return (
@@ -30,7 +32,7 @@ export default function StatusToggleButton({
         className,
       ].join(" ")}
     >
-      {isOn ? <ToggleRight size={24} /> : <ToggleLeft size={24} />}
+      {isOn ? <ToggleRight size={iconSize} /> : <ToggleLeft size={iconSize} />}
     </button>
   );
 }

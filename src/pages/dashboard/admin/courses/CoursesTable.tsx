@@ -1,9 +1,10 @@
 import EditButton from "@/components/dashboard/core/EditButton";
-import { Eye, EyeOff, CheckCircle, Settings, Copy } from "lucide-react";
+import { CheckCircle, Settings, Copy } from "lucide-react";
 import { courseWithNormalizedOfferImports, toCloneDraft } from "./utils";
 import DeleteButton from "@/components/dashboard/core/DeleteButton";
 
 import type { Dispatch, SetStateAction } from "react";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 
 type CourseView = "list" | "create" | "clone" | "edit" | "content" | "activate";
 
@@ -222,25 +223,15 @@ function CoursesTable({
                       >
                         <CheckCircle size={16} />
                       </button>
-                      <button
-                        onClick={() => {
+
+                      <StatusToggleButton
+                        isOn={Boolean(course?.is_published)}
+                        onToggle={() => {
                           requestCoursePublishToggle(course);
                         }}
-                        className={`cursor-pointer p-2 rounded-lg transition-colors ${
-                          course?.is_published
-                            ? "text-(--brand-secondary)"
-                            : "text-gray-400"
-                        }`}
-                        title={
-                          course?.is_published ? "إلغاء النشر" : "نشر الدورة"
-                        }
-                      >
-                        {course?.is_published ? (
-                          <Eye size={16} />
-                        ) : (
-                          <EyeOff size={16} />
-                        )}
-                      </button>
+                        titleOn="إلغاء النشر"
+                        titleOff="نشر الدورة"
+                      />
 
                       <EditButton
                         onClick={() => {

@@ -258,24 +258,31 @@ const EnrollmentInstallmentsPage = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <button
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setSelectedInstallment(item);
-                          setShowConfirmModal(true);
-                        }}
-                        title={
-                          item.is_paid
-                            ? "تغيير إلى غير مدفوع"
-                            : "تغيير إلى مدفوع"
-                        }
-                      >
-                        {item.is_paid ? (
-                          <CheckCircle size={15} className="text-green-500" />
-                        ) : (
-                          <XCircle size={15} className="text-red-500" />
-                        )}
-                      </button>
+                      {item.is_paid ? (
+                        <button
+                          type="button"
+                          className="cursor-pointer rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-800 transition-colors hover:bg-rose-100"
+                          onClick={() => {
+                            setSelectedInstallment(item);
+                            setShowConfirmModal(true);
+                          }}
+                          title="تعيين هذا القسط كغير مدفوع"
+                        >
+                          تعيين كغير مدفوع
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="cursor-pointer rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800 transition-colors hover:bg-amber-100"
+                          onClick={() => {
+                            setSelectedInstallment(item);
+                            setShowConfirmModal(true);
+                          }}
+                          title="تعيين هذا القسط كمدفوع"
+                        >
+                          تعيين كمدفوع
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -12,6 +12,7 @@ import {
   CircleX,
   EyeOff,
   Info,
+  RefreshCw,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/useQuery";
@@ -109,6 +110,11 @@ type PendingStudentVisibility = {
   name: string;
 };
 
+type PendingImeiReset = {
+  id: string | number;
+  name: string;
+};
+
 const StudentsPage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -121,6 +127,8 @@ const StudentsPage = () => {
   const [page, setPage] = useState(1);
   const [pendingStudentVisibility, setPendingStudentVisibility] =
     useState<PendingStudentVisibility | null>(null);
+  const [pendingImeiReset, setPendingImeiReset] =
+    useState<PendingImeiReset | null>(null);
 
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("search", searchTerm);
@@ -156,12 +164,26 @@ const StudentsPage = () => {
     ["students", "students-statistics"],
   );
   // POST Reset IMEI
-  const { mutateAsync: resetIMEI } = useCustomPost(
-    `/account/admin/students/${studentId}/reset-device-sessions/`,
-    ["resetIMEI"],
-  );
-  const handleResetIMEI = async (id: string) => {
-    setStudentId(id);
+  const { mutateAsync: resetIMEI, isPending: isImeiResetPending } =
+    useCustomPost(
+      `/account/admin/students/${studentId}/reset-device-sessions/`,
+      ["resetIMEI"],
+    );
+  const requestImeiReset = (student: { id: string | number; name?: unknown }) =>
+    setPendingImeiReset({
+      id: student.id,
+      name:
+        String(student?.name ?? "").trim() ||
+        String(student.id ?? "") ||
+        "هذا الطالب",
+    });
+
+  const confirmResetImei = async () => {
+    if (!pendingImeiReset) return;
+    const id = String(pendingImeiReset.id);
+    flushSync(() => {
+      setStudentId(id);
+    });
     try {
       const response = await resetIMEI({ id });
       toast.success(response?.data ?? "تم إعادة تعيين IMEI");
@@ -175,6 +197,7 @@ const StudentsPage = () => {
           statusFilter,
         ],
       });
+      setPendingImeiReset(null);
     } catch (error: any) {
       toast.error(
         error?.response?.data?.error ?? "حدث خطأ في إعادة تعيين IMEI",
@@ -303,37 +326,31 @@ const StudentsPage = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex justify-between items-center gap-1 w-full">
-            <div className="flex items-center">
-              <DetailsButton
-                onClick={() => {
-                  navigate(`/dashboard/students/${student.id}`);
-                }}
-              />
-              <StatusToggleButton
-                isOn={Boolean(student?.is_active)}
-                onToggle={() => requestStudentVisibilityToggle(student)}
-                titleOn="إخفاء الطالب"
-                titleOff="إظهار الطالب"
-              />
-            </div>
-            <div>
-              <RefreshButton
-                onClick={() => {
-                  handleResetIMEI(student?.id);
-                }}
-                title="إعادة تعيين رمز هوية الجهاز"
-                direction="ccw"
-              />
-              <EditButton
-                onClick={() => {
-                  navigate(`/dashboard/students/edit/${student.id}`);
-                }}
-                className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) rounded-lg transition-colors"
-                title="تعديل الطالب"
-              />
-            </div>
+        <div className="pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-end gap-1">
+            <StatusToggleButton
+              isOn={Boolean(student?.is_active)}
+              onToggle={() => requestStudentVisibilityToggle(student)}
+              titleOn="إخفاء الطالب"
+              titleOff="إظهار الطالب"
+            />
+            <DetailsButton
+              onClick={() => {
+                navigate(`/dashboard/students/${student.id}`);
+              }}
+            />
+            <RefreshButton
+              onClick={() => requestImeiReset(student)}
+              title="إعادة تعيين رمز هوية الجهاز"
+              direction="ccw"
+              disabled={isImeiResetPending}
+            />
+            <EditButton
+              onClick={() => {
+                navigate(`/dashboard/students/edit/${student.id}`);
+              }}
+              title="تعديل الطالب"
+            />
           </div>
         </div>
       </div>
@@ -714,11 +731,6 @@ const StudentsPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <DetailsButton
-                            onClick={() => {
-                              navigate(`/dashboard/students/${student.id}`);
-                            }}
-                          />
                           <StatusToggleButton
                             isOn={Boolean(student?.is_active)}
                             onToggle={() =>
@@ -727,12 +739,16 @@ const StudentsPage = () => {
                             titleOn="إخفاء الطالب"
                             titleOff="إظهار الطالب"
                           />
-                          <RefreshButton
+                          <DetailsButton
                             onClick={() => {
-                              handleResetIMEI(student?.id);
+                              navigate(`/dashboard/students/${student.id}`);
                             }}
+                          />
+                          <RefreshButton
+                            onClick={() => requestImeiReset(student)}
                             title="إعادة تعيين رمز هوية الجهاز"
                             direction="ccw"
+                            disabled={isImeiResetPending}
                           />
                           <EditButton
                             onClick={() => {
@@ -756,6 +772,35 @@ const StudentsPage = () => {
             onPageChange={setPage}
           />
         </>
+      )}
+
+      {pendingImeiReset && (
+        <ConfirmationModal
+          open
+          onClose={() => !isImeiResetPending && setPendingImeiReset(null)}
+          onConfirm={confirmResetImei}
+          title="تأكيد إعادة تعيين رمز هوية الجهاز"
+          variant="danger"
+          icon={RefreshCw}
+          confirmLabel="نعم، إعادة التعيين"
+          isPending={isImeiResetPending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد إعادة تعيين جلسات الجهاز ورمز هوية الجهاز
+                للطالب{" "}
+                <span className="font-bold text-(--brand-secondary)">
+                  {pendingImeiReset.name}
+                </span>
+                ؟
+              </p>
+              <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3 mt-3">
+                قد يحتاج الطالب إلى تسجيل الدخول من جديد على الجهاز بعد هذا
+                الإجراء.
+              </p>
+            </>
+          }
+        />
       )}
 
       {pendingStudentVisibility && (

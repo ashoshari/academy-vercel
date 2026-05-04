@@ -1,4 +1,4 @@
-import { Copy, Settings, User } from "lucide-react";
+import { CheckCircle, Copy, Settings, User } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 import {
   courseWithNormalizedOfferImports,
@@ -226,8 +226,8 @@ export const CourseCard = ({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-        <div className="flex items-center gap-1">
+      <div className="pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-1">
           <button
             onClick={() => {
               setSelectedCourse(course);
@@ -238,6 +238,16 @@ export const CourseCard = ({
           >
             <Settings size={16} />
           </button>
+          <button
+            onClick={() => {
+              setSelectedCourse(course);
+              setCurrentView("activate");
+            }}
+            className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) transition-colors"
+            title="تفعيل الدورة"
+          >
+            <CheckCircle size={16} />
+          </button>
 
           <StatusToggleButton
             isOn={Boolean(course?.is_published)}
@@ -247,9 +257,6 @@ export const CourseCard = ({
             titleOn="إلغاء النشر"
             titleOff="نشر الدورة"
           />
-        </div>
-
-        <div className="flex items-center gap-1">
           <EditButton
             onClick={() => {
               setSelectedCourse(courseWithNormalizedOfferImports(course));
