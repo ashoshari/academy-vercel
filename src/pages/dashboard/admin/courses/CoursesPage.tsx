@@ -392,7 +392,10 @@ const CoursesPage = () => {
       setSelectedSubSub("");
       setSelectedSpec("");
     } catch (err: any) {
-      toast.error(err?.response?.data?.error);
+      toast.error(
+        err?.response?.data?.error ||
+          err?.response?.data?.import_offer_target_ids,
+      );
     }
   };
 

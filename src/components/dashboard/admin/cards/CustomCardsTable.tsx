@@ -264,13 +264,6 @@ const CustomCardTable = () => {
                             }}
                             title="تعديل"
                           />
-                          {/* <button
-                          onClick={() => handleDeletecard()}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
-                          title="حذف"
-                        >
-                          <Trash2 size={16} />
-                        </button> */}
                         </div>
                       </td>
                     </tr>

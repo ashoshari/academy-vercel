@@ -76,7 +76,9 @@ export default function EditTeacherPage() {
       }
     } catch (error: any) {
       handleErrorAlerts(
-        error?.response?.data?.message || "حدث خطأ أثناء التحديث",
+        error?.response?.data?.message ||
+          error?.response?.data?.error ||
+          "حدث خطأ أثناء التحديث",
       );
     }
   };
@@ -214,34 +216,6 @@ export default function EditTeacherPage() {
             </span>
           )}
         </div>
-
-        {/* مؤكد */}
-        {/* <div className="flex items-center gap-2">
-            <input
-              id="is_active"
-              type="checkbox"
-              {...register("is_active")}
-              className="rounded border-gray-300 text-(--brand) focus:ring-(--brand)"
-            />
-            <label
-              className="text-sm font-medium text-gray-700"
-              htmlFor="is_active"
-            >
-              نشط؟
-            </label>
-          </div> */}
-        {/* <div className="col-span-2 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div>
-              <p className="font-medium text-gray-800">منشور</p>
-              <p className="text-sm text-gray-500">متاح للطلاب</p>
-            </div>
-            <input
-              defaultChecked={true}
-              type="checkbox"
-              {...register("is_active")}
-              className="rounded border-gray-300 text-(--brand) focus:ring-(--brand) w-[20px] h-[20px]"
-            />
-          </div> */}
 
         {/* زر الحفظ */}
         <div className="md:col-span-2 flex justify-end">

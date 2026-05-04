@@ -1,8 +1,8 @@
+import { flushSync } from "react-dom";
 import { useState } from "react";
 import {
   Plus,
   Search,
-  Eye,
   Users,
   Phone,
   Mail,
@@ -13,7 +13,7 @@ import {
   Grid,
   Rows,
   CircleX,
-  EyeOff,
+  KeyRound,
 } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -67,6 +67,8 @@ const TeachersPage = () => {
     isActive: boolean;
     name: string;
   } | null>(null);
+  const [pendingPasswordReset, setPendingPasswordReset] =
+    useState<Teacher | null>(null);
 
   const navigate = useNavigate();
   // filter
@@ -114,16 +116,6 @@ const TeachersPage = () => {
     `/account/admin/teachers/${selectedTeacher?.id}/reset-password/`,
   );
 
-  // const handleDeleteTeacher = () => {
-  //   if (
-  //     confirm(
-  //       "هل أنت متأكد من حذف هذا المعلم؟ سيتم حذف جميع الدورات المرتبطة به."
-  //     )
-  //   ) {
-  //     // setTeachers(teachers.filter((teacher) => teacher.id !== id));
-  //   }
-  // };
-
   const toggleTeacherStatus = () => {
     teacherStatus
       ?.mutateAsync({})
@@ -152,49 +144,33 @@ const TeachersPage = () => {
     });
   };
 
-  const resetPassword = () => {
-    resetAccountPassword.mutateAsync({}).then((res) => {
+  const requestPasswordReset = (teacher: Teacher) => {
+    setPendingPasswordReset(teacher);
+  };
+
+  const confirmPasswordReset = async () => {
+    if (!pendingPasswordReset) return;
+    const teacher = pendingPasswordReset;
+    flushSync(() => {
+      setSelectedTeacher(teacher);
+    });
+    try {
+      const res = await resetAccountPassword.mutateAsync({});
       if (res.status) {
         toast.success(res?.data?.message);
         setNewPassword(res?.data?.new_password);
         setShowPasswordModal(true);
+        setPendingPasswordReset(null);
       } else {
         toast.error(res.error);
       }
-    });
+    } catch (error: any) {
+      handleErrorAlerts(
+        error?.response?.data?.message ||
+          "حدث خطأ أثناء إعادة تعيين كلمة المرور",
+      );
+    }
   };
-
-  // const exportToExcel = () => {
-  //   const csvContent = [
-  //     [
-  //       "الاسم",
-  //       "البريد الإلكتروني",
-  //       "الهاتف",
-  //       "التخصص",
-  //       "المؤهل",
-  //       "الحالة",
-  //       "الطلاب",
-  //       "الدورات",
-  //     ],
-  //     dataTeachers?.data?.data?.map((teacher: any) => [
-  //       teacher.name,
-  //       teacher.email,
-  //       teacher.mobile_number,
-  //       teacher?.materials?.map((el: any) => el?.name).join(", "),
-  //       teacher.is_active ? "نشط" : "غير نشط",
-  //       teacher.number_of_students_enrolled,
-  //       teacher.number_of_courses_has,
-  //     ]),
-  //   ]
-  //     .map((row) => row.join(","))
-  //     .join("\n");
-
-  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  //   const link = document.createElement("a");
-  //   link.href = URL.createObjectURL(blob);
-  //   link.download = `teachers-${new Date().toISOString().split("T")[0]}.csv`;
-  //   link.click();
-  // };
 
   const TeacherCard = ({ teacher }: { teacher: any }) => (
     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
@@ -212,11 +188,6 @@ const TeachersPage = () => {
               alt={teacher?.name}
               className="w-16 h-16 rounded-full border-2 border-white/20"
             />
-            {/* <div
-              className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
-                student.is_active ? "bg-green-500" : "bg-gray-400"
-              }`}
-            ></div> */}
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-lg mb-1">{teacher.name}</h3>
@@ -288,54 +259,33 @@ const TeachersPage = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex items-center gap-1">
+        <div className="pt-4 border-t border-gray-100">
+          <div className="flex items-center gap-1 justify-end">
+            <StatusToggleButton
+              isOn={Boolean(teacher?.is_active)}
+              onToggle={() => {
+                requestTeacherStatusToggle(teacher);
+              }}
+              titleOn="إلغاء التفعيل"
+              titleOff="تفعيل المعلم"
+            />
             <DetailsButton
               onClick={() => {
                 navigate(`/dashboard/teachers/${teacher.id}`);
               }}
             />
-
             <RefreshButton
-              onClick={() => {
-                setSelectedTeacher(teacher);
-                resetPassword();
-              }}
+              onClick={() => requestPasswordReset(teacher)}
               title="إعادة تعيين كلمة المرور"
               disabled={resetAccountPassword.isPending}
             />
-          </div>
 
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => {
-                requestTeacherStatusToggle(teacher);
-              }}
-              className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                teacher.is_active
-                  ? "text-(--brand-secondary) bg-blue-50 hover:bg-blue-100"
-                  : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-              }`}
-              title={teacher.is_active ? "إلغاء التفعيل" : "تفعيل المعلم"}
-            >
-              {teacher.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
-            </button>
             <EditButton
               onClick={() => {
                 navigate(`/dashboard/teachers/edit/${teacher.id}`);
               }}
-              className="p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
               title="تعديل المعلم"
             />
-
-            {/* Delete Teacher */}
-            {/* <button
-              onClick={() => handleDeleteTeacher()}
-              className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-              title="حذف المعلم"
-            >
-              <Trash2 size={16} />
-            </button> */}
           </div>
         </div>
       </div>
@@ -435,7 +385,7 @@ const TeachersPage = () => {
               }
               className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             >
-              <option value="">جميع التخصصات</option>
+              <option value="">جميع المواد</option>
               {dataMaterials?.data?.data?.map((el: any) => (
                 <option key={el.id} value={el.id}>
                   {el.name}
@@ -487,13 +437,6 @@ const TeachersPage = () => {
                 <Grid size={16} />
               </button>
             </div>
-
-            {/* Results Count */}
-            {/* <div className="bg-gray-50 rounded-lg px-4 py-2">
-              <span className="text-sm text-gray-600 whitespace-nowrap">
-                {dataTeachers?.data?.data.length} معلم
-              </span>
-            </div> */}
           </div>
         </div>
       </div>
@@ -573,7 +516,7 @@ const TeachersPage = () => {
                       المعلم
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      التخصص
+                      مادة التخصص
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       الطلاب
@@ -631,12 +574,6 @@ const TeachersPage = () => {
                           >
                             {teacher.is_active ? "نشط" : "غير نشط"}
                           </span>
-                          {/* {teacher.isVerified && (
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-(--brand-secondary)">
-                            مؤكد
-                          </span>
-                        )} */}
-                          {/* ??? */}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -657,10 +594,7 @@ const TeachersPage = () => {
                           />
 
                           <RefreshButton
-                            onClick={() => {
-                              setSelectedTeacher(teacher);
-                              resetPassword();
-                            }}
+                            onClick={() => requestPasswordReset(teacher)}
                             title="إعادة تعيين كلمة المرور"
                             disabled={resetAccountPassword.isPending}
                           />
@@ -677,13 +611,6 @@ const TeachersPage = () => {
                             }}
                             title="تعديل"
                           />
-                          {/* <button
-                          onClick={() => handleDeleteTeacher()}
-                          className="cursor-pointer p-1 text-gray-400 hover:text-red-600 transition-colors"
-                          title="حذف"
-                        >
-                          <Trash2 size={16} />
-                        </button> */}
                         </div>
                       </td>
                     </tr>
@@ -740,6 +667,36 @@ const TeachersPage = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {pendingPasswordReset && (
+        <ConfirmationModal
+          open
+          onClose={() =>
+            !resetAccountPassword.isPending && setPendingPasswordReset(null)
+          }
+          onConfirm={confirmPasswordReset}
+          title="تأكيد إعادة تعيين كلمة المرور"
+          variant="danger"
+          icon={KeyRound}
+          confirmLabel="نعم، إعادة تعيين كلمة المرور"
+          isPending={resetAccountPassword.isPending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد إعادة تعيين كلمة مرور المعلم{" "}
+                <span className="font-bold text-(--brand-secondary)">
+                  {pendingPasswordReset.name}
+                </span>
+                ؟
+              </p>
+              <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3 mt-3">
+                سيتم إنشاء كلمة مرور جديدة وعرضها لك بعد التأكيد، ولن تتمكن من
+                استرجاع كلمة المرور القديمة.
+              </p>
+            </>
+          }
+        />
       )}
 
       {pendingTeacherStatusToggle && (

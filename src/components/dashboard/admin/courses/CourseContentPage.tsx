@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Plus,
   Search,
-  Edit,
   ArrowRight,
   ArrowUp,
   ArrowDown,
@@ -17,7 +16,6 @@ import {
   ChevronDown,
   CheckCircle,
   Target,
-  Trash2,
   AlertTriangle,
 } from "lucide-react";
 import MultiSelectAutocomplete from "@/components/dashboard/admin/subsections/MultiSelector";
@@ -29,8 +27,12 @@ import {
   useCustomUpdate,
 } from "@/hooks/useMutation";
 import { useQueryClient } from "@tanstack/react-query";
+import { edit } from "@/api";
 import toast from "react-hot-toast";
 import Skeleton from "@/components/dashboard/Skeleton";
+import EditButton from "../../core/EditButton";
+import DeleteButton from "../../core/DeleteButton";
+import StatusToggleButton from "../../core/StatusToggleButton";
 
 interface TreeItem {
   id: string | number;
@@ -41,6 +43,53 @@ interface TreeItem {
 }
 
 type ContentType = "semester" | "unit" | "topic" | "lesson";
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const resourceIdsForApi = (resources: unknown): string[] | undefined => {
+  if (resources === undefined || resources === null) return undefined;
+  if (!Array.isArray(resources)) return undefined;
+  if (resources.length === 0) return [];
+  const ids = resources
+    .map((r) =>
+      r != null && typeof r === "object" && "id" in r
+        ? String((r as { id: unknown }).id).trim()
+        : typeof r === "string"
+          ? r.trim()
+          : "",
+    )
+    .filter((s) => UUID_RE.test(s));
+  return ids;
+};
+
+const buildContentUpdateBody = (
+  item: any,
+  overrides: Record<string, unknown> = {},
+) => {
+  const resources = resourceIdsForApi(item?.resources);
+  return {
+    title: item?.title,
+    description: item?.description,
+    time_in_minutes: item?.time_in_minutes,
+    is_published: item?.is_published,
+    ...(item?.link && { link: item?.link }),
+    ...(item?.exam != null &&
+      item.exam !== "" && {
+        exam: typeof item.exam === "object" ? item.exam.id : item.exam,
+      }),
+    ...(item?.order && { order: item?.order }),
+    ...(resources !== undefined && { resources }),
+    ...overrides,
+  };
+};
+
+const getContentItemUpdateEndpoint = (item: any) => {
+  if (item?.course) return `/training/admin/semesters/${item.id}/`;
+  if (item?.semester) return `/training/admin/units/${item.id}/`;
+  if (item?.unit) return `/training/admin/topics/${item.id}/`;
+  return `/training/admin/lessons/${item.id}/`;
+};
 
 const mapExamsToSelectOptions = (
   exams: any[] | undefined,
@@ -72,6 +121,12 @@ const CourseContentPage = ({ course, onBack }: any) => {
   const [itemToDelete, setItemToDelete] = useState<any>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  const [pendingContentStatusToggle, setPendingContentStatusToggle] = useState<{
+    item: any;
+    nextPublished: boolean;
+  } | null>(null);
+  const [isTogglingContentStatus, setIsTogglingContentStatus] = useState(false);
 
   // GET courseContent
   const { data: courseContent, isLoading } = useCustomQuery(
@@ -228,29 +283,35 @@ const CourseContentPage = ({ course, onBack }: any) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedResources]);
+
+  /** Course tree children only — avoids mistaking `resources` for nested content */
+  const getCourseContentChildrenKey = (item: any) => {
+    if (Array.isArray(item?.units)) return "units" as const;
+    if (Array.isArray(item?.topics)) return "topics" as const;
+    if (Array.isArray(item?.lessons)) return "lessons" as const;
+    return undefined;
+  };
+
+  const isPublishedNode = (item: any) =>
+    Boolean(item?.is_published ?? item?.isPublished);
+
   // فلترة المحتوى
   const filterContent = (items: any) => {
     return items
       .map((item: any) => {
-        const childKey = Object.keys(item).find(
-          (key) =>
-            Array.isArray(item[key]) &&
-            item[key].length > 0 &&
-            item[key].every(
-              (child: any) => typeof child === "object" && "id" in child,
-            ),
-        );
+        if (!showUnpublished && !isPublishedNode(item)) {
+          return null;
+        }
 
-        const children = childKey ? filterContent(item[childKey]) : [];
+        const childKey = getCourseContentChildrenKey(item);
+        const children = childKey ? filterContent(item[childKey] ?? []) : [];
 
         const matchesSearch =
           item?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item?.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
-        const matchesPublished = showUnpublished || item?.is_published;
-
-        // ✅ Keep parent if it matches itself or has matching children
-        if ((matchesSearch && matchesPublished) || children.length > 0) {
+        // Publish state already applied above when إخفاء المسودات — only search + subtree remain
+        if (matchesSearch || children.length > 0) {
           return {
             ...item,
             ...(childKey ? { [childKey]: children } : {}),
@@ -356,23 +417,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
     }
   };
   const handleEditItem = async () => {
-    const editedContent = {
-      title: selectedItem?.title,
-      description: selectedItem?.description,
-      time_in_minutes: selectedItem?.time_in_minutes,
-      is_published: selectedItem?.is_published,
-      // is_free: selectedItem?.is_free,
-      ...(selectedItem?.link && { link: selectedItem?.link }),
-      ...(selectedItem?.exam != null &&
-        selectedItem.exam !== "" && {
-          exam:
-            typeof selectedItem.exam === "object"
-              ? selectedItem.exam.id
-              : selectedItem.exam,
-        }),
-      ...(selectedItem?.order && { order: selectedItem?.order }),
-      ...(selectedItem?.resources && { resources: selectedItem?.resources }),
-    };
+    const editedContent = buildContentUpdateBody(selectedItem);
     setIsSaving(true);
     try {
       const response = selectedItem?.course
@@ -452,6 +497,36 @@ const CourseContentPage = ({ course, onBack }: any) => {
       toast.error(err?.response?.data?.error || "حدث خطأ اثناء حذف العنصر");
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const requestContentStatusToggle = (item: any) => {
+    const isPublished = Boolean(item?.is_published ?? item?.isPublished);
+    setPendingContentStatusToggle({
+      item,
+      nextPublished: !isPublished,
+    });
+  };
+
+  const handleConfirmContentStatusToggle = async () => {
+    if (!pendingContentStatusToggle) return;
+    const { item, nextPublished } = pendingContentStatusToggle;
+    setIsTogglingContentStatus(true);
+    try {
+      const url = getContentItemUpdateEndpoint(item);
+      const body = buildContentUpdateBody(item, {
+        is_published: nextPublished,
+      });
+      const response = await edit(url, body);
+      queryClient.invalidateQueries({
+        queryKey: ["course-content", course?.id],
+      });
+      toast.success(response?.message ?? "تم تحديث حالة النشر بنجاح");
+      setPendingContentStatusToggle(null);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error);
+    } finally {
+      setIsTogglingContentStatus(false);
     }
   };
 
@@ -677,7 +752,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           setSelectedItem(item);
                           moveItem(item, "up");
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded transition-colors"
+                        className="cursor-pointer text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded transition-colors"
                         title="نقل لأعلى"
                       >
                         <ArrowUp size={14} />
@@ -687,34 +762,40 @@ const CourseContentPage = ({ course, onBack }: any) => {
                           setSelectedItem(item);
                           moveItem(item, "down");
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded transition-colors"
+                        className="cursor-pointer text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded transition-colors"
                         title="نقل لأسفل"
                       >
                         <ArrowDown size={14} />
                       </button>
 
+                      <StatusToggleButton
+                        isOn={Boolean(item?.is_published ?? item?.isPublished)}
+                        onToggle={() => requestContentStatusToggle(item)}
+                        titleOn="إلغاء النشر"
+                        titleOff="نشر"
+                        iconSize={20}
+                      />
+
                       {/* Edit */}
-                      <button
+
+                      <EditButton
                         onClick={() => {
                           setSelectedItem(item);
                           setCurrentView("edit");
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-(--brand-secondary) hover:bg-blue-50 rounded transition-colors"
                         title="تعديل"
-                      >
-                        <Edit size={14} />
-                      </button>
+                        iconSize={14}
+                      />
 
                       {/* Delete */}
-                      <button
+
+                      <DeleteButton
                         onClick={() => {
                           handleDeleteClick(item);
                         }}
-                        className="cursor-pointer p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                         title="حذف"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                        iconSize={14}
+                      />
                     </div>
                   </div>
                 </div>
@@ -791,6 +872,64 @@ const CourseContentPage = ({ course, onBack }: any) => {
       cancelLabel="إلغاء"
       variant="danger"
       isPending={isDeleting}
+    />
+  );
+
+  const contentStatusToggleModal = pendingContentStatusToggle && (
+    <ConfirmationModal
+      open
+      onClose={() =>
+        !isTogglingContentStatus && setPendingContentStatusToggle(null)
+      }
+      onConfirm={handleConfirmContentStatusToggle}
+      title={
+        pendingContentStatusToggle.nextPublished
+          ? "نشر المحتوى"
+          : "إلغاء نشر المحتوى"
+      }
+      variant={pendingContentStatusToggle.nextPublished ? "success" : "danger"}
+      confirmLabel={
+        pendingContentStatusToggle.nextPublished
+          ? "نعم، نشر"
+          : "نعم، إلغاء النشر"
+      }
+      cancelLabel="إلغاء"
+      isPending={isTogglingContentStatus}
+      description={
+        <div className="flex flex-col items-center gap-4 py-2">
+          <div
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${
+              pendingContentStatusToggle.nextPublished
+                ? "bg-emerald-50"
+                : "bg-amber-50"
+            }`}
+          >
+            {pendingContentStatusToggle.nextPublished ? (
+              <CheckCircle className="w-8 h-8 text-emerald-600" />
+            ) : (
+              <AlertTriangle className="w-8 h-8 text-amber-600" />
+            )}
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-gray-900 leading-relaxed">
+              هل أنت متأكد أنك تريد{" "}
+              <span className="font-bold text-(--brand-secondary)">
+                {pendingContentStatusToggle.nextPublished ? "نشر" : "إلغاء نشر"}
+              </span>{" "}
+              العنصر{" "}
+              <span className="text-(--brand)">
+                &quot;{pendingContentStatusToggle.item?.title}&quot;
+              </span>
+              ؟
+            </p>
+            <p className="text-gray-500 mt-2 text-sm">
+              {pendingContentStatusToggle.nextPublished
+                ? "سيصبح المحتوى ظاهرًا للطلاب وفق سياسات الدورة."
+                : "سيُخفى المحتوى عن الطلاب حتى تقوم بالنشر مرة أخرى."}
+            </p>
+          </div>
+        </div>
+      }
     />
   );
 
@@ -982,6 +1121,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
         </div>
         {deleteModal}
+        {contentStatusToggleModal}
       </>
     );
   }
@@ -1391,6 +1531,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
         </div>
         {deleteModal}
+        {contentStatusToggleModal}
       </>
     );
   }
@@ -1670,22 +1811,6 @@ const CourseContentPage = ({ course, onBack }: any) => {
               </button>
               <button
                 onClick={() => {
-                  // Update the item in the tree
-                  // const updateInTree = (items: any) => {
-                  //   return items.map((item: any) => {
-                  //     if (item.id === selectedItem.id) {
-                  //       return selectedItem;
-                  //     }
-                  //     if (item.children) {
-                  //       return {
-                  //         ...item,
-                  //         children: updateInTree(item.children),
-                  //       };
-                  //     }
-                  //     return item;
-                  //   });
-                  // };
-                  // setContentTree(updateInTree(contentTree));
                   handleEditItem();
                 }}
                 disabled={!selectedItem.title || isSaving}
@@ -1698,6 +1823,7 @@ const CourseContentPage = ({ course, onBack }: any) => {
           </div>
         </div>
         {deleteModal}
+        {contentStatusToggleModal}
       </>
     );
   }

@@ -41,6 +41,8 @@ import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal
 import EditButton from "@/components/dashboard/core/EditButton";
 import DeleteButton from "@/components/dashboard/core/DeleteButton";
 import EmptyState from "@/components/core/EmptyState";
+import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
+import { edit } from "@/api";
 
 const ResourcesPage = () => {
   const user = readUserFromStorage();
@@ -117,30 +119,58 @@ const ResourcesPage = () => {
   //   "/training/admin/specialization-materials/",
   //   ["specializations_material"]
   // );
-  const [editSections, setEditSections] = useState(false);
   const [selectedSubSection, setSelectedSubSection] = useState<string>("");
   const [selectedSubSub, setSelectedSubSub] = useState<string>("");
   const [selectedSpec, setSelectedSpec] = useState<string>("");
+
+  const idFromRef = (ref: unknown) => {
+    if (ref == null || ref === "") return "";
+    if (typeof ref === "object" && ref !== null && "id" in ref) {
+      const rid = (ref as { id: unknown }).id;
+      if (rid == null || rid === "") return "";
+      return String(rid);
+    }
+    return String(ref);
+  };
+
+  const sectionSource = showEditModal
+    ? selectedResources
+    : showCreateModal
+      ? uploadResources
+      : null;
+
+  const subsectionLookupId =
+    selectedSubSection ||
+    (sectionSource ? idFromRef(sectionSource?.subsection) : "");
+
+  const subSubLookupId =
+    selectedSubSub ||
+    (sectionSource ? idFromRef(sectionSource?.subsubsection) : "");
+
+  const specLookupId =
+    selectedSpec ||
+    (sectionSource ? idFromRef(sectionSource?.specialization) : "");
+
   const subSection = subsectionData?.find(
-    (s: any) => s.id === selectedSubSection,
+    (s: any) => String(s.id) === String(subsectionLookupId),
   );
   const subsub = subSection?.subsubsections?.find(
-    (ss: any) => ss.id === selectedSubSub,
+    (ss: any) => String(ss.id) === String(subSubLookupId),
   );
   const spec = subsub?.specializations?.find(
-    (sp: any) => sp.id === selectedSpec,
+    (sp: any) => String(sp.id) === String(specLookupId),
   );
   // const specializationData = specializations?.data;
   const resourcesStatsData = resourcesStats?.data;
   // );
   // POST New resources
-  const { mutateAsync: postResources } = useCustomPost(
+  const { mutateAsync: postResources, isPending: isSaving } = useCustomPost(
     "/training/admin/resources/",
     ["postResources"],
   );
 
   // PUT Resources
-  const { mutateAsync: putResources } = useCustomUpdate(
+  const { mutateAsync: putResources, isPending: isUpdating } = useCustomUpdate(
     `/training/admin/resources/${resourceId}/`,
     ["putResources", resourceId],
   );
@@ -154,6 +184,13 @@ const ResourcesPage = () => {
     id: any;
     title?: string;
   } | null>(null);
+  const [pendingPublishToggle, setPendingPublishToggle] = useState<{
+    id: any;
+    title?: string;
+    isPublished: boolean;
+    resource: any;
+  } | null>(null);
+  const [isPublishTogglePending, setIsPublishTogglePending] = useState(false);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return "0 B";
@@ -186,62 +223,119 @@ const ResourcesPage = () => {
       toast.error(err?.response?.data?.message);
     }
   };
+
+  const appendResourceFormDataContent = (
+    r: any,
+    formData: FormData,
+    isPublished: boolean,
+  ) => {
+    if (r.title) {
+      formData.append("title", r.title);
+    }
+    if (r.description) {
+      formData.append("description", r.description);
+    }
+    if (role !== "teacher" && r.teacher) {
+      formData.append(
+        "teacher",
+        r.teacher.id != null ? r.teacher.id : r.teacher,
+      );
+    }
+    if (r.expiry_date) {
+      formData.append("expiry_date", r.expiry_date);
+    }
+    if (r.subsection) {
+      formData.append(
+        "subsection",
+        idFromRef(r.subsection) || String(r.subsection),
+      );
+    }
+    if (r.subsubsection) {
+      formData.append(
+        "subsubsection",
+        idFromRef(r.subsubsection) || String(r.subsubsection),
+      );
+    }
+    if (r.specialization) {
+      formData.append(
+        "specialization",
+        idFromRef(r.specialization) || String(r.specialization),
+      );
+    }
+    if (r.specialization_material) {
+      formData.append(
+        "specialization_material",
+        idFromRef(r.specialization_material) ||
+          String(r.specialization_material),
+      );
+    }
+    if (r.lesson) {
+      formData.append("lesson", idFromRef(r.lesson) || String(r.lesson));
+    }
+    if (r.type) {
+      formData.append(
+        "type",
+        r.type == "مصادر"
+          ? "resources"
+          : r?.type == "دوسيهات"
+            ? "bookses"
+            : r?.type == "أسئلة وزارية"
+              ? "ministerial_questions"
+              : r?.type == "ملفات"
+                ? "files"
+                : r.type,
+      );
+    }
+    if (r.is_free) {
+      formData.append("is_free", r.is_free);
+    }
+    formData.append("is_published", String(isPublished));
+  };
+
+  const requestPublishToggle = (resource: any) => {
+    setPendingPublishToggle({
+      id: resource?.id,
+      title: resource?.title,
+      isPublished: Boolean(resource?.is_published),
+      resource,
+    });
+  };
+
+  const confirmPublishToggle = async () => {
+    if (!pendingPublishToggle) return;
+    const { resource, isPublished: wasPublished } = pendingPublishToggle;
+    const nextPublished = !wasPublished;
+    const formData = new FormData();
+    appendResourceFormDataContent(resource, formData, nextPublished);
+    setIsPublishTogglePending(true);
+    try {
+      const response = await edit(
+        `/training/admin/resources/${resource.id}/`,
+        formData,
+      );
+      toast.success(response?.message ?? "تم تحديث حالة النشر");
+      queryClient.invalidateQueries({
+        queryKey: ["resources", searchTerm, typeFilter, statusFilter, page],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["resources-stats"],
+      });
+      setPendingPublishToggle(null);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+    } finally {
+      setIsPublishTogglePending(false);
+    }
+  };
+
   const handleEditFile = async (id: any) => {
     setResourceId(id);
     const formData = new FormData();
-    if (selectedResources.title) {
-      formData.append("title", selectedResources.title);
-    }
-    if (selectedResources.description) {
-      formData.append("description", selectedResources.description);
-    }
-    if (role !== "teacher" && selectedResources.teacher) {
-      formData.append(
-        "teacher",
-        selectedResources.teacher.id
-          ? selectedResources.teacher.id
-          : selectedResources.teacher,
-      );
-    }
-    if (selectedResources.expiry_date) {
-      formData.append("expiry_date", selectedResources.expiry_date);
-    }
-    if (selectedResources.subsection) {
-      formData.append("subsection", selectedResources.subsection);
-    }
-    if (selectedResources.subsubsection) {
-      formData.append("subsubsection", selectedResources.subsubsection);
-    }
-    if (selectedResources.specialization) {
-      formData.append("specialization", selectedResources.specialization);
-    }
-    if (selectedResources.specialization_material) {
-      formData.append(
-        "specialization_material",
-        selectedResources.specialization_material,
-      );
-    }
-    if (selectedResources.lesson) {
-      formData.append("lesson", selectedResources.lesson);
-    }
-    if (selectedResources.type) {
-      formData.append(
-        "type",
-        selectedResources.type == "مصادر"
-          ? "resources"
-          : selectedResources?.type == "دوسيهات"
-            ? "bookses"
-            : selectedResources?.type == "أسئلة وزارية"
-              ? "ministerial_questions"
-              : selectedResources?.type == "ملفات"
-                ? "files"
-                : selectedResources?.type,
-      );
-    }
-    if (selectedResources.is_free) {
-      formData.append("is_free", selectedResources.is_free);
-    }
-    formData.append("is_published", selectedResources.is_published ?? true);
+    appendResourceFormDataContent(
+      selectedResources,
+      formData,
+      Boolean(selectedResources.is_published ?? true),
+    );
     if (
       selectedResources.image &&
       typeof (selectedResources.image as any).name === "string" &&
@@ -268,7 +362,6 @@ const ResourcesPage = () => {
       setSelectedSubSection("");
       setSelectedSubSub("");
       setSelectedSpec("");
-      setEditSections(false);
       setSelectedResources({});
       setShowEditModal(false);
     } catch (err: any) {
@@ -370,14 +463,7 @@ const ResourcesPage = () => {
     ) {
       formData.append("file", uploadResources.file as File);
     }
-    // const addResource = {
-    //   ...uploadResources,
-    //   ...(uploadResources?.expiry_date && {
-    //     expiry_date: uploadResources?.expiry_date,
-    //   }),
-    //   ...(!uploadResources?.is_free && { is_free: false }),
-    //   ...(!uploadResources?.is_published && { is_published: false }),
-    // };
+
     try {
       const response = await postResources(formData);
       toast.success(response?.message ?? "تم اضافة المحتوى بنجاح");
@@ -410,9 +496,9 @@ const ResourcesPage = () => {
     const IconComponent = getFileIcon(resource);
     const iconColor = getFileTypeColor(resource);
     return (
-      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group">
+      <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-(--brand) overflow-hidden hover:shadow-xl transition-all duration-300 group flex flex-col h-full">
         {/* Thumbnail/Icon */}
-        <div className="relative h-32 bg-gray-50 flex items-center justify-center">
+        <div className="relative h-32 shrink-0 bg-gray-50 flex items-center justify-center">
           {resource?.image ? (
             <img
               loading="lazy"
@@ -423,33 +509,6 @@ const ResourcesPage = () => {
           ) : (
             <IconComponent size={48} className={iconColor} />
           )}
-
-          {/* Overlay Actions */}
-          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-            {/* <a
-              href={resource?.file}
-              download
-              target="_blank"
-              className="p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-white/30 transition-colors"
-              title="عرض الملف"
-            >
-              <ExternalLink size={16} />
-            </a> */}
-
-            <EditButton
-              onClick={() => {
-                setSelectedResources(resource);
-                setShowEditModal(true);
-              }}
-              className="cursor-pointer p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white hover:bg-blue-500/80 transition-colors"
-              title="تعديل الملف"
-            />
-
-            <DeleteButton
-              onClick={() => handleDeleteFile(resource?.id)}
-              title="حذف الملف"
-            />
-          </div>
 
           {/* Status Badges */}
           <div className="absolute top-2 right-2 flex gap-1  p-1 rounded-full">
@@ -462,7 +521,7 @@ const ResourcesPage = () => {
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-4 flex flex-col flex-1 min-h-0">
           <div className="mb-3">
             <h3
               className="font-medium text-gray-800 truncate"
@@ -520,6 +579,30 @@ const ResourcesPage = () => {
               )}
             </div>
           )}
+        </div>
+
+        <div className="mt-auto px-4 py-3 border-t border-gray-100 bg-gray-50/80 shrink-0">
+          <div className="flex justify-end">
+            <StatusToggleButton
+              isOn={Boolean(resource?.is_published)}
+              onToggle={() => requestPublishToggle(resource)}
+              titleOn="إلغاء النشر"
+              titleOff="نشر"
+              disabled={isPublishTogglePending}
+              iconSize={22}
+            />
+            <EditButton
+              onClick={() => {
+                setSelectedResources(resource);
+                setShowEditModal(true);
+              }}
+              title="تعديل الملف"
+            />
+            <DeleteButton
+              onClick={() => handleDeleteFile(resource?.id)}
+              title="حذف الملف"
+            />
+          </div>
         </div>
       </div>
     );
@@ -779,7 +862,7 @@ const ResourcesPage = () => {
                     القسم *
                   </label>
                   <select
-                    value={selectedSubSection}
+                    value={subsectionLookupId}
                     onChange={(e) => {
                       setSelectedSubSection(e.target.value);
                       setSelectedSubSub("");
@@ -811,7 +894,7 @@ const ResourcesPage = () => {
                       الصف *
                     </label>
                     <select
-                      value={selectedSubSub}
+                      value={subSubLookupId}
                       onChange={(e) => {
                         setSelectedSubSub(e.target.value);
                         setSelectedSpec("");
@@ -843,7 +926,7 @@ const ResourcesPage = () => {
                       التخصص *
                     </label>
                     <select
-                      value={selectedSpec}
+                      value={specLookupId}
                       onChange={(e) => {
                         setSelectedSpec(e.target.value);
                         setUploadResources({
@@ -869,7 +952,7 @@ const ResourcesPage = () => {
               )}
 
               {/* Specialization Material */}
-              {selectedSubSub &&
+              {subSubLookupId &&
                 subsub?.specialization_materials.length == 0 &&
                 subsub?.specializations.length == 0 && (
                   <p className="col-span-1 lg:col-span-2 text-center text-md text-red-600 font-semibold">
@@ -885,7 +968,9 @@ const ResourcesPage = () => {
                       مادة التخصص *
                     </label>
                     <select
-                      value={uploadResources?.specialization_material}
+                      value={idFromRef(
+                        uploadResources?.specialization_material,
+                      )}
                       onChange={(e) => {
                         setUploadResources({
                           ...uploadResources,
@@ -966,6 +1051,7 @@ const ResourcesPage = () => {
             <button
               onClick={handleResourceUpload}
               disabled={
+                isSaving ||
                 !uploadResources?.title ||
                 !uploadResources?.file ||
                 !uploadResources?.image ||
@@ -1000,7 +1086,6 @@ const ResourcesPage = () => {
                   setSelectedSubSection("");
                   setSelectedSubSub("");
                   setSelectedSpec("");
-                  setEditSections(false);
                   setShowEditModal(false);
                 }}
                 className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -1246,162 +1331,144 @@ const ResourcesPage = () => {
                 </div>
               )}
               {/* SubSections */}
-              {!editSections ? (
-                <div className="flex justify-start items-end w-full">
-                  <button
-                    onClick={() => setEditSections(!editSections)}
-                    className="btn-brand-slide justify-center w-full h-14.5 px-6 py-3 rounded-lg transition-all flex items-center gap-2"
+              <div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    القسم *
+                  </label>
+                  <select
+                    value={subsectionLookupId}
+                    onChange={(e) => {
+                      setSelectedSubSection(e.target.value);
+                      setSelectedSubSub("");
+                      setSelectedSpec("");
+                      setSelectedResources({
+                        ...selectedResources,
+                        subsection: e.target.value,
+                        subsubsection: "",
+                        specialization: "",
+                        specialization_material: "",
+                      });
+                    }}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
                   >
-                    تعديل الأقسام
-                  </button>
+                    <option value="">اختر القسم</option>
+                    {subsectionData?.map((subSection: any) => (
+                      <option key={subSection.id} value={subSection.id}>
+                        {subSection?.title}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              ) : (
-                <>
-                  <div>
-                    <div className="col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        القسم *
-                      </label>
-                      <select
-                        value={selectedSubSection}
-                        onChange={(e) => {
-                          setSelectedSubSection(e.target.value);
-                          setSelectedSubSub("");
-                          setSelectedSpec("");
-                          setSelectedResources({
-                            ...selectedResources,
-                            subsection: e.target.value,
-                            subsubsection: "",
-                            specialization: "",
-                            specialization_material: "",
-                          });
-                        }}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                      >
-                        <option value="">اختر القسم</option>
-                        {subsectionData?.map((subSection: any) => (
-                          <option key={subSection.id} value={subSection.id}>
-                            {subSection?.title}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+              </div>
+              {/* SubSubSection */}
+              {subSection?.subsubsections.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      الصف
+                    </label>
+                    <select
+                      value={subSubLookupId}
+                      onChange={(e) => {
+                        setSelectedSubSub(e.target.value);
+                        setSelectedSpec("");
+                        setSelectedResources({
+                          ...selectedResources,
+                          subsubsection: e.target.value,
+                          specialization: "",
+                          specialization_material: "",
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    >
+                      <option value="">اختر الصف</option>
+                      {subSection?.subsubsections?.map((subSubSection: any) => (
+                        <option key={subSubSection.id} value={subSubSection.id}>
+                          {subSubSection?.title}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  {/* SubSubSection */}
-                  {subSection?.subsubsections.length > 0 && (
-                    <div>
-                      <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          الصف
-                        </label>
-                        <select
-                          value={selectedSubSub}
-                          onChange={(e) => {
-                            setSelectedSubSub(e.target.value);
-                            setSelectedSpec("");
-                            setSelectedResources({
-                              ...selectedResources,
-                              subsubsection: e.target.value,
-                              specialization: "",
-                              specialization_material: "",
-                            });
-                          }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                        >
-                          <option value="">اختر الصف</option>
-                          {subSection?.subsubsections?.map(
-                            (subSubSection: any) => (
-                              <option
-                                key={subSubSection.id}
-                                value={subSubSection.id}
-                              >
-                                {subSubSection?.title}
-                              </option>
-                            ),
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  )}
+                </div>
+              )}
 
-                  {/* Specialization */}
-                  {subsub?.specializations.length > 0 && (
-                    <div>
-                      <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          التخصص
-                        </label>
-                        <select
-                          value={selectedSpec}
-                          onChange={(e) => {
-                            setSelectedSpec(e.target.value);
-                            setSelectedResources({
-                              ...selectedResources,
-                              specialization: e.target.value,
-                              specialization_material: "",
-                            });
-                          }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+              {/* Specialization */}
+              {subsub?.specializations.length > 0 && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      التخصص
+                    </label>
+                    <select
+                      value={specLookupId}
+                      onChange={(e) => {
+                        setSelectedSpec(e.target.value);
+                        setSelectedResources({
+                          ...selectedResources,
+                          specialization: e.target.value,
+                          specialization_material: "",
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    >
+                      <option value="">اختر قسم فرعي</option>
+                      {subsub?.specializations?.map((specialization: any) => (
+                        <option
+                          key={specialization.id}
+                          value={specialization.id}
                         >
-                          <option value="">اختر قسم فرعي</option>
-                          {subsub?.specializations?.map(
-                            (specialization: any) => (
-                              <option
-                                key={specialization.id}
-                                value={specialization.id}
-                              >
-                                {specialization?.name}
-                              </option>
-                            ),
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  )}
+                          {specialization?.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
 
-                  {/* Specialization Material */}
-                  {selectedSubSub &&
-                    subsub?.specialization_materials.length == 0 &&
-                    subsub?.specializations.length == 0 && (
-                      <p className="col-span-1 lg:col-span-2 text-center text-md text-red-600 font-semibold">
-                        لا يوجد مواد تخصص لعرضها برجاء اختيار مسار صحيح
-                      </p>
-                    )}
-                  {(spec?.specialization_materials.length > 0 ||
-                    (subsub?.specializations?.length == 0 &&
-                      subsub?.specialization_materials?.length > 0)) && (
-                    <div>
-                      <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          مادة التخصص
-                        </label>
-                        <select
-                          value={selectedResources?.specialization_material}
-                          onChange={(e) => {
-                            setSelectedResources({
-                              ...selectedResources,
-                              specialization_material: e.target.value,
-                            });
-                          }}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+              {/* Specialization Material */}
+              {subSubLookupId &&
+                subsub?.specialization_materials.length == 0 &&
+                subsub?.specializations.length == 0 && (
+                  <p className="col-span-1 lg:col-span-2 text-center text-md text-red-600 font-semibold">
+                    لا يوجد مواد تخصص لعرضها برجاء اختيار مسار صحيح
+                  </p>
+                )}
+              {(spec?.specialization_materials.length > 0 ||
+                (subsub?.specializations?.length == 0 &&
+                  subsub?.specialization_materials?.length > 0)) && (
+                <div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      مادة التخصص
+                    </label>
+                    <select
+                      value={idFromRef(
+                        selectedResources?.specialization_material,
+                      )}
+                      onChange={(e) => {
+                        setSelectedResources({
+                          ...selectedResources,
+                          specialization_material: e.target.value,
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    >
+                      <option value="">اختر مادة التخصص</option>
+                      {((spec?.specialization_materials?.length ?? 0) > 0
+                        ? (spec?.specialization_materials ?? [])
+                        : (subsub?.specialization_materials ?? [])
+                      ).map((specialization_material: any) => (
+                        <option
+                          key={specialization_material.id}
+                          value={specialization_material.id}
                         >
-                          <option value="">اختر مادة التخصص</option>
-                          {((spec?.specialization_materials?.length ?? 0) > 0
-                            ? (spec?.specialization_materials ?? [])
-                            : (subsub?.specialization_materials ?? [])
-                          ).map((specialization_material: any) => (
-                            <option
-                              key={specialization_material.id}
-                              value={specialization_material.id}
-                            >
-                              {specialization_material?.material}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  )}
-                </>
+                          {specialization_material?.material}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               )}
             </div>
             {/* Expiry Date */}
@@ -1453,6 +1520,7 @@ const ResourcesPage = () => {
             <button
               onClick={() => handleEditFile(selectedResources?.id)}
               disabled={
+                isUpdating ||
                 !selectedResources?.title ||
                 !selectedResources?.file ||
                 !selectedResources?.image ||
@@ -1562,7 +1630,7 @@ const ResourcesPage = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="البحث في الملفات..."
+              placeholder="البحث عن اسم الملف..."
               className="w-full pr-10 pl-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300 text-sm"
             />
           </div>
@@ -1729,19 +1797,20 @@ const ResourcesPage = () => {
                             .join(", ") || "-"}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
-                          {resource?.is_published ? "منشور" : "غير منشور"}
+                          <span className="text-gray-700">
+                            {resource?.is_published ? "منشور" : "غير منشور"}
+                          </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            {/* <a
-                            href={resource?.url}
-                            onClick={() => window.open(resource.url, "_blank")}
-                            className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                            title="عرض الملف"
-                          >
-                            <ExternalLink size={16} />
-                          </a> */}
-
+                            <StatusToggleButton
+                              isOn={Boolean(resource?.is_published)}
+                              onToggle={() => requestPublishToggle(resource)}
+                              titleOn="إلغاء النشر"
+                              titleOff="نشر"
+                              disabled={isPublishTogglePending}
+                              iconSize={22}
+                            />
                             <EditButton
                               onClick={() => {
                                 setShowEditModal(true);
@@ -1797,6 +1866,53 @@ const ResourcesPage = () => {
                   </span>
                 </p>
               ) : null}
+            </>
+          }
+        />
+      )}
+
+      {pendingPublishToggle && (
+        <ConfirmationModal
+          open
+          onClose={() =>
+            !isPublishTogglePending && setPendingPublishToggle(null)
+          }
+          onConfirm={confirmPublishToggle}
+          title={
+            pendingPublishToggle.isPublished ? "إلغاء نشر الملف" : "نشر الملف"
+          }
+          variant={pendingPublishToggle.isPublished ? "danger" : "success"}
+          confirmLabel={
+            pendingPublishToggle.isPublished ? "نعم، إلغاء النشر" : "نعم، نشر"
+          }
+          isPending={isPublishTogglePending}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingPublishToggle.isPublished ? "إلغاء نشر" : "نشر"}
+                </span>{" "}
+                الملف
+                {pendingPublishToggle.title ? (
+                  <>
+                    {" "}
+                    <span className="font-bold text-(--brand-secondary)">
+                      {pendingPublishToggle.title}
+                    </span>
+                  </>
+                ) : null}
+                ؟
+              </p>
+              {pendingPublishToggle.isPublished ? (
+                <p className="text-sm text-amber-900/90 bg-amber-50 border border-amber-100 rounded-xl p-3 mt-3">
+                  لن يكون الملف متاحًا للطلاب حتى تقوم بنشره مجددًا.
+                </p>
+              ) : (
+                <p className="text-sm text-emerald-900/90 bg-emerald-50 border border-emerald-100 rounded-xl p-3 mt-3">
+                  سيصبح الملف متاحًا للطلاب وفق إعدادات الصلاحيات.
+                </p>
+              )}
             </>
           }
         />
