@@ -24,9 +24,10 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
   const [selectedTeacher, setSelectedTeacher] = useState<string[]>(initTeach);
   const [selectedCard, setSelectedCard] = useState<string[]>([card.card.id]);
 
-  const editPrice = useCustomUpdate(`cards/user-card-prices/${card.id}/`, [
-    "user-card-prices",
-  ]);
+  const { mutateAsync: editPrice, isPending } = useCustomUpdate(
+    `cards/user-card-prices/${card.id}/`,
+    ["user-card-prices"],
+  );
 
   const dataLibraries = useCustomQuery(
     `account/admin/libraries/?page_size=${99999}&page=1`,
@@ -64,7 +65,7 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
     };
 
     try {
-      const res = await editPrice.mutateAsync(body);
+      const res = await editPrice(body);
       if (res?.status) {
         toast.success("تم تحديث السعر");
         setShowEditModal(false);
@@ -158,7 +159,8 @@ export default function EditCustomCard({ setShowEditModal, card }: Props) {
             </button>
             <button
               onClick={handleSavePrice}
-              className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white"
+              disabled={isPending}
+              className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ التغييرات

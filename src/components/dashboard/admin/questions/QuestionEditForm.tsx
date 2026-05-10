@@ -24,7 +24,7 @@ const QuestionEditForm: React.FC<Props> = ({
 }) => {
   const [form, setForm] = useState<DraftQuestion>(question);
 
-  const updateQuestion = useCustomUpdate(
+  const { mutateAsync: updateQuestion, isPending } = useCustomUpdate(
     `/training/admin/exams-questions/${form.id}/`,
     ["exam-questions", examId],
   );
@@ -50,7 +50,7 @@ const QuestionEditForm: React.FC<Props> = ({
 
     const body = await buildSingleQuestionJson(form);
     try {
-      const res = await updateQuestion.mutateAsync(body as any);
+      const res = await updateQuestion(body as any);
       if (res?.status) {
         toast.success("تم تحديث السؤال");
         onSuccess?.();
@@ -307,7 +307,8 @@ const QuestionEditForm: React.FC<Props> = ({
           </button>
           <button
             onClick={onSubmit}
-            className="btn-brand-slide px-5 py-2 rounded-lg flex items-center gap-2"
+            disabled={isPending}
+            className="btn-brand-slide px-5 py-2 rounded-lg flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Save size={16} /> حفظ التغييرات
           </button>

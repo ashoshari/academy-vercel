@@ -1,22 +1,5 @@
-// import { Slider } from "@/pages/dashboard/admin/sliders/SliderPage";
-import {
-  FileImage,
-  // FileVideo,
-  Save,
-  ToggleLeft,
-  ToggleRight,
-  X,
-} from "lucide-react";
+import { FileImage, Save, ToggleLeft, ToggleRight, X } from "lucide-react";
 import { useMemo } from "react";
-
-// interface ModalProps {
-//   setShowEditModal: (s: boolean) => void;
-//   setSelectedSlide: (slide: any) => void;
-//   handleEditSlide: () => any;
-//   setSelectedImageFile: (f: File | null) => void;
-//   selectedImageFile: File | null;
-//   selectedSlide: any;
-// }
 
 export default function EditSliderModal({
   setShowEditModal,
@@ -25,6 +8,7 @@ export default function EditSliderModal({
   setSelectedImageFile,
   selectedImageFile,
   selectedSlide,
+  isPending,
 }: any) {
   const previewUrl = useMemo(() => {
     if (selectedImageFile) return URL.createObjectURL(selectedImageFile);
@@ -66,19 +50,6 @@ export default function EditSliderModal({
                   <FileImage size={20} />
                   <span>صورة</span>
                 </button>
-                {/* <button
-                  onClick={() =>
-                    setSelectedSlide({ ...selectedSlide, type: "video" })
-                  }
-                  className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
-                    selectedSlide.type === "video"
-                      ? "border-(--brand) bg-orange-50 text-(--brand)"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <FileVideo size={20} />
-                  <span>فيديو</span>
-                </button> */}
               </div>
             </div>
 
@@ -278,7 +249,8 @@ export default function EditSliderModal({
           </button>
           <button
             onClick={handleEditSlide}
-            className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2"
+            disabled={isPending}
+            className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
             حفظ التغييرات

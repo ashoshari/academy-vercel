@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ChevronDown, ChevronRight, Home, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useParams } from "react-router";
 import EmptyState from "@/components/core/EmptyState";
+import { findSectionByUrlSegment } from "@/utils/sectionUrl";
 
 /** Query params for `/training/students/teacher/:id/` so tabs reflect the tree path. */
 type TeacherTreeQueryFilters = {
@@ -47,14 +48,19 @@ function nextTeacherTreeFilters(
 }
 
 const TreePage: React.FC = () => {
-  const { navHeaderId } = useParams();
+  const { sectionSegment } = useParams();
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const { data: treeData } = useCustomQuery("/training/students/sections/", [
     "sections",
   ]);
   const navigate = useNavigate();
 
-  const data = treeData?.data.find((node: any) => node.id === navHeaderId);
+  const data = useMemo(() => {
+    const list = treeData?.data as
+      | { id: string; title?: string }[]
+      | undefined;
+    return findSectionByUrlSegment(sectionSegment, list) as any;
+  }, [treeData?.data, sectionSegment]);
   const toggleNode = (nodeId: string) => {
     const newExpanded = new Set(expandedNodes);
     if (newExpanded.has(nodeId)) {
@@ -325,7 +331,7 @@ const TreePage: React.FC = () => {
               data.subsections.map((node: any) => (
                 <React.Fragment key={node.id}>
                   {renderNode(node, 0, {
-                    section_id: navHeaderId ?? "",
+                    section_id: data?.id ?? "",
                     subsection_id: node.id,
                   })}
                 </React.Fragment>

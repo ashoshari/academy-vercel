@@ -3,9 +3,10 @@ import { Image, Menu, X } from "lucide-react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import useTokenStore from "@/store/platform/useToken";
 import useToken from "@/store/platform/useToken";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import toast from "react-hot-toast";
+import { resolveSectionUrlSegment } from "@/utils/sectionUrl";
 
 const Navbar: React.FC = () => {
   const { data, isLoading } = useCustomQuery("/core/footer/", ["footer"]);
@@ -16,6 +17,44 @@ const Navbar: React.FC = () => {
   const headerData = data?.data;
   const footerData = footer?.data;
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const normalizedPath = pathname.replace(/\/+$/, "") || "/";
+  const activeSectionSegment = (() => {
+    if (!normalizedPath.startsWith("/sections/")) return null;
+    const rest = normalizedPath.slice("/sections/".length);
+    const raw = rest.split("/").filter(Boolean)[0];
+    if (raw == null) return null;
+    try {
+      return decodeURIComponent(raw);
+    } catch {
+      return raw;
+    }
+  })();
+  const isDiscoverAllActive = normalizedPath === "/";
+
+  const { data: sectionsRes } = useCustomQuery(
+    "/training/students/sections/",
+    ["sections"],
+  );
+  const trainingSections = sectionsRes?.data as
+    | { id: string; title?: string }[]
+    | undefined;
+  const footerLinks = footerData?.links ?? [];
+  const sectionNavSegment = (item: { id: string; title?: string }) =>
+    resolveSectionUrlSegment(item, trainingSections, footerLinks);
+  const isSectionNavActive = (item: { id: string; title?: string }) =>
+    activeSectionSegment != null &&
+    sectionNavSegment(item) === activeSectionSegment;
+
+  const navActiveClass =
+    "cursor-pointer px-5 py-2 rounded-lg text-white font-medium shadow-sm hover:shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700";
+  const navInactiveClass =
+    "cursor-pointer relative overflow-hidden px-5 py-2 rounded-lg text-gray-700 font-medium group";
+
+  const mobileNavActiveClass =
+    "cursor-pointer w-full text-right px-4 py-3 rounded-xl text-white font-medium shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700";
+  const mobileNavInactiveClass =
+    "cursor-pointer w-full text-right px-4 py-3 rounded-xl bg-white shadow-sm border border-gray-100 text-gray-700 font-medium hover:bg-yellow-50 hover:text-yellow-700 transition-all duration-200";
   const clearTokens = useToken((state) => state.clearTokens);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [open, setOpen] = useState(false);
@@ -93,14 +132,25 @@ const Navbar: React.FC = () => {
                 {footerData?.links?.slice(0, 2).map((item: any) => (
                   <button
                     key={item.id}
-                    onClick={() => navigate(`/sections/${item?.id}`)}
-                    className="cursor-pointer relative overflow-hidden px-5 py-2 rounded-lg text-gray-700 font-medium group"
+                    onClick={() =>
+                      navigate(`/sections/${sectionNavSegment(item)}`)
+                    }
+                    className={
+                      isSectionNavActive(item)
+                        ? navActiveClass
+                        : navInactiveClass
+                    }
                   >
-                    {/* Gradient background layer */}
-                    <span className="absolute inset-0 bg-linear-to-r from-(--brand) to-(--brand-light) opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"></span>
-
-                    {/* Button text */}
-                    <span className="relative z-10 transition-colors duration-300 ease-out group-hover:text-white">
+                    {!isSectionNavActive(item) && (
+                      <span className="absolute inset-0 bg-linear-to-r from-(--brand) to-(--brand-light) opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"></span>
+                    )}
+                    <span
+                      className={
+                        isSectionNavActive(item)
+                          ? "relative z-10"
+                          : "relative z-10 transition-colors duration-300 ease-out group-hover:text-white"
+                      }
+                    >
                       {item.title}
                     </span>
                   </button>
@@ -117,9 +167,22 @@ const Navbar: React.FC = () => {
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                       }, 100);
                     }}
-                    className="cursor-pointer px-5 py-2 rounded-lg text-white font-medium shadow-sm hover:shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700"
+                    className={
+                      isDiscoverAllActive ? navActiveClass : navInactiveClass
+                    }
                   >
-                    عرض الكل
+                    {!isDiscoverAllActive && (
+                      <span className="absolute inset-0 bg-linear-to-r from-(--brand) to-(--brand-light) opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"></span>
+                    )}
+                    <span
+                      className={
+                        isDiscoverAllActive
+                          ? "relative z-10"
+                          : "relative z-10 transition-colors duration-300 ease-out group-hover:text-white"
+                      }
+                    >
+                      عرض الكل
+                    </span>
                   </Link>
                 )}
               </div>
@@ -217,9 +280,13 @@ const Navbar: React.FC = () => {
                     key={item.id}
                     onClick={() => {
                       setIsMenuOpen(false);
-                      navigate(`/sections/${item?.id}`);
+                      navigate(`/sections/${sectionNavSegment(item)}`);
                     }}
-                    className="cursor-pointer w-full text-right px-4 py-3 rounded-xl bg-white shadow-sm border border-gray-100 text-gray-700 font-medium hover:bg-yellow-50 hover:text-yellow-700 transition-all duration-200"
+                    className={
+                      isSectionNavActive(item)
+                        ? mobileNavActiveClass
+                        : mobileNavInactiveClass
+                    }
                   >
                     {item.title}
                   </button>
@@ -237,7 +304,11 @@ const Navbar: React.FC = () => {
                       }, 100);
                       setIsMenuOpen(false);
                     }}
-                    className="w-full text-center px-4 py-3 rounded-xl text-white font-medium shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700"
+                    className={
+                      isDiscoverAllActive
+                        ? mobileNavActiveClass
+                        : mobileNavInactiveClass
+                    }
                   >
                     عرض الكل
                   </Link>

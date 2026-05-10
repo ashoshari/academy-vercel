@@ -11,6 +11,7 @@ const AddSubsectionModal = ({
   level,
   selectedSubSubsection,
   type,
+  isPending,
 }: {
   onSave: () => void;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,6 +22,7 @@ const AddSubsectionModal = ({
   level: "sub" | "subsub" | "spec" | "mat";
   selectedSubSubsection?: any;
   type?: any;
+  isPending?: boolean;
 }) => (
   <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -181,45 +183,6 @@ const AddSubsectionModal = ({
             )}
           </button>
         </div>
-
-        {/* Linked Sections */}
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            ربط بالأقسام الرئيسية
-          </label>
-          <div className="grid grid-cols-2 gap-3">
-            {mainSections.map((section: any) => {
-              const IconComponent = getMainSectionIcon(section.id);
-              const isLinked = data.linkedSections?.includes(
-                section.id
-              );
-
-              return (
-                <button
-                  key={section.id}
-                  onClick={() => {
-                    const currentLinks = data.linkedSections || [];
-                    const newLinks = isLinked
-                      ? currentLinks.filter((id: any) => id !== section.id)
-                      : [...currentLinks, section.id];
-                    onChange({
-                      ...data,
-                      linkedSections: newLinks,
-                    });
-                  }}
-                  className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
-                    isLinked
-                      ? "border-(--brand) bg-orange-50 text-(--brand)"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <IconComponent size={20} />
-                  <span>{section.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div> */}
       </div>
 
       <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
@@ -231,7 +194,8 @@ const AddSubsectionModal = ({
         </button>
         <button
           onClick={onSave}
-          className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2"
+          disabled={isPending}
+          className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Save size={16} />
           {level === "spec"

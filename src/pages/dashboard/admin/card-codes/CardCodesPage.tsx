@@ -136,7 +136,7 @@ const CardCodesPage = () => {
     },
   });
 
-  const addCode = useCustomPost(`/cards/codes/`, [
+  const { mutateAsync: addCode, isPending } = useCustomPost(`/cards/codes/`, [
     "card-codes",
     "card-codes-statistics",
     "codes-generated",
@@ -185,8 +185,7 @@ const CardCodesPage = () => {
     };
 
     const data = cleanObject(rawData);
-    addCode
-      .mutateAsync(data)
+    addCode(data)
       .then((res) => {
         if (res.status) {
           setGenerateForm({
@@ -379,7 +378,7 @@ const CardCodesPage = () => {
           setShowGenerateModal={setShowGenerateModal}
           setGenerateForm={setGenerateForm}
           installmentPlans={installmentPlans}
-          loading={addCode.isPending}
+          loading={isPending}
         />
       )}
 

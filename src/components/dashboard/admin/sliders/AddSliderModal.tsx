@@ -8,6 +8,7 @@ interface ModalProps {
   setSelectedImageFile: (f: File | null) => void;
   selectedImageFile: File | null;
   newSlide: any;
+  isPending: boolean;
 }
 
 export default function AddSliderModal({
@@ -17,6 +18,7 @@ export default function AddSliderModal({
   setSelectedImageFile,
   selectedImageFile,
   newSlide,
+  isPending,
 }: ModalProps) {
   const previewUrl = useMemo(() => {
     if (selectedImageFile) return URL.createObjectURL(selectedImageFile);
@@ -246,7 +248,7 @@ export default function AddSliderModal({
             إلغاء
           </button>
           <button
-            disabled={!newSlide.title || !newSlide.header}
+            disabled={!newSlide.title || !newSlide.header || isPending}
             onClick={handleAddSlide}
             className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >

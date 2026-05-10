@@ -41,7 +41,10 @@ const EditModal: React.FC<Props> = ({
     [data?.sections],
   );
   /* ── mutation ──────────────────────────────────────────── */
-  const mutation = useCustomUpdate(`${endpointBase}${data?.id}/`, queryKey);
+  const { mutateAsync: mutation, isPending } = useCustomUpdate(
+    `${endpointBase}${data?.id}/`,
+    queryKey,
+  );
 
   const save = async () => {
     const payload =
@@ -83,8 +86,7 @@ const EditModal: React.FC<Props> = ({
                   // specialization: data.specialization,
                 };
 
-    await mutation
-      .mutateAsync(payload)
+    await mutation(payload)
       .then((res) => {
         if (res.status) {
           toast.success(res.message ?? "تم الحفظ");
@@ -298,7 +300,8 @@ const EditModal: React.FC<Props> = ({
           </button>
           <button
             onClick={save}
-            className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white"
+            disabled={isPending}
+            className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Save size={16} />
             حفظ التغييرات
