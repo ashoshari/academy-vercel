@@ -12,21 +12,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import EmptyState from "@/components/core/EmptyState";
-// import Pagination from "@/components/dashboard/core/Pagination";
 
 export type SlideType = "image" | "video";
-
-// export interface Slider {
-//   id: string;
-//   header: string;
-//   title: string;
-//   subtitle: string;
-//   image: string;
-//   type: SlideType;
-//   link: string | null;
-//   is_published: boolean;
-//   order: number;
-// }
 
 const SliderPage = () => {
   const queryClient = useQueryClient();
@@ -36,30 +23,30 @@ const SliderPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedImageFile, setSelectedImageFile] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  // const [page, setPage] = useState<any>(null);
 
   const queryParams = new URLSearchParams();
   if (searchTerm) queryParams.append("title", searchTerm);
-  // if (page) queryParams.append("page", page.toString());
   const queryString = queryParams.toString();
 
   const slidersData = useCustomQuery(
     `/training/admin/sliders/?${queryString}`,
     ["sliders", searchTerm],
   );
-  // const paginationData = slidersData?.data?.pagination;
   const sliderStatisticsData = useCustomQuery(
     "/training/admin/sliders-statistics/",
     ["sliders-statistics"],
   );
   const isLoadingStatistics = Boolean((sliderStatisticsData as any)?.isLoading);
 
-  const updateSlide = useCustomUpdate(
-    `/training/admin/sliders/${selectedSlide?.id ?? "noop"}/`,
-    ["putSliders"],
-  );
+  const { mutateAsync: updateSlide, isPending: isPendingUpdate } =
+    useCustomUpdate(`/training/admin/sliders/${selectedSlide?.id ?? "noop"}/`, [
+      "putSliders",
+    ]);
 
-  const addSlide = useCustomPost(`/training/admin/sliders/`, ["postSliders"]);
+  const { mutateAsync: addSlide, isPending: isPendingAdd } = useCustomPost(
+    `/training/admin/sliders/`,
+    ["postSliders"],
+  );
 
   const [sliderItems, setSliderItems] = useState<any>([]);
 
@@ -119,7 +106,7 @@ const SliderPage = () => {
         fd.append("image", newSlide.image);
       }
 
-      await addSlide.mutateAsync(fd);
+      await addSlide(fd);
 
       toast.success("تم اضافة السلايد");
       setShowAddModal(false);
@@ -153,7 +140,7 @@ const SliderPage = () => {
         fd.append("image", selectedImageFile);
       }
 
-      await updateSlide.mutateAsync(fd);
+      await updateSlide(fd);
 
       toast.success("تم حفظ التغييرات");
       setShowEditModal(false);
@@ -286,58 +273,8 @@ const SliderPage = () => {
               </div>
             )}
           </div>
-          {/* <Pagination
-            currentPage={page}
-            count={paginationData?.count}
-            onPageChange={setPage}
-          /> */}
         </>
       )}
-
-      {/* Slider Settings */}
-      {/* <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-6 border border-(--brand)">
-        <h2 className="text-lg font-bold text-gray-800 mb-4">
-          إعدادات السلايدر
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              سرعة التبديل (ثانية)
-            </label>
-            <input
-              type="text"
-              inputMode="decimal"
-              pattern="[0-9]*"
-              lang="en"
-              defaultValue="5"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              التبديل التلقائي
-            </label>
-            <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300">
-              <option>مفعل</option>
-              <option>معطل</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              عرض النقاط
-            </label>
-            <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all duration-300">
-              <option>مفعل</option>
-              <option>معطل</option>
-            </select>
-          </div>
-        </div>
-        <div className="mt-6 flex justify-end">
-          <button className="bg-gradient-to-r from-(--brand) to-(--brand-light) text-white px-6 py-2 rounded-lg font-medium hover:from-(--brand-light) hover:to-(--brand) transition-all duration-300">
-            حفظ الإعدادات
-          </button>
-        </div>
-      </div> */}
 
       {/* Modals */}
       {showEditModal && (
@@ -348,6 +285,7 @@ const SliderPage = () => {
           handleEditSlide={handleEditSlide}
           setSelectedImageFile={setSelectedImageFile}
           selectedImageFile={selectedImageFile}
+          isPending={isPendingUpdate}
         />
       )}
       {showAddModal && (
@@ -358,6 +296,7 @@ const SliderPage = () => {
           setNewSlide={setNewSlide}
           setSelectedImageFile={setSelectedImageFile}
           setShowAddModal={setShowAddModal}
+          isPending={isPendingAdd}
         />
       )}
       {showDetailsModal && (

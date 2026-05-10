@@ -11,12 +11,20 @@ import { FaWhatsapp } from "react-icons/fa";
 import { PiTiktokLogoLight } from "react-icons/pi";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import { useNavigate } from "react-router";
+import { resolveSectionUrlSegment } from "@/utils/sectionUrl";
 // import { Link } from "react-router";
 
 const Footer: React.FC = () => {
   const { data } = useCustomQuery("/core/footer/", ["footer"]);
+  const { data: sectionsRes } = useCustomQuery(
+    "/training/students/sections/",
+    ["sections"],
+  );
   const navigate = useNavigate();
   const footerData = data?.data;
+  const trainingSections = sectionsRes?.data as
+    | { id: string; title?: string }[]
+    | undefined;
 
   const socialMediaData: any = [
     {
@@ -131,7 +139,15 @@ const Footer: React.FC = () => {
                   ({ id, title }: { id: string; title: string }) => (
                     <li key={id}>
                       <a
-                        onClick={() => navigate(`sections/${id}`)}
+                        onClick={() =>
+                          navigate(
+                            `/sections/${resolveSectionUrlSegment(
+                              { id, title },
+                              trainingSections,
+                              footerData?.links ?? [],
+                            )}`,
+                          )
+                        }
                         className="text-gray-300 hover:text-(--text-light) transition-colors cursor-pointer duration-200"
                       >
                         {title}

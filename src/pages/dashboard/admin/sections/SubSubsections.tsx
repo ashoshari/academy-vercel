@@ -129,32 +129,31 @@ const SubsectionsPage = () => {
     ["specializations"],
   );
 
-  const addSubSection = useCustomPost("/training/admin/subsections/", [
-    "subsections",
-    "sections",
-    "subsections-statistics",
-  ]);
+  const { mutateAsync: addSubSection, isPending: isAdding } = useCustomPost(
+    "/training/admin/subsections/",
+    ["subsections", "sections", "subsections-statistics"],
+  );
 
-  const addSubSubSection = useCustomPost("/training/admin/subsubsections/", [
-    "subsections",
-    "subsections-statistics",
-  ]);
+  const { mutateAsync: addSubSubSection, isPending: isAddingSubSub } =
+    useCustomPost("/training/admin/subsubsections/", [
+      "subsections",
+      "subsections-statistics",
+    ]);
 
-  const addSpecialization = useCustomPost("/training/admin/specializations/", [
-    "subsections",
-    "subsubsections",
-    "subsections-statistics",
-  ]);
+  const { mutateAsync: addSpecialization, isPending: isAddingSpecialization } =
+    useCustomPost("/training/admin/specializations/", [
+      "subsections",
+      "subsubsections",
+      "subsections-statistics",
+    ]);
 
-  const addMaterial = useCustomPost(
-    "/training/admin/specialization-materials/",
-    [
+  const { mutateAsync: addMaterial, isPending: isAddingMaterial } =
+    useCustomPost("/training/admin/specialization-materials/", [
       "subsections",
       "subsubsections",
       "specializations",
       "subsections-statistics",
-    ],
-  );
+    ]);
 
   const getMainSectionIcon = (sectionId: string) => {
     const section = data?.data?.data?.sections?.find(
@@ -232,15 +231,14 @@ const SubsectionsPage = () => {
     //   setShowAddModal(false);
     // }
 
-    addSubSection
-      .mutateAsync({
-        title: newSubsection.title,
-        description: newSubsection.description,
-        sections: newSubsection.sections,
-        is_published: newSubsection.is_published,
-        // icon: "ee37f6cb-e059-4c64-b7f4-de2014a21f01",
-        order: newSubsection.order || 0,
-      })
+    addSubSection({
+      title: newSubsection.title,
+      description: newSubsection.description,
+      sections: newSubsection.sections,
+      is_published: newSubsection.is_published,
+      // icon: "ee37f6cb-e059-4c64-b7f4-de2014a21f01",
+      order: newSubsection.order || 0,
+    })
       .then((s) => {
         if (s.status) {
           setShowAddModal(false);
@@ -262,14 +260,13 @@ const SubsectionsPage = () => {
   // Add Subsubsection
 
   const handleAddSubSubsection = () => {
-    addSubSubSection
-      .mutateAsync({
-        title: newSubSubsection.title,
-        description: newSubSubsection.description,
-        is_published: newSubSubsection.is_published,
-        subsection: selectedSubsection.id,
-        order: newSubSubsection.order || 0,
-      })
+    addSubSubSection({
+      title: newSubSubsection.title,
+      description: newSubSubsection.description,
+      is_published: newSubSubsection.is_published,
+      subsection: selectedSubsection.id,
+      order: newSubSubsection.order || 0,
+    })
       .then((s) => {
         if (s.status) {
           setShowAddSubSubsectionModal(false);
@@ -288,14 +285,13 @@ const SubsectionsPage = () => {
   };
 
   const handleAddSpecialization = () => {
-    addSpecialization
-      .mutateAsync({
-        name: newSpecialization.name,
-        description: newSpecialization.description,
-        is_published: newSpecialization.is_published,
-        subsubsection: selectedSubSubsection.id,
-        order: newSpecialization.order,
-      })
+    addSpecialization({
+      name: newSpecialization.name,
+      description: newSpecialization.description,
+      is_published: newSpecialization.is_published,
+      subsubsection: selectedSubSubsection.id,
+      order: newSpecialization.order,
+    })
       .then((s) => {
         if (s.status) {
           setShowAddSpecializationsModal(false);
@@ -314,13 +310,12 @@ const SubsectionsPage = () => {
   };
 
   const handleAddMaterial = () => {
-    addMaterial
-      .mutateAsync({
-        name: newMaterial.material,
-        material: newMaterial.material,
-        specializations: [selectedSpecialization.id],
-        is_published: newMaterial.is_published,
-      })
+    addMaterial({
+      name: newMaterial.material,
+      material: newMaterial.material,
+      specializations: [selectedSpecialization.id],
+      is_published: newMaterial.is_published,
+    })
       .then((s) => {
         if (s.status) {
           toast.success(s.message ?? "success");
@@ -339,13 +334,12 @@ const SubsectionsPage = () => {
   };
 
   const handleAddMaterialSubSub = () => {
-    addMaterial
-      .mutateAsync({
-        name: newMaterialSubSub.material,
-        material: newMaterialSubSub.material,
-        subsubsections: [selectedSubSubsection.id],
-        is_published: newMaterialSubSub.is_published,
-      })
+    addMaterial({
+      name: newMaterialSubSub.material,
+      material: newMaterialSubSub.material,
+      subsubsections: [selectedSubSubsection.id],
+      is_published: newMaterialSubSub.is_published,
+    })
       .then((s) => {
         if (s.status) {
           toast.success(s.message ?? "success");
@@ -669,6 +663,7 @@ const SubsectionsPage = () => {
           data={newSubsection}
           onChange={setNewSubsection}
           onClose={setShowAddModal}
+          isPending={isAdding}
         />
       )}
       {showEditModal && (
@@ -701,6 +696,7 @@ const SubsectionsPage = () => {
           onChange={setNewSubSubsection}
           onClose={setShowAddSubSubsectionModal}
           parent={selectedSubsection}
+          isPending={isAddingSubSub}
         />
       )}
       {showEditSubSubsectionModal && (
@@ -723,6 +719,7 @@ const SubsectionsPage = () => {
           onChange={setNewSpecialization}
           onClose={setShowAddSpecializationsModal}
           parent={selectedSubSubsection}
+          isPending={isAddingSpecialization}
         />
       )}
       {showEditSpecializationsModal && (
@@ -746,6 +743,7 @@ const SubsectionsPage = () => {
           onChange={setNewMaterial}
           onClose={setShowAddMaterialModal}
           parent={selectedSpecialization}
+          isPending={isAddingMaterial}
         />
       )}
 
@@ -760,6 +758,7 @@ const SubsectionsPage = () => {
           parent={selectedSubSubsection}
           selectedSubSubsection={selectedSubSubsection}
           type={"material-subsub"}
+          isPending={isAddingMaterial}
         />
       )}
       {showEditMaterialModal && (

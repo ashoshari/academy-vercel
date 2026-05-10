@@ -78,7 +78,7 @@ export default function SliderCard({
   );
 
   // Delete Slides
-  const { mutateAsync: deleteSlide } = useCustomRemove(
+  const { mutateAsync: deleteSlide, isPending } = useCustomRemove(
     `/training/admin/sliders/${slide?.id}/`,
     ["deleteSliders"],
   );
@@ -217,7 +217,7 @@ export default function SliderCard({
                 <button
                   onClick={() => moveSlide("up")}
                   disabled={!prevId || !!isMoving}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title="تحريك للأعلى"
                 >
                   <ArrowUp size={16} />
@@ -225,7 +225,7 @@ export default function SliderCard({
                 <button
                   onClick={() => moveSlide("down")}
                   disabled={!nextId || !!isMoving}
-                  className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-1 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title="تحريك للأسفل"
                 >
                   <ArrowDown size={16} />
@@ -328,7 +328,7 @@ export default function SliderCard({
           title="حذف السلايد"
           variant="danger"
           confirmLabel="نعم، حذف"
-          isPending={false}
+          isPending={isPending}
           description={
             <p className="text-base">
               هل أنت متأكد من حذف هذا السلايد؟ لا يمكن التراجع عن هذا الإجراء.

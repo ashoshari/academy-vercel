@@ -203,7 +203,7 @@ const Hero: React.FC = () => {
                 <div
                   className={`absolute ${
                     stopSlider ? "hidden" : "block"
-                  } bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3`}
+                  } bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2`}
                 >
                   {slides?.map((_: any, index: number) => (
                     <button

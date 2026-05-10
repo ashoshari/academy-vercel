@@ -1,17 +1,5 @@
 import { useState } from "react";
-import {
-  Plus,
-  Edit,
-  Save,
-  X,
-  BookOpen,
-  Calendar,
-  ToggleLeft,
-  ToggleRight,
-  Search,
-  Rows,
-  Grid,
-} from "lucide-react";
+import { Plus, BookOpen, Calendar, Search, Rows, Grid } from "lucide-react";
 import { useCustomQuery } from "@/hooks/useQuery";
 import { formatDate } from "@/services/date";
 import { useCustomPost, useCustomUpdate } from "@/hooks/useMutation";
@@ -22,8 +10,10 @@ import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkele
 import TableSkeleton from "@/components/dashboard/skeletons/TableSkeleton";
 import StatusToggleButton from "@/components/dashboard/core/StatusToggleButton";
 import EmptyState from "@/components/core/EmptyState";
-// import { formatDateTimeSimple } from "@/utils/formatDateTime";
-// import Pagination from "@/components/dashboard/core/Pagination";
+import { AddSectionModal } from "./AddSectionModal";
+import { EditSectionModal } from "./EditSectionModal";
+import { ConfirmToggleModal } from "./ConfirmToggleModal";
+import EditButton from "@/components/dashboard/core/EditButton";
 
 export interface MainSection {
   id: number;
@@ -37,405 +27,6 @@ export interface MainSection {
   itemsCount: number;
   createdAt: string;
 }
-
-const AddSectionModal = ({
-  setShowAddModal,
-  setNewSection,
-  newSection,
-  icons,
-  colors,
-  handleAddSection,
-}: {
-  setShowAddModal: any;
-  setNewSection: any;
-  newSection: any;
-  icons: any;
-  colors: any;
-  handleAddSection: any;
-}) => {
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-800">
-              إضافة قسم رئيسي جديد
-            </h2>
-            <button
-              onClick={() => setShowAddModal(false)}
-              className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        </div>
-
-        <div className="p-6 space-y-6">
-          {/* Section Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              اسم القسم
-            </label>
-            <input
-              type="text"
-              value={newSection.name || ""}
-              onChange={(e) =>
-                setNewSection({ ...newSection, name: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-              placeholder="أدخل اسم القسم..."
-            />
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              الوصف
-            </label>
-            <textarea
-              value={newSection.description || ""}
-              onChange={(e) =>
-                setNewSection({ ...newSection, description: e.target.value })
-              }
-              rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
-              placeholder="أدخل وصف القسم..."
-            />
-          </div>
-
-          {/* Icon Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              الأيقونة
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              {icons?.map((option: any) => (
-                <button
-                  key={option.id}
-                  onClick={() =>
-                    setNewSection({ ...newSection, icon: option.id })
-                  }
-                  className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
-                    newSection.icon === option.id
-                      ? "border-(--brand) bg-gray-50 text-(--brand)"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <img src={option.icon} className="w-5" />
-                  <span>{option.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Color Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              اللون
-            </label>
-            <div className="grid grid-cols-3 gap-3">
-              {colors?.map((option: any) => (
-                <button
-                  key={option.id}
-                  onClick={() =>
-                    setNewSection({ ...newSection, color: option.id })
-                  }
-                  className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
-                    newSection.color === option.id
-                      ? "border-(--brand) bg-gray-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <div
-                    style={{ backgroundColor: option.color }}
-                    className={`w-4 h-4 rounded-full  `}
-                  ></div>
-                  <span>{option.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Status Toggles */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <p className="font-medium text-gray-800">مفعل</p>
-                <p className="text-sm text-gray-500">متاح للطلاب</p>
-              </div>
-              <button
-                onClick={() =>
-                  setNewSection({
-                    ...newSection,
-                    isEnabled: !newSection.isEnabled,
-                  })
-                }
-                className={`cursor-pointer p-1 rounded-full transition-colors ${
-                  newSection.isEnabled ? "text-green-600" : "text-gray-400"
-                }`}
-              >
-                {newSection.isEnabled ? (
-                  <ToggleRight size={24} />
-                ) : (
-                  <ToggleLeft size={24} />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
-          <button
-            onClick={() => setShowAddModal(false)}
-            className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            إلغاء
-          </button>
-          <button
-            onClick={handleAddSection}
-            className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2"
-          >
-            <Save size={16} />
-            حفظ القسم
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const EditSectionModal = ({
-  setShowEditModal,
-  setSelectedSection,
-  selectedSection,
-  icons,
-  colors,
-  handleEditSection,
-}: {
-  setShowEditModal: any;
-  setSelectedSection: any;
-  selectedSection: any;
-  icons: any;
-  colors: any;
-  handleEditSection: any;
-}) => (
-  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-800">تعديل القسم</h2>
-          <button
-            onClick={() => setShowEditModal(false)}
-            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
-      </div>
-
-      {selectedSection && (
-        <div className="p-6 space-y-6">
-          {/* Section Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              اسم القسم
-            </label>
-            <input
-              type="text"
-              value={selectedSection.name}
-              onChange={(e) =>
-                setSelectedSection({
-                  ...selectedSection,
-                  name: e.target.value,
-                })
-              }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-              placeholder="أدخل اسم القسم..."
-            />
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              الوصف
-            </label>
-            <textarea
-              value={selectedSection.description}
-              onChange={(e) =>
-                setSelectedSection({
-                  ...selectedSection,
-                  description: e.target.value,
-                })
-              }
-              rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
-              placeholder="أدخل وصف القسم..."
-            />
-          </div>
-
-          {/* Icon Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              الأيقونة
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              {icons.map((option: any) => (
-                <button
-                  key={option.id}
-                  onClick={() =>
-                    setSelectedSection({
-                      ...selectedSection,
-                      icon: option.id,
-                    })
-                  }
-                  className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
-                    selectedSection.icon === option.id
-                      ? "border-(--brand) bg-gray-50 text-(--brand)"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <img src={option.icon} className="w-5" alt={option.name} />
-                  <span>{option.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Color Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              اللون
-            </label>
-            <div className="grid grid-cols-3 gap-3">
-              {colors.map((option: any) => (
-                <button
-                  key={option.id}
-                  onClick={() =>
-                    setSelectedSection({
-                      ...selectedSection,
-                      color: option.id,
-                    })
-                  }
-                  className={`cursor-pointer flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
-                    selectedSection.color === option.id
-                      ? "border-(--brand) bg-gray-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <div
-                    style={{ backgroundColor: option.color }}
-                    className={`w-4 h-4 rounded-full  `}
-                  />
-                  <span>{option.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Status Toggles */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <p className="font-medium text-gray-800">مفعل</p>
-                <p className="text-sm text-gray-500">متاح للطلاب</p>
-              </div>
-              <button
-                onClick={() =>
-                  setSelectedSection({
-                    ...selectedSection,
-                    isEnabled: !selectedSection.isEnabled,
-                  })
-                }
-                className={`cursor-pointer p-1 rounded-full transition-colors ${
-                  selectedSection.isEnabled ? "text-green-600" : "text-gray-400"
-                }`}
-              >
-                {selectedSection.isEnabled ? (
-                  <ToggleRight size={24} />
-                ) : (
-                  <ToggleLeft size={24} />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
-        <button
-          onClick={() => setShowEditModal(false)}
-          className="cursor-pointer px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          إلغاء
-        </button>
-        <button
-          onClick={handleEditSection}
-          className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2"
-        >
-          <Save size={16} />
-          حفظ التغييرات
-        </button>
-      </div>
-    </div>
-  </div>
-);
-
-const ConfirmToggleModal = ({
-  onClose,
-  onConfirm,
-  sectionName,
-  isEnabled,
-}: {
-  onClose: () => void;
-  onConfirm: () => void;
-  sectionName: string;
-  isEnabled: boolean;
-}) => {
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-800">تأكيد الإجراء</h2>
-          <button
-            onClick={onClose}
-            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="p-6 text-right space-y-4">
-          <p className="text-gray-700 text-base font-medium">
-            هل أنت متأكد من {isEnabled ? "إخفاء" : "إظهار"} القسم
-            <span className="font-bold text-(--brand)"> {sectionName}</span>؟
-          </p>
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="cursor-pointer px-5 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition"
-          >
-            إلغاء
-          </button>
-          <button
-            onClick={onConfirm}
-            className={`cursor-pointer px-5 py-2 rounded-lg text-white transition ${
-              isEnabled
-                ? "bg-red-500 hover:bg-red-600"
-                : "bg-green-500 hover:bg-green-600"
-            }`}
-          >
-            نعم، {isEnabled ? "إخفاء" : "إظهار"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const SectionsPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -475,26 +66,26 @@ const SectionsPage = () => {
   const icons = useCustomQuery("/core/icons/", ["icons"]);
   const colors = useCustomQuery("/core/colors/", ["colors"]);
 
-  const addSection = useCustomPost("/training/admin/sections/", [
-    "sections",
-    "sections-statistics",
-  ]);
-
-  const editSection = useCustomUpdate(
-    `/training/admin/sections/${selectedSection?.id}/`,
+  const { mutateAsync: addSection, isPending } = useCustomPost(
+    "/training/admin/sections/",
     ["sections", "sections-statistics"],
   );
 
+  const { mutateAsync: editSection, isPending: isEditPending } =
+    useCustomUpdate(`/training/admin/sections/${selectedSection?.id}/`, [
+      "sections",
+      "sections-statistics",
+    ]);
+
   const handleAddSection = () => {
-    addSection
-      .mutateAsync({
-        title: newSection.name,
-        description: newSection.description,
-        icon: newSection.icon,
-        color: newSection.color,
-        is_published: newSection.isEnabled,
-        // order: 2,
-      })
+    addSection({
+      title: newSection.name,
+      description: newSection.description,
+      icon: newSection.icon,
+      color: newSection.color,
+      is_published: newSection.isEnabled,
+      // order: 2,
+    })
       .then((res) => {
         if (res.status) {
           setNewSection({
@@ -523,15 +114,14 @@ const SectionsPage = () => {
       return;
     }
 
-    editSection
-      .mutateAsync({
-        title: selectedSection.name,
-        description: selectedSection.description,
-        icon: selectedSection.icon,
-        color: selectedSection.color,
-        is_published: selectedSection.isEnabled,
-        // order: 2,
-      })
+    editSection({
+      title: selectedSection.name,
+      description: selectedSection.description,
+      icon: selectedSection.icon,
+      color: selectedSection.color,
+      is_published: selectedSection.isEnabled,
+      // order: 2,
+    })
       .then((res) => {
         if (res.status) {
           setShowEditModal(false);
@@ -548,25 +138,14 @@ const SectionsPage = () => {
       });
   };
 
-  // const handleDeleteSection = () => {
-  //   if (
-  //     confirm(
-  //       "هل أنت متأكد من حذف هذا القسم؟ سيتم حذف جميع الأقسام الفرعية المرتبطة به."
-  //     )
-  //   ) {
-  //     //   setSections(sections.filter((section) => section.id !== id));
-  //   }
-  // };
-
   const toggleSectionStatus = () => {
     if (!selectedSection) {
       return;
     }
 
-    editSection
-      .mutateAsync({
-        is_published: !selectedSection.isEnabled,
-      })
+    editSection({
+      is_published: !selectedSection.isEnabled,
+    })
       .then((res) => {
         if (res.status) {
           setSelectedSection(null);
@@ -723,19 +302,6 @@ const SectionsPage = () => {
                       ) : (
                         ""
                       )}
-                      {/* <div className="flex gap-2">
-                      {section.isFree && (
-                        <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium">
-                          مجاني
-                        </span>
-                      )}
-                      {!section.isFree && (
-                        <span className="bg-yellow-400/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                          <DollarSign size={12} />
-                          مدفوع
-                        </span>
-                      )}
-                    </div> */}
                     </div>
                     <h3 className="text-xl font-bold mb-2">{section?.title}</h3>
                     <p className="text-white/80 text-sm line-clamp-2">
@@ -746,28 +312,6 @@ const SectionsPage = () => {
 
                 {/* Content */}
                 <div className="p-6">
-                  {/* Stats */}
-                  {/* <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-gray-600 mb-1">
-                      <Users size={14} />
-                      <span className="text-xs">الطلاب</span>
-                    </div>
-                    <p className="text-lg font-bold text-gray-800">
-                      {section.studentsCount}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-gray-600 mb-1">
-                      <BookOpen size={14} />
-                      <span className="text-xs">العناصر</span>
-                    </div>
-                    <p className="text-lg font-bold text-gray-800">
-                      {section.itemsCount}
-                    </p>
-                  </div>
-                </div> */}
-
                   {/* Status */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
@@ -788,9 +332,8 @@ const SectionsPage = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div className="flex items-center gap-1">
-                      {/* Toggle Status */}
+                  <div className="pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-end gap-1">
                       <StatusToggleButton
                         isOn={Boolean(section.is_published)}
                         onToggle={() => {
@@ -812,11 +355,9 @@ const SectionsPage = () => {
                         titleOn="تعطيل القسم"
                         titleOff="تفعيل القسم"
                       />
-                    </div>
-
-                    <div className="flex items-center gap-1">
                       {/* Edit */}
-                      <button
+
+                      <EditButton
                         onClick={() => {
                           setSelectedSection({
                             id: section.id,
@@ -832,20 +373,8 @@ const SectionsPage = () => {
                           });
                           setShowEditModal(true);
                         }}
-                        className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                         title="تعديل القسم"
-                      >
-                        <Edit size={16} />
-                      </button>
-
-                      {/* Delete */}
-                      {/* <button
-                      onClick={() => handleDeleteSection()}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="حذف القسم"
-                    >
-                      <Trash2 size={16} />
-                    </button> */}
+                      />
                     </div>
                   </div>
                 </div>
@@ -856,17 +385,10 @@ const SectionsPage = () => {
           {sections?.data?.data.length === 0 && (
             <div className="col-span-full bg-white/95 backdrop-blur-xl rounded-xl shadow-lg p-12 text-center border border-(--brand)">
               <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              {/* <h3 className="text-lg font-medium text-gray-800 mb-2">
-              {searchTerm ? "لا توجد نتائج" : "لا توجد أقسام"}
-            </h3> */}
+
               <p className="text-gray-500 mb-6">
-                {/* {searchTerm
-                ? "لم يتم العثور على أقسام تطابق البحث"
-                :  */}
                 "ابدأ بإضافة قسم رئيسي جديد للمنصة"
-                {/*      } */}
               </p>
-              {/* {!searchTerm && ( */}
               <button
                 onClick={() => setShowAddModal(true)}
                 className="btn-brand-slide px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 mx-auto"
@@ -874,7 +396,6 @@ const SectionsPage = () => {
                 <Plus size={16} />
                 إضافة قسم جديد
               </button>
-              {/* )} */}
             </div>
           )}
         </div>
@@ -944,7 +465,7 @@ const SectionsPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-5">
+                        <div className="flex items-center gap-1">
                           <StatusToggleButton
                             isOn={Boolean(section.is_published)}
                             onToggle={() => {
@@ -966,7 +487,7 @@ const SectionsPage = () => {
                             titleOn="تعطيل القسم"
                             titleOff="تفعيل القسم"
                           />
-                          <button
+                          <EditButton
                             onClick={() => {
                               setSelectedSection({
                                 id: section.id,
@@ -982,11 +503,8 @@ const SectionsPage = () => {
                               });
                               setShowEditModal(true);
                             }}
-                            className="cursor-pointer text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                             title="تعديل القسم"
-                          >
-                            <Edit size={16} />
-                          </button>
+                          />
                         </div>
                       </td>
                     </tr>
@@ -995,11 +513,6 @@ const SectionsPage = () => {
               </table>
             </div>
           </div>
-          {/* <Pagination
-            currentPage={page}
-            count={paginationData?.count}
-            onPageChange={setPage}
-          /> */}
         </>
       )}
 
@@ -1012,6 +525,7 @@ const SectionsPage = () => {
           newSection={newSection}
           setNewSection={setNewSection}
           setShowAddModal={setShowAddModal}
+          isPending={isPending}
         />
       )}
       {showEditModal && (
@@ -1022,6 +536,7 @@ const SectionsPage = () => {
           selectedSection={selectedSection}
           setSelectedSection={setSelectedSection}
           setShowEditModal={setShowEditModal}
+          isPending={isEditPending}
         />
       )}
 
@@ -1033,6 +548,7 @@ const SectionsPage = () => {
           }}
           sectionName={selectedSection?.name ?? ""}
           isEnabled={selectedSection?.isEnabled ?? false}
+          isPending={isEditPending}
         />
       )}
     </div>

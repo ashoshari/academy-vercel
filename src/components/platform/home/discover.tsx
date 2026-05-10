@@ -5,6 +5,7 @@ import { useState } from "react";
 import AuthModal from "@/layout/platform/navbar/authModal";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import EmptyState from "@/components/core/EmptyState";
+import { getSectionUrlSegment } from "@/utils/sectionUrl";
 
 const Discover: React.FC = () => {
   const isLoggedIn = useTokenStore((state) => state.isLoggedIn);
@@ -19,8 +20,11 @@ const Discover: React.FC = () => {
     setShowAuthModal(true);
   };
   const navigate = useNavigate();
-  const discoverNavHandler = (id: string) => {
-    navigate(`/sections/${id}`);
+  const discoverNavHandler = (section: { id: string; title?: string }) => {
+    const list = sections?.data ?? [];
+    const peers = list.length > 0 ? list : [section];
+    const seg = getSectionUrlSegment(section, peers);
+    navigate(`/sections/${seg}`);
   };
 
   return (
@@ -102,7 +106,7 @@ const Discover: React.FC = () => {
                     {/* CTA Button */}
                     {/* temporary route until i got the proper routing */}
                     <button
-                      onClick={() => discoverNavHandler(section.id)}
+                      onClick={() => discoverNavHandler(section)}
                       className={`bg-(--brand) hover:bg-(--brand-secondary) cursor-pointer w-full text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 group-hover:shadow-lg transform group-hover:scale-105`}
                     >
                       <span>استكشف الآن</span>
