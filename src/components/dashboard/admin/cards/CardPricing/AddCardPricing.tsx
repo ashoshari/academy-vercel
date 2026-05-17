@@ -14,7 +14,10 @@ const AddCardPricing = ({
   setNewCard,
   newCard,
 }: AddCardPricingProps) => {
-  const addCard = useCustomPost("cards/", ["cards", "card-statistics"]);
+  const { mutateAsync: addCard, isPending } = useCustomPost("cards/", [
+    "cards",
+    "card-statistics",
+  ]);
 
   const handleAddCard = () => {
     if ((newCard.price ?? 0) <= 0) {
@@ -52,8 +55,7 @@ const AddCardPricing = ({
         is_active: newCard.is_active,
       };
     }
-    addCard
-      .mutateAsync(payload, options)
+    addCard(payload, options)
       .then(() => {
         setNewCard({
           price: 0,
@@ -62,7 +64,11 @@ const AddCardPricing = ({
         setShowAddModal(false);
       })
       .catch((error: any) => {
-        handleErrorAlerts(error?.response?.data?.message || "حدث خطأ");
+        handleErrorAlerts(
+          error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            "حدث خطأ",
+        );
       });
   };
   return (
@@ -261,7 +267,8 @@ const AddCardPricing = ({
               !newCard.image ||
               newCard.default_teacher_price <= 0 ||
               !newCard.default_library_price ||
-              newCard.default_library_price <= 0
+              newCard.default_library_price <= 0 ||
+              isPending
             }
             className={`px-6 py-2 rounded-lg transition-all flex items-center gap-2
                 ${
@@ -271,8 +278,9 @@ const AddCardPricing = ({
                   !newCard.image ||
                   newCard.default_teacher_price <= 0 ||
                   !newCard.default_library_price ||
-                  newCard.default_library_price <= 0
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  newCard.default_library_price <= 0 ||
+                  isPending
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed disabled:opacity-50"
                     : "btn-brand-slide text-white"
                 }`}
           >

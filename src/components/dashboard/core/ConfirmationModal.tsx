@@ -133,7 +133,7 @@ export function ConfirmationModal({
           {description}
         </div>
 
-        <div className="flex flex-row-reverse flex-wrap items-center justify-start gap-2 border-t border-gray-100 bg-gray-50/80 px-5 py-4">
+        <div className="flex flex-wrap items-center gap-2 border-t border-gray-100 bg-gray-50/80 px-5 py-4">
           <button
             type="button"
             onClick={() => !isPending && onClose()}

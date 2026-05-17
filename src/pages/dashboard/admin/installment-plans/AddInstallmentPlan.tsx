@@ -39,7 +39,11 @@ const AddInstallmentPlan = ({ setShowAddModal }: AddInstallmentPlanProps) => {
     }
   };
 
-  const handleLineChange = (index: number, field: keyof InstallmentLine, value: any) => {
+  const handleLineChange = (
+    index: number,
+    field: keyof InstallmentLine,
+    value: any,
+  ) => {
     const newLines = [...lines];
     newLines[index] = { ...newLines[index], [field]: value };
     setLines(newLines);
@@ -77,7 +81,9 @@ const AddInstallmentPlan = ({ setShowAddModal }: AddInstallmentPlanProps) => {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-800">إضافة خطة تقسيط جديدة</h2>
+            <h2 className="text-xl font-bold text-gray-800">
+              إضافة خطة تقسيط جديدة
+            </h2>
             <button
               onClick={() => setShowAddModal(false)}
               className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -89,7 +95,9 @@ const AddInstallmentPlan = ({ setShowAddModal }: AddInstallmentPlanProps) => {
 
         <div className="p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">اسم الخطة *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              اسم الخطة *
+            </label>
             <input
               type="text"
               value={name}
@@ -101,7 +109,9 @@ const AddInstallmentPlan = ({ setShowAddModal }: AddInstallmentPlanProps) => {
 
           <div>
             <div className="flex items-center justify-between mb-4">
-              <label className="block text-sm font-medium text-gray-700">الدفعات *</label>
+              <label className="block text-sm font-medium text-gray-700">
+                الدفعات *
+              </label>
               <button
                 onClick={handleAddLine}
                 className="btn-brand-slide px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2"
@@ -113,23 +123,34 @@ const AddInstallmentPlan = ({ setShowAddModal }: AddInstallmentPlanProps) => {
 
             <div className="space-y-4">
               {lines.map((line, index) => (
-                <div key={index} className="flex flex-col md:flex-row gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg relative">
+                <div
+                  key={index}
+                  className="flex flex-col md:flex-row gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg relative"
+                >
                   <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">اسم الدفعة</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      اسم الدفعة
+                    </label>
                     <input
                       type="text"
                       value={line.name}
-                      onChange={(e) => handleLineChange(index, "name", e.target.value)}
+                      onChange={(e) =>
+                        handleLineChange(index, "name", e.target.value)
+                      }
                       className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-(--brand)"
                       placeholder="مثال: الدفعة الأولى"
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">المبلغ</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      المبلغ
+                    </label>
                     <input
                       type="number"
                       value={line.amount}
-                      onChange={(e) => handleLineChange(index, "amount", e.target.value)}
+                      onChange={(e) =>
+                        handleLineChange(index, "amount", e.target.value)
+                      }
                       className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-(--brand)"
                       placeholder="0.00"
                       min="0"
@@ -137,17 +158,25 @@ const AddInstallmentPlan = ({ setShowAddModal }: AddInstallmentPlanProps) => {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">الاستحقاق (بالأيام)</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      الاستحقاق (بالأيام)
+                    </label>
                     <input
                       type="number"
                       value={line.due_after_days}
-                      onChange={(e) => handleLineChange(index, "due_after_days", parseInt(e.target.value) || 0)}
+                      onChange={(e) =>
+                        handleLineChange(
+                          index,
+                          "due_after_days",
+                          parseInt(e.target.value) || 0,
+                        )
+                      }
                       className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-(--brand)"
                       placeholder="0"
                       min="0"
                     />
                   </div>
-                  
+
                   {lines.length > 1 && (
                     <button
                       onClick={() => handleRemoveLine(index)}

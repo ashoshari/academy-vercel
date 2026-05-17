@@ -29,14 +29,13 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
     [selectedSubsection.sections],
   );
 
-  const editSubSection = useCustomUpdate(
+  const { mutateAsync: editSubSection, isPending } = useCustomUpdate(
     `/training/admin/subsections/${selectedSubsection.id}/`,
     ["subsections"],
   );
 
   const handleSave = async () => {
-    await editSubSection
-      .mutateAsync({ sections: linkedIds })
+    await editSubSection({ sections: linkedIds })
       .then((res) => {
         if (res.status) {
           toast.success(res.message ?? "تم الحفظ بنجاح");
@@ -152,7 +151,8 @@ const LinkSectionsModal: React.FC<LinkSectionsModalProps> = ({
           </button>
           <button
             onClick={handleSave}
-            className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white transition-all"
+            disabled={isPending}
+            className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
             حفظ الروابط

@@ -19,9 +19,10 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
   const [selectedTeacher, setSelectedTeacher] = useState<string[]>([]);
   const [selectedCard, setSelectedCard] = useState<string[]>([]);
 
-  const addPrice = useCustomPost(`cards/user-card-prices/`, [
-    "user-card-prices",
-  ]);
+  const { mutateAsync: addPrice, isPending } = useCustomPost(
+    `cards/user-card-prices/`,
+    ["user-card-prices"],
+  );
 
   const dataLibraries = useCustomQuery(
     `account/admin/libraries/?page_size=${99999}&page=1`,
@@ -69,7 +70,7 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
       price: amount ?? 0,
     };
     try {
-      const res = await addPrice.mutateAsync(body);
+      const res = await addPrice(body);
       if (res?.status) {
         toast.success("تم اضافة السعر");
         setShowAddModal(false);
@@ -205,7 +206,8 @@ export default function AddCustomCard({ setShowAddModal }: Props) {
             </button>
             <button
               onClick={handleSavePrice}
-              className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white"
+              disabled={isPending}
+              className="btn-brand-slide flex items-center gap-2 rounded-lg px-6 py-2 text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               <Save size={16} />
               حفظ

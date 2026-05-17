@@ -242,26 +242,15 @@ const CardPricingPage = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-end">
                   {/* Toggle Status */}
-                  <div
-                    className={`p-2 rounded-lg transition-colors flex gap-2 items-center ${
-                      card.is_active
-                        ? "text-green-600 bg-green-50 hover:bg-green-100"
-                        : "text-gray-400 bg-gray-50 hover:bg-gray-100"
-                    }`}
-                  >
-                    <StatusToggleButton
-                      isOn={Boolean(card.is_active)}
-                      onToggle={() => requestCardStatusToggle(card)}
-                      titleOn="تعطيل البطاقة"
-                      titleOff="تفعيل البطاقة"
-                      className="p-0"
-                    />
-                    <span className="text-sm">
-                      {card.is_active ? "تعطيل البطاقة" : "تفعيل البطاقة"}
-                    </span>
-                  </div>
+                  <StatusToggleButton
+                    isOn={Boolean(card.is_active)}
+                    onToggle={() => requestCardStatusToggle(card)}
+                    titleOn="تعطيل البطاقة"
+                    titleOff="تفعيل البطاقة"
+                    className="p-0"
+                  />
 
                   {/* Edit */}
                   <EditButton
