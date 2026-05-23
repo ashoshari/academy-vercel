@@ -1,4 +1,10 @@
-import { CheckCircle, Clock, Download, FileText } from "lucide-react";
+import {
+  CheckCircle,
+  Clock,
+  Download,
+  FileText,
+  Smartphone,
+} from "lucide-react";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";
 import { getYoutubeVideoId } from "@/utils/getYoutubeVideoId";
 import { useLesson } from "@/store/platform/useLesson";
@@ -19,6 +25,7 @@ import {
 import { useLessonVideoFullscreen } from "./useLessonVideoFullscreen";
 import { useYoutubeControlledSeek } from "./useYoutubeControlledSeek";
 import { getStoredTokens } from "@/services/platform/userAuth";
+import primeAcademyAppUrl from "@/assets/Prime Academy.exe";
 
 const encryptionKey = import.meta.env.VITE_LESSON_LINK_ENCRYPTION_KEY ?? "";
 
@@ -176,15 +183,15 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
                   onDragStart={(e) => void e.preventDefault()}
                   className={`btn-brand-slide no-underline inline-flex items-center justify-center gap-2.5 rounded-xl px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-[transform,box-shadow] hover:shadow-xl  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 sm:min-h-12.5 sm:flex-initial`}
                 >
-                  <Download
+                  <Smartphone
                     className="size-5 shrink-0 opacity-95"
                     aria-hidden
                   />
                   فتح الدرس في التطبيق
                 </a>
                 <a
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={primeAcademyAppUrl}
+                  download="Prime Academy.exe"
                   draggable={false}
                   onDragStart={(e) => void e.preventDefault()}
                   className={`cursor-pointer no-underline inline-flex items-center justify-center gap-2.5 rounded-xl border-2 border-white/90 bg-white/12 px-7 py-3.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm transition-[transform,box-shadow,background-color] hover:border-white hover:bg-white/20 hover:shadow-xl  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--brand-light) focus-visible:ring-offset-2 focus-visible:ring-offset-black/60 sm:min-h-12.5 sm:flex-initial`}

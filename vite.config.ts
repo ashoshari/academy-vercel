@@ -7,4 +7,5 @@ import tailwindcss from "@tailwindcss/vite";
 // haha
 export default defineConfig({
   plugins: [react(), tsconfigPaths(), tailwindcss()],
+  assetsInclude: ["**/*.exe"],
 });
