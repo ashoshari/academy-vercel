@@ -23,11 +23,16 @@ import { getStoredTokens } from "@/services/platform/userAuth";
 const encryptionKey = import.meta.env.VITE_LESSON_LINK_ENCRYPTION_KEY ?? "";
 const BASE_URL = import.meta.env.VITE_API_KEY ?? "";
 
-function buildOpenLessonInAppUrl(lessonId: string | number | undefined) {
+function buildOpenLessonInAppUrl(
+  lessonId: string | number | undefined,
+  videoId: string | null | undefined,
+) {
   const token = getStoredTokens();
   if (!token || lessonId == null) return "";
 
-  return `mediaplayer://login?token=${encodeURIComponent(String(token))}&lesson=${encodeURIComponent(String(lessonId))}&api=${encodeURIComponent(BASE_URL)}`;
+  const vidPart = videoId ? `&vid=${encodeURIComponent(videoId)}` : "";
+
+  return `mediaplayer://login?token=${encodeURIComponent(String(token))}&lesson=${encodeURIComponent(String(lessonId))}&api=${encodeURIComponent(BASE_URL)}${vidPart}`;
 }
 
 type VideoPlayerProps = {
@@ -105,7 +110,6 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
   const rawLinkTrimmed = decryptedLink.trim();
 
   const youtubeVideoId = getYoutubeVideoId(rawLinkTrimmed || null);
-
   const resolvedSrc = useMemo(
     () =>
       resolveLessonVideoSrc(
@@ -141,8 +145,8 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
     isAllowToUseWeb === false || isAllowToUseWeb === "false";
 
   const openLessonInAppHref = useMemo(
-    () => buildOpenLessonInAppUrl(currentLesson?.id),
-    [currentLesson?.id],
+    () => buildOpenLessonInAppUrl(currentLesson?.id, youtubeVideoId),
+    [currentLesson?.id, youtubeVideoId],
   );
 
   return (
