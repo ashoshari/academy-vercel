@@ -21,7 +21,6 @@ import { useYoutubeControlledSeek } from "./useYoutubeControlledSeek";
 import { getStoredTokens } from "@/services/platform/userAuth";
 
 const encryptionKey = import.meta.env.VITE_LESSON_LINK_ENCRYPTION_KEY ?? "";
-const BASE_URL = import.meta.env.VITE_API_KEY ?? "";
 
 function buildOpenLessonInAppUrl(
   lessonId: string | number | undefined,
@@ -32,7 +31,7 @@ function buildOpenLessonInAppUrl(
 
   const vidPart = videoId ? `&vid=${encodeURIComponent(videoId)}` : "";
 
-  return `mediaplayer://login?token=${encodeURIComponent(String(token))}&lesson=${encodeURIComponent(String(lessonId))}&api=${encodeURIComponent(BASE_URL)}${vidPart}`;
+  return `mediaplayer://login?token=${encodeURIComponent(String(token))}&lesson=${encodeURIComponent(String(lessonId))}&api=${encodeURIComponent(`https://api.prime-academy-jo.com/`)}${vidPart}`;
 }
 
 type VideoPlayerProps = {
