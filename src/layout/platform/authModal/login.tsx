@@ -12,7 +12,7 @@ const Login = ({
   register,
   handleSubmit,
   reset,
-  setForgetPassword,
+  // setForgetPassword,
   formState: { errors, isSubmitting },
 }: any) => {
   // POST Login
