@@ -31,7 +31,7 @@ function buildOpenLessonInAppUrl(
 
   const vidPart = videoId ? `&vid=${encodeURIComponent(videoId)}` : "";
 
-  return `mediaplayer://login?token=${encodeURIComponent(String(token))}&is_app=true&lesson=${encodeURIComponent(String(lessonId))}&api=${encodeURIComponent(`https://api.prime-academy-jo.com/`)}${vidPart}`;
+  return `mediaplayer://login?token=${encodeURIComponent(String(token))}&lesson=${encodeURIComponent(String(lessonId))}&api=${encodeURIComponent(`https://api.prime-academy-jo.com/`)}${vidPart}`;
 }
 
 type VideoPlayerProps = {
