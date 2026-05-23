@@ -137,7 +137,7 @@ const Login = ({
               {errors.password.message}
             </span>
           )}
-          <button
+          {/* <button
             type="button"
             onClick={() => {
               reset();
@@ -146,7 +146,7 @@ const Login = ({
             className="cursor-pointer text-(--brand) hover:text-(--brand-light) text-sm font-semibold transition-all duration-300 block w-full text-end mt-1"
           >
             هل نسيت كلمة المرور
-          </button>
+          </button> */}
         </div>
       </div>
       <button

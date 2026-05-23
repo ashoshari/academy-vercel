@@ -18,8 +18,17 @@ import {
 } from "./youtubePlayerChrome";
 import { useLessonVideoFullscreen } from "./useLessonVideoFullscreen";
 import { useYoutubeControlledSeek } from "./useYoutubeControlledSeek";
+import { getStoredTokens } from "@/services/platform/userAuth";
 
 const encryptionKey = import.meta.env.VITE_LESSON_LINK_ENCRYPTION_KEY ?? "";
+const BASE_URL = import.meta.env.VITE_API_KEY ?? "";
+
+function buildOpenLessonInAppUrl(lessonId: string | number | undefined) {
+  const token = getStoredTokens();
+  if (!token || lessonId == null) return "";
+
+  return `mediaplayer://login?token=${encodeURIComponent(String(token))}&lesson=${encodeURIComponent(String(lessonId))}&api=${encodeURIComponent(BASE_URL)}`;
+}
 
 type VideoPlayerProps = {
   markLessonComplete: () => void;
@@ -131,6 +140,11 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
   const useWebRestricted =
     isAllowToUseWeb === false || isAllowToUseWeb === "false";
 
+  const openLessonInAppHref = useMemo(
+    () => buildOpenLessonInAppUrl(currentLesson?.id),
+    [currentLesson?.id],
+  );
+
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="aspect-video rounded-t-2xl overflow-hidden">
@@ -151,10 +165,10 @@ const VideoPlayer = ({ markLessonComplete }: VideoPlayerProps) => {
 
               <div className="flex w-full max-w-md flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
                 <a
-                  href=""
+                  href={openLessonInAppHref || undefined}
                   draggable={false}
                   onClick={(e) => {
-                    if (!currentLesson?.link) e.preventDefault();
+                    if (!openLessonInAppHref) e.preventDefault();
                   }}
                   onDragStart={(e) => void e.preventDefault()}
                   className={`btn-brand-slide no-underline inline-flex items-center justify-center gap-2.5 rounded-xl px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition-[transform,box-shadow] hover:shadow-xl  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 sm:min-h-12.5 sm:flex-initial`}
