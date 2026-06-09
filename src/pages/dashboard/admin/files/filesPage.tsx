@@ -891,7 +891,7 @@ const ResourcesPage = () => {
                 <div>
                   <div className="col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      الصف *
+                      القسم الفرعي
                     </label>
                     <select
                       value={subSubLookupId}

@@ -13,7 +13,6 @@ import ContactPage from "@/pages/Contact";
 
 // Platform
 import { PlatformLayout } from "@/layout/platform/layout";
-import Home from "@/pages/platform/Home";
 import Profile from "@/pages/platform/profile";
 import TreePage from "@/pages/platform/treePage";
 import TermsAndConditions from "@/pages/platform/termsAndConditions";
@@ -81,11 +80,11 @@ export default function AppRoutes() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<PlatformLayout />}>
-          <Route index element={<Home />} />
+          <Route index element={<PublicCoursesPage />} />
+          <Route path="courses" element={<Navigate to="/" replace />} />
           <Route path="profile" element={<Profile />} />
           <Route path="sections/:sectionSegment" element={<TreePage />} />
           <Route path="all-courses" element={<AllCourses />} />
-          <Route path="courses" element={<PublicCoursesPage />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
           <Route path="coursePage/:courseId" element={<CoursePage />} />
           <Route path="exam/:examId" element={<Exam />} />

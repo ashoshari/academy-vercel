@@ -162,7 +162,7 @@ const Navbar: React.FC = () => {
                       e.preventDefault();
                       navigate("/", { replace: false });
                       setTimeout(() => {
-                        const el = document.getElementById("discover");
+                        const el = document.getElementById("courses-results");
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                       }, 100);
                     }}
@@ -298,7 +298,7 @@ const Navbar: React.FC = () => {
                       e.preventDefault();
                       navigate("/", { replace: false });
                       setTimeout(() => {
-                        const el = document.getElementById("discover");
+                        const el = document.getElementById("courses-results");
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                       }, 100);
                       setIsMenuOpen(false);

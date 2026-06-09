@@ -10,7 +10,7 @@ import devtools from "devtools-detect";
 
 export const PlatformLayout = () => {
   const { pathname } = useLocation();
-  const hideNavbar = pathname.replace(/\/+$/, "") === "/courses";
+  const hideNavbar = pathname.replace(/\/+$/, "") === "/";
   const searchParams = new URLSearchParams(window.location.search);
   const dataSearch: any = Object.fromEntries(searchParams.entries());
 

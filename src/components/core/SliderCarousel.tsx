@@ -3,12 +3,8 @@ import { Link } from "react-router";
 import {
   ArrowLeft,
   BadgeCheck,
-  Clock,
   FileText,
   GraduationCap,
-  LineChart,
-  MonitorPlay,
-  ShieldCheck,
   User,
   Users,
 } from "lucide-react";
@@ -30,20 +26,6 @@ const FALLBACK_IMAGE =
 const DEFAULT_TITLE = "ابدأ رحلتك نحو التفوق";
 const DEFAULT_DESCRIPTION =
   "منصة تعليمية متكاملة لمساعدتك على فهم دروسك، حل الامتحانات، وتحقيق أعلى الدرجات في التوجيهي.";
-
-interface FeatureItem {
-  icon: LucideIcon;
-  title: string;
-  subtitle: string;
-}
-
-// Right-to-left order (first item appears on the right).
-const FEATURES: FeatureItem[] = [
-  { icon: Clock, title: "الوصول في أي وقت", subtitle: "تعلم من أي مكان" },
-  { icon: LineChart, title: "متابعة وتقييم", subtitle: "تقارير أداء مفصلة" },
-  { icon: MonitorPlay, title: "شرح مبسط", subtitle: "على أحدث الطرق" },
-  { icon: ShieldCheck, title: "محتوى موثوق", subtitle: "من أفضل المعلمين" },
-];
 
 interface StatItem {
   icon: LucideIcon;
@@ -178,71 +160,43 @@ export default function SliderCarousel({
           {/* Text overlay — aligned with stats bar (max-w-7xl) */}
           <div className="absolute inset-0 z-10 flex items-center">
             <div className="w-full max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 h-full items-center">
-                <div
-                  className={`text-right pt-12 pb-24 sm:pb-28 lg:pb-32 lg:py-16 transform transition-all duration-1000 ${
-                    mounted
-                      ? "translate-x-0 opacity-100"
-                      : "translate-x-10 opacity-0"
-                  }`}
-                >
-                  {activeSlide?.subtitle && (
-                    <span className="inline-block mb-4 text-sm font-semibold text-sky-300">
-                      {activeSlide.subtitle}
-                    </span>
-                  )}
+              <div
+                className={`text-right pt-12 pb-8 lg:pb-32 lg:py-16 h-full flex flex-col justify-center transform transition-all duration-1000 ${
+                  mounted
+                    ? "translate-x-0 opacity-100"
+                    : "translate-x-10 opacity-0"
+                }`}
+              >
+                {activeSlide?.subtitle && (
+                  <span className="inline-block mb-4 text-sm font-semibold text-sky-300">
+                    {activeSlide.subtitle}
+                  </span>
+                )}
 
-                  <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] xl:text-5xl font-extrabold leading-tight text-sky-100">
-                    {heading}
-                  </h1>
+                <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] xl:text-5xl font-extrabold leading-tight text-sky-100">
+                  {heading}
+                </h1>
 
-                  <p className="mt-5 text-base sm:text-lg leading-relaxed text-gray-300 max-w-xl">
-                    {description}
-                  </p>
+                <p className="mt-5 text-base sm:text-lg leading-relaxed text-gray-300 max-w-xl">
+                  {description}
+                </p>
 
-                  <div className="mt-8 flex flex-wrap items-center gap-4">
-                    <Link
-                      to="/courses"
-                      className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-medium shadow-sm hover:shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700"
-                    >
-                      <span>استعرض الدورات</span>
-                      <ArrowLeft className="w-4 h-4" />
-                    </Link>
-                    <Link
-                      to="/courses"
-                      className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-400/50 text-gray-200 font-bold hover:border-(--brand) transition-colors"
-                    >
-                      <FileText className="w-4 h-4 text-white" />
-                      <span>جرب امتحان مجاني</span>
-                    </Link>
-                  </div>
-
-                  {/* Feature highlights — single row on desktop, no title wrapping */}
-                  <div className="mt-9 flex flex-wrap sm:flex-nowrap gap-x-4 sm:gap-x-5 gap-y-5">
-                    {FEATURES.map((feature) => {
-                      const Icon = feature.icon;
-                      return (
-                        <div
-                          key={feature.title}
-                          className="flex items-center gap-2 w-[calc(50%-0.5rem)] sm:w-auto sm:shrink-0"
-                        >
-                          <span className="shrink-0 flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-(--brand)">
-                            <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
-                          </span>
-                          <div className="min-w-0 leading-tight">
-                            <p className="text-xs sm:text-sm font-bold text-gray-200 whitespace-nowrap">
-                              {feature.title}
-                            </p>
-                            <p className="text-[11px] sm:text-xs text-gray-300 whitespace-nowrap">
-                              {feature.subtitle}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <Link
+                    to="/"
+                    className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-medium shadow-sm hover:shadow-md bg-[linear-gradient(to_right,var(--brand),var(--brand-light),var(--brand))] bg-size-[200%_100%] bg-left hover:bg-right transition-all duration-700"
+                  >
+                    <span>استعرض الدورات</span>
+                    <ArrowLeft className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    to="/"
+                    className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-400/50 text-gray-200 font-bold hover:border-(--brand) transition-colors"
+                  >
+                    <FileText className="w-4 h-4 text-white" />
+                    <span>جرب امتحان مجاني</span>
+                  </Link>
                 </div>
-                <div className="hidden lg:block" aria-hidden="true" />
               </div>
             </div>
           </div>

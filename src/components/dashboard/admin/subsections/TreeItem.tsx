@@ -11,9 +11,11 @@ import {
   Plus,
 } from "lucide-react";
 import EditButton from "@/components/dashboard/core/EditButton";
+import DeleteButton from "@/components/dashboard/core/DeleteButton";
 
 export default function TreeItem({
   specialization,
+  subsubsectionId,
   subsubSectionId,
   subSectionId,
   item,
@@ -33,10 +35,12 @@ export default function TreeItem({
   setShowEditSpecializationsModal,
   setSelectedSpecialization,
   setShowEditMaterialModal,
+  setShowDeleteMaterialModal,
   setSelectedMaterial,
   setShowAddMaterialModal,
 }: {
   specialization?: string;
+  subsubsectionId?: string;
   subsubSectionId?: string;
   subSectionId?: string;
   item: any;
@@ -56,6 +60,7 @@ export default function TreeItem({
   setShowEditSpecializationsModal?: (s: boolean) => any;
   setSelectedSpecialization?: (s: any) => any;
   setShowEditMaterialModal?: (s: boolean) => any;
+  setShowDeleteMaterialModal?: (s: any) => any;
   setSelectedMaterial?: (s: any) => any;
   setShowAddMaterialModal?: (s: boolean) => any;
 }) {
@@ -112,6 +117,11 @@ export default function TreeItem({
                 <h3 className="font-bold text-gray-800 mb-1">
                   {item.title || item.name || item.material}
                 </h3>
+                {type === "materials" && item?.subsubsectionTitle && (
+                  <p className="text-gray-500 text-xs mb-1">
+                    {item.subsubsectionTitle}
+                  </p>
+                )}
                 {item?.description && (
                   <p className="text-gray-600 text-sm line-clamp-2">
                     {item?.description ?? ""}
@@ -274,7 +284,10 @@ export default function TreeItem({
                     } else {
                       setSelectedMaterial?.({
                         ...item,
-                        specialization: specialization,
+                        material: item.material ?? item.name,
+                        subsubsection:
+                          subsubsectionId ?? subsubSectionId ?? item.subsubsection,
+                        specialization: specialization ?? item.specialization ?? "",
                       });
                       setShowEditMaterialModal?.(true);
                     }
@@ -282,6 +295,14 @@ export default function TreeItem({
                   className="cursor-pointer p-2 text-gray-400 hover:text-(--brand) hover:bg-gray-50 rounded-lg transition-colors"
                   title="تعديل القسم"
                 />
+
+                {type === "materials" && (
+                  <DeleteButton
+                    onClick={() => setShowDeleteMaterialModal?.(item)}
+                    className="cursor-pointer p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="حذف المادة"
+                  />
+                )}
 
                 {/* <button
                   onClick={() => handleDeleteSubsection(item.id)}

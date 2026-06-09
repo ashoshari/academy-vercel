@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Plus,
   Folder,
@@ -12,13 +12,15 @@ import { useCustomQuery } from "@/hooks/useQuery";
 import TreeItem from "@/components/dashboard/admin/subsections/TreeItem";
 import AddSubsectionModal from "@/components/dashboard/admin/subsections/AddSubsectionModal";
 import LinkSectionsModal from "@/components/dashboard/admin/subsections/LinkSectionsModal";
-import { useCustomPost } from "@/hooks/useMutation";
+import { useCustomPost, useCustomRemove } from "@/hooks/useMutation";
 import toast from "react-hot-toast";
 import handleErrorAlerts from "@/utils/showErrorMessages";
 import EditModal from "@/components/dashboard/admin/subsections/EditSubsectionModal";
 import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import EmptyState from "@/components/core/EmptyState";
+import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
+import { buildSpecializationMaterialPayload, flattenSpecializations, flattenSubsubsections, normalizeSubsectionIdsData } from "@/utils/specializationMaterials";
 
 export interface SubSection {
   id: number;
@@ -52,8 +54,7 @@ const SubsectionsPage = () => {
   const [showAddMaterialSubSubModal, setShowAddMaterialSubSubModal] =
     useState(false);
   const [showEditMaterialModal, setShowEditMaterialModal] = useState(false);
-  const [showEditMaterialSubSubModal, setShowEditMaterialSubSubModal] =
-    useState(false);
+  const [pendingDeleteMaterial, setPendingDeleteMaterial] = useState<any>(null);
 
   const [selectedSubsection, setSelectedSubsection] = useState<any>({
     id: "",
@@ -129,6 +130,27 @@ const SubsectionsPage = () => {
     ["specializations"],
   );
 
+  const subsectionsIdsData = useCustomQuery(
+    "/training/admin/subsections-ids/",
+    ["subsections", "materials"],
+  );
+
+  const subsubsectionOptions = useMemo(
+    () =>
+      flattenSubsubsections(
+        normalizeSubsectionIdsData(subsectionsIdsData?.data),
+      ),
+    [subsectionsIdsData?.data],
+  );
+
+  const specializationOptions = useMemo(
+    () =>
+      flattenSpecializations(
+        normalizeSubsectionIdsData(subsectionsIdsData?.data),
+      ),
+    [subsectionsIdsData?.data],
+  );
+
   const { mutateAsync: addSubSection, isPending: isAdding } = useCustomPost(
     "/training/admin/subsections/",
     ["subsections", "sections", "subsections-statistics"],
@@ -153,7 +175,21 @@ const SubsectionsPage = () => {
       "subsubsections",
       "specializations",
       "subsections-statistics",
+      "materials",
     ]);
+
+  const { mutateAsync: deleteMaterial, isPending: isDeletingMaterial } =
+    useCustomRemove(
+      () =>
+        `/training/admin/specialization-materials/${pendingDeleteMaterial?.id ?? "noop"}/`,
+      [
+        "subsections",
+        "subsubsections",
+        "specializations",
+        "subsections-statistics",
+        "materials",
+      ],
+    );
 
   const getMainSectionIcon = (sectionId: string) => {
     const section = data?.data?.data?.sections?.find(
@@ -310,12 +346,13 @@ const SubsectionsPage = () => {
   };
 
   const handleAddMaterial = () => {
-    addMaterial({
-      name: newMaterial.material,
-      material: newMaterial.material,
-      specializations: [selectedSpecialization.id],
-      is_published: newMaterial.is_published,
-    })
+    addMaterial(
+      buildSpecializationMaterialPayload({
+        material: newMaterial.material,
+        is_published: newMaterial.is_published,
+        specialization: selectedSpecialization.id,
+      }),
+    )
       .then((s) => {
         if (s.status) {
           toast.success(s.message ?? "success");
@@ -334,12 +371,13 @@ const SubsectionsPage = () => {
   };
 
   const handleAddMaterialSubSub = () => {
-    addMaterial({
-      name: newMaterialSubSub.material,
-      material: newMaterialSubSub.material,
-      subsubsections: [selectedSubSubsection.id],
-      is_published: newMaterialSubSub.is_published,
-    })
+    addMaterial(
+      buildSpecializationMaterialPayload({
+        material: newMaterialSubSub.material,
+        is_published: newMaterialSubSub.is_published,
+        subsubsection: selectedSubSubsection.id,
+      }),
+    )
       .then((s) => {
         if (s.status) {
           toast.success(s.message ?? "success");
@@ -355,6 +393,17 @@ const SubsectionsPage = () => {
         }
       })
       .catch((err) => handleErrorAlerts(err?.response?.data?.error));
+  };
+
+  const handleDeleteMaterial = async () => {
+    if (!pendingDeleteMaterial?.id) return;
+    try {
+      const res = await deleteMaterial();
+      toast.success(res?.message ?? "تم حذف المادة بنجاح");
+      setPendingDeleteMaterial(null);
+    } catch (err: any) {
+      handleErrorAlerts(err?.response?.data?.error);
+    }
   };
 
   // const handleDeleteSubsection = (id: number) => {
@@ -589,12 +638,19 @@ const SubsectionsPage = () => {
                                               setShowEditMaterialModal={
                                                 setShowEditMaterialModal
                                               }
+                                              setShowDeleteMaterialModal={
+                                                setPendingDeleteMaterial
+                                              }
                                               setSelectedMaterial={
                                                 setSelectedMaterial
                                               }
                                               specialization={spec.id}
+                                              subsubsectionId={s.id}
                                               index={4}
-                                              item={mat}
+                                              item={{
+                                                ...mat,
+                                                subsubsectionTitle: s.title,
+                                              }}
                                               key={mat.id}
                                               type="materials"
                                             />
@@ -614,10 +670,16 @@ const SubsectionsPage = () => {
                                     setShowEditMaterialModal={
                                       setShowEditMaterialModal
                                     }
+                                    setShowDeleteMaterialModal={
+                                      setPendingDeleteMaterial
+                                    }
                                     setSelectedMaterial={setSelectedMaterial}
-                                    specialization={s.id}
+                                    subsubsectionId={s.id}
                                     index={2}
-                                    item={mat}
+                                    item={{
+                                      ...mat,
+                                      subsubsectionTitle: s.title,
+                                    }}
                                     key={mat.id}
                                     type="materials"
                                   />
@@ -764,25 +826,43 @@ const SubsectionsPage = () => {
       {showEditMaterialModal && (
         <EditModal
           level="mat"
+          nameOnly
           endpointBase="/training/admin/specialization-materials/"
-          queryKey={["subsections", "subsubsections", "specializations"]}
-          mainSections={specializationsData?.data?.data ?? []}
+          queryKey={[
+            "subsections",
+            "subsubsections",
+            "specializations",
+            "materials",
+          ]}
+          mainSections={[]}
           data={selectedMaterial}
           onChange={setSelectedMaterial}
           onClose={() => setShowEditMaterialModal(false)}
         />
       )}
 
-      {showEditMaterialSubSubModal && (
-        <EditModal
-          level="mat"
-          endpointBase="/training/admin/specialization-materials/"
-          queryKey={["subsections", "subsubsections", "specializations"]}
-          mainSections={[]}
-          data={selectedMaterial}
-          onChange={setSelectedMaterial}
-          onClose={() => setShowEditMaterialSubSubModal(false)}
-          type="material-subsub"
+      {pendingDeleteMaterial && (
+        <ConfirmationModal
+          open
+          onClose={() =>
+            !isDeletingMaterial && setPendingDeleteMaterial(null)
+          }
+          onConfirm={handleDeleteMaterial}
+          title="حذف المادة"
+          variant="danger"
+          confirmLabel="نعم، حذف"
+          isPending={isDeletingMaterial}
+          description={
+            <>
+              <p className="text-base">
+                هل أنت متأكد أنك تريد حذف{" "}
+                <span className="font-bold text-gray-900">
+                  {pendingDeleteMaterial.material}
+                </span>
+                ؟
+              </p>
+            </>
+          }
         />
       )}
     </div>

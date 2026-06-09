@@ -20,6 +20,12 @@ interface Props {
   onChange: (d: any) => void; // setFormState
   onClose: () => void; // hide modal
   type?: any;
+  /** When true (create on materials page), show subsubsection/specialization pickers for mat level */
+  standalone?: boolean;
+  /** When true (edit mat), only allow changing name and publish status */
+  nameOnly?: boolean;
+  subsubsections?: any[];
+  specializations?: any[];
 }
 
 const EditModal: React.FC<Props> = ({
@@ -31,6 +37,10 @@ const EditModal: React.FC<Props> = ({
   onChange,
   onClose,
   type,
+  standalone,
+  nameOnly,
+  subsubsections,
+  specializations,
 }) => {
   /* ── normalise parent ids once ─────────────────────────── */
   const sectionIds = React.useMemo(
@@ -40,6 +50,15 @@ const EditModal: React.FC<Props> = ({
       ),
     [data?.sections],
   );
+
+  const filteredSpecializations = React.useMemo(() => {
+    if (!standalone || level !== "mat" || !data?.subsubsection) return [];
+    return (specializations ?? []).filter(
+      (sp: any) =>
+        String(sp.subsubsection ?? sp.subsubsection_id) ===
+        String(data.subsubsection),
+    );
+  }, [standalone, level, data?.subsubsection, specializations]);
   /* ── mutation ──────────────────────────────────────────── */
   const { mutateAsync: mutation, isPending } = useCustomUpdate(
     `${endpointBase}${data?.id}/`,
@@ -53,7 +72,11 @@ const EditModal: React.FC<Props> = ({
             name: data.material,
             material: data.material,
             is_published: data.is_published,
-            subsubsections: data.specialization,
+            subsubsections: data.subsubsection
+              ? [data.subsubsection]
+              : data.specialization
+                ? [data.specialization]
+                : [],
           }
         : level === "sub"
           ? {
@@ -79,12 +102,27 @@ const EditModal: React.FC<Props> = ({
                   order: Number(data.order) || 0,
                   subsubsection: data.subsubsection,
                 }
-              : {
-                  name: data.material,
-                  // material: data.material,
-                  is_published: data.is_published,
-                  // specialization: data.specialization,
-                };
+              : nameOnly
+                ? {
+                    name: data.material,
+                    material: data.material,
+                    is_published: data.is_published,
+                  }
+                : data.specialization
+                  ? {
+                      name: data.material,
+                      material: data.material,
+                      is_published: data.is_published,
+                      specializations: [data.specialization],
+                    }
+                  : {
+                      name: data.material,
+                      material: data.material,
+                      is_published: data.is_published,
+                      subsubsections: data.subsubsection
+                        ? [data.subsubsection]
+                        : [],
+                    };
 
     await mutation(payload)
       .then((res) => {
@@ -177,29 +215,54 @@ const EditModal: React.FC<Props> = ({
                 ))}
               </select>
             </div>
-          ) : (
-            <div>
-              {/* <label className="mb-2 block text-sm font-medium text-gray-700">
-                الأقسام الأب
-              </label>
-              <select
-                value={
-                  mainSections?.find((m) => m?.id === data?.specialization)?.id
-                }
-                onChange={(e) => {
-                  onChange({ ...data, specialization: e.target.value });
-                }}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-              >
-                <option value="">قسم رئيسي (بدون أب)</option>
-                {mainSections.map((sec: any) => (
-                  <option key={sec.id} value={sec.id}>
-                    {sec.name}
-                  </option>
-                ))}
-              </select> */}
+          ) : standalone && level === "mat" && !nameOnly ? (
+            <div className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700">
+                  الصف *
+                </label>
+                <select
+                  value={data?.subsubsection ?? ""}
+                  onChange={(e) =>
+                    onChange({
+                      ...data,
+                      subsubsection: e.target.value,
+                      specialization: "",
+                    })
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                >
+                  <option value="">اختر الصف</option>
+                  {(subsubsections ?? []).map((ss: any) => (
+                    <option key={ss.id} value={ss.id}>
+                      {ss.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {filteredSpecializations.length > 0 && (
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    التخصص (اختياري)
+                  </label>
+                  <select
+                    value={data?.specialization ?? ""}
+                    onChange={(e) =>
+                      onChange({ ...data, specialization: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                  >
+                    <option value="">بدون تخصص (ربط مباشر بالصف)</option>
+                    {filteredSpecializations.map((sp: any) => (
+                      <option key={sp.id} value={sp.id}>
+                        {sp.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
-          )}
+          ) : null}
 
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">

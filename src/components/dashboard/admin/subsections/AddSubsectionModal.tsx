@@ -1,4 +1,5 @@
 import { Save, ToggleLeft, ToggleRight, X } from "lucide-react";
+import { useMemo } from "react";
 import MultiSelectAutocomplete from "./MultiSelector";
 
 const AddSubsectionModal = ({
@@ -12,6 +13,9 @@ const AddSubsectionModal = ({
   selectedSubSubsection,
   type,
   isPending,
+  standalone,
+  subsubsections,
+  specializations,
 }: {
   onSave: () => void;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,190 +27,254 @@ const AddSubsectionModal = ({
   selectedSubSubsection?: any;
   type?: any;
   isPending?: boolean;
-}) => (
-  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-800">
-            {level === "spec"
-              ? "اضافة تخصص جديد"
-              : level === "mat"
-                ? "اضافة مادة جديدة"
-                : "إضافة قسم فرعي جديد"}
-          </h2>
-          <button
-            onClick={() => onClose(false)}
-            className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
-      </div>
+  /** When true (materials page), show subsubsection/specialization pickers */
+  standalone?: boolean;
+  subsubsections?: any[];
+  specializations?: any[];
+}) => {
+  const filteredSpecializations = useMemo(() => {
+    if (!standalone || level !== "mat" || !data?.subsubsection) return [];
+    return (specializations ?? []).filter(
+      (sp: any) =>
+        String(sp.subsubsection ?? sp.subsubsection_id) ===
+        String(data.subsubsection),
+    );
+  }, [standalone, level, data?.subsubsection, specializations]);
 
-      <div className="p-6 space-y-6">
-        {/* Parent Selection */}
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            الاقسام الرئيسية
-          </label>
-          {level === "sub" ? (
-            <MultiSelectAutocomplete
-              options={mainSections}
-              value={data.sections || []}
-              onChange={(ids) => onChange({ ...data, sections: ids })}
-              placeholder="اربطه مع قسم رئيسي او اكثر"
-            />
-          ) : level === "subsub" ? (
-            <p>
-              اضافة قسم فرعي الي القسم الفرعي ({" "}
-              <strong>{parent?.title ?? ""}</strong> )
-            </p>
-          ) : level === "spec" ? (
-            <p>
-              اضافة تخصص الي القسم الفرعي ({" "}
-              <strong>{parent?.title ?? ""}</strong> )
-            </p>
-          ) : (
-            <p>
-              اضافة مادة الي {type === "material-subsub" ? "القسم" : "التخصص"}
-              {" ( "}
-              <strong>
-                {selectedSubSubsection
-                  ? selectedSubSubsection.title
-                  : parent?.name}
-              </strong>
-              {"  ) "}
-            </p>
-          )}
-        </div>
-        {/* Subsection Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {level === "spec"
-              ? "اسم التخصص"
-              : level === "mat"
-                ? "اسم المادة"
-                : "اسم القسم الفرعي"}
-          </label>
-          {level === "spec" ? (
-            <input
-              type="text"
-              value={data.name || ""}
-              onChange={(e) => onChange({ ...data, name: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-              placeholder="ادخل اسم التخصص..."
-            />
-          ) : level === "mat" ? (
-            <input
-              type="text"
-              value={data.material || ""}
-              onChange={(e) => onChange({ ...data, material: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-              placeholder="ادخل اسم المادة..."
-            />
-          ) : (
-            <input
-              type="text"
-              value={data.title || ""}
-              onChange={(e) => onChange({ ...data, title: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-              placeholder="ادخل اسم القسم الفرعي..."
-            />
-          )}
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">
+              {level === "spec"
+                ? "اضافة تخصص جديد"
+                : level === "mat"
+                  ? "اضافة مادة جديدة"
+                  : "إضافة قسم فرعي جديد"}
+            </h2>
+            <button
+              onClick={() => onClose(false)}
+              className="cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
-        {/* Description */}
-        {level !== "mat" && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                الوصف
-              </label>
-              <textarea
-                value={data.description || ""}
-                onChange={(e) =>
-                  onChange({
-                    ...data,
-                    description: e.target.value,
-                  })
-                }
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
-                placeholder="أدخل الوصف..."
+        <div className="p-6 space-y-6">
+          {/* Parent Selection */}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              الاقسام الرئيسية
+            </label>
+            {level === "sub" ? (
+              <MultiSelectAutocomplete
+                options={mainSections}
+                value={data.sections || []}
+                onChange={(ids) => onChange({ ...data, sections: ids })}
+                placeholder="اربطه مع قسم رئيسي او اكثر"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                الترتيب
-              </label>
+            ) : level === "subsub" ? (
+              <p>
+                اضافة قسم فرعي الي القسم الفرعي ({" "}
+                <strong>{parent?.title ?? ""}</strong> )
+              </p>
+            ) : level === "spec" ? (
+              <p>
+                اضافة تخصص الي القسم الفرعي ({" "}
+                <strong>{parent?.title ?? ""}</strong> )
+              </p>
+            ) : standalone ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    الصف *
+                  </label>
+                  <select
+                    value={data.subsubsection ?? ""}
+                    onChange={(e) =>
+                      onChange({
+                        ...data,
+                        subsubsection: e.target.value,
+                        specialization: "",
+                      })
+                    }
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                  >
+                    <option value="">اختر الصف</option>
+                    {(subsubsections ?? []).map((ss: any) => (
+                      <option key={ss.id} value={ss.id}>
+                        {ss.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {filteredSpecializations.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      التخصص (اختياري)
+                    </label>
+                    <select
+                      value={data.specialization ?? ""}
+                      onChange={(e) =>
+                        onChange({ ...data, specialization: e.target.value })
+                      }
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                    >
+                      <option value="">بدون تخصص (ربط مباشر بالصف)</option>
+                      {filteredSpecializations.map((sp: any) => (
+                        <option key={sp.id} value={sp.id}>
+                          {sp.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p>
+                اضافة مادة الي {type === "material-subsub" ? "القسم" : "التخصص"}
+                {" ( "}
+                <strong>
+                  {selectedSubSubsection
+                    ? selectedSubSubsection.title
+                    : parent?.name}
+                </strong>
+                {"  ) "}
+              </p>
+            )}
+          </div>
+          {/* Subsection Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {level === "spec"
+                ? "اسم التخصص"
+                : level === "mat"
+                  ? "اسم المادة"
+                  : "اسم القسم الفرعي"}
+            </label>
+            {level === "spec" ? (
               <input
                 type="text"
-                inputMode="decimal"
-                pattern="[0-9]*"
-                lang="en"
-                value={data.order || 0}
-                onChange={(e) => onChange({ ...data, order: e.target.value })}
+                value={data.name || ""}
+                onChange={(e) => onChange({ ...data, name: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
-                placeholder="أدخل الترتيب..."
+                placeholder="ادخل اسم التخصص..."
               />
-            </div>
-          </>
-        )}
-
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-          <div>
-            <p className="font-medium text-gray-800">
-              {data.is_published ? "مفعل" : "معطل"}
-            </p>
-            <p className="text-sm text-gray-500">
-              {data.is_published ? "متاح للطلاب" : "غير متاح للطلاب"}
-            </p>
-          </div>
-          <button
-            onClick={() =>
-              onChange({
-                ...data,
-                is_published: !data.is_published,
-              })
-            }
-            className={`p-1 rounded-full transition-colors ${
-              data.is_published ? "text-green-600" : "text-gray-400"
-            }`}
-          >
-            {data.is_published ? (
-              <ToggleRight size={24} />
+            ) : level === "mat" ? (
+              <input
+                type="text"
+                value={data.material || ""}
+                onChange={(e) =>
+                  onChange({ ...data, material: e.target.value })
+                }
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                placeholder="ادخل اسم المادة..."
+              />
             ) : (
-              <ToggleLeft size={24} />
+              <input
+                type="text"
+                value={data.title || ""}
+                onChange={(e) => onChange({ ...data, title: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                placeholder="ادخل اسم القسم الفرعي..."
+              />
             )}
+          </div>
+
+          {/* Description */}
+          {level !== "mat" && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  الوصف
+                </label>
+                <textarea
+                  value={data.description || ""}
+                  onChange={(e) =>
+                    onChange({
+                      ...data,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all resize-none"
+                  placeholder="أدخل الوصف..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  الترتيب
+                </label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*"
+                  lang="en"
+                  value={data.order || 0}
+                  onChange={(e) => onChange({ ...data, order: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-(--brand) focus:border-(--brand-light) transition-all"
+                  placeholder="أدخل الترتيب..."
+                />
+              </div>
+            </>
+          )}
+
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <p className="font-medium text-gray-800">
+                {data.is_published ? "مفعل" : "معطل"}
+              </p>
+              <p className="text-sm text-gray-500">
+                {data.is_published ? "متاح للطلاب" : "غير متاح للطلاب"}
+              </p>
+            </div>
+            <button
+              onClick={() =>
+                onChange({
+                  ...data,
+                  is_published: !data.is_published,
+                })
+              }
+              className={`p-1 rounded-full transition-colors ${
+                data.is_published ? "text-green-600" : "text-gray-400"
+              }`}
+            >
+              {data.is_published ? (
+                <ToggleRight size={24} />
+              ) : (
+                <ToggleLeft size={24} />
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
+          <button
+            onClick={() => onClose(false)}
+            className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            إلغاء
+          </button>
+          <button
+            onClick={onSave}
+            disabled={isPending}
+            className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Save size={16} />
+            {level === "spec"
+              ? "حفظ التخصص"
+              : level === "mat"
+                ? "حفظ المادة"
+                : "حفظ القسم"}
           </button>
         </div>
       </div>
-
-      <div className="p-6 border-t border-gray-200 flex gap-3 justify-end">
-        <button
-          onClick={() => onClose(false)}
-          className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          إلغاء
-        </button>
-        <button
-          onClick={onSave}
-          disabled={isPending}
-          className="btn-brand-slide px-6 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Save size={16} />
-          {level === "spec"
-            ? "حفظ التخصص"
-            : level === "mat"
-              ? "حفظ المادة"
-              : "حفظ القسم"}
-        </button>
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default AddSubsectionModal;

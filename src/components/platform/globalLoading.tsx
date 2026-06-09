@@ -3,7 +3,15 @@ import { useEffect, useState } from "react";
 import newLoader from "./loader.module.css";
 
 const GlobalLoading = () => {
-  const isFetching = useIsFetching();
+  const isFetching = useIsFetching({
+    predicate: (query) => {
+      const key = query.queryKey;
+      if (Array.isArray(key) && key[0] === "public-courses") {
+        return false;
+      }
+      return true;
+    },
+  });
 
   const [show, setShow] = useState(false);
 
