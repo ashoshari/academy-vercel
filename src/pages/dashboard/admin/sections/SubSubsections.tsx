@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Plus,
   Folder,
@@ -20,7 +20,7 @@ import Skeleton from "@/components/dashboard/Skeleton";
 import StatsCardsSkeleton from "@/components/dashboard/skeletons/StatsCardsSkeleton";
 import EmptyState from "@/components/core/EmptyState";
 import { ConfirmationModal } from "@/components/dashboard/core/ConfirmationModal";
-import { buildSpecializationMaterialPayload, flattenSpecializations, flattenSubsubsections, normalizeSubsectionIdsData } from "@/utils/specializationMaterials";
+import { buildSpecializationMaterialPayload } from "@/utils/specializationMaterials";
 
 export interface SubSection {
   id: number;
@@ -125,31 +125,31 @@ const SubsectionsPage = () => {
   const subsubSectionsData = useCustomQuery("/training/admin/subsubsections/", [
     "subsubsections",
   ]);
-  const specializationsData = useCustomQuery(
-    "/training/admin/specializations/",
-    ["specializations"],
-  );
+  // const specializationsData = useCustomQuery(
+  //   "/training/admin/specializations/",
+  //   ["specializations"],
+  // );
 
-  const subsectionsIdsData = useCustomQuery(
-    "/training/admin/subsections-ids/",
-    ["subsections", "materials"],
-  );
+  // const subsectionsIdsData = useCustomQuery(
+  //   "/training/admin/subsections-ids/",
+  //   ["subsections", "materials"],
+  // );
 
-  const subsubsectionOptions = useMemo(
-    () =>
-      flattenSubsubsections(
-        normalizeSubsectionIdsData(subsectionsIdsData?.data),
-      ),
-    [subsectionsIdsData?.data],
-  );
+  // const subsubsectionOptions = useMemo(
+  //   () =>
+  //     flattenSubsubsections(
+  //       normalizeSubsectionIdsData(subsectionsIdsData?.data),
+  //     ),
+  //   [subsectionsIdsData?.data],
+  // );
 
-  const specializationOptions = useMemo(
-    () =>
-      flattenSpecializations(
-        normalizeSubsectionIdsData(subsectionsIdsData?.data),
-      ),
-    [subsectionsIdsData?.data],
-  );
+  // const specializationOptions = useMemo(
+  //   () =>
+  //     flattenSpecializations(
+  //       normalizeSubsectionIdsData(subsectionsIdsData?.data),
+  //     ),
+  //   [subsectionsIdsData?.data],
+  // );
 
   const { mutateAsync: addSubSection, isPending: isAdding } = useCustomPost(
     "/training/admin/subsections/",
@@ -844,9 +844,7 @@ const SubsectionsPage = () => {
       {pendingDeleteMaterial && (
         <ConfirmationModal
           open
-          onClose={() =>
-            !isDeletingMaterial && setPendingDeleteMaterial(null)
-          }
+          onClose={() => !isDeletingMaterial && setPendingDeleteMaterial(null)}
           onConfirm={handleDeleteMaterial}
           title="حذف المادة"
           variant="danger"

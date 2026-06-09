@@ -34,9 +34,8 @@ const EMPTY_MATERIAL_FORM = {
 export default function MaterialsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
-  const [editTarget, setEditTarget] = useState<SpecializationMaterialRow | null>(
-    null,
-  );
+  const [editTarget, setEditTarget] =
+    useState<SpecializationMaterialRow | null>(null);
   const [pendingDelete, setPendingDelete] =
     useState<SpecializationMaterialRow | null>(null);
   const [newMaterial, setNewMaterial] = useState(EMPTY_MATERIAL_FORM);
@@ -119,25 +118,25 @@ export default function MaterialsPage() {
       .catch((err) => handleErrorAlerts(err?.response?.data?.error));
   };
 
-  const handleUpdate = () => {
-    if (!editTarget?.id) return;
-    if (!editMaterial.material.trim()) {
-      toast.error("يرجى إدخال اسم المادة");
-      return;
-    }
+  // const handleUpdate = () => {
+  //   if (!editTarget?.id) return;
+  //   if (!editMaterial.material.trim()) {
+  //     toast.error("يرجى إدخال اسم المادة");
+  //     return;
+  //   }
 
-    updateMaterial
-      .mutateAsync(buildSpecializationMaterialPayload(editMaterial))
-      .then((s) => {
-        if (s.status) {
-          toast.success(s.message ?? "تم تحديث المادة بنجاح");
-          setEditTarget(null);
-        } else {
-          toast.error(s.message ?? "Error");
-        }
-      })
-      .catch((err) => handleErrorAlerts(err?.response?.data?.error));
-  };
+  //   updateMaterial
+  //     .mutateAsync(buildSpecializationMaterialPayload(editMaterial))
+  //     .then((s) => {
+  //       if (s.status) {
+  //         toast.success(s.message ?? "تم تحديث المادة بنجاح");
+  //         setEditTarget(null);
+  //       } else {
+  //         toast.error(s.message ?? "Error");
+  //       }
+  //     })
+  //     .catch((err) => handleErrorAlerts(err?.response?.data?.error));
+  // };
 
   const handleDelete = async () => {
     if (!pendingDelete?.id) return;
