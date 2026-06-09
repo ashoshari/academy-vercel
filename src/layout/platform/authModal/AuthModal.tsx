@@ -2,9 +2,9 @@ import { useState } from "react";
 import { X, Sparkles, GraduationCap, ArrowRight } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
-import Register from "../authModal/register";
-import Login from "../authModal/login";
-import ForgetPassword from "../authModal/forgetPassword";
+import Register from "./register";
+import Login from "./login";
+import ForgetPassword from "./forgetPassword";
 import { useForm, Controller } from "react-hook-form";
 import { useCustomQuery } from "@/hooks/useQuery";
 interface AuthModalProps {

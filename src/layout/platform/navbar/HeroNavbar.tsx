@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Image, User } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import AuthModal from "@/layout/platform/navbar/authModal";
+import AuthModal from "@/layout/platform/authModal/AuthModal";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import useTokenStore from "@/store/platform/useToken";
 import useToken from "@/store/platform/useToken";

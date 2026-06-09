@@ -1,6 +1,5 @@
-import Navbar from "@/layout/platform/navbar/navbar";
 import Footer from "@/layout/platform/footer/footer";
-import { Outlet, useLocation } from "react-router";
+import { Outlet } from "react-router";
 // import { useTranslation } from "react-i18next";
 
 import ScrollToTop from "@/components/scrollToTop";
@@ -9,8 +8,6 @@ import DisableDevtool from "disable-devtool";
 import devtools from "devtools-detect";
 
 export const PlatformLayout = () => {
-  const { pathname } = useLocation();
-  const hideNavbar = pathname.replace(/\/+$/, "") === "/";
   const searchParams = new URLSearchParams(window.location.search);
   const dataSearch: any = Object.fromEntries(searchParams.entries());
 
@@ -128,8 +125,6 @@ export const PlatformLayout = () => {
     <div className="min-h-screen" dir="rtl">
       <GlobalLoading />
       <ScrollToTop />
-      {/* Navbar */}
-      {!hideNavbar && <Navbar />}
       {/* Main Content */}
       <div className="flex-1">
         <div className="min-h-screen relative overflow-hidden" dir="rtl">

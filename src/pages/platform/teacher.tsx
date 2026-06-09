@@ -25,7 +25,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import useTokenStore from "@/store/platform/useToken";
 import EmptyState from "@/components/core/EmptyState";
-import AuthModal from "@/layout/platform/navbar/authModal";
+import AuthModal from "@/layout/platform/authModal/AuthModal";
 import { toast } from "react-hot-toast";
 import { formatDateTimeSimple } from "@/utils/formatDateTime";
 import { useCustomPost } from "@/hooks/platform/usePlatformMutation";

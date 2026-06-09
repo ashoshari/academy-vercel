@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import useTokenStore from "@/store/platform/useToken";
 import { useNavigate } from "react-router";
 import { useState } from "react";
-import AuthModal from "@/layout/platform/navbar/authModal";
+import AuthModal from "@/layout/platform/authModal/AuthModal";
 import { useCustomQuery } from "@/hooks/platform/usePlatformQuery";
 import EmptyState from "@/components/core/EmptyState";
 import { getSectionUrlSegment } from "@/utils/sectionUrl";
