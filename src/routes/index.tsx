@@ -44,6 +44,7 @@ import CardPricingPage from "@/pages/dashboard/admin/cards/CardPricingPage";
 import InstallmentPlansPage from "@/pages/dashboard/admin/installment-plans/InstallmentPlansPage";
 import CardCodesPage from "@/pages/dashboard/admin/card-codes/CardCodesPage";
 import AllCourses from "@/components/platform/courses/allCourses";
+import PublicCoursesPage from "@/pages/platform/publicCourses/PublicCoursesPage";
 import SectionsPage from "@/pages/dashboard/admin/sections/SectionsPage";
 import PhoneUser from "@/pages/platform/phoneUser";
 import SubsectionsPage from "@/pages/dashboard/admin/sections/SubSubsections";
@@ -84,6 +85,7 @@ export default function AppRoutes() {
           <Route path="profile" element={<Profile />} />
           <Route path="sections/:sectionSegment" element={<TreePage />} />
           <Route path="all-courses" element={<AllCourses />} />
+          <Route path="courses" element={<PublicCoursesPage />} />
           <Route path="teacher/:id" element={<TeacherProfile />} />
           <Route path="coursePage/:courseId" element={<CoursePage />} />
           <Route path="exam/:examId" element={<Exam />} />

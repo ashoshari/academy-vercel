@@ -32,10 +32,9 @@ const Navbar: React.FC = () => {
   })();
   const isDiscoverAllActive = normalizedPath === "/";
 
-  const { data: sectionsRes } = useCustomQuery(
-    "/training/students/sections/",
-    ["sections"],
-  );
+  const { data: sectionsRes } = useCustomQuery("/training/students/sections/", [
+    "sections",
+  ]);
   const trainingSections = sectionsRes?.data as
     | { id: string; title?: string }[]
     | undefined;
